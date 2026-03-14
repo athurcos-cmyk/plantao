@@ -4,7 +4,7 @@
       <label>Membro <span class="obrigatorio">*</span></label>
       <div class="radio-group">
         <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID']" :key="op">
-          <input type="radio" v-model="d.membro" :value="op"><span>{{ op }}</span>
+          <input  data-testid="auto-input-modalpulseira-1" type="radio" v-model="d.membro" :value="op"><span>{{ op }}</span>
         </label>
       </div>
     </div>
@@ -16,7 +16,7 @@
           v-for="op in pulseiraOpcoes" :key="op.v"
           :style="d.tipos.includes(op.v) ? { borderColor: op.cor, backgroundColor: op.cor + '20' } : {}"
         >
-          <input type="checkbox" :value="op.v" v-model="d.tipos">
+          <input  data-testid="auto-input-modalpulseira-2" type="checkbox" :value="op.v" v-model="d.tipos">
           <span>{{ cap(op.v) }}</span>
         </label>
       </div>

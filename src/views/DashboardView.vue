@@ -10,7 +10,7 @@
         </svg>
         <span>Plantão</span>
       </div>
-      <button class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
+      <button  data-testid="auto-btn-dashboardview-1" class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
@@ -26,21 +26,21 @@
       <p class="secao-label">Nova anotação</p>
 
       <div class="tipos-grid">
-        <button v-for="tipo in tipos" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
+        <button  data-testid="auto-btn-dashboardview-2" v-for="tipo in tipos" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
           <span class="tipo-icon">{{ tipo.icon }}</span>
           <span class="tipo-nome">{{ tipo.nome }}</span>
           <span v-if="!tipo.rota" class="tipo-badge">em breve</span>
         </button>
       </div>
 
-      <button class="btn-historico" @click="router.push({ name: 'historico' })">
+      <button  data-testid="auto-btn-dashboardview-3" class="btn-historico" @click="router.push({ name: 'historico' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
         </svg>
         Ver histórico de anotações
       </button>
 
-      <button class="btn btn-ghost" style="margin-top:10px" @click="sair">
+      <button  data-testid="auto-btn-dashboardview-4" class="btn btn-ghost" style="margin-top:10px" @click="sair">
         Sair da conta
       </button>
     </main>

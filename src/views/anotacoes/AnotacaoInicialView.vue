@@ -1,12 +1,12 @@
 <template>
   <div class="screen">
     <header class="app-header">
-      <button class="btn-icon" @click="voltarOuSair">
+      <button  data-testid="auto-btn-anotacaoinicialview-1" class="btn-icon" @click="voltarOuSair">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+      <button  data-testid="auto-btn-anotacaoinicialview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
           <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
@@ -32,8 +32,8 @@
           <span>Você tem um rascunho salvo</span>
         </div>
         <div class="rascunho-acoes">
-          <button class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
-          <button class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-3" class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-4" class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
         </div>
       </div>
 
@@ -43,18 +43,18 @@
 
         <div class="campo">
           <label>Horário <span class="obrigatorio">*</span></label>
-          <input type="time" v-model="form.horario">
+          <input  data-testid="auto-input-anotacaoinicialview-1" type="time" v-model="form.horario">
         </div>
 
         <div class="campo">
           <label>Sexo <span class="obrigatorio">*</span></label>
           <div class="radio-group">
             <label class="radio-btn">
-              <input type="radio" v-model="form.sexo" value="F">
+              <input  data-testid="auto-input-anotacaoinicialview-2" type="radio" v-model="form.sexo" value="F">
               <span>Feminino</span>
             </label>
             <label class="radio-btn">
-              <input type="radio" v-model="form.sexo" value="M">
+              <input  data-testid="auto-input-anotacaoinicialview-3" type="radio" v-model="form.sexo" value="M">
               <span>Masculino</span>
             </label>
           </div>
@@ -64,7 +64,7 @@
           <label>Posição da cama <span class="obrigatorio">*</span></label>
           <div class="radio-group">
             <label class="radio-btn" v-for="op in ['baixa','média','alta']" :key="op">
-              <input type="radio" v-model="form.posicaoCama" :value="op">
+              <input  data-testid="auto-input-anotacaoinicialview-4" type="radio" v-model="form.posicaoCama" :value="op">
               <span>{{ cap(op) }}</span>
             </label>
           </div>
@@ -74,7 +74,7 @@
           <label>Rodas <span class="obrigatorio">*</span></label>
           <div class="radio-group">
             <label class="radio-btn" v-for="op in ['travadas','soltas']" :key="op">
-              <input type="radio" v-model="form.rodas" :value="op">
+              <input  data-testid="auto-input-anotacaoinicialview-5" type="radio" v-model="form.rodas" :value="op">
               <span>{{ cap(op) }}</span>
             </label>
           </div>
@@ -84,7 +84,7 @@
           <label>Grades <span class="obrigatorio">*</span></label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['totalmente elevadas','parcialmente elevadas','abaixadas']" :key="op">
-              <input type="radio" v-model="form.grades" :value="op">
+              <input  data-testid="auto-input-anotacaoinicialview-6" type="radio" v-model="form.grades" :value="op">
               <span>{{ cap(op) }}</span>
             </label>
           </div>
@@ -94,7 +94,7 @@
           <label>Decúbito <span class="obrigatorio">*</span></label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['parcialmente elevado','dorsal','lateral direito','lateral esquerdo','Fowler']" :key="op">
-              <input type="radio" v-model="form.decubito" :value="op">
+              <input  data-testid="auto-input-anotacaoinicialview-7" type="radio" v-model="form.decubito" :value="op">
               <span>{{ cap(op) }}</span>
             </label>
           </div>
@@ -102,8 +102,8 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 20px" @click="limparBloco">Limpar</button>
-          <button class="btn btn-primary" @click="avancar">Próximo →</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-5" class="btn btn-secondary" style="width:auto;padding:12px 20px" @click="limparBloco">Limpar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-6" class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
 
@@ -114,11 +114,11 @@
         <div class="campo">
           <label>Estado mental</label>
           <label class="checkbox-label">
-            <input type="checkbox" v-model="form.mentalAlterado">
+            <input  data-testid="auto-input-anotacaoinicialview-8" type="checkbox" v-model="form.mentalAlterado">
             <span>Estado mental alterado</span>
           </label>
           <div v-if="form.mentalAlterado" style="margin-top:8px">
-            <input class="campo-inline" type="text" v-model="form.mentalDesc" placeholder="Ex: desorientada, agitada, confusa">
+            <input  data-testid="auto-input-anotacaoinicialview-9" class="campo-inline" type="text" v-model="form.mentalDesc" placeholder="Ex: desorientada, agitada, confusa">
           </div>
         </div>
 
@@ -126,7 +126,7 @@
           <label>Colaboração <span class="obrigatorio">*</span></label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in colaboracaoOpcoes" :key="op.value">
-              <input type="radio" v-model="form.colaboracao" :value="op.value">
+              <input  data-testid="auto-input-anotacaoinicialview-10" type="radio" v-model="form.colaboracao" :value="op.value">
               <span>{{ op.label }}</span>
             </label>
           </div>
@@ -136,12 +136,12 @@
           <label>Deambulação</label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in deambulacaoOpcoes" :key="op.value">
-              <input type="radio" :checked="form.deambulacao === op.value" @click="form.deambulacao = form.deambulacao === op.value ? '' : op.value">
+              <input  data-testid="auto-input-anotacaoinicialview-11" type="radio" :checked="form.deambulacao === op.value" @click="form.deambulacao = form.deambulacao === op.value ? '' : op.value">
               <span>{{ op.label }}</span>
             </label>
           </div>
           <div v-if="form.deambulacao === 'deambula com auxílio'" style="margin-top:8px">
-            <input class="campo-inline" type="text" v-model="form.deambulaAuxilio" placeholder="Ex: bengala, andador, cadeira de rodas">
+            <input  data-testid="auto-input-anotacaoinicialview-12" class="campo-inline" type="text" v-model="form.deambulaAuxilio" placeholder="Ex: bengala, andador, cadeira de rodas">
           </div>
         </div>
 
@@ -149,7 +149,7 @@
           <label>Padrão respiratório</label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in respPadraoOpcoes" :key="op.value">
-              <input type="radio" v-model="form.respPadrao" :value="op.value">
+              <input  data-testid="auto-input-anotacaoinicialview-13" type="radio" v-model="form.respPadrao" :value="op.value">
               <span>{{ op.label }}</span>
             </label>
           </div>
@@ -159,13 +159,13 @@
           <label>Respiração <span class="obrigatorio">*</span></label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['em ar ambiente','cateter nasal de O₂','máscara de O₂','ventilação mecânica']" :key="op">
-              <input type="radio" v-model="form.respiracao" :value="op" @change="onRespChange">
+              <input  data-testid="auto-input-anotacaoinicialview-14" type="radio" v-model="form.respiracao" :value="op" @change="onRespChange">
               <span>{{ cap(op) }}</span>
             </label>
           </div>
           <div v-if="form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂'" style="margin-top:8px">
             <div class="input-suffix-wrap">
-              <input type="number" v-model="form.oxigenioLitros" placeholder="2" min="1">
+              <input  data-testid="auto-input-anotacaoinicialview-15" type="number" v-model="form.oxigenioLitros" placeholder="2" min="1">
               <span class="input-suffix">L/min</span>
             </div>
           </div>
@@ -175,25 +175,25 @@
           <label>Acompanhante <span class="obrigatorio">*</span></label>
           <div class="radio-group">
             <label class="radio-btn">
-              <input type="radio" v-model="form.acompanhante" value="nao">
+              <input  data-testid="auto-input-anotacaoinicialview-16" type="radio" v-model="form.acompanhante" value="nao">
               <span>Não</span>
             </label>
             <label class="radio-btn">
-              <input type="radio" v-model="form.acompanhante" value="sim">
+              <input  data-testid="auto-input-anotacaoinicialview-17" type="radio" v-model="form.acompanhante" value="sim">
               <span>Sim</span>
             </label>
           </div>
           <div v-if="form.acompanhante === 'sim'" style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
-            <input class="campo-inline" type="text" v-model="form.acompanhanteNome" placeholder="Nome do acompanhante">
-            <input class="campo-inline" type="text" v-model="form.acompanhanteParentesco" placeholder="Parentesco (ex: esposa, filho, mãe)">
+            <input  data-testid="auto-input-anotacaoinicialview-18" class="campo-inline" type="text" v-model="form.acompanhanteNome" placeholder="Nome do acompanhante">
+            <input  data-testid="auto-input-anotacaoinicialview-19" class="campo-inline" type="text" v-model="form.acompanhanteParentesco" placeholder="Parentesco (ex: esposa, filho, mãe)">
           </div>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
-          <button class="btn btn-primary" @click="avancar">Próximo →</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-7" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-8" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-9" class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
 
@@ -212,23 +212,23 @@
             :class="{ 'drag-over': dragOverIdx === i && dragIdx !== i }">
             <span class="disp-texto">{{ d }}</span>
             <div class="disp-acoes">
-              <button class="btn-icon-sm" @click="moverDisp(i, -1)" :disabled="i === 0" title="Mover para cima">▲</button>
-              <button class="btn-icon-sm" @click="moverDisp(i, 1)" :disabled="i === form.dispositivos.length - 1" title="Mover para baixo">▼</button>
-              <button class="btn-icon-sm btn-danger-sm" @click="removerDisp(i)" title="Remover">✕</button>
+              <button  data-testid="auto-btn-anotacaoinicialview-10" class="btn-icon-sm" @click="moverDisp(i, -1)" :disabled="i === 0" title="Mover para cima">▲</button>
+              <button  data-testid="auto-btn-anotacaoinicialview-11" class="btn-icon-sm" @click="moverDisp(i, 1)" :disabled="i === form.dispositivos.length - 1" title="Mover para baixo">▼</button>
+              <button  data-testid="auto-btn-anotacaoinicialview-12" class="btn-icon-sm btn-danger-sm" @click="removerDisp(i)" title="Remover">✕</button>
             </div>
           </div>
         </div>
         <p v-else style="color:var(--text-muted);margin-bottom:16px;font-size:0.9rem">Nenhum dispositivo adicionado</p>
 
         <div class="disp-grid">
-          <button class="btn-disp" v-for="tipo in tiposDisp" :key="tipo" @click="abrirModal(tipo)">
+          <button  data-testid="auto-btn-anotacaoinicialview-13" class="btn-disp" v-for="tipo in tiposDisp" :key="tipo" @click="abrirModal(tipo)">
             + {{ tipo }}
           </button>
         </div>
 
         <div class="bloco-nav" style="margin-top:24px">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 2">← Voltar</button>
-          <button class="btn btn-primary" @click="passo = 4">Próximo →</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-14" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 2">← Voltar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-15" class="btn btn-primary" @click="passo = 4">Próximo →</button>
         </div>
       </div>
 
@@ -240,13 +240,13 @@
           <label>Última evacuação <span class="obrigatorio">*</span></label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in evacuacaoOpcoes" :key="op.v">
-              <input type="radio" v-model="form.evacuacaoOpcao" :value="op.v">
+              <input  data-testid="auto-input-anotacaoinicialview-20" type="radio" v-model="form.evacuacaoOpcao" :value="op.v">
               <span>{{ op.l }}</span>
             </label>
           </div>
           <div v-if="form.evacuacaoOpcao === 'data'" style="margin-top:10px">
             <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px">Clique para selecionar a data da evacuação</p>
-            <input type="date" v-model="form.evacuacaoData" class="campo-inline">
+            <input  data-testid="auto-input-anotacaoinicialview-21" type="date" v-model="form.evacuacaoData" class="campo-inline">
           </div>
         </div>
 
@@ -254,19 +254,19 @@
           <label>Diurese <span class="obrigatorio">*</span></label>
           <div class="radio-group vertical">
             <label class="checkbox-label" v-for="op in diureseOpcoes" :key="op.v">
-              <input type="checkbox" :value="op.v" v-model="form.diurese" @change="onDiureseChange">
+              <input  data-testid="auto-input-anotacaoinicialview-22" type="checkbox" :value="op.v" v-model="form.diurese" @change="onDiureseChange">
               <span>{{ op.l }}</span>
             </label>
           </div>
           <div v-if="form.diurese.includes('SVD')" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
             <div class="input-suffix-wrap">
-              <input type="number" v-model="form.svdDebito" placeholder="Débito (ml)" min="0">
+              <input  data-testid="auto-input-anotacaoinicialview-23" type="number" v-model="form.svdDebito" placeholder="Débito (ml)" min="0">
               <span class="input-suffix">ml</span>
             </div>
-            <input class="campo-inline" type="text" v-model="form.svdAspecto" placeholder="Aspecto/coloração (opcional)">
+            <input  data-testid="auto-input-anotacaoinicialview-24" class="campo-inline" type="text" v-model="form.svdAspecto" placeholder="Aspecto/coloração (opcional)">
           </div>
           <div style="margin-top:10px">
-            <input class="campo-inline" type="text" v-model="form.diureseObs" placeholder="Ex: diurese em nefrostomia, ureterostomia...">
+            <input  data-testid="auto-input-anotacaoinicialview-25" class="campo-inline" type="text" v-model="form.diureseObs" placeholder="Ex: diurese em nefrostomia, ureterostomia...">
           </div>
         </div>
 
@@ -282,9 +282,9 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 3">← Voltar</button>
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
-          <button class="btn btn-primary" @click="avancar">Próximo →</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-16" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 3">← Voltar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-17" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-18" class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
 
@@ -299,8 +299,8 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 4">← Voltar</button>
-          <button class="btn btn-primary" @click="gerar">Gerar anotação</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-19" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 4">← Voltar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-20" class="btn btn-primary" @click="gerar">Gerar anotação</button>
         </div>
       </div>
 
@@ -314,33 +314,33 @@
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
             <label class="label-small">Nome do paciente</label>
-            <input class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
+            <input  data-testid="auto-input-anotacaoinicialview-26" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
           </div>
           <div style="flex:1">
             <label class="label-small">Leito</label>
-            <input class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
+            <input  data-testid="auto-input-anotacaoinicialview-27" class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
           </div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
-          <button class="btn btn-primary" @click="copiar">
+          <button  data-testid="auto-btn-anotacaoinicialview-21" class="btn btn-primary" @click="copiar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2"/>
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
             </svg>
             Copiar texto
           </button>
-          <button class="btn btn-secondary" @click="salvar" :disabled="salvando">
+          <button  data-testid="auto-btn-anotacaoinicialview-22" class="btn btn-secondary" @click="salvar" :disabled="salvando">
             {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
           </button>
-          <button class="btn btn-secondary" @click="compartilhar">
+          <button  data-testid="auto-btn-anotacaoinicialview-23" class="btn btn-secondary" @click="compartilhar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
             Compartilhar
           </button>
-          <button class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
-          <button class="btn btn-secondary" @click="passo = 5; gerado = false">← Editar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-24" class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-25" class="btn btn-secondary" @click="passo = 5; gerado = false">← Editar</button>
         </div>
 
       </div>
@@ -352,7 +352,7 @@
       <div class="modal-box">
         <div class="modal-header">
           <h3>{{ modal.tipo }}</h3>
-          <button class="btn-icon" @click="fecharModal">
+          <button  data-testid="auto-btn-anotacaoinicialview-26" class="btn-icon" @click="fecharModal">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
@@ -372,8 +372,8 @@
         <p v-if="modal.erro" class="erro-msg" style="padding:0 16px 8px">{{ modal.erro }}</p>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
-          <button class="btn btn-primary" style="flex:2" @click="confirmarDisp">Adicionar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-27" class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-28" class="btn btn-primary" style="flex:2" @click="confirmarDisp">Adicionar</button>
         </div>
       </div>
     </div>

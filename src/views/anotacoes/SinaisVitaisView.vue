@@ -1,12 +1,12 @@
 <template>
   <div class="screen">
     <header class="app-header">
-      <button class="btn-icon" @click="router.back()">
+      <button  data-testid="auto-btn-sinaisvitaisview-1" class="btn-icon" @click="router.back()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+      <button  data-testid="auto-btn-sinaisvitaisview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
           <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
@@ -27,53 +27,53 @@
           <!-- Horário -->
           <div class="campo campo-full">
             <label>Horário <span class="obrigatorio">*</span></label>
-            <input type="time" v-model="form.horario">
+            <input  data-testid="auto-input-sinaisvitaisview-1" type="time" v-model="form.horario">
           </div>
 
           <!-- PA -->
           <div class="campo campo-full">
             <label>PA <span class="sv-unit">mmHg</span></label>
             <div class="pa-row">
-              <input type="number" v-model="form.paSis" placeholder="120" min="0" max="300">
+              <input  data-testid="auto-input-sinaisvitaisview-2" type="number" v-model="form.paSis" placeholder="120" min="0" max="300">
               <span class="pa-sep">/</span>
-              <input type="number" v-model="form.paDia" placeholder="80" min="0" max="200">
+              <input  data-testid="auto-input-sinaisvitaisview-3" type="number" v-model="form.paDia" placeholder="80" min="0" max="200">
             </div>
           </div>
 
           <!-- PAM -->
           <div class="campo">
             <label>PAM <span class="sv-unit">mmHg</span></label>
-            <input type="number" v-model="form.pam" placeholder="87" min="0" max="200">
+            <input  data-testid="auto-input-sinaisvitaisview-4" type="number" v-model="form.pam" placeholder="87" min="0" max="200">
           </div>
 
           <!-- FC -->
           <div class="campo">
             <label>FC <span class="sv-unit">bpm</span></label>
-            <input type="number" v-model="form.fc" placeholder="98" min="0" max="300">
+            <input  data-testid="auto-input-sinaisvitaisview-5" type="number" v-model="form.fc" placeholder="98" min="0" max="300">
           </div>
 
           <!-- FR -->
           <div class="campo">
             <label>FR <span class="sv-unit">rpm</span></label>
-            <input type="number" v-model="form.fr" placeholder="17" min="0" max="60">
+            <input  data-testid="auto-input-sinaisvitaisview-6" type="number" v-model="form.fr" placeholder="17" min="0" max="60">
           </div>
 
           <!-- Temperatura -->
           <div class="campo">
             <label>T <span class="sv-unit">°C</span></label>
-            <input type="number" v-model="form.temp" step="0.1" placeholder="36.7" min="30" max="45">
+            <input  data-testid="auto-input-sinaisvitaisview-7" type="number" v-model="form.temp" step="0.1" placeholder="36.7" min="30" max="45">
           </div>
 
           <!-- SAT -->
           <div class="campo">
             <label>SAT O₂ <span class="sv-unit">%</span></label>
-            <input type="number" v-model="form.sat" placeholder="95" min="0" max="100">
+            <input  data-testid="auto-input-sinaisvitaisview-8" type="number" v-model="form.sat" placeholder="95" min="0" max="100">
           </div>
 
           <!-- Dextro -->
           <div class="campo campo-full">
             <label>Dextro <span class="sv-unit">mg/dL</span> <span class="sv-opcional">(opcional)</span></label>
-            <input type="number" v-model="form.dextro" placeholder="120" min="0" max="600">
+            <input  data-testid="auto-input-sinaisvitaisview-9" type="number" v-model="form.dextro" placeholder="120" min="0" max="600">
           </div>
 
         </div>
@@ -83,11 +83,11 @@
           <label>Algias</label>
           <div class="radio-group">
             <label class="radio-btn">
-              <input type="radio" :checked="form.algias === 'nega'" @click="form.algias = form.algias === 'nega' ? '' : 'nega'">
+              <input  data-testid="auto-input-sinaisvitaisview-10" type="radio" :checked="form.algias === 'nega'" @click="form.algias = form.algias === 'nega' ? '' : 'nega'">
               <span>Nega algias</span>
             </label>
             <label class="radio-btn">
-              <input type="radio" :checked="form.algias === 'refere'" @click="form.algias = form.algias === 'refere' ? '' : 'refere'">
+              <input  data-testid="auto-input-sinaisvitaisview-11" type="radio" :checked="form.algias === 'refere'" @click="form.algias = form.algias === 'refere' ? '' : 'refere'">
               <span>Refere dor</span>
             </label>
           </div>
@@ -95,12 +95,12 @@
 
         <div class="campo" v-if="form.algias === 'refere'">
           <label>Descreva a dor <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia leve, dor em MMII">
+          <input  data-testid="auto-input-sinaisvitaisview-12" type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia leve, dor em MMII">
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
-        <button class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">Gerar texto</button>
+        <button  data-testid="auto-btn-sinaisvitaisview-3" class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">Gerar texto</button>
       </div>
 
       <!-- ── Preview ── -->
@@ -112,26 +112,26 @@
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
             <label class="label-small">Nome do paciente</label>
-            <input class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
+            <input  data-testid="auto-input-sinaisvitaisview-13" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
           </div>
           <div style="flex:1">
             <label class="label-small">Leito</label>
-            <input class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
+            <input  data-testid="auto-input-sinaisvitaisview-14" class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
           </div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
-          <button class="btn btn-primary" @click="copiar">
+          <button  data-testid="auto-btn-sinaisvitaisview-4" class="btn btn-primary" @click="copiar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2"/>
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
             </svg>
             Copiar texto
           </button>
-          <button class="btn btn-secondary" @click="salvar" :disabled="salvando">
+          <button  data-testid="auto-btn-sinaisvitaisview-5" class="btn btn-secondary" @click="salvar" :disabled="salvando">
             {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
           </button>
-          <button class="btn btn-secondary" @click="compartilhar">
+          <button  data-testid="auto-btn-sinaisvitaisview-6" class="btn btn-secondary" @click="compartilhar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
               <polyline points="16 6 12 2 8 6"/>
@@ -139,8 +139,8 @@
             </svg>
             Compartilhar
           </button>
-          <button class="btn btn-secondary" @click="novaAfericao">Nova aferição</button>
-          <button class="btn btn-secondary" @click="gerado = false">← Editar</button>
+          <button  data-testid="auto-btn-sinaisvitaisview-7" class="btn btn-secondary" @click="novaAfericao">Nova aferição</button>
+          <button  data-testid="auto-btn-sinaisvitaisview-8" class="btn btn-secondary" @click="gerado = false">← Editar</button>
         </div>
 
         <div v-if="feedbackMsg" class="feedback-msg">{{ feedbackMsg }}</div>

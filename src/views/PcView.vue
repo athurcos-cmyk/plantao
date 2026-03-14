@@ -20,7 +20,7 @@
         <code class="pc-url">{{ url }}</code>
       </div>
 
-      <button class="btn-continuar" @click="continuar">
+      <button  data-testid="auto-btn-pcview-1" class="btn-continuar" @click="continuar">
         Continuar no PC mesmo assim →
       </button>
     </div>

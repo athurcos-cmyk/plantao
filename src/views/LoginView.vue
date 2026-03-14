@@ -34,6 +34,7 @@
 
         <div class="campo">
           <input
+            data-testid="input-codigo"
             v-model="codigo"
             type="text"
             class="input-grande"
@@ -51,14 +52,14 @@
         </div>
 
         <transition name="fade">
-          <div v-if="modo === 'cadastro'" class="destaque-novo">
+          <div v-if="modo === 'cadastro'" class="destaque-novo" data-testid="msg-cadastro">
             <span class="destaque-icon">✨</span>
             <div>
               <strong>Primeira vez aqui!</strong>
               <p>Esse código está livre. Você vai criar seu acesso agora.</p>
             </div>
           </div>
-          <div v-else-if="modo === 'login'" class="destaque-volta">
+          <div v-else-if="modo === 'login'" class="destaque-volta" data-testid="msg-login">
             <span class="destaque-icon">👋</span>
             <div>
               <strong>Bem-vindo de volta!</strong>
@@ -68,6 +69,7 @@
         </transition>
 
         <button
+          data-testid="btn-continuar-passo1"
           class="btn btn-primary btn-block"
           :disabled="!modo || carregando"
           @click="avancarPasso"
@@ -79,14 +81,14 @@
 
       <!-- Passo 2: PIN -->
       <div v-else-if="passo === 2">
-        <button class="btn-voltar" @click="voltarPasso">
+        <button class="btn-voltar" data-testid="btn-voltar-passo2" @click="voltarPasso">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Voltar
         </button>
 
         <div class="card-header">
-          <span class="card-step">2 de {{ totalPassos }}</span>
-          <h2>{{ modo === 'cadastro' ? 'Crie seu PIN' : 'Digite seu PIN' }}</h2>
+          <span class="card-step" data-testid="step-indicador">2 de {{ totalPassos }}</span>
+          <h2 data-testid="titulo-passo2">{{ modo === 'cadastro' ? 'Crie seu PIN' : 'Digite seu PIN' }}</h2>
           <p v-if="modo === 'cadastro'">4 dígitos numéricos. Anote — será pedido a cada acesso.</p>
           <p v-else>Bem-vindo de volta, <strong>{{ codigo }}</strong>.</p>
         </div>
@@ -94,6 +96,7 @@
         <div class="campo">
           <div class="pin-wrap">
             <input
+              data-testid="input-pin"
               v-model="pin"
               type="password"
               inputmode="numeric"
@@ -106,6 +109,7 @@
         </div>
 
         <button
+          data-testid="btn-continuar-passo2"
           class="btn btn-primary btn-block"
           :disabled="pin.length !== 4 || carregando"
           @click="totalPassos === 2 ? entrar() : avancarPasso()"
@@ -117,19 +121,20 @@
 
       <!-- Passo 3: Nome (só cadastro) -->
       <div v-else-if="passo === 3">
-        <button class="btn-voltar" @click="voltarPasso">
+        <button class="btn-voltar" data-testid="btn-voltar-passo3" @click="voltarPasso">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
           Voltar
         </button>
 
         <div class="card-header">
-          <span class="card-step">3 de 3</span>
-          <h2>Seu nome</h2>
+          <span class="card-step" data-testid="step-indicador">3 de 3</span>
+          <h2 data-testid="titulo-passo3">Seu nome</h2>
           <p>Opcional — aparece no topo do app.</p>
         </div>
 
         <div class="campo">
           <input
+            data-testid="input-nome"
             v-model="nome"
             type="text"
             placeholder="Ex: Ana Lima"
@@ -138,6 +143,7 @@
         </div>
 
         <button
+          data-testid="btn-entrar"
           class="btn btn-primary btn-block"
           :disabled="carregando"
           @click="entrar"

@@ -1,12 +1,12 @@
 <template>
   <div class="screen">
     <header class="app-header">
-      <button class="btn-icon" @click="router.back()">
+      <button  data-testid="auto-btn-historicoview-1" class="btn-icon" @click="router.back()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+      <button  data-testid="auto-btn-historicoview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
           <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
@@ -28,9 +28,9 @@
     </div>
 
     <div class="filtros-wrap">
-      <input v-model="filtro.busca" class="filtro-input" type="text" placeholder="Buscar por nome ou leito...">
+      <input  data-testid="auto-input-historicoview-1" v-model="filtro.busca" class="filtro-input" type="text" placeholder="Buscar por nome ou leito...">
       <div class="chips-scroll">
-        <button v-for="op in tiposFiltro" :key="op.v" class="chip" :class="{ ativo: filtro.tipo === op.v }" @click="filtro.tipo = op.v">
+        <button  data-testid="auto-btn-historicoview-3" v-for="op in tiposFiltro" :key="op.v" class="chip" :class="{ ativo: filtro.tipo === op.v }" @click="filtro.tipo = op.v">
           {{ op.l }}
         </button>
       </div>
@@ -49,12 +49,12 @@
 
         <div v-if="editando === anot._key" class="edit-row">
           <div style="display:flex;gap:8px">
-            <input class="edit-input" type="text" v-model="editForm.nome" placeholder="Nome do paciente" style="flex:2">
-            <input class="edit-input" type="text" v-model="editForm.leito" placeholder="Leito" style="flex:1">
+            <input  data-testid="auto-input-historicoview-2" class="edit-input" type="text" v-model="editForm.nome" placeholder="Nome do paciente" style="flex:2">
+            <input  data-testid="auto-input-historicoview-3" class="edit-input" type="text" v-model="editForm.leito" placeholder="Leito" style="flex:1">
           </div>
           <div style="display:flex;gap:6px">
-            <button class="btn-acao" @click="salvarEdicao(anot._key)">✓ Salvar</button>
-            <button class="btn-acao" @click="editando = null">Cancelar</button>
+            <button  data-testid="auto-btn-historicoview-4" class="btn-acao" @click="salvarEdicao(anot._key)">✓ Salvar</button>
+            <button  data-testid="auto-btn-historicoview-5" class="btn-acao" @click="editando = null">Cancelar</button>
           </div>
         </div>
         <div v-else class="anot-paciente-row">
@@ -62,27 +62,27 @@
             {{ anot.nome }}{{ anot.nome && anot.leito ? ' · ' : '' }}{{ anot.leito ? 'Leito ' + anot.leito : '' }}
           </span>
           <span v-else class="anot-paciente sem-paciente">sem paciente registrado</span>
-          <button class="btn-editar" @click="iniciarEdicao(anot)" title="Editar">✏️</button>
+          <button  data-testid="auto-btn-historicoview-6" class="btn-editar" @click="iniciarEdicao(anot)" title="Editar">✏️</button>
         </div>
 
         <p class="anot-texto">{{ anot.texto }}</p>
 
         <div class="anot-acoes">
-          <button class="btn-acao" @click="copiar(anot.texto)">
+          <button  data-testid="auto-btn-historicoview-7" class="btn-acao" @click="copiar(anot.texto)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2"/>
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
             </svg>
             Copiar
           </button>
-          <button class="btn-acao" @click="compartilhar(anot.texto)">
+          <button  data-testid="auto-btn-historicoview-8" class="btn-acao" @click="compartilhar(anot.texto)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
               <polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
             Enviar
           </button>
-          <button class="btn-acao btn-acao-danger" @click="confirmarDeletar(anot)">
+          <button  data-testid="auto-btn-historicoview-9" class="btn-acao btn-acao-danger" @click="confirmarDeletar(anot)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"/>
               <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
@@ -101,8 +101,8 @@
         <p>Excluir esta anotação?</p>
         <p class="confirm-sub">{{ confirmando.nome ? confirmando.nome + ' · ' : '' }}{{ formatData(confirmando.timestamp) }}</p>
         <div style="display:flex;gap:10px;margin-top:16px">
-          <button class="btn btn-secondary" style="flex:1" @click="confirmando = null">Cancelar</button>
-          <button class="btn btn-danger" style="flex:1" @click="deletar">Excluir</button>
+          <button  data-testid="auto-btn-historicoview-10" class="btn btn-secondary" style="flex:1" @click="confirmando = null">Cancelar</button>
+          <button  data-testid="auto-btn-historicoview-11" class="btn btn-danger" style="flex:1" @click="deletar">Excluir</button>
         </div>
       </div>
     </div>
