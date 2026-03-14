@@ -253,6 +253,9 @@
               <span class="input-suffix">ml</span>
             </div>
           </div>
+          <div style="margin-top:10px">
+            <input class="campo-inline" type="text" v-model="form.diureseObs" placeholder="Ex: diurese em nefrostomia, ureterostomia...">
+          </div>
         </div>
 
         <div class="campo">
@@ -829,7 +832,7 @@ const form = reactive({
   dispositivos: [],
   // Bloco 4
   evacuacaoOpcao: '', evacuacaoData: '',
-  diurese: [], svdDebito: '',
+  diurese: [], svdDebito: '', diureseObs: '',
   queixas: '', obsApresenta: '',
   // Bloco 5
   fechamento: '',
@@ -953,7 +956,7 @@ function avancar() {
     if (!form.evacuacaoOpcao) return (erro.value = 'Informe a última evacuação')
     if (form.evacuacaoOpcao === 'data' && !form.evacuacaoData)
       return (erro.value = 'Selecione a data da evacuação')
-    if (form.diurese.length === 0) return (erro.value = 'Selecione ao menos uma opção de diurese')
+    if (form.diurese.length === 0 && !form.diureseObs.trim()) return (erro.value = 'Selecione ao menos uma opção de diurese ou descreva no campo livre')
     if (form.diurese.includes('SVD') && !form.svdDebito)
       return (erro.value = 'Informe o débito da SVD')
     atualizarFechamento()
@@ -971,7 +974,7 @@ function limparBloco() {
       oxigenioLitros:'', acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'' })
   } else if (passo.value === 4) {
     Object.assign(form, { evacuacaoOpcao:'', evacuacaoData:'', diurese:[],
-      svdDebito:'', queixas:'', obsApresenta:'' })
+      svdDebito:'', diureseObs:'', queixas:'', obsApresenta:'' })
   }
 }
 
@@ -1231,6 +1234,10 @@ function gerarTexto() {
       const joined = partes.length === 1 ? partes[0] : `${partes.slice(0, -1).join(', ')} e ${last}`
       ref.push(`diurese espontânea ${joined}`)
     }
+    if (form.diureseObs.trim()) {
+      const o = form.diureseObs.trim()
+      ref.push(o.charAt(0).toLowerCase() + o.slice(1))
+    }
   }
 
   if (form.queixas) {
@@ -1276,7 +1283,7 @@ function novaAnotacao() {
     deambulaAuxilio:'', respPadrao:'', respiracao:'', oxigenioLitros:'',
     acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'',
     dispositivos:[],
-    evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'',
+    evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'', diureseObs:'',
     queixas:'', obsApresenta:'', fechamento:'',
     nomePaciente:'', leitoPaciente:''
   })
