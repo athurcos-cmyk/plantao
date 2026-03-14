@@ -1,11 +1,19 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 
+const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+const isDev    = () => location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+
 const routes = [
   {
     path: '/',
     name: 'login',
     component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/pc',
+    name: 'pc',
+    component: () => import('../views/PcView.vue')
   },
   {
     path: '/dashboard',
@@ -40,6 +48,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  // PC → bloqueia (exceto localhost, para desenvolvimento)
+  if (to.name !== 'pc' && !isMobile() && !isDev()) {
+    return { name: 'pc' }
+  }
+
   const auth = useAuthStore()
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return { name: 'login' }
