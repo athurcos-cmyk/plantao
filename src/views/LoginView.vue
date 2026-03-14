@@ -142,8 +142,13 @@ async function entrar() {
       ok = await auth.register(codigo.value, pin.value, nome.value)
     }
     if (ok) router.push({ name: 'dashboard' })
-  } catch {
-    erroMsg.value = 'Erro de conexão. Tente novamente.'
+  } catch (e) {
+    if (e?.code === 'PERMISSION_DENIED' || e?.message?.includes('PERMISSION_DENIED')) {
+      erroMsg.value = 'Sem permissão no banco de dados. As regras do Firebase precisam ser atualizadas.'
+    } else {
+      erroMsg.value = 'Erro de conexão. Tente novamente.'
+    }
+    console.error('[login] erro:', e)
   } finally {
     carregando.value = false
   }
