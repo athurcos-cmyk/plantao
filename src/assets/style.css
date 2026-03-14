@@ -156,7 +156,7 @@ body {
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
   cursor: pointer;
   padding: 10px 14px;
   background: var(--bg-input);
