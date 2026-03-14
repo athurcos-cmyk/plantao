@@ -171,7 +171,9 @@ export function useAnotacaoInicial() {
   // ── Eventos ───────────────────────────────────────────────────────────────
   function onRespChange() {
     if (form.respiracao === 'ventilação mecânica') form.respPadrao = ''
-    form.oxigenioLitros = ''
+    // Só zera litros quando sai dos modos que precisam de O₂
+    const precisaO2 = form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂'
+    if (!precisaO2) form.oxigenioLitros = ''
   }
 
   function onDiureseChange() {
@@ -338,24 +340,27 @@ export function useAnotacaoInicial() {
         if (!d.marcacao) return err('Informe a marcação')
         if (!d.status)   return err('Selecione o status')
         if (!d.dieta)    return err('Selecione se há dieta enteral')
+        if (d.dieta === 'sim' && !d.velocidadeDieta) return err('Informe a velocidade da dieta enteral')
         const nar = d.narina === 'D' ? 'direita' : 'esquerda'
         let t = `SNE em narina ${nar}, marcação ${d.marcacao}cm, ${d.status}`
-        if (d.dieta === 'sim') t += `, recebendo dieta enteral a ${d.velocidadeDieta || '?'}ml/h`
+        if (d.dieta === 'sim') t += `, recebendo dieta enteral a ${d.velocidadeDieta}ml/h`
         return t
       }
       case 'SNG': {
         if (!d.narina)   return err('Selecione a narina')
         if (!d.marcacao) return err('Informe a marcação')
         if (!d.modo)     return err('Selecione o modo')
+        if (d.modo === 'dieta' && !d.velocidadeDieta) return err('Informe a velocidade da dieta enteral')
+        if (d.modo === 'dren' && d.debito === 'com' && !d.debitoVal) return err('Informe o volume do débito')
         const nar = d.narina === 'D' ? 'direita' : 'esquerda'
         let t = `SNG em narina ${nar}, marcação ${d.marcacao}cm`
         if (d.modo === 'aberta')  t += ', aberta'
         else if (d.modo === 'fechada') t += ', fechada'
-        else if (d.modo === 'dieta') t += `, recebendo dieta enteral a ${d.velocidadeDieta || '?'}ml/h`
+        else if (d.modo === 'dieta') t += `, recebendo dieta enteral a ${d.velocidadeDieta}ml/h`
         else if (d.modo === 'dren') {
           if (!d.debito) return err('Selecione o débito')
           t += ', em drenagem'
-          t += d.debito === 'com' ? `, com débito de ${d.debitoVal || '?'}ml` : ', sem débito'
+          t += d.debito === 'com' ? `, com débito de ${d.debitoVal}ml` : ', sem débito'
           if (d.debito === 'com' && d.aspecto) t += `, aspecto ${d.aspecto}`
         }
         return t
