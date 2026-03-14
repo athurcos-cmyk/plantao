@@ -19,6 +19,38 @@ export function useAnotacaoInicial() {
   // Scroll para o topo ao trocar de bloco
   watch(passo, () => { nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' })) })
 
+  // ── Rascunho ──────────────────────────────────────────────────────────────
+  const RASCUNHO_KEY = 'rascunho_anotacao_inicial'
+  const temRascunho  = ref(!!localStorage.getItem(RASCUNHO_KEY))
+
+  let saveTimer = null
+  function agendarSalvarRascunho() {
+    clearTimeout(saveTimer)
+    saveTimer = setTimeout(() => {
+      // Só salva se tiver algum conteúdo preenchido
+      if (form.horario || form.colaboracao || form.dispositivos.length > 0 || form.diurese.length > 0) {
+        localStorage.setItem(RASCUNHO_KEY, JSON.stringify({ form: JSON.parse(JSON.stringify(form)), passo: passo.value }))
+        temRascunho.value = true
+      }
+    }, 800)
+  }
+
+  function restaurarRascunho() {
+    const raw = localStorage.getItem(RASCUNHO_KEY)
+    if (!raw) return
+    try {
+      const { form: saved, passo: p } = JSON.parse(raw)
+      Object.assign(form, saved)
+      passo.value = p || 1
+      temRascunho.value = false
+    } catch { /* ignore */ }
+  }
+
+  function descartarRascunho() {
+    localStorage.removeItem(RASCUNHO_KEY)
+    temRascunho.value = false
+  }
+
   const form = reactive({
     // Bloco 1
     horario: '', sexo: 'F',
@@ -39,6 +71,9 @@ export function useAnotacaoInicial() {
     // Preview
     nomePaciente: '', leitoPaciente: ''
   })
+
+  // Auto-salva rascunho ao editar
+  watch(form, agendarSalvarRascunho, { deep: true })
 
   // ── Locais centrais (ordem alfabética, padrão para CVC/Permcath) ─────────
   const locaisCentral = ['femoral D','femoral E','jugular D','jugular E','subclávia D','subclávia E']
@@ -403,6 +438,7 @@ export function useAnotacaoInicial() {
     gerado.value = false
     textoGerado.value = ''
     erro.value = ''
+    descartarRascunho()
   }
 
   function mostrarFeedback(msg) {
@@ -422,6 +458,9 @@ export function useAnotacaoInicial() {
     feedbackMsg,
     dragIdx,
     dragOverIdx,
+    temRascunho,
+    restaurarRascunho,
+    descartarRascunho,
     // reactive
     form,
     modal,

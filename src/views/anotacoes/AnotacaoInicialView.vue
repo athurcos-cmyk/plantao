@@ -25,6 +25,18 @@
 
     <main class="container" style="padding-top:20px; padding-bottom:40px">
 
+      <!-- Banner de rascunho -->
+      <div v-if="temRascunho && !gerado" class="rascunho-banner">
+        <div class="rascunho-info">
+          <span>📝</span>
+          <span>Você tem um rascunho salvo</span>
+        </div>
+        <div class="rascunho-acoes">
+          <button class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
+          <button class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
+        </div>
+      </div>
+
       <!-- ═══ BLOCO 1 — Identificação ═══ -->
       <div v-if="!gerado && passo === 1">
         <h2 class="bloco-titulo">Identificação</h2>
@@ -331,7 +343,6 @@
           <button class="btn btn-secondary" @click="passo = 5; gerado = false">← Editar</button>
         </div>
 
-        <div v-if="feedbackMsg" class="feedback-msg">{{ feedbackMsg }}</div>
       </div>
 
     </main>
@@ -366,6 +377,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast centralizado -->
+    <Teleport to="body">
+      <Transition name="toast">
+        <div v-if="feedbackMsg" class="toast-central">{{ feedbackMsg }}</div>
+      </Transition>
+    </Teleport>
 
   </div>
 </template>
@@ -402,6 +420,7 @@ const modalComponentMap = {
 const {
   passo, gerado, textoGerado, erro, salvando, feedbackMsg,
   dragIdx, dragOverIdx,
+  temRascunho, restaurarRascunho, descartarRascunho,
   form, modal,
   locaisCentral, tiposDisp, pulseiraOpcoes, diureseOpcoes, evacuacaoOpcoes,
   colaboracaoOpcoes, deambulacaoOpcoes, respPadraoOpcoes,
@@ -647,13 +666,59 @@ const {
   border-radius: var(--radius);
   padding: 18px;
 }
-.feedback-msg {
-  text-align: center;
+/* ── Rascunho banner ── */
+.rascunho-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(41, 98, 255, 0.08);
+  border: 1px solid rgba(41, 98, 255, 0.25);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.rascunho-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.9rem;
-  color: var(--success);
-  margin-top: 12px;
-  padding: 8px;
-  background: rgba(67,160,71,0.1);
-  border-radius: 8px;
+  color: var(--text);
+}
+.rascunho-acoes {
+  display: flex;
+  gap: 8px;
+}
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.82rem;
+}
+
+/* ── Toast central ── */
+.toast-central {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 22, 40, 0.92);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  z-index: 9999;
+  pointer-events: none;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast-enter-active, .toast-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast-enter-from, .toast-leave-to {
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 10px));
 }
 </style>
