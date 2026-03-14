@@ -56,7 +56,9 @@ export function gerarTexto(form) {
   } else {
     // SVD
     if (form.diurese.includes('SVD')) {
-      ref.push(`SVD com débito presente de ${form.svdDebito}ml`)
+      let svd = `SVD com débito presente de ${form.svdDebito}ml`
+      if (form.svdAspecto && form.svdAspecto.trim()) svd += `, aspecto ${form.svdAspecto.trim()}`
+      ref.push(svd)
     }
     // Espontâneas + fralda agrupadas
     const espMap = { banheiro: 'ao banheiro', papagaio: 'em uso de papagaio', comadre: 'em uso de comadre' }

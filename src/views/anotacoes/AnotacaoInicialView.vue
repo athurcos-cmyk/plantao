@@ -246,12 +246,12 @@
               <span>{{ op.l }}</span>
             </label>
           </div>
-          <div v-if="form.diurese.includes('SVD')" style="margin-top:10px">
-            <label style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-bottom:6px;display:block">Débito da SVD</label>
+          <div v-if="form.diurese.includes('SVD')" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
             <div class="input-suffix-wrap">
-              <input type="number" v-model="form.svdDebito" placeholder="500" min="0">
+              <input type="number" v-model="form.svdDebito" placeholder="Débito (ml)" min="0">
               <span class="input-suffix">ml</span>
             </div>
+            <input class="campo-inline" type="text" v-model="form.svdAspecto" placeholder="Aspecto/coloração (opcional)">
           </div>
           <div style="margin-top:10px">
             <input class="campo-inline" type="text" v-model="form.diureseObs" placeholder="Ex: diurese em nefrostomia, ureterostomia...">

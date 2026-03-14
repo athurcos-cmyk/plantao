@@ -32,7 +32,7 @@ export function useAnotacaoInicial() {
     dispositivos: [],
     // Bloco 4
     evacuacaoOpcao: '', evacuacaoData: '',
-    diurese: [], svdDebito: '', diureseObs: '',
+    diurese: [], svdDebito: '', svdAspecto: '', diureseObs: '',
     queixas: '', obsApresenta: '',
     // Bloco 5
     fechamento: '',
@@ -174,7 +174,7 @@ export function useAnotacaoInicial() {
         oxigenioLitros:'', acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'' })
     } else if (passo.value === 4) {
       Object.assign(form, { evacuacaoOpcao:'', evacuacaoData:'', diurese:[],
-        svdDebito:'', diureseObs:'', queixas:'', obsApresenta:'' })
+        svdDebito:'', svdAspecto:'', diureseObs:'', queixas:'', obsApresenta:'' })
     }
   }
 
@@ -233,8 +233,9 @@ export function useAnotacaoInicial() {
     const fmt    = (s)   => { if (!s) return '?/?'; const [, m, dia] = s.split('-'); return `${dia}/${m}` }
     const status = (d)   => {
       const p = []
-      if (d.salinizado) p.push('salinizado')
-      if (d.ocluido)    p.push('ocluído')
+      if (d.salinizado)   p.push('salinizado')
+      if (d.heparinizado) p.push('heparinizado')
+      if (d.ocluido)      p.push('ocluído')
       return p.length ? ', ' + p.join(' e ') : ''
     }
     const datado = (d) => d.datado ? `, datado de ${fmt(d.data)}` : ''
@@ -394,7 +395,7 @@ export function useAnotacaoInicial() {
       deambulaAuxilio:'', respPadrao:'', respiracao:'', oxigenioLitros:'',
       acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'',
       dispositivos:[],
-      evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'', diureseObs:'',
+      evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'', svdAspecto:'', diureseObs:'',
       queixas:'', obsApresenta:'', fechamento:'',
       nomePaciente:'', leitoPaciente:''
     })

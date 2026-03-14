@@ -12,6 +12,7 @@
       <label>Status</label>
       <div class="radio-group vertical">
         <label class="checkbox-label"><input type="checkbox" v-model="d.salinizado"><span>Salinizado</span></label>
+        <label class="checkbox-label"><input type="checkbox" v-model="d.heparinizado"><span>Heparinizado</span></label>
         <label class="checkbox-label"><input type="checkbox" v-model="d.ocluido"><span>Ocluído</span></label>
         <label class="checkbox-label"><input type="checkbox" v-model="d.datado"><span>Datado</span></label>
         <label class="checkbox-label"><input type="checkbox" v-model="d.emInfusao"><span>Em infusão</span></label>

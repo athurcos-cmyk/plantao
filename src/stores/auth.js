@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { db } from '../firebase.js'
 import { ref as dbRef, get, set } from 'firebase/database'
 
-const SESSION_DURATION_MS = 6 * 60 * 60 * 1000 // 6 horas
+const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000 // 30 dias
 
 function hashPin(pin) {
   // Hash simples — igual ao app atual
