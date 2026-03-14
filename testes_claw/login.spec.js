@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('1. AUTENTICAÇÃO - Login', () => {
   test.beforeEach(async ({ page }) => {
-    // Acessa a URL principal local especificando a url
-    await page.goto('http://localhost:5173');
+    // Acessa a URL principal
+    await page.goto('/');
   });
 
   test('1.1 Login — Novo usuário: Validar código curto e botão bloqueado', async ({ page }) => {

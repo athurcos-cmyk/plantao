@@ -18,33 +18,33 @@
 
 ### 1.1 Login — Novo usuário (cadastro)
 
-- [ ] Digitar código com menos de 3 caracteres → campos de PIN **não aparecem**, sem mensagem de "cadastro"
+- [x] Digitar código com menos de 3 caracteres → campos de PIN **não aparecem**, sem mensagem de "cadastro"
 - [ ] Digitar código com exatamente 3 caracteres → verifica e mostra destaque "Primeira vez aqui"
-- [ ] Digitar código de 4–6 caracteres (disponível) → destaque "✨ Código disponível!"
-- [ ] Código é automaticamente convertido para maiúsculas ao digitar
-- [ ] Botão "Continuar" fica **desabilitado** enquanto código não foi verificado
-- [ ] Botão "Continuar" fica **habilitado** após verificação bem-sucedida
-- [ ] Avança para passo 2 (PIN) ao clicar Continuar
-- [ ] Passo 2: campo PIN aceita apenas 4 dígitos
-- [ ] Passo 2: botão "Continuar" fica desabilitado com menos de 4 dígitos
-- [ ] Passo 2: botão "Continuar" fica habilitado com 4 dígitos
-- [ ] Avança para passo 3 (nome) ao clicar Continuar
+- [x] Digitar código de 4–6 caracteres (disponível) → destaque "✨ Código disponível!"
+- [x] Código é automaticamente convertido para maiúsculas ao digitar
+- [x] Botão "Continuar" fica **desabilitado** enquanto código não foi verificado
+- [x] Botão "Continuar" fica **habilitado** após verificação bem-sucedida
+- [x] Avança para passo 2 (PIN) ao clicar Continuar
+- [x] Passo 2: campo PIN aceita apenas 4 dígitos
+- [x] Passo 2: botão "Continuar" fica desabilitado com menos de 4 dígitos
+- [x] Passo 2: botão "Continuar" fica habilitado com 4 dígitos
+- [x] Avança para passo 3 (nome) ao clicar Continuar
 - [ ] Passo 3: campo nome é opcional (pode deixar em branco)
 - [ ] Passo 3: botão "Criar conta e entrar" funciona com nome em branco
-- [ ] Passo 3: botão "Criar conta e entrar" funciona com nome preenchido
-- [ ] Após cadastro → redireciona para Dashboard
-- [ ] Dashboard exibe o nome cadastrado no cabeçalho
-- [ ] Botão "Voltar" no passo 2 retorna ao passo 1
-- [ ] Botão "Voltar" no passo 3 retorna ao passo 2
-- [ ] Indicador "1 de 3", "2 de 3", "3 de 3" exibido corretamente
+- [x] Passo 3: botão "Criar conta e entrar" funciona com nome preenchido
+- [x] Após cadastro → redireciona para Dashboard
+- [x] Dashboard exibe o nome cadastrado no cabeçalho
+- [x] Botão "Voltar" no passo 2 retorna ao passo 1
+- [x] Botão "Voltar" no passo 3 retorna ao passo 2
+- [x] Indicador "1 de 3", "2 de 3", "3 de 3" exibido corretamente
 
 ### 1.2 Login — Usuário existente
 
-- [ ] Digitar código já cadastrado → destaque "👋 Bem-vindo de volta!"
-- [ ] Avança para passo 2 (PIN)
-- [ ] Passo 2 mostra "2 de 2" (fluxo de 2 passos, sem passo de nome)
-- [ ] PIN correto → redireciona para Dashboard
-- [ ] PIN incorreto → mensagem de erro "PIN incorreto. Tente novamente."
+- [x] Digitar código já cadastrado → destaque "👋 Bem-vindo de volta!"
+- [x] Avança para passo 2 (PIN)
+- [x] Passo 2 mostra "2 de 2" (fluxo de 2 passos, sem passo de nome)
+- [x] PIN correto → redireciona para Dashboard
+- [x] PIN incorreto → mensagem de erro "PIN incorreto. Tente novamente."
 - [ ] Mensagem de erro desaparece ao tentar novamente
 - [ ] `Enter` no campo PIN dispara login
 
@@ -52,10 +52,10 @@
 
 - [ ] Fechar e reabrir o app (dentro de 30 dias) → **não** pede login novamente
 - [ ] Fechar e reabrir abas do navegador → mantém logado
-- [ ] Clicar em "Sair da conta" no Dashboard → modal de confirmação aparece
+- [x] Clicar em "Sair da conta" no Dashboard → modal de confirmação aparece
 - [ ] Confirmar logout → redireciona para login e sessão é encerrada
 - [ ] Cancelar logout → permanece no Dashboard
-- [ ] Tentar acessar `/dashboard` sem login → redireciona para login
+- [x] Tentar acessar `/dashboard` sem login → redireciona para login
 - [ ] Tentar acessar `/historico` sem login → redireciona para login
 - [ ] Tentar acessar `/anotar/inicial` sem login → redireciona para login
 
@@ -69,13 +69,13 @@
 
 ## 2. DASHBOARD
 
-- [ ] Saudação correta: "Bom dia" (0h–11h59), "Boa tarde" (12h–17h59), "Boa noite" (18h–23h59)
-- [ ] Nome do usuário exibido (se cadastrado)
+- [x] Saudação correta: "Bom dia" (0h–11h59), "Boa tarde" (12h–17h59), "Boa noite" (18h–23h59)
+- [x] Nome do usuário exibido (se cadastrado)
 - [ ] Cards disponíveis: Anotação inicial, Sinais vitais → clicáveis
-- [ ] Cards "em breve": Medicação, Encaminhamento, Banho, Curativo, Passagem, Intercorrência → mostram alerta "em breve"
-- [ ] Botão "Ver histórico" → navega para Histórico
-- [ ] Ícone de relógio no header → navega para Histórico
-- [ ] Logo "Plantão" no header → não navega (fica na mesma tela)
+- [x] Cards "em breve": Medicação, Encaminhamento, Banho, Curativo, Passagem, Intercorrência → mostram alerta "em breve"
+- [x] Botão "Ver histórico" → navega para Histórico
+- [x] Ícone de relógio no header → navega para Histórico
+- [x] Logo "Plantão" no header → não navega (fica na mesma tela)
 
 ---
 
