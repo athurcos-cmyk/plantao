@@ -21,16 +21,31 @@ export function useAnotacaoInicial() {
 
   // ── Rascunho ──────────────────────────────────────────────────────────────
   const RASCUNHO_KEY = 'rascunho_anotacao_inicial'
+  // Banner aparece apenas na montagem inicial (se havia rascunho salvo)
+  // Não é afetado pelo auto-save — evita reaparecer enquanto o usuário edita
   const temRascunho  = ref(!!localStorage.getItem(RASCUNHO_KEY))
 
-  let saveTimer = null
+  let saveTimer   = null
+  let restaurando = false   // pausa o auto-save durante o restore
+
   function agendarSalvarRascunho() {
+    if (restaurando) return
     clearTimeout(saveTimer)
     saveTimer = setTimeout(() => {
-      // Só salva se tiver algum conteúdo preenchido
-      if (form.horario || form.colaboracao || form.dispositivos.length > 0 || form.diurese.length > 0) {
-        localStorage.setItem(RASCUNHO_KEY, JSON.stringify({ form: JSON.parse(JSON.stringify(form)), passo: passo.value }))
-        temRascunho.value = true
+      if (restaurando) return
+      // Só persiste se houver conteúdo mínimo preenchido
+      const temConteudo = form.horario || form.colaboracao ||
+        form.dispositivos.length > 0 || form.diurese.length > 0 ||
+        form.posicaoCama || form.respPadrao
+      if (temConteudo) {
+        localStorage.setItem(RASCUNHO_KEY, JSON.stringify({
+          form: JSON.parse(JSON.stringify(form)),
+          passo: passo.value
+        }))
+        // NÃO seta temRascunho aqui — banner só aparece na montagem inicial
+      } else {
+        // Form vazio: limpa o rascunho silenciosamente
+        localStorage.removeItem(RASCUNHO_KEY)
       }
     }, 800)
   }
@@ -39,11 +54,16 @@ export function useAnotacaoInicial() {
     const raw = localStorage.getItem(RASCUNHO_KEY)
     if (!raw) return
     try {
+      restaurando = true
       const { form: saved, passo: p } = JSON.parse(raw)
       Object.assign(form, saved)
       passo.value = p || 1
+      temRascunho.value = false   // esconde o banner
+      nextTick(() => { restaurando = false })
+    } catch {
+      restaurando = false
       temRascunho.value = false
-    } catch { /* ignore */ }
+    }
   }
 
   function descartarRascunho() {
