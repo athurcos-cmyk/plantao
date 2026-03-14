@@ -92,6 +92,18 @@
           Continuar
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
+
+        <!-- Ajuda código esquecido (passo 1) -->
+        <div class="ajuda-login" style="margin-top:14px">
+          <button class="ajuda-toggle" @click="mostrarAjudaCodigo = !mostrarAjudaCodigo">
+            {{ mostrarAjudaCodigo ? '▲' : '▼' }} Não lembra seu código?
+          </button>
+          <transition name="fade">
+            <div v-if="mostrarAjudaCodigo" class="ajuda-conteudo">
+              <p>📋 <strong>Esqueceu o código?</strong> Sem ele não é possível recuperar o acesso. Sempre anote seu código após criar sua conta.</p>
+            </div>
+          </transition>
+        </div>
       </div>
 
       <!-- Passo 2: PIN -->
@@ -145,15 +157,14 @@
           <svg v-if="modo !== 'login'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
 
-        <!-- Ajuda para quem esqueceu (só no login) -->
+        <!-- Ajuda PIN esquecido (só no login) -->
         <div v-if="modo === 'login'" class="ajuda-login">
           <button class="ajuda-toggle" @click="mostrarAjuda = !mostrarAjuda">
-            {{ mostrarAjuda ? '▲' : '▼' }} Problemas para entrar?
+            {{ mostrarAjuda ? '▲' : '▼' }} Esqueceu o PIN?
           </button>
           <transition name="fade">
             <div v-if="mostrarAjuda" class="ajuda-conteudo">
               <p>🔑 <strong>Esqueceu o PIN?</strong> O administrador pode redefinir seu acesso — suas anotações não serão perdidas.</p>
-              <p>📋 <strong>Esqueceu o código?</strong> Sem o código não é possível recuperar o acesso. Sempre anote-o após criar sua conta.</p>
             </div>
           </transition>
         </div>
@@ -215,7 +226,8 @@ const statusMsg = ref('')
 const statusClass = ref('')
 const erroMsg   = ref('')
 const carregando   = ref(false)
-const mostrarAjuda = ref(false)
+const mostrarAjuda       = ref(false)
+const mostrarAjudaCodigo = ref(false)
 
 const totalPassos = computed(() => modo.value === 'cadastro' ? 3 : 2)
 
