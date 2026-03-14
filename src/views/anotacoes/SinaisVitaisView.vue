@@ -19,6 +19,18 @@
 
     <main class="container" style="padding-top:24px">
 
+      <!-- Banner de rascunho -->
+      <div v-if="temRascunho && !gerado" class="rascunho-banner">
+        <div class="rascunho-info">
+          <span>📝</span>
+          <span>Você tem uma aferição em rascunho</span>
+        </div>
+        <div class="rascunho-acoes">
+          <button class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
+          <button class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
+        </div>
+      </div>
+
       <!-- ── Formulário ── -->
       <div v-if="!gerado">
 
@@ -155,6 +167,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes'
 import { useToast } from '../../composables/useToast.js'
+import { useRascunho } from '../../composables/useRascunho.js'
 
 const router  = useRouter()
 const store   = useAnotacoesStore()
@@ -180,6 +193,15 @@ const form = reactive({
   nomePaciente: '',
   leitoPaciente: ''
 })
+
+// ── Rascunho ──────────────────────────────────────────────────────────────
+const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
+  useRascunho(
+    'rascunho_sinais_vitais',
+    form,
+    () => !!(form.horario || form.paSis || form.fc || form.temp || form.sat)
+  )
+iniciarRascunho()
 
 function mostrarFeedback(msg) {
   showToast(msg)
@@ -263,6 +285,7 @@ function novaAfericao() {
   })
   erro.value    = ''
   gerado.value  = false
+  descartarRascunho()
 }
 </script>
 

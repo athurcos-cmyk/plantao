@@ -662,33 +662,8 @@ const {
   padding: 18px;
 }
 /* ── Rascunho banner ── */
-.rascunho-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  background: rgba(41, 98, 255, 0.08);
-  border: 1px solid rgba(41, 98, 255, 0.25);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.rascunho-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  color: var(--text);
-}
-.rascunho-acoes {
-  display: flex;
-  gap: 8px;
-}
-.btn-sm {
-  padding: 6px 14px;
-  font-size: 0.82rem;
-}
+/* rascunho-banner global — ver style.css */
+/* .btn-sm global — ver style.css */
 
 /* Toast global — ver App.vue + style.css */
 </style>
