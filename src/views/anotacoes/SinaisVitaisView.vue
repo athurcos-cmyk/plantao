@@ -199,7 +199,7 @@ function gerar() {
   // Algias
   let algiasText = ''
   if (form.algias === 'nega')   algiasText = ', nega algias'
-  if (form.algias === 'refere') algiasText = `, refere ${form.dorDesc.trim()}`
+  if (form.algias === 'refere') algiasText = `, refere dor: ${form.dorDesc.trim()}`
 
   // Sinais
   const sv = []
@@ -236,7 +236,7 @@ async function copiar() {
 async function salvar() {
   salvando.value = true
   try {
-    await store.salvar(textoGerado.value, form.nomePaciente.trim(), 'sv', form.leitoPaciente.trim())
+    await store.salvar({ tipo: 'sv', texto: textoGerado.value, nome: form.nomePaciente.trim(), leito: form.leitoPaciente.trim() })
     mostrarFeedback('Salvo no histórico!')
   } catch {
     mostrarFeedback('Erro ao salvar')

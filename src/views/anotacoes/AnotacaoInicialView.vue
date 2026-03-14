@@ -121,10 +121,10 @@
         </div>
 
         <div class="campo">
-          <label>Deambulação <span class="obrigatorio">*</span></label>
+          <label>Deambulação</label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in deambulacaoOpcoes" :key="op.value">
-              <input type="radio" v-model="form.deambulacao" :value="op.value">
+              <input type="radio" :checked="form.deambulacao === op.value" @click="form.deambulacao = form.deambulacao === op.value ? '' : op.value">
               <span>{{ op.label }}</span>
             </label>
           </div>
@@ -938,7 +938,6 @@ function avancar() {
     passo.value = 2
   } else if (passo.value === 2) {
     if (!form.colaboracao)  return (erro.value = 'Selecione a colaboração')
-    if (!form.deambulacao)  return (erro.value = 'Selecione a deambulação')
     if (form.deambulacao === 'deambula com auxílio' && !form.deambulaAuxilio)
       return (erro.value = 'Informe com qual auxílio deambula')
     if (!form.respiracao)   return (erro.value = 'Selecione a respiração')
@@ -1146,7 +1145,7 @@ function atualizarFechamento() {
   const r = form.rodas       || '___'
   const g = form.grades      || '___'
   const d = form.decubito    || '___'
-  form.fechamento = `Mantenho cama ${p}, rodas ${r}, grades ${g} e decúbito ${d}, campainha próxima e oriento a chamar sempre que necessário.`
+  form.fechamento = `Mantenho cama ${p}, rodas ${r}, grades ${g}, campainha próxima e oriento a chamar sempre que necessário.`
 }
 
 // ── Geração de texto ──────────────────────────────────────────────────────
@@ -1179,8 +1178,7 @@ function gerarTexto() {
     if (rv) ap.push(rv)
     ap.push(`em ${form.respiracao} a ${form.oxigenioLitros}L/min`)
   } else if (form.respiracao === 'em ar ambiente') {
-    const eup = rv === 'eupneica' || rv === 'eupneico'
-    ap.push(rv && !eup ? `${rv} em ar ambiente` : 'em ar ambiente')
+    ap.push(rv ? `${rv} em ar ambiente` : 'em ar ambiente')
   } else {
     ap.push(form.respiracao)
   }
@@ -1200,7 +1198,7 @@ function gerarTexto() {
 
   if (form.obsApresenta) {
     const o = form.obsApresenta
-    parts.push(`Paciente apresenta ${o.charAt(0).toLowerCase() + o.slice(1)}.`)
+    parts.push(`Apresenta ${o.charAt(0).toLowerCase() + o.slice(1)}.`)
   }
 
   const ref = []
