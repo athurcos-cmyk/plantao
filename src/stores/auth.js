@@ -1,0 +1,75 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { db } from '../firebase.js'
+import { ref as dbRef, get, set } from 'firebase/database'
+
+const SESSION_DURATION_MS = 6 * 60 * 60 * 1000 // 6 horas
+
+function hashPin(pin) {
+  // Hash simples — igual ao app atual
+  let h = 0
+  for (let i = 0; i < pin.length; i++) {
+    h = Math.imul(31, h) + pin.charCodeAt(i) | 0
+  }
+  return Math.abs(h).toString(36)
+}
+
+export const useAuthStore = defineStore('auth', () => {
+  const syncCode = ref(localStorage.getItem('sync_code') || '')
+  const userName = ref(localStorage.getItem('user_name') || '')
+  const loginTime = ref(parseInt(localStorage.getItem('login_time') || '0'))
+
+  const isLoggedIn = computed(() => {
+    if (!syncCode.value || !loginTime.value) return false
+    return (Date.now() - loginTime.value) < SESSION_DURATION_MS
+  })
+
+  async function checkCode(code) {
+    const snap = await get(dbRef(db, `usuarios/${code}`))
+    if (snap.exists()) {
+      return { exists: true, data: snap.val() }
+    }
+    return { exists: false }
+  }
+
+  async function register(code, pin, name) {
+    const pinHash = hashPin(pin)
+    await set(dbRef(db, `usuarios/${code}`), {
+      pin: pinHash,
+      nome: name || '',
+      criadoEm: Date.now()
+    })
+    _saveSession(code, name)
+    return true
+  }
+
+  async function login(code, pin) {
+    const snap = await get(dbRef(db, `usuarios/${code}`))
+    if (!snap.exists()) return false
+    const user = snap.val()
+    if (user.pin !== hashPin(pin)) return false
+    _saveSession(code, user.nome || '')
+    return true
+  }
+
+  function _saveSession(code, name) {
+    const now = Date.now()
+    syncCode.value = code
+    userName.value = name
+    loginTime.value = now
+    localStorage.setItem('sync_code', code)
+    localStorage.setItem('user_name', name)
+    localStorage.setItem('login_time', now.toString())
+  }
+
+  function logout() {
+    syncCode.value = ''
+    userName.value = ''
+    loginTime.value = 0
+    localStorage.removeItem('sync_code')
+    localStorage.removeItem('user_name')
+    localStorage.removeItem('login_time')
+  }
+
+  return { syncCode, userName, isLoggedIn, checkCode, register, login, logout }
+})
