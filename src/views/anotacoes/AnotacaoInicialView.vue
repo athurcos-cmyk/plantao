@@ -378,12 +378,7 @@
       </div>
     </div>
 
-    <!-- Toast centralizado -->
-    <Teleport to="body">
-      <Transition name="toast">
-        <div v-if="feedbackMsg" class="toast-central">{{ feedbackMsg }}</div>
-      </Transition>
-    </Teleport>
+    <!-- Toast global renderizado em App.vue -->
 
   </div>
 </template>
@@ -418,7 +413,7 @@ const modalComponentMap = {
 }
 
 const {
-  passo, gerado, textoGerado, erro, salvando, feedbackMsg,
+  passo, gerado, textoGerado, erro, salvando,
   dragIdx, dragOverIdx,
   temRascunho, restaurarRascunho, descartarRascunho,
   form, modal,
@@ -695,30 +690,5 @@ const {
   font-size: 0.82rem;
 }
 
-/* ── Toast central ── */
-.toast-central {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(10, 22, 40, 0.92);
-  color: #fff;
-  padding: 16px 32px;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  z-index: 9999;
-  pointer-events: none;
-  text-align: center;
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-.toast-enter-active, .toast-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-.toast-enter-from, .toast-leave-to {
-  opacity: 0;
-  transform: translate(-50%, calc(-50% + 10px));
-}
+/* Toast global — ver App.vue + style.css */
 </style>

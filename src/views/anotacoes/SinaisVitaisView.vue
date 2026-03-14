@@ -143,7 +143,7 @@
           <button  data-testid="auto-btn-sinaisvitaisview-8" class="btn btn-secondary" @click="gerado = false">← Editar</button>
         </div>
 
-        <div v-if="feedbackMsg" class="feedback-msg">{{ feedbackMsg }}</div>
+        <!-- Toast global renderizado em App.vue -->
       </div>
 
     </main>
@@ -154,15 +154,16 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes'
+import { useToast } from '../../composables/useToast.js'
 
 const router  = useRouter()
 const store   = useAnotacoesStore()
+const { showToast } = useToast()
 
 const gerado      = ref(false)
 const textoGerado = ref('')
 const erro        = ref('')
 const salvando    = ref(false)
-const feedbackMsg = ref('')
 
 const form = reactive({
   horario:      '',
@@ -181,8 +182,7 @@ const form = reactive({
 })
 
 function mostrarFeedback(msg) {
-  feedbackMsg.value = msg
-  setTimeout(() => (feedbackMsg.value = ''), 3000)
+  showToast(msg)
 }
 
 function gerar() {
@@ -349,13 +349,5 @@ function novaAfericao() {
 }
 .campo-inline:focus { border-color: var(--blue); }
 
-.feedback-msg {
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--success);
-  margin-top: 12px;
-  padding: 8px;
-  background: rgba(67,160,71,0.1);
-  border-radius: 8px;
-}
+/* Toast global — ver App.vue + style.css */
 </style>

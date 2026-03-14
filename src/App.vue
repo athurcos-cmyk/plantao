@@ -1,5 +1,8 @@
 <template>
   <RouterView />
+  <Transition name="toast">
+    <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
+  </Transition>
 </template>
 
 <script setup>
@@ -8,6 +11,9 @@ import { RouterView } from 'vue-router'
 import { useAuthStore } from './stores/auth.js'
 import { useAnotacoesStore } from './stores/anotacoes.js'
 import { useRouter } from 'vue-router'
+import { useToast } from './composables/useToast.js'
+
+const { toastMsg } = useToast()
 
 const auth      = useAuthStore()
 const anotacoes = useAnotacoesStore()

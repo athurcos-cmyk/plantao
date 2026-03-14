@@ -2,17 +2,19 @@ import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { gerarTexto } from '../utils/gerarTextoInicial.js'
+import { useToast } from './useToast.js'
 
 export function useAnotacaoInicial() {
   const router = useRouter()
   const store  = useAnotacoesStore()
+
+  const { showToast } = useToast()
 
   const passo       = ref(1)
   const gerado      = ref(false)
   const textoGerado = ref('')
   const erro        = ref('')
   const salvando    = ref(false)
-  const feedbackMsg = ref('')
   const dragIdx     = ref(null)
   const dragOverIdx = ref(null)
 
@@ -462,8 +464,7 @@ export function useAnotacaoInicial() {
   }
 
   function mostrarFeedback(msg) {
-    feedbackMsg.value = msg
-    setTimeout(() => (feedbackMsg.value = ''), 3000)
+    showToast(msg)
   }
 
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
@@ -475,7 +476,6 @@ export function useAnotacaoInicial() {
     textoGerado,
     erro,
     salvando,
-    feedbackMsg,
     dragIdx,
     dragOverIdx,
     temRascunho,
