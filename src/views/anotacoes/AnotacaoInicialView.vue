@@ -690,7 +690,7 @@
                 <label
                   class="checkbox-label pulseira-label"
                   v-for="op in pulseiraOpcoes" :key="op.v"
-                  :style="modal.d.tipos.includes(op.v) ? { borderColor: op.cor, backgroundColor: op.cor + '20', color: op.corTexto || '#fff' } : {}"
+                  :style="modal.d.tipos.includes(op.v) ? { borderColor: op.cor, backgroundColor: op.cor + '20' } : {}"
                 >
                   <input type="checkbox" :value="op.v" v-model="modal.d.tipos">
                   <span>{{ cap(op.v) }}</span>
@@ -893,11 +893,11 @@ const diureseOpcoes = [
 const tiposDisp = ['AVP','CVC','PICC','Permcath','Shilley','SNE','SNG','Pulseira','Monitor','Dreno','Curativo','Outros']
 
 const pulseiraOpcoes = [
-  { v: 'identificação',         cor: '#bdbdbd', corTexto: '#333' },
-  { v: 'risco de queda',        cor: '#fdd835', corTexto: '#333' },
-  { v: 'alergia',               cor: '#e53935', corTexto: '#fff' },
-  { v: 'precaução',             cor: '#43a047', corTexto: '#fff' },
-  { v: 'preservação de membro', cor: '#e91e8c', corTexto: '#fff' }
+  { v: 'identificação',         cor: '#bdbdbd' },
+  { v: 'risco de queda',        cor: '#fdd835' },
+  { v: 'alergia',               cor: '#e53935' },
+  { v: 'precaução',             cor: '#43a047' },
+  { v: 'preservação de membro', cor: '#e91e8c' }
 ]
 
 // ── Eventos ───────────────────────────────────────────────────────────────
@@ -1400,6 +1400,7 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   border: 2px solid var(--border);
   border-radius: var(--radius);
   padding: 10px 14px;
+  gap: 20px;
   transition: border-color 0.15s, background-color 0.15s;
 }
 
