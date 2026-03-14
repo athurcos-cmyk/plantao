@@ -28,16 +28,6 @@
         </div>
 
         <div class="campo">
-          <label>Nome do paciente</label>
-          <input type="text" v-model="form.nomePaciente" placeholder="Ex: Maria da Silva">
-        </div>
-
-        <div class="campo">
-          <label>Leito</label>
-          <input type="text" v-model="form.leitoPaciente" placeholder="Ex: 4B">
-        </div>
-
-        <div class="campo">
           <label>Sexo <span class="obrigatorio">*</span></label>
           <div class="radio-group">
             <label class="radio-btn">
@@ -109,8 +99,7 @@
             <span>Estado mental alterado</span>
           </label>
           <div v-if="form.mentalAlterado" style="margin-top:8px">
-            <input type="text" v-model="form.mentalDesc" placeholder="Ex: desorientada, agitada, confusa"
-              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none">
+            <input class="campo-inline" type="text" v-model="form.mentalDesc" placeholder="Ex: desorientada, agitada, confusa">
           </div>
         </div>
 
@@ -133,8 +122,7 @@
             </label>
           </div>
           <div v-if="form.deambulacao === 'deambula com auxílio'" style="margin-top:8px">
-            <input type="text" v-model="form.deambulaAuxilio" placeholder="Ex: bengala, andador, cadeira de rodas"
-              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none">
+            <input class="campo-inline" type="text" v-model="form.deambulaAuxilio" placeholder="Ex: bengala, andador, cadeira de rodas">
           </div>
         </div>
 
@@ -158,8 +146,7 @@
           </div>
           <div v-if="form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂'" style="margin-top:8px">
             <div class="input-suffix-wrap">
-              <input type="number" v-model="form.oxigenioLitros" placeholder="2" min="1"
-                style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none;width:100%">
+              <input type="number" v-model="form.oxigenioLitros" placeholder="2" min="1">
               <span class="input-suffix">L/min</span>
             </div>
           </div>
@@ -178,10 +165,8 @@
             </label>
           </div>
           <div v-if="form.acompanhante === 'sim'" style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
-            <input type="text" v-model="form.acompanhanteNome" placeholder="Nome do acompanhante"
-              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none">
-            <input type="text" v-model="form.acompanhanteParentesco" placeholder="Parentesco (ex: esposa, filho, mãe)"
-              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none">
+            <input class="campo-inline" type="text" v-model="form.acompanhanteNome" placeholder="Nome do acompanhante">
+            <input class="campo-inline" type="text" v-model="form.acompanhanteParentesco" placeholder="Parentesco (ex: esposa, filho, mãe)">
           </div>
         </div>
 
@@ -200,13 +185,12 @@
 
         <div class="disp-lista" v-if="form.dispositivos.length > 0">
           <div class="disp-item" v-for="(d, i) in form.dispositivos" :key="i">
-            <span>{{ d }}</span>
-            <button class="btn-icon-sm" @click="removerDisp(i)" title="Remover">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
+            <span class="disp-texto">{{ d }}</span>
+            <div class="disp-acoes">
+              <button class="btn-icon-sm" @click="moverDisp(i, -1)" :disabled="i === 0" title="Mover para cima">▲</button>
+              <button class="btn-icon-sm" @click="moverDisp(i, 1)" :disabled="i === form.dispositivos.length - 1" title="Mover para baixo">▼</button>
+              <button class="btn-icon-sm btn-danger-sm" @click="removerDisp(i)" title="Remover">✕</button>
+            </div>
           </div>
         </div>
         <p v-else style="color:var(--text-muted);margin-bottom:16px;font-size:0.9rem">Nenhum dispositivo adicionado</p>
@@ -235,9 +219,9 @@
               <span>{{ op.l }}</span>
             </label>
           </div>
-          <div v-if="form.evacuacaoOpcao === 'data'" style="margin-top:8px">
-            <input type="date" v-model="form.evacuacaoData"
-              style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none">
+          <div v-if="form.evacuacaoOpcao === 'data'" style="margin-top:10px">
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px">Clique para selecionar a data da evacuação</p>
+            <input type="date" v-model="form.evacuacaoData" class="campo-inline">
           </div>
         </div>
 
@@ -252,8 +236,7 @@
           <div v-if="form.diurese.includes('SVD')" style="margin-top:10px">
             <label style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;font-weight:600;margin-bottom:6px;display:block">Débito da SVD</label>
             <div class="input-suffix-wrap">
-              <input type="number" v-model="form.svdDebito" placeholder="500" min="0"
-                style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;padding:13px 14px;outline:none;width:100%">
+              <input type="number" v-model="form.svdDebito" placeholder="500" min="0">
               <span class="input-suffix">ml</span>
             </div>
           </div>
@@ -265,7 +248,7 @@
         </div>
 
         <div class="campo">
-          <label>Observações adicionais <span style="font-size:0.75rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)">(feridas, curativos etc)</span></label>
+          <label>Apresenta <span style="font-size:0.75rem;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted)">(feridas, lesões, outras obs)</span></label>
           <textarea v-model="form.obsApresenta" rows="2" placeholder="Ex: ferida cirúrgica em cicatrização em abdome..."></textarea>
         </div>
 
@@ -293,21 +276,40 @@
         </div>
       </div>
 
-      <!-- ═══ PREVIEW — Texto gerado ═══ -->
+      <!-- ═══ PREVIEW ═══ -->
       <div v-if="gerado">
         <div class="preview-box">
           <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
+        <!-- Nome e leito do paciente -->
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <div style="flex:2">
+            <label class="label-small">Nome do paciente</label>
+            <input class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
+          </div>
+          <div style="flex:1">
+            <label class="label-small">Leito</label>
+            <input class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
           <button class="btn btn-primary" @click="copiar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
             </svg>
             Copiar texto
           </button>
           <button class="btn btn-secondary" @click="salvar" :disabled="salvando">
             {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
+          </button>
+          <button class="btn btn-secondary" @click="compartilhar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+            Compartilhar
           </button>
           <button class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
           <button class="btn btn-secondary" @click="passo = 5; gerado = false">← Editar</button>
@@ -339,8 +341,7 @@
               <label>Local <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
                 <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID','jugular D','jugular E']" :key="op">
-                  <input type="radio" v-model="modal.d.local" :value="op">
-                  <span>{{ op }}</span>
+                  <input type="radio" v-model="modal.d.local" :value="op"><span>{{ op }}</span>
                 </label>
               </div>
             </div>
@@ -360,14 +361,20 @@
             <div v-if="modal.d.emInfusao">
               <div class="campo">
                 <label>Solução <span class="obrigatorio">*</span></label>
-                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF 0,9% 500ml">
+                <input type="text" v-model="modal.d.solucao" placeholder="Ex: tiamina 100mg + SF0,9% 100ml EV">
               </div>
               <div class="campo">
-                <label>Velocidade <span class="obrigatorio">*</span></label>
+                <label>Velocidade <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
                 <div class="input-suffix-wrap">
                   <input type="number" v-model="modal.d.velocidade" placeholder="21" min="1">
                   <span class="input-suffix">ml/h</span>
                 </div>
+              </div>
+              <div class="campo">
+                <label class="checkbox-label" style="margin-bottom:0">
+                  <input type="checkbox" v-model="modal.d.bic">
+                  <span>Bomba de infusão (BIC)</span>
+                </label>
               </div>
             </div>
           </template>
@@ -377,9 +384,8 @@
             <div class="campo">
               <label>Local <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
-                <label class="radio-btn" v-for="op in ['subclávia D','subclávia E','jugular D','jugular E','femoral D','femoral E']" :key="op">
-                  <input type="radio" v-model="modal.d.local" :value="op">
-                  <span>{{ op }}</span>
+                <label class="radio-btn" v-for="op in locaisCentral" :key="op">
+                  <input type="radio" v-model="modal.d.local" :value="op"><span>{{ op }}</span>
                 </label>
               </div>
             </div>
@@ -387,8 +393,7 @@
               <label>Lúmens <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['mono','duplo','triplo']" :key="op">
-                  <input type="radio" v-model="modal.d.lumens" :value="op">
-                  <span>{{ cap(op) }}</span>
+                  <input type="radio" v-model="modal.d.lumens" :value="op"><span>{{ cap(op) }}</span>
                 </label>
               </div>
             </div>
@@ -407,15 +412,21 @@
             </div>
             <div v-if="modal.d.emInfusao">
               <div class="campo">
-                <label>Solução</label>
-                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF 0,9% 500ml">
+                <label>Solução <span class="obrigatorio">*</span></label>
+                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF0,9% 500ml">
               </div>
               <div class="campo">
-                <label>Velocidade</label>
+                <label>Velocidade <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
                 <div class="input-suffix-wrap">
                   <input type="number" v-model="modal.d.velocidade" placeholder="21" min="1">
                   <span class="input-suffix">ml/h</span>
                 </div>
+              </div>
+              <div class="campo">
+                <label class="checkbox-label" style="margin-bottom:0">
+                  <input type="checkbox" v-model="modal.d.bic">
+                  <span>Bomba de infusão (BIC)</span>
+                </label>
               </div>
             </div>
           </template>
@@ -426,8 +437,7 @@
               <label>Membro <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['MSD','MSE']" :key="op">
-                  <input type="radio" v-model="modal.d.membro" :value="op">
-                  <span>{{ op }}</span>
+                  <input type="radio" v-model="modal.d.membro" :value="op"><span>{{ op }}</span>
                 </label>
               </div>
             </div>
@@ -435,8 +445,7 @@
               <label>Lúmens <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['mono','duplo']" :key="op">
-                  <input type="radio" v-model="modal.d.lumens" :value="op">
-                  <span>{{ cap(op) }}</span>
+                  <input type="radio" v-model="modal.d.lumens" :value="op"><span>{{ cap(op) }}</span>
                 </label>
               </div>
             </div>
@@ -455,29 +464,32 @@
             </div>
             <div v-if="modal.d.emInfusao">
               <div class="campo">
-                <label>Solução</label>
-                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF 0,9% 500ml">
+                <label>Solução <span class="obrigatorio">*</span></label>
+                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF0,9% 500ml">
               </div>
               <div class="campo">
-                <label>Velocidade</label>
+                <label>Velocidade <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
                 <div class="input-suffix-wrap">
                   <input type="number" v-model="modal.d.velocidade" placeholder="21" min="1">
                   <span class="input-suffix">ml/h</span>
                 </div>
               </div>
+              <div class="campo">
+                <label class="checkbox-label" style="margin-bottom:0">
+                  <input type="checkbox" v-model="modal.d.bic">
+                  <span>Bomba de infusão (BIC)</span>
+                </label>
+              </div>
             </div>
           </template>
 
-          <!-- Permcath / Shilley -->
-          <template v-else-if="['Permcath','Shilley'].includes(modal.tipo)">
+          <!-- Permcath -->
+          <template v-else-if="modal.tipo === 'Permcath'">
             <div class="campo">
               <label>Local <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
-                <label class="radio-btn"
-                  v-for="op in (modal.tipo === 'Shilley' ? ['jugular D','jugular E','femoral D','femoral E'] : ['subclávia D','subclávia E','jugular D','jugular E','femoral D','femoral E'])"
-                  :key="op">
-                  <input type="radio" v-model="modal.d.local" :value="op">
-                  <span>{{ op }}</span>
+                <label class="radio-btn" v-for="op in locaisCentral" :key="op">
+                  <input type="radio" v-model="modal.d.local" :value="op"><span>{{ op }}</span>
                 </label>
               </div>
             </div>
@@ -487,11 +499,75 @@
                 <label class="checkbox-label"><input type="checkbox" v-model="modal.d.salinizado"><span>Salinizado</span></label>
                 <label class="checkbox-label"><input type="checkbox" v-model="modal.d.ocluido"><span>Ocluído</span></label>
                 <label class="checkbox-label"><input type="checkbox" v-model="modal.d.datado"><span>Datado</span></label>
+                <label class="checkbox-label"><input type="checkbox" v-model="modal.d.emInfusao"><span>Em infusão</span></label>
               </div>
             </div>
             <div v-if="modal.d.datado" class="campo">
               <label>Data do curativo</label>
               <input type="date" v-model="modal.d.data">
+            </div>
+            <div v-if="modal.d.emInfusao">
+              <div class="campo">
+                <label>Solução <span class="obrigatorio">*</span></label>
+                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF0,9% 500ml">
+              </div>
+              <div class="campo">
+                <label>Velocidade <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
+                <div class="input-suffix-wrap">
+                  <input type="number" v-model="modal.d.velocidade" placeholder="21" min="1">
+                  <span class="input-suffix">ml/h</span>
+                </div>
+              </div>
+              <div class="campo">
+                <label class="checkbox-label" style="margin-bottom:0">
+                  <input type="checkbox" v-model="modal.d.bic">
+                  <span>Bomba de infusão (BIC)</span>
+                </label>
+              </div>
+            </div>
+          </template>
+
+          <!-- Shilley -->
+          <template v-else-if="modal.tipo === 'Shilley'">
+            <div class="campo">
+              <label>Local <span class="obrigatorio">*</span></label>
+              <div class="radio-group vertical">
+                <label class="radio-btn" v-for="op in ['femoral D','femoral E','jugular D','jugular E']" :key="op">
+                  <input type="radio" v-model="modal.d.local" :value="op"><span>{{ op }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="campo">
+              <label>Status</label>
+              <div class="radio-group vertical">
+                <label class="checkbox-label"><input type="checkbox" v-model="modal.d.salinizado"><span>Salinizado</span></label>
+                <label class="checkbox-label"><input type="checkbox" v-model="modal.d.ocluido"><span>Ocluído</span></label>
+                <label class="checkbox-label"><input type="checkbox" v-model="modal.d.datado"><span>Datado</span></label>
+                <label class="checkbox-label"><input type="checkbox" v-model="modal.d.emInfusao"><span>Em infusão</span></label>
+              </div>
+            </div>
+            <div v-if="modal.d.datado" class="campo">
+              <label>Data do curativo</label>
+              <input type="date" v-model="modal.d.data">
+            </div>
+            <div v-if="modal.d.emInfusao">
+              <div class="campo">
+                <label>Solução <span class="obrigatorio">*</span></label>
+                <input type="text" v-model="modal.d.solucao" placeholder="Ex: SF0,9% 500ml">
+              </div>
+              <div class="campo">
+                <label>Velocidade <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
+                <div class="input-suffix-wrap">
+                  <input type="number" v-model="modal.d.velocidade" placeholder="21" min="1">
+                  <span class="input-suffix">ml/h</span>
+                </div>
+              </div>
+              <div class="campo">
+                <label class="checkbox-label" style="margin-bottom:0">
+                  <input type="checkbox" v-model="modal.d.bic">
+                  <span>Bomba de infusão (BIC)</span>
+                </label>
+              </div>
             </div>
           </template>
 
@@ -501,8 +577,7 @@
               <label>Narina <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in [{ v:'D', l:'Direita' },{ v:'E', l:'Esquerda' }]" :key="op.v">
-                  <input type="radio" v-model="modal.d.narina" :value="op.v">
-                  <span>{{ op.l }}</span>
+                  <input type="radio" v-model="modal.d.narina" :value="op.v"><span>{{ op.l }}</span>
                 </label>
               </div>
             </div>
@@ -514,8 +589,7 @@
               <label>Status <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['aberta','fechada']" :key="op">
-                  <input type="radio" v-model="modal.d.status" :value="op">
-                  <span>{{ cap(op) }}</span>
+                  <input type="radio" v-model="modal.d.status" :value="op"><span>{{ cap(op) }}</span>
                 </label>
               </div>
             </div>
@@ -523,8 +597,7 @@
               <label>Dieta enteral <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['sim','não']" :key="op">
-                  <input type="radio" v-model="modal.d.dieta" :value="op">
-                  <span>{{ cap(op) }}</span>
+                  <input type="radio" v-model="modal.d.dieta" :value="op"><span>{{ cap(op) }}</span>
                 </label>
               </div>
             </div>
@@ -543,8 +616,7 @@
               <label>Narina <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in [{ v:'D', l:'Direita' },{ v:'E', l:'Esquerda' }]" :key="op.v">
-                  <input type="radio" v-model="modal.d.narina" :value="op.v">
-                  <span>{{ op.l }}</span>
+                  <input type="radio" v-model="modal.d.narina" :value="op.v"><span>{{ op.l }}</span>
                 </label>
               </div>
             </div>
@@ -556,8 +628,7 @@
               <label>Modo <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
                 <label class="radio-btn" v-for="op in [{ v:'aberta', l:'Aberta' },{ v:'fechada', l:'Fechada' },{ v:'dieta', l:'Recebendo dieta enteral' },{ v:'dren', l:'Em drenagem (frasco coletor)' }]" :key="op.v">
-                  <input type="radio" v-model="modal.d.modo" :value="op.v">
-                  <span>{{ op.l }}</span>
+                  <input type="radio" v-model="modal.d.modo" :value="op.v"><span>{{ op.l }}</span>
                 </label>
               </div>
             </div>
@@ -573,8 +644,7 @@
                 <label>Débito <span class="obrigatorio">*</span></label>
                 <div class="radio-group">
                   <label class="radio-btn" v-for="op in [{ v:'sem', l:'Sem débito' },{ v:'com', l:'Com débito' }]" :key="op.v">
-                    <input type="radio" v-model="modal.d.debito" :value="op.v">
-                    <span>{{ op.l }}</span>
+                    <input type="radio" v-model="modal.d.debito" :value="op.v"><span>{{ op.l }}</span>
                   </label>
                 </div>
                 <div v-if="modal.d.debito === 'com'" style="margin-top:8px">
@@ -584,8 +654,8 @@
                   </div>
                 </div>
               </div>
-              <div class="campo">
-                <label>Aspecto <span class="obrigatorio">*</span></label>
+              <div v-if="modal.d.debito === 'com'" class="campo">
+                <label>Aspecto</label>
                 <input type="text" v-model="modal.d.aspecto" placeholder="Ex: amarelado, bilioso, esverdeado">
               </div>
             </div>
@@ -597,8 +667,7 @@
               <label>Membro <span class="obrigatorio">*</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID']" :key="op">
-                  <input type="radio" v-model="modal.d.membro" :value="op">
-                  <span>{{ op }}</span>
+                  <input type="radio" v-model="modal.d.membro" :value="op"><span>{{ op }}</span>
                 </label>
               </div>
             </div>
@@ -606,8 +675,7 @@
               <label>Tipos <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
                 <label class="checkbox-label" v-for="op in ['identificação','risco de queda','alergia','precaução','preservação de membro']" :key="op">
-                  <input type="checkbox" :value="op" v-model="modal.d.tipos">
-                  <span>{{ cap(op) }}</span>
+                  <input type="checkbox" :value="op" v-model="modal.d.tipos"><span>{{ cap(op) }}</span>
                 </label>
               </div>
             </div>
@@ -619,8 +687,7 @@
               <label>Tipo <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
                 <label class="radio-btn" v-for="op in ['monitor multiparamétrico','oxímetro de pulso','monitor cardíaco']" :key="op">
-                  <input type="radio" v-model="modal.d.tipoMonitor" :value="op">
-                  <span>{{ cap(op) }}</span>
+                  <input type="radio" v-model="modal.d.tipoMonitor" :value="op"><span>{{ cap(op) }}</span>
                 </label>
               </div>
             </div>
@@ -644,7 +711,7 @@
               </div>
             </div>
             <div class="campo">
-              <label>Aspecto / coloração <span class="obrigatorio">*</span></label>
+              <label>Aspecto / coloração</label>
               <input type="text" v-model="modal.d.drenoAspecto" placeholder="Ex: sanguinolento, seroso, bilioso">
             </div>
             <div class="campo">
@@ -653,12 +720,28 @@
                 <span>Possui selo d'água</span>
               </label>
               <div v-if="modal.d.seloAgua" style="margin-top:8px">
-                <label style="font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:6px">Débito no selo d'água</label>
+                <label class="label-small">Débito no selo d'água</label>
                 <div class="input-suffix-wrap">
                   <input type="number" v-model="modal.d.seloDebito" placeholder="100" min="0">
                   <span class="input-suffix">ml</span>
                 </div>
               </div>
+            </div>
+          </template>
+
+          <!-- Curativo -->
+          <template v-else-if="modal.tipo === 'Curativo'">
+            <div class="campo">
+              <label>Membro / região <span class="obrigatorio">*</span></label>
+              <div class="radio-group">
+                <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID']" :key="op">
+                  <input type="radio" v-model="modal.d.membroCurativo" :value="op"><span>{{ op }}</span>
+                </label>
+              </div>
+            </div>
+            <div class="campo">
+              <label>Local específico <span class="obrigatorio">*</span></label>
+              <input type="text" v-model="modal.d.localCurativo" placeholder="Ex: face anterior do antebraço, tornozelo, abdome...">
             </div>
           </template>
 
@@ -690,53 +773,40 @@ import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 
 const router = useRouter()
-const store = useAnotacoesStore()
+const store  = useAnotacoesStore()
 
-// ── Estado da navegação ─────────────────────────────
-const passo = ref(1)
-const gerado = ref(false)
+const passo      = ref(1)
+const gerado     = ref(false)
 const textoGerado = ref('')
-const erro = ref('')
-const salvando = ref(false)
+const erro       = ref('')
+const salvando   = ref(false)
 const feedbackMsg = ref('')
 
-// ── Formulário ──────────────────────────────────────
 const form = reactive({
   // Bloco 1
-  horario: '',
-  nomePaciente: '',
-  leitoPaciente: '',
-  sexo: 'F',
-  posicaoCama: '',
-  rodas: '',
-  grades: '',
-  decubito: '',
+  horario: '', sexo: 'F',
+  posicaoCama: '', rodas: '', grades: '', decubito: '',
   // Bloco 2
-  mentalAlterado: false,
-  mentalDesc: '',
-  colaboracao: '',
-  deambulacao: '',
-  deambulaAuxilio: '',
-  respPadrao: '',
-  respiracao: '',
-  oxigenioLitros: '',
-  acompanhante: '',
-  acompanhanteNome: '',
-  acompanhanteParentesco: '',
+  mentalAlterado: false, mentalDesc: '',
+  colaboracao: '', deambulacao: '', deambulaAuxilio: '',
+  respPadrao: '', respiracao: '', oxigenioLitros: '',
+  acompanhante: '', acompanhanteNome: '', acompanhanteParentesco: '',
   // Bloco 3
   dispositivos: [],
   // Bloco 4
-  evacuacaoOpcao: '',
-  evacuacaoData: '',
-  diurese: [],
-  svdDebito: '',
-  queixas: '',
-  obsApresenta: '',
+  evacuacaoOpcao: '', evacuacaoData: '',
+  diurese: [], svdDebito: '',
+  queixas: '', obsApresenta: '',
   // Bloco 5
-  fechamento: ''
+  fechamento: '',
+  // Preview
+  nomePaciente: '', leitoPaciente: ''
 })
 
-// ── Opções dependentes do sexo ──────────────────────
+// ── Locais centrais (ordem alfabética, padrão para CVC/Permcath) ─────────
+const locaisCentral = ['femoral D','femoral E','jugular D','jugular E','subclávia D','subclávia E']
+
+// ── Opções dependentes do sexo ────────────────────────────────────────────
 const colaboracaoOpcoes = computed(() => {
   const m = form.sexo === 'M'
   return [
@@ -744,8 +814,7 @@ const colaboracaoOpcoes = computed(() => {
       label: m ? 'Colaborativo' : 'Colaborativa' },
     { value: m ? 'não sendo colaborativo com os cuidados' : 'não sendo colaborativa com os cuidados',
       label: m ? 'Não colaborativo' : 'Não colaborativa' },
-    { value: 'inconsciente / sem resposta a estímulos',
-      label: 'Inconsciente' }
+    { value: 'inconsciente / sem resposta a estímulos', label: 'Inconsciente' }
   ]
 })
 
@@ -772,14 +841,13 @@ const respPadraoOpcoes = computed(() => {
   ]
 })
 
-// Ao trocar sexo, limpa opções que dependem dele
 watch(() => form.sexo, () => {
   form.colaboracao = ''
   form.deambulacao = ''
-  form.respPadrao = ''
+  form.respPadrao  = ''
 })
 
-// ── Opções estáticas ────────────────────────────────
+// ── Opções estáticas ──────────────────────────────────────────────────────
 const evacuacaoOpcoes = [
   { v: 'hoje',         l: 'Hoje' },
   { v: 'ontem',        l: 'Ontem' },
@@ -796,9 +864,9 @@ const diureseOpcoes = [
   { v: 'não avaliado', l: 'Não avaliado' }
 ]
 
-const tiposDisp = ['AVP', 'CVC', 'PICC', 'Permcath', 'Shilley', 'SNE', 'SNG', 'Pulseira', 'Monitor', 'Dreno', 'Outros']
+const tiposDisp = ['AVP','CVC','PICC','Permcath','Shilley','SNE','SNG','Pulseira','Monitor','Dreno','Curativo','Outros']
 
-// ── Eventos ─────────────────────────────────────────
+// ── Eventos ───────────────────────────────────────────────────────────────
 function onRespChange() {
   if (form.respiracao === 'ventilação mecânica') form.respPadrao = ''
   form.oxigenioLitros = ''
@@ -810,9 +878,9 @@ function onDiureseChange() {
   }
 }
 
-// ── Navegação ────────────────────────────────────────
+// ── Navegação ─────────────────────────────────────────────────────────────
 function voltarOuSair() {
-  if (gerado.value) { gerado.value = false; passo.value = 5; return }
+  if (gerado.value)   { gerado.value = false; passo.value = 5; return }
   if (passo.value > 1) { passo.value--; return }
   router.back()
 }
@@ -821,24 +889,23 @@ function avancar() {
   erro.value = ''
   if (passo.value === 1) {
     if (!form.horario)     return (erro.value = 'Informe o horário')
-    if (!form.sexo)        return (erro.value = 'Selecione o sexo')
     if (!form.posicaoCama) return (erro.value = 'Selecione a posição da cama')
     if (!form.rodas)       return (erro.value = 'Selecione o estado das rodas')
     if (!form.grades)      return (erro.value = 'Selecione o estado das grades')
     if (!form.decubito)    return (erro.value = 'Selecione o decúbito')
     passo.value = 2
   } else if (passo.value === 2) {
-    if (!form.colaboracao) return (erro.value = 'Selecione a colaboração')
-    if (!form.deambulacao) return (erro.value = 'Selecione a deambulação')
+    if (!form.colaboracao)  return (erro.value = 'Selecione a colaboração')
+    if (!form.deambulacao)  return (erro.value = 'Selecione a deambulação')
     if (form.deambulacao === 'deambula com auxílio' && !form.deambulaAuxilio)
       return (erro.value = 'Informe com qual auxílio deambula')
-    if (!form.respiracao)  return (erro.value = 'Selecione a respiração')
+    if (!form.respiracao)   return (erro.value = 'Selecione a respiração')
     if ((form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂') && !form.oxigenioLitros)
       return (erro.value = 'Informe os litros por minuto')
     if (!form.acompanhante) return (erro.value = 'Selecione se há acompanhante')
     if (form.acompanhante === 'sim') {
-      if (!form.acompanhanteNome)         return (erro.value = 'Informe o nome do acompanhante')
-      if (!form.acompanhanteParentesco)   return (erro.value = 'Informe o parentesco')
+      if (!form.acompanhanteNome)       return (erro.value = 'Informe o nome do acompanhante')
+      if (!form.acompanhanteParentesco) return (erro.value = 'Informe o parentesco')
     }
     passo.value = 3
   } else if (passo.value === 4) {
@@ -856,8 +923,7 @@ function avancar() {
 function limparBloco() {
   erro.value = ''
   if (passo.value === 1) {
-    Object.assign(form, { horario:'', nomePaciente:'', leitoPaciente:'', sexo:'F',
-      posicaoCama:'', rodas:'', grades:'', decubito:'' })
+    Object.assign(form, { horario:'', sexo:'F', posicaoCama:'', rodas:'', grades:'', decubito:'' })
   } else if (passo.value === 2) {
     Object.assign(form, { mentalAlterado:false, mentalDesc:'', colaboracao:'',
       deambulacao:'', deambulaAuxilio:'', respPadrao:'', respiracao:'',
@@ -868,23 +934,26 @@ function limparBloco() {
   }
 }
 
-// ── Dispositivos ─────────────────────────────────────
+// ── Dispositivos ──────────────────────────────────────────────────────────
 const modal = reactive({ aberto: false, tipo: '', d: {}, erro: '' })
 
 function abrirModal(tipo) {
-  modal.tipo = tipo
-  modal.d = { tipos: [] }
-  modal.erro = ''
+  modal.tipo  = tipo
+  modal.d     = { tipos: [] }
+  modal.erro  = ''
   modal.aberto = true
 }
 
-function fecharModal() {
-  modal.aberto = false
+function fecharModal() { modal.aberto = false }
+
+function moverDisp(i, dir) {
+  const arr = form.dispositivos
+  const j   = i + dir
+  if (j < 0 || j >= arr.length) return
+  ;[arr[i], arr[j]] = [arr[j], arr[i]]
 }
 
-function removerDisp(i) {
-  form.dispositivos.splice(i, 1)
-}
+function removerDisp(i) { form.dispositivos.splice(i, 1) }
 
 function confirmarDisp() {
   modal.erro = ''
@@ -894,10 +963,18 @@ function confirmarDisp() {
   fecharModal()
 }
 
+function infusaoTexto(d) {
+  if (!d.solucao) return ''
+  let t = ` recebendo ${d.solucao}`
+  if (d.bic) t += ' em BIC'
+  if (d.velocidade) t += ` a ${d.velocidade}ml/h`
+  return t
+}
+
 function buildDispTexto(tipo, d) {
-  const err = (msg) => { modal.erro = msg; return null }
-  const fmt = (s) => { if (!s) return '?/?'; const [, m, dia] = s.split('-'); return `${dia}/${m}` }
-  const status = (d) => {
+  const err    = (msg) => { modal.erro = msg; return null }
+  const fmt    = (s)   => { if (!s) return '?/?'; const [, m, dia] = s.split('-'); return `${dia}/${m}` }
+  const status = (d)   => {
     const p = []
     if (d.salinizado) p.push('salinizado')
     if (d.ocluido)    p.push('ocluído')
@@ -908,57 +985,63 @@ function buildDispTexto(tipo, d) {
   switch (tipo) {
     case 'AVP': {
       if (!d.local) return err('Selecione o local')
-      if (d.emInfusao) {
-        if (!d.solucao)   return err('Informe a solução')
-        if (!d.velocidade) return err('Informe a velocidade')
-        return `AVP em ${d.local}, recebendo ${d.solucao} a ${d.velocidade}ml/h${status(d)}${datado(d)}`
-      }
-      return `AVP em ${d.local}${status(d)}${datado(d)}`
+      if (d.emInfusao && !d.solucao) return err('Informe a solução')
+      let t = `AVP em ${d.local}`
+      if (d.emInfusao) t += ',' + infusaoTexto(d)
+      t += status(d) + datado(d)
+      return t
     }
     case 'CVC': {
       if (!d.local)   return err('Selecione o local')
       if (!d.lumens)  return err('Selecione o número de lúmens')
-      let t = `CVC ${d.lumens} lúmen em ${d.local}${status(d)}${datado(d)}`
-      if (d.emInfusao && d.solucao) t += `, recebendo ${d.solucao}${d.velocidade ? ' a ' + d.velocidade + 'ml/h' : ''}`
+      if (d.emInfusao && !d.solucao) return err('Informe a solução')
+      let t = `CVC ${d.lumens} lúmen em ${d.local}`
+      if (d.emInfusao) t += ',' + infusaoTexto(d)
+      t += status(d) + datado(d)
       return t
     }
     case 'PICC': {
       if (!d.membro)  return err('Selecione o membro')
       if (!d.lumens)  return err('Selecione o número de lúmens')
-      let t = `PICC ${d.lumens} lúmen em ${d.membro}${status(d)}${datado(d)}`
-      if (d.emInfusao && d.solucao) t += `, recebendo ${d.solucao}${d.velocidade ? ' a ' + d.velocidade + 'ml/h' : ''}`
+      if (d.emInfusao && !d.solucao) return err('Informe a solução')
+      let t = `PICC ${d.lumens} lúmen em ${d.membro}`
+      if (d.emInfusao) t += ',' + infusaoTexto(d)
+      t += status(d) + datado(d)
       return t
     }
     case 'Permcath':
     case 'Shilley': {
       if (!d.local) return err('Selecione o local')
-      return `${tipo} em ${d.local}${status(d)}${datado(d)}`
+      if (d.emInfusao && !d.solucao) return err('Informe a solução')
+      let t = `${tipo} em ${d.local}`
+      if (d.emInfusao) t += ',' + infusaoTexto(d)
+      t += status(d) + datado(d)
+      return t
     }
     case 'SNE': {
-      if (!d.narina)  return err('Selecione a narina')
+      if (!d.narina)   return err('Selecione a narina')
       if (!d.marcacao) return err('Informe a marcação')
-      if (!d.status)  return err('Selecione o status')
-      if (!d.dieta)   return err('Selecione se há dieta enteral')
+      if (!d.status)   return err('Selecione o status')
+      if (!d.dieta)    return err('Selecione se há dieta enteral')
       const nar = d.narina === 'D' ? 'direita' : 'esquerda'
       let t = `SNE em narina ${nar}, marcação ${d.marcacao}cm, ${d.status}`
       if (d.dieta === 'sim') t += `, recebendo dieta enteral a ${d.velocidadeDieta || '?'}ml/h`
       return t
     }
     case 'SNG': {
-      if (!d.narina)  return err('Selecione a narina')
+      if (!d.narina)   return err('Selecione a narina')
       if (!d.marcacao) return err('Informe a marcação')
-      if (!d.modo)    return err('Selecione o modo')
+      if (!d.modo)     return err('Selecione o modo')
       const nar = d.narina === 'D' ? 'direita' : 'esquerda'
       let t = `SNG em narina ${nar}, marcação ${d.marcacao}cm`
       if (d.modo === 'aberta')  t += ', aberta'
       else if (d.modo === 'fechada') t += ', fechada'
       else if (d.modo === 'dieta') t += `, recebendo dieta enteral a ${d.velocidadeDieta || '?'}ml/h`
       else if (d.modo === 'dren') {
-        if (!d.debito)  return err('Selecione o débito')
-        if (!d.aspecto) return err('Informe o aspecto')
-        t += `, em drenagem`
+        if (!d.debito) return err('Selecione o débito')
+        t += ', em drenagem'
         t += d.debito === 'com' ? `, com débito de ${d.debitoVal || '?'}ml` : ', sem débito'
-        t += `, aspecto ${d.aspecto}`
+        if (d.debito === 'com' && d.aspecto) t += `, aspecto ${d.aspecto}`
       }
       return t
     }
@@ -972,13 +1055,18 @@ function buildDispTexto(tipo, d) {
       return `em uso de ${d.tipoMonitor}`
     }
     case 'Dreno': {
-      if (!d.drenoTipo)    return err('Informe o tipo do dreno')
-      if (!d.drenoLocal)   return err('Informe a localização')
-      if (!d.drenoAspecto) return err('Informe o aspecto')
-      let t = `dreno de ${d.drenoTipo} em ${d.drenoLocal}, aspecto ${d.drenoAspecto}`
-      if (d.drenoDebito) t += `, débito de ${d.drenoDebito}ml`
-      if (d.seloAgua) t += `, com selo d'água${d.seloDebito ? ' (' + d.seloDebito + 'ml)' : ''}`
+      if (!d.drenoTipo)  return err('Informe o tipo do dreno')
+      if (!d.drenoLocal) return err('Informe a localização')
+      let t = `dreno de ${d.drenoTipo} em ${d.drenoLocal}`
+      if (d.drenoAspecto) t += `, aspecto ${d.drenoAspecto}`
+      if (d.drenoDebito)  t += `, débito de ${d.drenoDebito}ml`
+      if (d.seloAgua)     t += `, com selo d'água${d.seloDebito ? ' (' + d.seloDebito + 'ml)' : ''}`
       return t
+    }
+    case 'Curativo': {
+      if (!d.localCurativo) return err('Informe o local do curativo')
+      const regiao = d.membroCurativo ? `em ${d.membroCurativo} — ` : ''
+      return `curativo ${regiao}${d.localCurativo}`
     }
     default: {
       if (!d.descricao) return err('Descreva o dispositivo')
@@ -987,7 +1075,7 @@ function buildDispTexto(tipo, d) {
   }
 }
 
-// ── Fechamento automático ────────────────────────────
+// ── Fechamento automático ─────────────────────────────────────────────────
 function atualizarFechamento() {
   const p = form.posicaoCama || '___'
   const r = form.rodas       || '___'
@@ -996,7 +1084,7 @@ function atualizarFechamento() {
   form.fechamento = `Mantenho cama ${p}, rodas ${r}, grades ${g} e decúbito ${d}, campainha próxima e oriento a chamar sempre que necessário.`
 }
 
-// ── Geração de texto ─────────────────────────────────
+// ── Geração de texto ──────────────────────────────────────────────────────
 function gerar() {
   erro.value = ''
   if (!form.fechamento) atualizarFechamento()
@@ -1008,23 +1096,18 @@ function gerarTexto() {
   const parts = []
   const h = form.horario.replace(':', 'h')
 
-  // Bloco 1
   parts.push(`${h} – Recebo plantão com paciente em seu leito com cama ${form.posicaoCama}, rodas ${form.rodas}, grades ${form.grades} e decúbito ${form.decubito}.`)
 
-  // Bloco 2 — mental
-  if (form.mentalAlterado && form.mentalDesc) {
+  if (form.mentalAlterado && form.mentalDesc)
     parts.push(`Aparentemente ${form.mentalDesc}.`)
-  }
 
-  // Bloco 2 — apresenta
   const ap = []
   ap.push(form.colaboracao)
 
-  if (form.deambulacao === 'deambula com auxílio') {
+  if (form.deambulacao === 'deambula com auxílio')
     ap.push(`deambula com auxílio de ${form.deambulaAuxilio}`)
-  } else if (form.deambulacao !== 'não deambula') {
+  else if (form.deambulacao !== 'não deambula')
     ap.push(form.deambulacao)
-  }
 
   const rv = form.respPadrao
   if (form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂') {
@@ -1034,7 +1117,7 @@ function gerarTexto() {
     const eup = rv === 'eupneica' || rv === 'eupneico'
     ap.push(rv && !eup ? `${rv} em ar ambiente` : 'em ar ambiente')
   } else {
-    ap.push(form.respiracao) // ventilação mecânica
+    ap.push(form.respiracao)
   }
 
   if (form.acompanhante === 'sim') {
@@ -1045,22 +1128,19 @@ function gerarTexto() {
   const apText = ap.join(', ')
   parts.push(apText.charAt(0).toUpperCase() + apText.slice(1) + '.')
 
-  // Bloco 3 — dispositivos
   if (form.dispositivos.length > 0) {
     const dt = form.dispositivos.map((d, i) => i === 0 ? `Mantém ${d}` : d).join('; ')
     parts.push(dt + '.')
   }
 
-  // Bloco 4 — obs apresenta
   if (form.obsApresenta) {
     const o = form.obsApresenta
     parts.push(`Paciente apresenta ${o.charAt(0).toLowerCase() + o.slice(1)}.`)
   }
 
-  // Bloco 4 — refere
   const ref = []
-  if      (form.evacuacaoOpcao === 'hoje')   ref.push('Refere última evacuação hoje')
-  else if (form.evacuacaoOpcao === 'ontem')  ref.push('Refere última evacuação ontem')
+  if      (form.evacuacaoOpcao === 'hoje')  ref.push('Refere última evacuação hoje')
+  else if (form.evacuacaoOpcao === 'ontem') ref.push('Refere última evacuação ontem')
   else if (form.evacuacaoOpcao === 'data' && form.evacuacaoData) {
     const [, m, d] = form.evacuacaoData.split('-')
     ref.push(`Refere última evacuação em ${d}/${m}`)
@@ -1077,9 +1157,9 @@ function gerarTexto() {
       if (d === 'fralda')   return 'diurese em fralda'
       return d
     })
-    const comp = dt.filter(t => t.startsWith('diurese') || t.startsWith('SVD'))
+    const comp    = dt.filter(t => t.startsWith('diurese') || t.startsWith('SVD'))
     const simples = dt.filter(t => !t.startsWith('diurese') && !t.startsWith('SVD'))
-    if (comp.length)    ref.push(...comp)
+    if (comp.length) ref.push(...comp)
     if (simples.length === 1) ref.push(`diurese em ${simples[0]}`)
     else if (simples.length > 1) {
       const last = simples[simples.length - 1]
@@ -1093,23 +1173,17 @@ function gerarTexto() {
   }
 
   parts.push(ref.join(', ') + '.')
-
-  // Bloco 5 — fechamento
   parts.push(form.fechamento)
 
   return parts.join(' ')
 }
 
-// ── Ações finais ─────────────────────────────────────
+// ── Ações ─────────────────────────────────────────────────────────────────
 async function salvar() {
   salvando.value = true
   try {
-    await store.salvar({
-      tipo: 'inicial',
-      texto: textoGerado.value,
-      nome: form.nomePaciente,
-      leito: form.leitoPaciente
-    })
+    await store.salvar({ tipo: 'inicial', texto: textoGerado.value,
+      nome: form.nomePaciente, leito: form.leitoPaciente })
     mostrarFeedback('✓ Salvo no histórico!')
   } catch {
     mostrarFeedback('Erro ao salvar. Tente novamente.')
@@ -1124,17 +1198,21 @@ function copiar() {
     .catch(() => mostrarFeedback('Erro ao copiar'))
 }
 
+function compartilhar() {
+  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoGerado.value)}`
+  window.open(url, '_blank')
+}
+
 function novaAnotacao() {
   Object.assign(form, {
-    horario:'', nomePaciente:'', leitoPaciente:'', sexo:'F',
-    posicaoCama:'', rodas:'', grades:'', decubito:'',
-    mentalAlterado:false, mentalDesc:'', colaboracao:'',
-    deambulacao:'', deambulaAuxilio:'', respPadrao:'',
-    respiracao:'', oxigenioLitros:'', acompanhante:'',
-    acompanhanteNome:'', acompanhanteParentesco:'',
+    horario:'', sexo:'F', posicaoCama:'', rodas:'', grades:'', decubito:'',
+    mentalAlterado:false, mentalDesc:'', colaboracao:'', deambulacao:'',
+    deambulaAuxilio:'', respPadrao:'', respiracao:'', oxigenioLitros:'',
+    acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'',
     dispositivos:[],
     evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'',
-    queixas:'', obsApresenta:'', fechamento:''
+    queixas:'', obsApresenta:'', fechamento:'',
+    nomePaciente:'', leitoPaciente:''
   })
   passo.value = 1
   gerado.value = false
@@ -1147,12 +1225,10 @@ function mostrarFeedback(msg) {
   setTimeout(() => (feedbackMsg.value = ''), 3000)
 }
 
-// ── Utilitários ──────────────────────────────────────
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 </script>
 
 <style scoped>
-/* Barra de progresso */
 .progress-wrap {
   position: relative;
   height: 4px;
@@ -1173,8 +1249,6 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
-/* Título do bloco */
 .bloco-titulo {
   font-size: 1.1rem;
   font-weight: 700;
@@ -1183,8 +1257,6 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
-
-/* Navegação entre blocos */
 .bloco-nav {
   display: flex;
   gap: 10px;
@@ -1193,20 +1265,35 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 }
 .bloco-nav .btn-primary { flex: 1 }
 
-/* Input suffix */
+/* Input genérico fora de .campo */
+.campo-inline {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 13px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+.campo-inline:focus { border-color: var(--blue); }
+
 .input-suffix-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
 .input-suffix-wrap input {
-  padding-right: 52px !important;
+  padding-right: 52px;
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text);
   font-size: 1rem;
-  padding: 13px 14px;
+  padding: 13px 52px 13px 14px;
   outline: none;
   width: 100%;
   font-family: inherit;
@@ -1221,7 +1308,16 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   pointer-events: none;
 }
 
-/* btn-icon (header) */
+.label-small {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
 .btn-icon {
   background: none;
   border: none;
@@ -1235,7 +1331,7 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 }
 .btn-icon:active { background: var(--bg-hover); }
 
-/* Dispositivos lista */
+/* Dispositivos */
 .disp-lista {
   display: flex;
   flex-direction: column;
@@ -1245,31 +1341,31 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 .disp-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 10px 14px;
-  font-size: 0.9rem;
+  padding: 10px 12px;
+  font-size: 0.88rem;
   color: var(--text-dim);
 }
-.disp-item span { flex: 1 }
+.disp-texto { flex: 1; line-height: 1.4 }
+.disp-acoes { display: flex; gap: 4px; flex-shrink: 0 }
 .btn-icon-sm {
-  background: none;
-  border: none;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px;
+  padding: 4px 7px;
   border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  font-size: 0.7rem;
+  line-height: 1;
+  transition: all 0.15s;
 }
-.btn-icon-sm:active { color: var(--danger); }
+.btn-icon-sm:disabled { opacity: 0.3; cursor: default }
+.btn-icon-sm:not(:disabled):active { background: var(--bg-hover) }
+.btn-danger-sm:not(:disabled):active { color: var(--danger); border-color: var(--danger) }
 
-/* Grid de tipos de dispositivo */
 .disp-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1318,16 +1414,8 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   padding: 16px 20px 12px;
   border-bottom: 1px solid var(--border);
 }
-.modal-header h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text);
-}
-.modal-body {
-  overflow-y: auto;
-  padding: 16px 20px;
-  flex: 1;
-}
+.modal-header h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.modal-body { overflow-y: auto; padding: 16px 20px; flex: 1 }
 .modal-footer {
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
   display: flex;
@@ -1342,8 +1430,6 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   border-radius: var(--radius);
   padding: 18px;
 }
-
-/* Feedback */
 .feedback-msg {
   text-align: center;
   font-size: 0.9rem;
