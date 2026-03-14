@@ -1192,21 +1192,23 @@ function gerarTexto() {
   if (form.diurese.includes('não avaliado')) {
     ref.push('diurese não avaliada')
   } else {
-    const dt = form.diurese.map(d => {
-      if (d === 'SVD')      return `SVD com débito presente de ${form.svdDebito}ml`
-      if (d === 'banheiro') return 'diurese espontânea ao banheiro'
-      if (d === 'papagaio') return 'diurese espontânea em uso de papagaio'
-      if (d === 'comadre')  return 'diurese espontânea em uso de comadre'
-      if (d === 'fralda')   return 'diurese em fralda'
-      return d
-    })
-    const comp    = dt.filter(t => t.startsWith('diurese') || t.startsWith('SVD'))
-    const simples = dt.filter(t => !t.startsWith('diurese') && !t.startsWith('SVD'))
-    if (comp.length) ref.push(...comp)
-    if (simples.length === 1) ref.push(`diurese em ${simples[0]}`)
-    else if (simples.length > 1) {
-      const last = simples[simples.length - 1]
-      ref.push(`diurese em ${simples.slice(0, -1).join(', ')} e ${last}`)
+    // SVD
+    if (form.diurese.includes('SVD')) {
+      ref.push(`SVD com débito presente de ${form.svdDebito}ml`)
+    }
+    // Espontâneas agrupadas (banheiro, papagaio, comadre)
+    const espMap = { banheiro: 'ao banheiro', papagaio: 'em uso de papagaio', comadre: 'em uso de comadre' }
+    const espSel = ['banheiro', 'papagaio', 'comadre'].filter(d => form.diurese.includes(d))
+    if (espSel.length === 1) {
+      ref.push(`diurese espontânea ${espMap[espSel[0]]}`)
+    } else if (espSel.length > 1) {
+      const partes = espSel.map(d => espMap[d])
+      const last = partes[partes.length - 1]
+      ref.push(`diurese espontânea ${partes.slice(0, -1).join(', ')} e ${last}`)
+    }
+    // Fralda
+    if (form.diurese.includes('fralda')) {
+      ref.push('diurese em fralda')
     }
   }
 
