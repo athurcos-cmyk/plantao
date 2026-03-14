@@ -6,7 +6,14 @@
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <h1>Anotação Inicial</h1>
+      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
+          <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
+          <path d="M9 17c-2-1-3-2-3-3s2-2 6-2 6 1 6 2-1 2-3 3"/>
+        </svg>
+        <span>Plantão</span>
+      </button>
       <div style="width:34px"/>
     </header>
 
@@ -184,7 +191,13 @@
         <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px">Adicione os dispositivos em uso</p>
 
         <div class="disp-lista" v-if="form.dispositivos.length > 0">
-          <div class="disp-item" v-for="(d, i) in form.dispositivos" :key="i">
+          <div class="disp-item"
+            v-for="(d, i) in form.dispositivos" :key="i"
+            draggable="true"
+            @dragstart="onDragStart(i)"
+            @dragover.prevent="onDragOver(i)"
+            @drop.prevent="onDrop(i)"
+            :class="{ 'drag-over': dragOverIdx === i && dragIdx !== i }">
             <span class="disp-texto">{{ d }}</span>
             <div class="disp-acoes">
               <button class="btn-icon-sm" @click="moverDisp(i, -1)" :disabled="i === 0" title="Mover para cima">▲</button>
@@ -674,8 +687,13 @@
             <div class="campo">
               <label>Tipos <span class="obrigatorio">*</span></label>
               <div class="radio-group vertical">
-                <label class="checkbox-label" v-for="op in ['identificação','risco de queda','alergia','precaução','preservação de membro']" :key="op">
-                  <input type="checkbox" :value="op" v-model="modal.d.tipos"><span>{{ cap(op) }}</span>
+                <label
+                  class="checkbox-label pulseira-label"
+                  v-for="op in pulseiraOpcoes" :key="op.v"
+                  :style="modal.d.tipos.includes(op.v) ? { borderColor: op.cor, backgroundColor: op.cor + '20', color: op.corTexto || '#fff' } : {}"
+                >
+                  <input type="checkbox" :value="op.v" v-model="modal.d.tipos">
+                  <span>{{ cap(op.v) }}</span>
                 </label>
               </div>
             </div>
@@ -732,15 +750,18 @@
           <!-- Curativo -->
           <template v-else-if="modal.tipo === 'Curativo'">
             <div class="campo">
-              <label>Membro / região <span class="obrigatorio">*</span></label>
+              <label>Membro / região <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
               <div class="radio-group">
                 <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID']" :key="op">
-                  <input type="radio" v-model="modal.d.membroCurativo" :value="op"><span>{{ op }}</span>
+                  <input type="radio"
+                    :checked="modal.d.membroCurativo === op"
+                    @click="modal.d.membroCurativo = modal.d.membroCurativo === op ? '' : op">
+                  <span>{{ op }}</span>
                 </label>
               </div>
             </div>
             <div class="campo">
-              <label>Local específico <span class="obrigatorio">*</span></label>
+              <label>Local / descrição <span class="obrigatorio">*</span></label>
               <input type="text" v-model="modal.d.localCurativo" placeholder="Ex: face anterior do antebraço, tornozelo, abdome...">
             </div>
           </template>
@@ -768,7 +789,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 
@@ -779,8 +800,13 @@ const passo      = ref(1)
 const gerado     = ref(false)
 const textoGerado = ref('')
 const erro       = ref('')
-const salvando   = ref(false)
+const salvando    = ref(false)
 const feedbackMsg = ref('')
+const dragIdx     = ref(null)
+const dragOverIdx = ref(null)
+
+// Scroll para o topo ao trocar de bloco
+watch(passo, () => { nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' })) })
 
 const form = reactive({
   // Bloco 1
@@ -865,6 +891,14 @@ const diureseOpcoes = [
 ]
 
 const tiposDisp = ['AVP','CVC','PICC','Permcath','Shilley','SNE','SNG','Pulseira','Monitor','Dreno','Curativo','Outros']
+
+const pulseiraOpcoes = [
+  { v: 'identificação',         cor: '#bdbdbd', corTexto: '#333' },
+  { v: 'risco de queda',        cor: '#fdd835', corTexto: '#333' },
+  { v: 'alergia',               cor: '#e53935', corTexto: '#fff' },
+  { v: 'precaução',             cor: '#43a047', corTexto: '#fff' },
+  { v: 'preservação de membro', cor: '#e91e8c', corTexto: '#fff' }
+]
 
 // ── Eventos ───────────────────────────────────────────────────────────────
 function onRespChange() {
@@ -953,7 +987,16 @@ function moverDisp(i, dir) {
   ;[arr[i], arr[j]] = [arr[j], arr[i]]
 }
 
-function removerDisp(i) { form.dispositivos.splice(i, 1) }
+function onDragStart(i) { dragIdx.value = i }
+function onDragOver(i)  { dragOverIdx.value = i }
+function onDrop(i) {
+  if (dragIdx.value === null || dragIdx.value === i) { dragIdx.value = null; dragOverIdx.value = null; return }
+  const arr  = form.dispositivos
+  const item = arr.splice(dragIdx.value, 1)[0]
+  arr.splice(i, 0, item)
+  dragIdx.value = null
+  dragOverIdx.value = null
+}
 
 function confirmarDisp() {
   modal.erro = ''
@@ -1330,6 +1373,35 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
   justify-content: center;
 }
 .btn-icon:active { background: var(--bg-hover); }
+
+.btn-home-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.btn-home-logo:active { background: var(--bg-hover); }
+
+.drag-over {
+  border-color: var(--blue) !important;
+  background: rgba(41,98,255,0.08) !important;
+}
+
+.pulseira-label {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  transition: border-color 0.15s, background-color 0.15s;
+}
 
 /* Dispositivos */
 .disp-lista {

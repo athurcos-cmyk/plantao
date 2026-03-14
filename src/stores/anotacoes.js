@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
+import { ref as dbRef, push, onValue, off, remove, update } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
 export const useAnotacoesStore = defineStore('anotacoes', () => {
@@ -39,5 +39,10 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     await remove(dbRef(db, `anotacoes/${auth.syncCode}/${key}`))
   }
 
-  return { anotacoes, iniciar, parar, salvar, deletar }
+  async function atualizar(key, dados) {
+    const auth = useAuthStore()
+    await update(dbRef(db, `anotacoes/${auth.syncCode}/${key}`), dados)
+  }
+
+  return { anotacoes, iniciar, parar, salvar, deletar, atualizar }
 })
