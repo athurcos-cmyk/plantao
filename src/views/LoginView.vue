@@ -32,6 +32,20 @@
           <p>Suas iniciais + um número. Ex: <strong>ANA1</strong>, <strong>JOAO2</strong></p>
         </div>
 
+        <!-- Instruções rápidas (antes de digitar) -->
+        <transition name="fade">
+          <div v-if="!modo" class="instrucoes-rapidas">
+            <div class="instrucao-item">
+              <span>🔄</span>
+              <span><strong>Já tem conta?</strong> Digite seu código abaixo</span>
+            </div>
+            <div class="instrucao-item">
+              <span>✨</span>
+              <span><strong>Primeira vez?</strong> Escolha um código de 3 a 6 letras/números</span>
+            </div>
+          </div>
+        </transition>
+
         <div class="campo">
           <input
             data-testid="input-codigo"
@@ -46,6 +60,7 @@
             @input="codigo = codigo.toUpperCase(); verificarCodigo()"
             @keyup.enter="codigo.length >= 3 && modo && avancarPasso()"
           />
+          <p class="campo-hint">3 a 6 letras ou números · maiúsculas automáticas</p>
           <transition name="fade">
             <p v-if="statusMsg" class="status-msg" :class="statusClass">{{ statusMsg }}</p>
           </transition>
@@ -55,8 +70,8 @@
           <div v-if="modo === 'cadastro'" class="destaque-novo" data-testid="msg-cadastro">
             <span class="destaque-icon">✨</span>
             <div>
-              <strong>Primeira vez aqui!</strong>
-              <p>Esse código está livre. Você vai criar seu acesso agora.</p>
+              <strong>Código disponível — primeira vez aqui!</strong>
+              <p>Você vai criar seu acesso agora. Anote o código em lugar seguro.</p>
             </div>
           </div>
           <div v-else-if="modo === 'login'" class="destaque-volta" data-testid="msg-login">
@@ -89,8 +104,20 @@
         <div class="card-header">
           <span class="card-step" data-testid="step-indicador">2 de {{ totalPassos }}</span>
           <h2 data-testid="titulo-passo2">{{ modo === 'cadastro' ? 'Crie seu PIN' : 'Digite seu PIN' }}</h2>
-          <p v-if="modo === 'cadastro'">4 dígitos numéricos. Anote — será pedido a cada acesso.</p>
+          <p v-if="modo === 'cadastro'">4 dígitos numéricos.</p>
           <p v-else>Bem-vindo de volta, <strong>{{ codigo }}</strong>.</p>
+        </div>
+
+        <!-- Aviso forte de cadastro -->
+        <div v-if="modo === 'cadastro'" class="aviso-pin">
+          <div class="aviso-pin-linha">
+            <span>📌</span>
+            <span><strong>Anote seu PIN agora</strong> — ele será pedido a cada acesso e não pode ser recuperado sem o administrador.</span>
+          </div>
+          <div class="aviso-pin-linha aviso-pin-perigo">
+            <span>⚠️</span>
+            <span>Evite PINs óbvios: <strong>1234, 0000, 1111</strong> ou data de nascimento.</span>
+          </div>
         </div>
 
         <div class="campo">
@@ -117,6 +144,19 @@
           {{ modo === 'login' ? (carregando ? 'Entrando...' : 'Entrar') : 'Continuar' }}
           <svg v-if="modo !== 'login'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
+
+        <!-- Ajuda para quem esqueceu (só no login) -->
+        <div v-if="modo === 'login'" class="ajuda-login">
+          <button class="ajuda-toggle" @click="mostrarAjuda = !mostrarAjuda">
+            {{ mostrarAjuda ? '▲' : '▼' }} Problemas para entrar?
+          </button>
+          <transition name="fade">
+            <div v-if="mostrarAjuda" class="ajuda-conteudo">
+              <p>🔑 <strong>Esqueceu o PIN?</strong> O administrador pode redefinir seu acesso — suas anotações não serão perdidas.</p>
+              <p>📋 <strong>Esqueceu o código?</strong> Sem o código não é possível recuperar o acesso. Sempre anote-o após criar sua conta.</p>
+            </div>
+          </transition>
+        </div>
       </div>
 
       <!-- Passo 3: Nome (só cadastro) -->
@@ -174,7 +214,8 @@ const passo     = ref(1)
 const statusMsg = ref('')
 const statusClass = ref('')
 const erroMsg   = ref('')
-const carregando = ref(false)
+const carregando   = ref(false)
+const mostrarAjuda = ref(false)
 
 const totalPassos = computed(() => modo.value === 'cadastro' ? 3 : 2)
 
@@ -431,6 +472,112 @@ async function entrar() {
 }
 
 .btn-voltar:hover {
+  color: var(--text);
+}
+
+/* ── Instruções rápidas (passo 1 antes de digitar) ── */
+.instrucoes-rapidas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.instrucao-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.instrucao-item strong {
+  color: var(--text);
+}
+
+/* ── Hint do campo ── */
+.campo-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+/* ── Aviso PIN (cadastro) ── */
+.aviso-pin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(255, 193, 7, 0.07);
+  border: 1px solid rgba(255, 193, 7, 0.25);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.aviso-pin-linha {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.aviso-pin-linha strong {
+  color: var(--text);
+}
+
+.aviso-pin-perigo {
+  color: #e57373;
+}
+
+.aviso-pin-perigo strong {
+  color: #ef9a9a;
+}
+
+/* ── Ajuda login ── */
+.ajuda-login {
+  margin-top: 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.ajuda-toggle {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.ajuda-toggle:hover {
+  color: var(--text);
+}
+
+.ajuda-conteudo {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ajuda-conteudo p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ajuda-conteudo p strong {
   color: var(--text);
 }
 
