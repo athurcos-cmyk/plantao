@@ -750,20 +750,28 @@
           <!-- Curativo -->
           <template v-else-if="modal.tipo === 'Curativo'">
             <div class="campo">
-              <label>Membro / região <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
-              <div class="radio-group">
-                <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID']" :key="op">
-                  <input type="radio"
-                    :checked="modal.d.membroCurativo === op"
-                    @click="modal.d.membroCurativo = modal.d.membroCurativo === op ? '' : op">
+              <label>Locais <span class="obrigatorio">*</span></label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+                <label class="checkbox-label" v-for="op in ['MSD','MSE','MID','MIE']" :key="op" style="flex:1;min-width:70px">
+                  <input type="checkbox" :value="op" v-model="modal.d.locais">
+                  <span>{{ op }}</span>
+                </label>
+              </div>
+              <input type="text" v-model="modal.d.localTexto" placeholder="Outro local (ex: flanco abdominal direito...)">
+            </div>
+            <div class="campo">
+              <label>Condição <span class="obrigatorio">*</span></label>
+              <div class="radio-group vertical">
+                <label class="radio-btn" v-for="op in ['limpo e seco externamente','sujo externamente']" :key="op">
+                  <input type="radio" :checked="modal.d.condicao === op" @click="modal.d.condicao = modal.d.condicao === op ? '' : op">
                   <span>{{ op }}</span>
                 </label>
               </div>
             </div>
-            <div class="campo">
-              <label>Local / descrição <span class="obrigatorio">*</span></label>
-              <input type="text" v-model="modal.d.localCurativo" placeholder="Ex: face anterior do antebraço, tornozelo, abdome...">
-            </div>
+            <label class="checkbox-label" style="margin-bottom:0">
+              <input type="checkbox" v-model="modal.d.enfaixamento">
+              <span>Com enfaixamento</span>
+            </label>
           </template>
 
           <!-- Outros -->
@@ -973,7 +981,7 @@ const modal = reactive({ aberto: false, tipo: '', d: {}, erro: '' })
 
 function abrirModal(tipo) {
   modal.tipo  = tipo
-  modal.d     = { tipos: [] }
+  modal.d     = { tipos: [], locais: [] }
   modal.erro  = ''
   modal.aberto = true
 }
@@ -1107,9 +1115,23 @@ function buildDispTexto(tipo, d) {
       return t
     }
     case 'Curativo': {
-      if (!d.localCurativo) return err('Informe o local do curativo')
-      const regiao = d.membroCurativo ? `em ${d.membroCurativo} — ` : ''
-      return `curativo ${regiao}${d.localCurativo}`
+      const locais = d.locais || []
+      if (locais.length === 0 && !d.localTexto) return err('Informe ao menos um local')
+      if (!d.condicao) return err('Informe a condição do curativo')
+      // plural automático
+      const partes = []
+      const temMSD = locais.includes('MSD'), temMSE = locais.includes('MSE')
+      const temMID = locais.includes('MID'), temMIE = locais.includes('MIE')
+      if (temMSD && temMSE) partes.push('MMSS')
+      else { if (temMSD) partes.push('MSD'); if (temMSE) partes.push('MSE') }
+      if (temMID && temMIE) partes.push('MMII')
+      else { if (temMID) partes.push('MID'); if (temMIE) partes.push('MIE') }
+      if (d.localTexto) partes.push(d.localTexto)
+      const loc = partes.length === 1 ? partes[0] : `${partes.slice(0,-1).join(', ')} e ${partes[partes.length-1]}`
+      let t = `curativo oclusivo em ${loc}`
+      if (d.enfaixamento) t += ' com enfaixamento'
+      t += `, ${d.condicao}`
+      return t
     }
     default: {
       if (!d.descricao) return err('Descreva o dispositivo')
