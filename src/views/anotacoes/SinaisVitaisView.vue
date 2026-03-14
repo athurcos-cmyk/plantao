@@ -6,15 +6,356 @@
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <h1>Sinais Vitais</h1>
+      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
+          <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
+          <path d="M9 17c-2-1-3-2-3-3s2-2 6-2 6 1 6 2-1 2-3 3"/>
+        </svg>
+        <span>Plantão</span>
+      </button>
       <div style="width:34px"/>
     </header>
+
     <main class="container" style="padding-top:24px">
-      <p style="color:var(--text-muted)">Em construção...</p>
+
+      <!-- ── Formulário ── -->
+      <div v-if="!gerado">
+
+        <div class="sv-grid">
+
+          <!-- Horário -->
+          <div class="campo campo-full">
+            <label>Horário <span class="obrigatorio">*</span></label>
+            <input type="time" v-model="form.horario">
+          </div>
+
+          <!-- PA -->
+          <div class="campo campo-full">
+            <label>PA <span class="sv-unit">mmHg</span></label>
+            <div class="pa-row">
+              <input type="number" v-model="form.paSis" placeholder="120" min="0" max="300">
+              <span class="pa-sep">/</span>
+              <input type="number" v-model="form.paDia" placeholder="80" min="0" max="200">
+            </div>
+          </div>
+
+          <!-- PAM -->
+          <div class="campo">
+            <label>PAM <span class="sv-unit">mmHg</span></label>
+            <input type="number" v-model="form.pam" placeholder="87" min="0" max="200">
+          </div>
+
+          <!-- FC -->
+          <div class="campo">
+            <label>FC <span class="sv-unit">bpm</span></label>
+            <input type="number" v-model="form.fc" placeholder="98" min="0" max="300">
+          </div>
+
+          <!-- FR -->
+          <div class="campo">
+            <label>FR <span class="sv-unit">rpm</span></label>
+            <input type="number" v-model="form.fr" placeholder="17" min="0" max="60">
+          </div>
+
+          <!-- Temperatura -->
+          <div class="campo">
+            <label>T <span class="sv-unit">°C</span></label>
+            <input type="number" v-model="form.temp" step="0.1" placeholder="36.7" min="30" max="45">
+          </div>
+
+          <!-- SAT -->
+          <div class="campo">
+            <label>SAT O₂ <span class="sv-unit">%</span></label>
+            <input type="number" v-model="form.sat" placeholder="95" min="0" max="100">
+          </div>
+
+          <!-- Dextro -->
+          <div class="campo campo-full">
+            <label>Dextro <span class="sv-unit">mg/dL</span> <span class="sv-opcional">(opcional)</span></label>
+            <input type="number" v-model="form.dextro" placeholder="120" min="0" max="600">
+          </div>
+
+        </div>
+
+        <!-- Algias -->
+        <div class="campo">
+          <label>Algias</label>
+          <div class="radio-group">
+            <label class="radio-btn">
+              <input type="radio" :checked="form.algias === 'nega'" @click="form.algias = form.algias === 'nega' ? '' : 'nega'">
+              <span>Nega algias</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="form.algias === 'refere'" @click="form.algias = form.algias === 'refere' ? '' : 'refere'">
+              <span>Refere dor</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="campo" v-if="form.algias === 'refere'">
+          <label>Descreva a dor <span class="obrigatorio">*</span></label>
+          <input type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia leve, dor em MMII">
+        </div>
+
+        <p v-if="erro" class="erro-msg">{{ erro }}</p>
+
+        <button class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">Gerar texto</button>
+      </div>
+
+      <!-- ── Preview ── -->
+      <div v-else>
+        <div class="preview-box">
+          <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <div style="flex:2">
+            <label class="label-small">Nome do paciente</label>
+            <input class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
+          </div>
+          <div style="flex:1">
+            <label class="label-small">Leito</label>
+            <input class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+          <button class="btn btn-primary" @click="copiar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+            Copiar texto
+          </button>
+          <button class="btn btn-secondary" @click="salvar" :disabled="salvando">
+            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
+          </button>
+          <button class="btn btn-secondary" @click="compartilhar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+            Compartilhar
+          </button>
+          <button class="btn btn-secondary" @click="novaAfericao">Nova aferição</button>
+          <button class="btn btn-secondary" @click="gerado = false">← Editar</button>
+        </div>
+
+        <div v-if="feedbackMsg" class="feedback-msg">{{ feedbackMsg }}</div>
+      </div>
+
     </main>
   </div>
 </template>
+
 <script setup>
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-const router = useRouter()
+import { useAnotacoesStore } from '../../stores/anotacoes'
+
+const router  = useRouter()
+const store   = useAnotacoesStore()
+
+const gerado      = ref(false)
+const textoGerado = ref('')
+const erro        = ref('')
+const salvando    = ref(false)
+const feedbackMsg = ref('')
+
+const form = reactive({
+  horario:      '',
+  paSis:        '',
+  paDia:        '',
+  pam:          '',
+  fc:           '',
+  fr:           '',
+  temp:         '',
+  sat:          '',
+  dextro:       '',
+  algias:       '',
+  dorDesc:      '',
+  nomePaciente: '',
+  leitoPaciente: ''
+})
+
+function mostrarFeedback(msg) {
+  feedbackMsg.value = msg
+  setTimeout(() => (feedbackMsg.value = ''), 3000)
+}
+
+function gerar() {
+  erro.value = ''
+
+  if (!form.horario) { erro.value = 'Informe o horário'; return }
+  if (form.algias === 'refere' && !form.dorDesc.trim()) {
+    erro.value = 'Descreva a dor do paciente'
+    return
+  }
+
+  const h = form.horario.replace(':', 'h')
+
+  // Algias
+  let algiasText = ''
+  if (form.algias === 'nega')   algiasText = ', nega algias'
+  if (form.algias === 'refere') algiasText = `, refere ${form.dorDesc.trim()}`
+
+  // Sinais
+  const sv = []
+  if (form.paSis && form.paDia) sv.push(`PA ${form.paSis}/${form.paDia}mmHg`)
+  if (form.pam)                 sv.push(`PAM ${form.pam}mmHg`)
+  if (form.fc)                  sv.push(`FC ${form.fc}bpm`)
+  if (form.fr)                  sv.push(`FR ${form.fr}rpm`)
+  if (form.temp)                sv.push(`T ${form.temp}°C`)
+  if (form.sat)                 sv.push(`SAT ${form.sat}%`)
+  if (form.dextro)              sv.push(`Dextro ${form.dextro}mg/dL`)
+
+  // Abertura: completa (≥4 sinais principais) ou parcial
+  const principais = [form.paSis && form.paDia, form.fc, form.fr, form.temp, form.sat].filter(Boolean).length
+  const abertura = principais >= 4
+    ? `${h} – Realizado aferição de sinais vitais${algiasText}.`
+    : `${h} – Realizado aferição parcial de sinais vitais${algiasText}.`
+
+  textoGerado.value = sv.length > 0
+    ? abertura + '\n' + sv.join('\n')
+    : abertura
+
+  gerado.value = true
+}
+
+async function copiar() {
+  try {
+    await navigator.clipboard.writeText(textoGerado.value)
+    mostrarFeedback('Texto copiado!')
+  } catch {
+    mostrarFeedback('Erro ao copiar')
+  }
+}
+
+async function salvar() {
+  salvando.value = true
+  try {
+    await store.salvar(textoGerado.value, form.nomePaciente.trim(), 'sv', form.leitoPaciente.trim())
+    mostrarFeedback('Salvo no histórico!')
+  } catch {
+    mostrarFeedback('Erro ao salvar')
+  } finally {
+    salvando.value = false
+  }
+}
+
+function compartilhar() {
+  const texto = textoGerado.value
+  if (navigator.share) {
+    navigator.share({ text: texto }).catch(() => {})
+  } else {
+    const url = 'https://wa.me/?text=' + encodeURIComponent(texto)
+    window.open(url, '_blank')
+  }
+}
+
+function novaAfericao() {
+  Object.assign(form, {
+    horario: '', paSis: '', paDia: '', pam: '',
+    fc: '', fr: '', temp: '', sat: '', dextro: '',
+    algias: '', dorDesc: ''
+  })
+  erro.value    = ''
+  gerado.value  = false
+}
 </script>
+
+<style scoped>
+.sv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+.campo-full { grid-column: 1 / -1; }
+
+.sv-unit {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.sv-opcional {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.pa-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pa-row input { flex: 1; }
+.pa-sep {
+  font-size: 1.4rem;
+  color: var(--text-dim);
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+.erro-msg {
+  color: var(--red);
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+}
+
+.btn-home-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.btn-home-logo:active { background: var(--bg-hover); }
+
+.preview-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.label-small {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.campo-inline {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.campo-inline:focus { border-color: var(--blue); }
+
+.feedback-msg {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--success);
+  margin-top: 12px;
+  padding: 8px;
+  background: rgba(67,160,71,0.1);
+  border-radius: 8px;
+}
+</style>
