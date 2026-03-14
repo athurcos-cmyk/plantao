@@ -48,8 +48,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  // PC → bloqueia (exceto localhost, para desenvolvimento)
-  if (to.name !== 'pc' && !isMobile() && !isDev()) {
+  // PC → bloqueia (exceto localhost ou se o usuário escolheu continuar)
+  const pcAllowed = sessionStorage.getItem('pc_allowed') === '1'
+  if (to.name !== 'pc' && !isMobile() && !isDev() && !pcAllowed) {
     return { name: 'pc' }
   }
 

@@ -19,12 +19,25 @@
         <p class="pc-qr-label">Acesse pelo celular:</p>
         <code class="pc-url">{{ url }}</code>
       </div>
+
+      <button class="btn-continuar" @click="continuar">
+        Continuar no PC mesmo assim →
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const url = window.location.origin + window.location.pathname
+
+function continuar() {
+  // Marca que o usuário escolheu continuar no PC nesta sessão
+  sessionStorage.setItem('pc_allowed', '1')
+  router.push({ name: 'login' })
+}
 </script>
 
 <style scoped>
@@ -95,4 +108,18 @@ h1 {
   padding: 8px 14px;
   word-break: break-all;
 }
+.btn-continuar {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 8px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.btn-continuar:hover { color: var(--text-dim); }
 </style>
