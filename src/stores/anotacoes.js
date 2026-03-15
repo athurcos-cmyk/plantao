@@ -44,5 +44,10 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     await update(dbRef(db, `anotacoes/${auth.syncCode}/${key}`), dados)
   }
 
-  return { anotacoes, iniciar, parar, salvar, deletar, atualizar }
+  async function limparTudo() {
+    const auth = useAuthStore()
+    await remove(dbRef(db, `anotacoes/${auth.syncCode}`))
+  }
+
+  return { anotacoes, iniciar, parar, salvar, deletar, atualizar, limparTudo }
 })

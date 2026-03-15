@@ -6,13 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report",
-    "test:auth": "playwright test auth.spec.js",
-    "test:med": "playwright test medicacao.spec.js",
-    "test:anotacao": "playwright test anotacao.spec.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "firebase": "^10.14.1",
@@ -21,7 +15,6 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "vite": "^6.0.11",
     "vite-plugin-pwa": "^0.21.1"

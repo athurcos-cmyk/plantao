@@ -421,6 +421,8 @@ export const medicamentosBase = [
   'ciclofosfamida',
   'clorambucil',
   'rituximabe',
+  'ácido zoledrônico',
+  'ácido zoledrônico 5mg/100ml',
   'adalimumabe',
   'etanercepte',
   'infliximabe',
@@ -460,6 +462,7 @@ export const medicamentosBase = [
   'hidroxiureia',
   'albumina humana',
   'imunoglobulina humana',
+  'imunoglobulina humana 5g/50ml',
   'anti-D imunoglobulina',
 
   // ── Nefrológicos ─────────────────────────────────────────────────────────
@@ -472,6 +475,13 @@ export const medicamentosBase = [
   'doxercalciferol',
   'patiromer',
   'poliestireno sulfonato de cálcio',
+
+  // ── Soluções / Glicose ───────────────────────────────────────────────────
+  'glicose 50%',
+  'glicose 25%',
+  'glicose 10%',
+  'glicose 5%',
+  'glicose hipertônica',
 
   // ── Vitaminas / Minerais / Eletrólitos ───────────────────────────────────
   'vitamina C',

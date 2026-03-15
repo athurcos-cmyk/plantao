@@ -24,11 +24,21 @@
         <span class="sync-pill-code">{{ mostrarCodigo ? auth.syncCode : syncCodeMasked }}</span>
         <svg v-if="!mostrarCodigo" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-      </div>
+        </div>
     </div>
 
     <div class="filtros-wrap">
-      <input  data-testid="auto-input-historicoview-1" v-model="filtro.busca" class="filtro-input" type="text" placeholder="Buscar por nome ou leito...">
+      <div class="busca-row">
+        <input data-testid="auto-input-historicoview-1" v-model="filtro.busca" class="filtro-input" type="text" placeholder="Buscar por nome ou leito...">
+        <button v-if="store.anotacoes.length > 0" data-testid="auto-btn-historicoview-12" class="btn-limpar-tudo" @click="confirmandoLimpar = true" title="Apagar todo o histórico">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>
+          Limpar tudo
+        </button>
+      </div>
       <div class="chips-scroll">
         <button  data-testid="auto-btn-historicoview-3" v-for="op in tiposFiltro" :key="op.v" class="chip" :class="{ ativo: filtro.tipo === op.v }" @click="filtro.tipo = op.v">
           {{ op.l }}
@@ -96,6 +106,17 @@
 
     <div class="toast-feedback" :class="{ visivel: feedback }">{{ feedback }}</div>
 
+    <div v-if="confirmandoLimpar" class="modal-overlay" @click.self="confirmandoLimpar = false">
+      <div class="modal-confirm">
+        <p>Apagar todo o histórico?</p>
+        <p class="confirm-sub">{{ store.anotacoes.length }} anotaç{{ store.anotacoes.length !== 1 ? 'ões' : 'ão' }} serão excluídas permanentemente.</p>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button data-testid="auto-btn-historicoview-13" class="btn btn-secondary" style="flex:1" @click="confirmandoLimpar = false">Cancelar</button>
+          <button data-testid="auto-btn-historicoview-14" class="btn btn-danger" style="flex:1" @click="executarLimparTudo">Apagar tudo</button>
+        </div>
+      </div>
+    </div>
+
     <div v-if="confirmando" class="modal-overlay" @click.self="confirmando = null">
       <div class="modal-confirm">
         <p>Excluir esta anotação?</p>
@@ -127,8 +148,9 @@ const syncCodeMasked = computed(() => {
   return c.slice(0, 4) + '••••'
 })
 
-const filtro      = reactive({ busca: '', tipo: 'todos' })
-const confirmando = ref(null)
+const filtro           = reactive({ busca: '', tipo: 'todos' })
+const confirmando      = ref(null)
+const confirmandoLimpar = ref(false)
 const feedback    = ref('')
 const editando    = ref(null)
 const editForm    = reactive({ nome: '', leito: '' })
@@ -204,6 +226,12 @@ async function salvarEdicao(key) {
   catch { mostrarFeedback('Erro ao salvar') }
 }
 
+async function executarLimparTudo() {
+  try   { await store.limparTudo(); mostrarFeedback('Histórico apagado') }
+  catch { mostrarFeedback('Erro ao apagar') }
+  finally { confirmandoLimpar.value = false }
+}
+
 function mostrarFeedback(msg) {
   feedback.value = msg
   setTimeout(() => (feedback.value = ''), 2500)
@@ -227,8 +255,18 @@ function mostrarFeedback(msg) {
 
 .hist-topo {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px 6px; max-width: 480px; margin: 0 auto;
+  padding: 14px 16px 6px; max-width: 480px; margin: 0 auto; gap: 12px;
 }
+
+.btn-limpar-tudo {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: 1px solid var(--danger);
+  border-radius: 20px; color: var(--danger);
+  font-size: 0.75rem; font-family: inherit; font-weight: 600;
+  padding: 5px 12px; cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-limpar-tudo:active { background: rgba(220,38,38,0.1); }
 .hist-titulo { font-size: 1.3rem; font-weight: 700; color: var(--text); }
 .sync-pill {
   display: flex; align-items: center; gap: 6px;
@@ -248,6 +286,10 @@ function mostrarFeedback(msg) {
   background: var(--bg-card); border-bottom: 1px solid var(--border);
   padding: 10px 16px;
 }
+.busca-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+}
+.busca-row .filtro-input { flex: 1; }
 .filtro-input {
   width: 100%; background: var(--bg-input); border: 1px solid var(--border);
   border-radius: var(--radius); color: var(--text);

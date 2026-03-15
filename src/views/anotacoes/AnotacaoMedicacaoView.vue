@@ -223,10 +223,19 @@
             </div>
           </div>
 
-          <!-- Dose + Unidade (não-OFT) -->
-          <div v-if="modal.d.via && modal.d.via !== 'OFT'" class="campo">
+          <!-- Campo profissional (Recusa) -->
+          <div v-if="modal.d.via === 'Recusa'" class="campo">
+            <label>Comunicado a <span class="obrigatorio">*</span></label>
+            <div class="input-suffix-wrap">
+              <input type="text" v-model="modal.d.recusaNome" placeholder="Nome do profissional" class="campo-inline">
+              <span class="input-suffix" style="font-size:0.8rem">Enf.</span>
+            </div>
+          </div>
+
+          <!-- Dose + Unidade (não-OFT, não-Recusa) -->
+          <div v-if="modal.d.via && modal.d.via !== 'OFT' && modal.d.via !== 'Recusa'" class="campo">
             <label>Dose <span class="obrigatorio">*</span></label>
-            <input  data-testid="auto-input-anotacaomedicacaoview-11" type="text" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
+            <input  data-testid="auto-input-anotacaomedicacaoview-11" type="text" inputmode="decimal" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
             <div class="chips-wrap" style="margin-top:8px">
               <button
                  data-testid="auto-btn-anotacaomedicacaoview-17" v-for="u in unidades" :key="u"
@@ -283,10 +292,22 @@
                 <button  data-testid="auto-btn-anotacaomedicacaoview-19" class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
                 <button  data-testid="auto-btn-anotacaomedicacaoview-20" class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
                 <button  data-testid="auto-btn-anotacaomedicacaoview-21" class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip" :class="{ ativo: modal.d.evSolucao === 'outra' }" @click="modal.d.evSolucao = 'outra'">Outra</button>
               </div>
+              <input v-if="modal.d.evSolucao === 'outra'"
+                data-testid="auto-input-anotacaomedicacaoview-21"
+                type="text"
+                v-model="modal.d.evSolucaoCustom"
+                placeholder="Ex: glicose 50%, ringer lactato..."
+                class="campo-inline"
+                style="margin-top: 8px">
             </div>
 
-            <!-- BIC toggle -->
+          </template>
+
+          <!-- BIC toggle — disponível para qualquer EV (com ou sem diluição) -->
+          <template v-if="modal.d.via === 'EV'">
+
             <div class="campo">
               <label class="checkbox-label">
                 <input  data-testid="auto-input-anotacaomedicacaoview-15" type="checkbox" v-model="modal.d.evBic">
@@ -325,20 +346,54 @@
           </template>
 
           <!-- Dupla checagem -->
-          <div class="campo">
+          <div v-if="modal.d.via !== 'Recusa'" class="campo">
             <label class="checkbox-label">
               <input  data-testid="auto-input-anotacaomedicacaoview-18" type="checkbox" v-model="modal.d.dupla">
               <span>Dupla checagem</span>
             </label>
             <div v-if="modal.d.dupla" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
-              <input
-                 data-testid="auto-input-anotacaomedicacaoview-19" type="text"
-                v-model="modal.d.duplaCargo"
-                placeholder="Cargo (ex: técnica de enfermagem, enfermeira)">
-              <input
-                 data-testid="auto-input-anotacaomedicacaoview-20" type="text"
-                v-model="modal.d.duplaNome"
-                placeholder="Nome do profissional *">
+              <select data-testid="auto-input-anotacaomedicacaoview-19" v-model="modal.d.duplaCargo" class="campo-inline">
+                <option value="téc. de enfermagem">Téc. de enfermagem</option>
+                <option value="enf.">Enf.</option>
+              </select>
+              <div class="autocomplete-wrap">
+                <input
+                   data-testid="auto-input-anotacaomedicacaoview-20" type="text"
+                  :value="modal.d.duplaNome"
+                  @input="onDuplaNomeInput($event.target.value)"
+                  @focus="onDuplaNomeInput(modal.d.duplaNome)"
+                  @blur="fecharDuplaSug"
+                  placeholder="Nome do profissional *"
+                  autocomplete="off">
+                <div v-if="mostrarDuplaSug && duplaSugestoes.length" class="autocomplete-dropdown">
+                  <button
+                    v-for="nome in duplaSugestoes" :key="nome"
+                    class="autocomplete-item"
+                    @mousedown.prevent="selecionarDuplaSug(nome)">
+                    <span class="autocomplete-nome">{{ nome }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lote / Validade -->
+          <div v-if="modal.d.via !== 'Recusa'" class="campo">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="modal.d.loteAtivo">
+              <span>Informar lote / validade</span>
+            </label>
+            <div v-if="modal.d.loteAtivo" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+              <input type="number" v-model="modal.d.loteFrasco" class="campo-inline"
+                placeholder="Nº do frasco (opcional — ex: 1, 2, 3)" min="1" step="1">
+              <input type="text" v-model="modal.d.lote" class="campo-inline"
+                placeholder="Número do lote *">
+              <input type="text" v-model="modal.d.loteFabricacao" class="campo-inline"
+                placeholder="Fabricação (ex: 10/2024) *">
+              <input type="text" v-model="modal.d.loteValidade" class="campo-inline"
+                placeholder="Validade (ex: 09/2026) *">
+              <input type="text" v-model="modal.d.loteMarca" class="campo-inline"
+                placeholder="Marca *">
             </div>
           </div>
 
@@ -464,13 +519,45 @@ function fecharSugestoes() {
   setTimeout(() => { mostrarSug.value = false }, 150)
 }
 
+// ── Autocomplete dupla checagem — nome do profissional ────────────────────────
+const duplaSugestoes  = ref([])
+const mostrarDuplaSug = ref(false)
+
+function _duplaNomesKey() { return `dupla_nomes_${auth.syncCode || 'guest'}` }
+function _lerDuplaNomes() {
+  try { return JSON.parse(localStorage.getItem(_duplaNomesKey()) || '[]') } catch { return [] }
+}
+function _salvarDuplaNome(nome) {
+  const lista = _lerDuplaNomes().filter(n => n !== nome)
+  lista.unshift(nome)
+  localStorage.setItem(_duplaNomesKey(), JSON.stringify(lista.slice(0, 5)))
+}
+
+function onDuplaNomeInput(val) {
+  modal.d.duplaNome = val
+  const lista = _lerDuplaNomes()
+  const filtrado = val.trim()
+    ? lista.filter(n => n.toLowerCase().includes(val.toLowerCase()))
+    : lista
+  duplaSugestoes.value  = filtrado
+  mostrarDuplaSug.value = filtrado.length > 0
+}
+function selecionarDuplaSug(nome) {
+  modal.d.duplaNome     = nome
+  duplaSugestoes.value  = []
+  mostrarDuplaSug.value = false
+}
+function fecharDuplaSug() {
+  setTimeout(() => { mostrarDuplaSug.value = false }, 150)
+}
+
 const gerado      = ref(false)
 const textoGerado = ref('')
 const erro        = ref('')
 const salvando    = ref(false)
 
 // ── Constantes ──────────────────────────────────────────────────────────────
-const vias     = ['VO', 'EV', 'SC', 'IM', 'SNE', 'OFT', 'Sublingual']
+const vias     = ['VO', 'EV', 'SC', 'IM', 'SNE', 'OFT', 'Sublingual', 'Recusa']
 const unidades = ['mg', 'mcg', 'g', 'UI', 'mEq', 'mmol', 'ml', '%', 'mg/kg', 'mcg/kg']
 
 // ── Form principal ──────────────────────────────────────────────────────────
@@ -504,17 +591,27 @@ function medVazio() {
     // OFT
     oftOlho:      '',
     // EV
-    evDiluicao:   false,
-    evVolume:     '',
-    evSolucao:    'SF',
+    evDiluicao:      false,
+    evVolume:        '',
+    evSolucao:       'SF',
+    evSolucaoCustom: '',
     evBic:        false,
     evTempo:      '',
     evUnidTempo:  'min',
     evVelocidade: '',
     // Dupla
     dupla:        false,
-    duplaCargo:   '',
-    duplaNome:    ''
+    duplaCargo:   'téc. de enfermagem',
+    duplaNome:    '',
+    // Recusa
+    recusaNome:    '',
+    // Lote
+    loteAtivo:     false,
+    loteFrasco:    '',
+    lote:          '',
+    loteFabricacao:'',
+    loteValidade:  '',
+    loteMarca:     ''
   }
 }
 
@@ -554,7 +651,12 @@ function confirmarMed() {
 
   if (!d.nome.trim())  { modal.erro = 'Informe o nome do medicamento';      return }
   if (!d.via)          { modal.erro = 'Selecione a via de administração';    return }
-  if (!String(d.dose).trim()) { modal.erro = 'Informe a dose'; return }
+
+  if (d.via === 'Recusa') {
+    if (!d.recusaNome.trim()) { modal.erro = 'Informe o nome do profissional comunicado'; return }
+  } else {
+    if (!String(d.dose).trim()) { modal.erro = 'Informe a dose'; return }
+  }
 
   if (d.via === 'OFT' && !d.oftOlho) {
     modal.erro = 'Selecione o olho'; return
@@ -563,13 +665,20 @@ function confirmarMed() {
   if (d.via === 'EV' && d.evDiluicao) {
     if (!d.evVolume)  { modal.erro = 'Informe o volume';    return }
     if (!d.evSolucao) { modal.erro = 'Selecione a solução'; return }
-    if (d.evBic && !d.evTempo && !d.evVelocidade) {
-      modal.erro = 'BIC requer ao menos tempo ou velocidade (ml/h)'; return
-    }
+  }
+  if (d.via === 'EV' && d.evBic && !d.evTempo && !d.evVelocidade) {
+    modal.erro = 'BIC requer ao menos tempo ou velocidade (ml/h)'; return
   }
 
   if (d.dupla && !d.duplaNome.trim()) {
     modal.erro = 'Informe o nome do profissional para dupla checagem'; return
+  }
+
+  if (d.loteAtivo) {
+    if (!d.lote.trim())          { modal.erro = 'Informe o número do lote'; return }
+    if (!d.loteFabricacao.trim()){ modal.erro = 'Informe a data de fabricação'; return }
+    if (!d.loteValidade.trim())  { modal.erro = 'Informe a data de validade'; return }
+    if (!d.loteMarca.trim())     { modal.erro = 'Informe a marca'; return }
   }
 
   const med = { ...d, nome: d.nome.trim() }
@@ -581,6 +690,7 @@ function confirmarMed() {
   }
 
   adicionarAoHistorico(med)
+  if (med.dupla && med.duplaNome.trim()) _salvarDuplaNome(med.duplaNome.trim())
   fecharModal()
 }
 
@@ -590,6 +700,7 @@ function removerMed(i) {
 
 // ── Resumo para o card da lista ─────────────────────────────────────────────
 function resumirMed(med) {
+  if (med.via === 'Recusa') return `Recusa · Enf. ${med.recusaNome || '?'}`
   const un = med.via === 'OFT' ? 'Gts' : med.unidade
   let viaLabel = med.via
   if (med.via === 'EV') {
@@ -621,11 +732,23 @@ function gerarParteMed(med) {
   }
   else if (med.via === 'EV') {
     if (!med.evDiluicao) {
-      // Sem diluição: apenas EV, sem mencionar bolus
-      viaTexto = 'EV'
+      if (med.evBic) {
+        let infStr = ''
+        if (med.evTempo && med.evVelocidade) {
+          infStr = `em ${med.evTempo}${med.evUnidTempo} a ${med.evVelocidade}ml/h`
+        } else if (med.evTempo) {
+          infStr = `em ${med.evTempo}${med.evUnidTempo}`
+        } else if (med.evVelocidade) {
+          infStr = `a ${med.evVelocidade}ml/h`
+        }
+        viaTexto = `EV em BIC para infundir ${infStr}`
+      } else {
+        viaTexto = 'EV'
+      }
     } else {
-      const sol = med.evSolucao === 'SF'   ? 'SF 0,9%'
-                : med.evSolucao === 'SG'   ? 'SG 5%'
+      const sol = med.evSolucao === 'SF'    ? 'SF 0,9%'
+                : med.evSolucao === 'SG'    ? 'SG 5%'
+                : med.evSolucao === 'outra' ? (med.evSolucaoCustom || 'outra solução')
                 : 'água destilada'
       if (med.evBic) {
         // BIC: [dose] + [vol]ml [sol] EV em BIC para infundir [tempo] [vel]
@@ -646,7 +769,11 @@ function gerarParteMed(med) {
     }
   }
 
-  return `${med.nome.toLowerCase()} ${doseStr} ${viaTexto}`
+  const prefixoFrasco = med.loteAtivo && med.loteFrasco
+    ? `o ${med.loteFrasco}° Frasco de `
+    : ''
+
+  return `${prefixoFrasco}${med.nome.toLowerCase()} ${doseStr} ${viaTexto}`
 }
 
 function gerarLinhaDupla(med) {
@@ -701,22 +828,51 @@ function gerar() {
     conteudo.push('Oriento paciente, que autoriza realização de medicação prescrita.')
   }
 
-  // Todos os meds do mesmo horário em uma única linha
-  const partes = form.medicamentos.map(gerarParteMed)
-  let medStr = partes.length === 1
-    ? partes[0]
-    : partes.slice(0, -1).join(', ') + ' e ' + partes[partes.length - 1]
-  conteudo.push(`administrado ${medStr}${conformeTexto}`)
+  // Meds administrados (excluindo recusas)
+  const medsAdm = form.medicamentos.filter(m => m.via !== 'Recusa')
+  if (medsAdm.length > 0) {
+    const partes = medsAdm.map(gerarParteMed)
+    const medStr = partes.length === 1
+      ? partes[0]
+      : partes.slice(0, -1).join(', ') + ' e ' + partes[partes.length - 1]
+    conteudo.push(`administrado ${medStr}${conformeTexto}`)
+  }
 
   // O horário prefixia APENAS a primeira linha; as demais ficam sem ele
   const linhas = conteudo.map((linha, i) =>
     i === 0 ? `${h} - ${linha}` : linha
   )
 
+  // Recusas: agrupar por profissional → uma linha por Enf.
+  const recusas = form.medicamentos.filter(m => m.via === 'Recusa')
+  const recusasPorProf = {}
+  for (const med of recusas) {
+    const prof = med.recusaNome.trim()
+    if (!recusasPorProf[prof]) recusasPorProf[prof] = []
+    recusasPorProf[prof].push(med.nome.toLowerCase())
+  }
+  for (const prof of Object.keys(recusasPorProf)) {
+    const nomes = recusasPorProf[prof]
+    const nomesStr = nomes.length === 1
+      ? nomes[0]
+      : nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1]
+    linhas.push(`Paciente recusa ${nomesStr} prescrito, comunico Enf. ${prof}`)
+  }
+
   // Dupla checagem: linhas extras sem prefixo de horário
   for (const med of form.medicamentos) {
     if (med.dupla && med.duplaNome.trim()) {
       linhas.push(gerarLinhaDupla(med))
+    }
+  }
+
+  // Lote / validade: bloco após a anotação principal
+  for (const med of form.medicamentos) {
+    if (med.loteAtivo && med.lote.trim()) {
+      linhas.push(`Número do Lote: ${med.lote.trim()}`)
+      if (med.loteFabricacao.trim()) linhas.push(`Fabricação: ${med.loteFabricacao.trim()}`)
+      if (med.loteValidade.trim())   linhas.push(`Validade: ${med.loteValidade.trim()}`)
+      if (med.loteMarca.trim())      linhas.push(`Marca: ${med.loteMarca.trim()}`)
     }
   }
 
@@ -986,6 +1142,13 @@ function novaAnotacao() {
   -webkit-appearance: none;
 }
 .campo-inline:focus { border-color: var(--blue); }
+select.campo-inline {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
 
 /* ── label-small ── */
 .label-small {
