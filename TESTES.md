@@ -1,6 +1,6 @@
 # Plano de Testes — Plantão App
 
-> Versão do app: 0.5.0
+> Versão do app: 0.7.0
 > Última atualização: 2026-03-15
 
 ---
@@ -207,3 +207,66 @@
 - [x] Cancelar exclusão fecha o modal sem excluir
 - [x] Confirmar exclusão remove a anotação da lista
 - [x] Botão "Compartilhar" abre opções de compartilhamento (requer interação manual)
+
+### 5.4 Limpar Histórico
+- [x] Botão "Limpar tudo" aparece ao lado da busca quando há anotações
+- [x] Clicar abre modal de confirmação com contagem de anotações
+- [x] Cancelar fecha modal sem apagar nada
+- [x] Confirmar apaga todas as anotações do Firebase e lista fica vazia
+- [x] Botão "Limpar tudo" desaparece automaticamente quando histórico está vazio
+
+### 5.5 Filtro por Paciente Registrado
+- [x] Chips de pacientes registrados aparecem abaixo dos filtros de tipo
+- [x] Clicar no chip preenche o campo de busca com o nome do paciente
+- [x] Clicar no chip ativo limpa o filtro (toggle)
+- [x] Chips exibem leito · nome (ex: "2A · João Souza")
+
+---
+
+## 6. MEUS PACIENTES
+
+### 6.1 Interface
+- [x] Rota `/pacientes` carrega sem erros
+- [x] Empty state com ícone 🛏️, título e botão "Adicionar paciente" quando lista vazia
+- [x] Contador "X registrado(s)" no cabeçalho atualiza em tempo real
+- [x] Botão voltar retorna ao Dashboard
+- [x] Botão logo retorna ao Dashboard
+
+### 6.2 Cadastro de Paciente
+- [x] Clicar em "+ Adicionar paciente" abre modal
+- [x] Salvar sem nome exibe erro "Informe o nome do paciente"
+- [x] Salvar com nome (leito opcional) → paciente aparece na lista sincronizado via Firebase
+- [x] FAB (+) aparece quando há pacientes na lista
+
+### 6.3 Edição e Exclusão
+- [x] Botão ✏️ abre modal com dados preenchidos
+- [x] Editar leito → card atualiza em tempo real
+- [x] Botão 🗑️ abre modal de confirmação com nome do paciente
+- [x] Confirmar exclusão remove paciente e todas as pendências
+- [x] Cancelar exclusão fecha modal sem remover
+
+### 6.4 Pendências (Checklist)
+- [x] Campo "Nova pendência..." visível em cada card
+- [x] Digitar texto + Enter adiciona a pendência na lista do Firebase
+- [x] Botão "Ok" aparece ao digitar, clicando também adiciona
+- [x] Clicar no checkbox marca pendência como feita (linha riscada, opacidade reduzida)
+- [x] Clicar novamente desmarca
+- [x] Botão × ao lado de cada pendência exclui apenas aquela pendência
+
+### 6.5 Ordenação e Visual
+- [x] Pacientes ordenados por leito (ordem alfanumérica)
+- [x] Leito exibido como badge azul no card
+
+### 6.6 Integração — Seletor nas Anotações
+- [x] Ao gerar anotação inicial (preview): chips de pacientes registrados aparecem
+- [x] Clicar no chip preenche nome e leito automaticamente
+- [x] Chip fica marcado como ativo quando nome+leito correspondem ao formulário
+- [x] Mesmo comportamento na tela de Medicação
+- [x] Se não há pacientes registrados, seção de chips não aparece
+
+### 6.7 Sincronização Firebase
+- [x] Adicionar paciente → aparece em tempo real via onValue listener
+- [x] Editar paciente → atualiza em tempo real
+- [x] Excluir paciente → remove em tempo real
+- [x] Adicionar/toggle/excluir pendência → reflete em tempo real
+- [x] Dados persistem após reload da página

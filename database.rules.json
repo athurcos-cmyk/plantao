@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "anotacoes": {
+      "$syncCode": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "pacientes": {
+      "$syncCode": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}
