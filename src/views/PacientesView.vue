@@ -225,6 +225,13 @@ async function adicionarPend(pacKey) {
 </script>
 
 <style scoped>
+.btn-icon {
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; padding: 6px; border-radius: 8px;
+  display: flex; align-items: center;
+}
+.btn-icon:active { background: var(--bg-hover); }
+
 .btn-home-logo {
   display: flex; align-items: center; gap: 6px;
   color: var(--blue); font-size: 1.05rem; font-weight: 700;

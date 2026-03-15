@@ -270,3 +270,60 @@
 - [x] Excluir paciente → remove em tempo real
 - [x] Adicionar/toggle/excluir pendência → reflete em tempo real
 - [x] Dados persistem após reload da página
+
+---
+
+## 7. ORGANIZADOR DO PLANTÃO
+
+### 7.1 Interface / Estado vazio
+- [x] Rota `/organizador` carrega sem erros
+- [x] Card "Organizador do Plantão" aparece no Dashboard entre Pacientes e Histórico
+- [x] Empty state com ícone 📋, título e botão "Iniciar plantão" quando nenhum plantão ativo
+- [x] Botão voltar retorna ao Dashboard
+- [x] Botão logo retorna ao Dashboard
+- [x] Ícone de engrenagem (⚙️) no header abre modal de tarefas padrão
+
+### 7.2 Iniciar Plantão
+- [x] Botão "Iniciar plantão" cria plantão com as 7 tarefas padrão do template
+- [x] Tarefas padrão: Passar nos quartos, Organizar setor, Retirar hamper, Repor materiais, Limpar expurgo, Trocar prescrição, Organizar copa
+- [x] Hora de início exibida corretamente ("Iniciado às HHhMM · DDD, DD/MM")
+- [x] Contador "0 de 7 tarefas concluídas" visível
+- [x] Badge com número de pendentes aparece no título "TAREFAS DO PLANTÃO"
+
+### 7.3 Checklist de Tarefas
+- [x] Checkbox marca tarefa como feita (verde, texto riscado, opacidade reduzida)
+- [x] Barra de progresso avança ao marcar tarefas
+- [x] Badge de pendentes atualiza em tempo real
+- [x] Ícone de relógio abre input de horário inline na tarefa
+- [x] Horário salvo aparece como badge na tarefa
+- [x] Badge de urgência: azul (horário definido), laranja (≤ 30 min), vermelho (vencido)
+- [x] Campo "＋ Tarefa extra..." adiciona tarefa avulsa com horário opcional
+- [x] Tarefa avulsa exibe botão × para excluir (tarefas padrão não exibem ×)
+
+### 7.4 Botão "Novo Plantão"
+- [x] Clique abre modal de confirmação
+- [x] Cancelar fecha modal sem alterar
+- [x] Confirmar reseta todas as tarefas e cria novo plantão com template atual
+
+### 7.5 Gerenciar Tarefas Padrão (⚙️)
+- [x] Modal lista todas as tarefas do template
+- [x] Botão × remove tarefa do template permanentemente
+- [x] Campo "Nova tarefa padrão..." adiciona nova tarefa ao template
+- [x] Botão "↺ Restaurar padrões" recarrega as 7 tarefas originais
+- [x] Alterações no template refletem no próximo "Novo plantão"
+
+### 7.6 Passar pro Próximo Plantão
+- [x] Seção separada abaixo das tarefas
+- [x] Empty hint "Nenhuma anotação para o próximo plantão" quando vazio
+- [x] Campo adicionar nota funciona (Enter ou botão Ok)
+- [x] Botão × remove nota individualmente
+
+### 7.7 Dashboard — Card Organizador
+- [x] Card exibe "Nenhum plantão ativo" quando não há plantão
+- [x] Card exibe "X/N tarefas · Y pendentes" quando plantão ativo
+- [x] Clicar no card navega para /organizador
+
+### 7.8 Sincronização Firebase
+- [x] Tarefas e progresso sincronizados via Firebase Realtime Database
+- [x] Template persiste entre sessões
+- [x] Plantão ativo persiste após reload

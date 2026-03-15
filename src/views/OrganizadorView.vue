@@ -337,6 +337,14 @@ async function adicionarTemplate() {
 </script>
 
 <style scoped>
+/* Header icon buttons */
+.btn-icon {
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; padding: 6px; border-radius: 8px;
+  display: flex; align-items: center;
+}
+.btn-icon:active { background: var(--bg-hover); }
+
 /* Header logo button */
 .btn-home-logo {
   display: flex; align-items: center; gap: 6px;

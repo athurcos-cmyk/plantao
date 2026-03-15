@@ -39,7 +39,7 @@ export const useOrganizadorStore = defineStore('organizador', () => {
         return
       }
       const lista = []
-      snap.forEach(c => lista.push({ ...c.val(), _key: c.key }))
+      snap.forEach(c => { lista.push({ ...c.val(), _key: c.key }) })
       lista.sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))
       template.value = lista
     })
@@ -77,7 +77,11 @@ export const useOrganizadorStore = defineStore('organizador', () => {
   async function iniciarPlantao() {
     const code = _code()
     const tarefas = {}
-    template.value.forEach((t, i) => {
+    // Se o template ainda não carregou do Firebase, usa os padrões diretamente
+    const fonte = template.value.length > 0
+      ? template.value
+      : TAREFAS_PADRAO.map((texto, i) => ({ texto, ordem: i }))
+    fonte.forEach((t, i) => {
       const k = push(dbRef(db, `organizador/${code}/plantao/tarefas`)).key
       tarefas[k] = { texto: t.texto, feito: false, horario: '', ordem: i, criadoEm: Date.now() }
     })
