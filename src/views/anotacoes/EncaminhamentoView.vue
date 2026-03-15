@@ -295,17 +295,37 @@
             <div class="disp-card-header">
               <span class="disp-card-title">🥤 SNE</span>
             </div>
-            <label class="toggle-row">
-              <input type="checkbox" v-model="sne.dieta">
-              <span>Recebendo dieta enteral</span>
-            </label>
+            <div class="chip-row" style="margin-top:6px">
+              <button
+                class="chip"
+                :class="{ 'chip-on': sne.dietaTipo === 'integral' }"
+                @click="sne.dietaTipo = sne.dietaTipo === 'integral' ? '' : 'integral'"
+              >Dieta integral</button>
+              <button
+                class="chip"
+                :class="{ 'chip-on': sne.dietaTipo === 'outro' }"
+                @click="sne.dietaTipo = sne.dietaTipo === 'outro' ? '' : 'outro'; sne.dietaDesc = ''"
+              >Outro</button>
+            </div>
             <input
-              v-if="sne.dieta"
+              v-if="sne.dietaTipo === 'outro'"
               type="text"
               v-model="sne.dietaDesc"
-              placeholder="Ex: TNE polimérica 60ml/h, dieta jejum..."
+              placeholder="Descreva a dieta..."
               style="margin-top:8px"
             >
+            <div v-if="sne.dietaTipo" class="input-suffix-row" style="margin-top:8px">
+              <input
+                type="number"
+                inputmode="decimal"
+                v-model="sne.mlH"
+                placeholder="0"
+                min="0"
+                step="0.1"
+                style="width:80px"
+              >
+              <span class="input-suffix">ml/h</span>
+            </div>
           </div>
 
           <!-- Cards: Dreno -->
@@ -522,7 +542,7 @@ const locaisCentral = ['femoral D', 'femoral E', 'jugular D', 'jugular E', 'subc
 
 const dispSimplesAtivos = ref([])
 const catO2    = reactive({ ativo: false, lMin: '' })
-const sne      = reactive({ ativo: false, dieta: false, dietaDesc: '' })
+const sne      = reactive({ ativo: false, dietaTipo: '', dietaDesc: '', mlH: '' })
 const cvc      = reactive({ ativo: false, local: '' })
 const picc     = reactive({ ativo: false, local: '' })
 const permcath = reactive({ ativo: false, local: '' })
@@ -573,7 +593,7 @@ function toggleCatO2() {
 function toggleSne() {
   _limparNenhum()
   sne.ativo = !sne.ativo
-  if (!sne.ativo) { sne.dieta = false; sne.dietaDesc = '' }
+  if (!sne.ativo) { sne.dietaTipo = ''; sne.dietaDesc = ''; sne.mlH = '' }
 }
 
 function togglePulseirasCard() {
@@ -618,7 +638,7 @@ function toggleNenhum() {
   } else {
     dispSimplesAtivos.value = []
     catO2.ativo = false; catO2.lMin = ''
-    sne.ativo = false; sne.dieta = false; sne.dietaDesc = ''
+    sne.ativo = false; sne.dietaTipo = ''; sne.dietaDesc = ''; sne.mlH = ''
     cvc.ativo = false; cvc.local = ''
     picc.ativo = false; picc.local = ''
     permcath.ativo = false; permcath.local = ''
@@ -756,9 +776,13 @@ function gerarTextoDispositivos() {
   // SNE
   if (sne.ativo) {
     let txt = 'SNE'
-    if (sne.dieta) {
-      txt += ' em uso com dieta enteral'
-      if (sne.dietaDesc.trim()) txt += ` (${sne.dietaDesc.trim()})`
+    if (sne.dietaTipo === 'integral') {
+      txt += ' em uso com dieta enteral integral'
+      if (sne.mlH) txt += ` a ${sne.mlH}ml/h`
+    } else if (sne.dietaTipo === 'outro') {
+      const desc = sne.dietaDesc.trim()
+      txt += desc ? ` em uso com ${desc}` : ' em uso com dieta enteral'
+      if (sne.mlH) txt += ` a ${sne.mlH}ml/h`
     }
     partes.push(txt)
   }
@@ -962,6 +986,8 @@ function novaAnotacao() {
 }
 .disp-del-btn:active { background: var(--bg-hover); color: var(--danger); }
 .disp-unit { font-size: 0.85rem; color: var(--text-dim); }
+.input-suffix-row { display: flex; align-items: center; gap: 6px; }
+.input-suffix { font-size: 0.85rem; color: var(--text-dim); white-space: nowrap; }
 
 .toggle-row {
   display: flex; align-items: center; gap: 8px;
