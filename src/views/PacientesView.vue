@@ -14,7 +14,13 @@
         </svg>
         <span>Plantão</span>
       </button>
-      <div style="width:34px"/>
+      <button class="btn-icon" @click="helpAberto = true" title="Ajuda">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </button>
     </header>
 
     <main class="container" style="padding-top:20px;padding-bottom:100px">
@@ -124,6 +130,8 @@
       </div>
     </div>
 
+    <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar Meus Pacientes" :itens="helpItens" />
+
     <!-- Modal confirmar exclusão -->
     <div v-if="excluindo" class="modal-overlay" @click.self="excluindo = null">
       <div class="modal-box">
@@ -144,6 +152,7 @@
 import { reactive, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePacientesStore } from '../stores/pacientes.js'
+import HelpModal from '../components/HelpModal.vue'
 
 const router = useRouter()
 const store  = usePacientesStore()
@@ -155,6 +164,16 @@ onUnmounted(() => store.parar())
 const novaPend  = reactive({})
 const expandido = reactive({})
 const excluindo = ref(null)
+const helpAberto = ref(false)
+
+const helpItens = [
+  { icone: '➕', titulo: 'Cadastrar paciente', desc: 'Toque em "+ Adicionar paciente" ou no botão azul (+) para cadastrar. O leito é opcional mas ajuda na organização e aparece como badge azul.' },
+  { icone: '▼', titulo: 'Ver pendências', desc: 'Toque no card ou na setinha para expandir e ver as pendências do paciente. Toque novamente para recolher.' },
+  { icone: '📝', titulo: 'Adicionar pendência', desc: 'Com o card expandido, digite uma pendência no campo "＋ Nova pendência..." e pressione Enter ou toque em "Ok".' },
+  { icone: '✅', titulo: 'Marcar como feito', desc: 'Toque no checkbox ao lado da pendência para marcar. O texto fica riscado e o badge do card atualiza. Toque novamente para desmarcar.' },
+  { icone: '🔗', titulo: 'Integração com anotações', desc: 'Ao gerar uma anotação inicial ou de medicação, os pacientes cadastrados aparecem como chips. Toque em um chip para preencher nome e leito automaticamente.' },
+  { icone: '☁️', titulo: 'Sincronização', desc: 'Todos os pacientes e pendências são salvos em tempo real no Firebase. Aparecem instantaneamente em outros dispositivos com a mesma conta.' },
+]
 
 function toggleExpandir(key) {
   expandido[key] = !expandido[key]

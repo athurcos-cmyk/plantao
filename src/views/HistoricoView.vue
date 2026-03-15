@@ -14,7 +14,13 @@
         </svg>
         <span>Plantão</span>
       </button>
-      <div style="width:34px"/>
+      <button class="btn-icon" @click="helpAberto = true" title="Ajuda">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </button>
     </header>
 
     <div class="hist-topo">
@@ -128,6 +134,8 @@
       </div>
     </div>
 
+    <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Histórico" :itens="helpItens" />
+
     <div v-if="confirmando" class="modal-overlay" @click.self="confirmando = null">
       <div class="modal-confirm">
         <p>Excluir esta anotação?</p>
@@ -147,6 +155,7 @@ import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { useAuthStore } from '../stores/auth.js'
 import { usePacientesStore } from '../stores/pacientes.js'
+import HelpModal from '../components/HelpModal.vue'
 
 const router = useRouter()
 const store  = useAnotacoesStore()
@@ -156,6 +165,16 @@ const pacientesStore = usePacientesStore()
 onMounted(() => pacientesStore.iniciar())
 
 const mostrarCodigo = ref(false)
+const helpAberto    = ref(false)
+
+const helpItens = [
+  { icone: '🔍', titulo: 'Busca', desc: 'Digite o nome do paciente, leito ou qualquer texto da anotação para filtrar. O botão × limpa a busca.' },
+  { icone: '🏷️', titulo: 'Filtro por tipo', desc: 'Use os chips "Inicial" e "Medicação" para ver apenas anotações de um tipo específico.' },
+  { icone: '🛏️', titulo: 'Filtro por paciente', desc: 'Se você tem pacientes cadastrados em "Meus Pacientes", eles aparecem como chips de atalho para filtrar rapidamente.' },
+  { icone: '📋', titulo: 'Copiar e compartilhar', desc: 'Use o botão "Copiar" para copiar o texto da anotação. "Compartilhar" abre o WhatsApp ou outros apps diretamente.' },
+  { icone: '✏️', titulo: 'Editar', desc: 'Toque em "Editar" para alterar o nome do paciente e o leito de uma anotação já salva.' },
+  { icone: '🗑️', titulo: 'Excluir', desc: 'Toque em "Excluir" e confirme para remover uma anotação permanentemente. "Limpar tudo" remove todas de uma vez.' },
+]
 
 const syncCodeMasked = computed(() => {
   const c = auth.syncCode || ''

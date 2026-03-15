@@ -184,6 +184,9 @@
       <p v-if="erroMsg" class="erro-msg" style="margin-top:12px">{{ erroMsg }}</p>
     </div>
 
+    <button class="btn-como-funciona" @click="helpAberto = true">❓ Como funciona?</button>
+
+    <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como funciona o acesso" :itens="helpItens" />
   </div>
 </template>
 
@@ -191,6 +194,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
+import HelpModal from '../components/HelpModal.vue'
 
 const router = useRouter()
 const auth   = useAuthStore()
@@ -206,6 +210,15 @@ const erroMsg   = ref('')
 const carregando   = ref(false)
 const mostrarAjuda       = ref(false)
 const mostrarAjudaCodigo = ref(false)
+const helpAberto         = ref(false)
+
+const helpItens = [
+  { icone: '🔑', titulo: 'Código de acesso', desc: 'Escolha um código de 3 a 6 letras ou números. Ele identifica sua conta — use o mesmo em todos os seus dispositivos para sincronizar os dados.' },
+  { icone: '🔒', titulo: 'PIN de segurança', desc: 'Senha numérica de 4 dígitos para proteger sua conta. Não há recuperação de PIN — se esquecer, precisará criar uma nova conta com outro código.' },
+  { icone: '📱', titulo: 'Múltiplos dispositivos', desc: 'Acesse pelo celular, tablet ou computador usando o mesmo código e PIN. Todos os dados ficam sincronizados automaticamente.' },
+  { icone: '⚠️', titulo: 'Segurança do código', desc: 'Quem souber seu código e PIN terá acesso aos seus dados. Use um código difícil de adivinhar e não compartilhe seu PIN.' },
+  { icone: '🔄', titulo: 'Sincronização', desc: 'Pacientes, anotações, histórico e organizador ficam salvos na nuvem e acessíveis de qualquer lugar com internet.' },
+]
 
 const totalPassos = computed(() => 2)
 
@@ -575,4 +588,13 @@ async function entrar() {
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s, transform 0.2s; }
 .fade-enter-from { opacity: 0; transform: translateY(4px); }
 .fade-leave-to   { opacity: 0; transform: translateY(-4px); }
+
+/* ── Como funciona button ── */
+.btn-como-funciona {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.82rem; cursor: pointer; padding: 4px 8px;
+  border-radius: 8px; font-family: inherit;
+}
+.btn-como-funciona:hover { color: var(--text); }
+.btn-como-funciona:active { background: var(--bg-hover); }
 </style>
