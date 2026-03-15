@@ -430,15 +430,25 @@ let unsubDestinos = null
 
 function _code() { return authStore.syncCode }
 
+const _destinosCacheKey = code => `cache_enc_destinos_${code}`
+
 function iniciarDestinos() {
   const code = _code()
   if (!code) return
+
+  // Restaura do cache antes do Firebase responder
+  try {
+    const cached = JSON.parse(localStorage.getItem(_destinosCacheKey(code)) || '[]')
+    if (cached.length) destinosCustom.value = cached
+  } catch {}
+
   const path = dbRef(db, `encaminhamento/${code}/destinos`)
   unsubDestinos = onValue(path, (snap) => {
     const lista = []
     snap.forEach(c => { lista.push({ ...c.val(), _key: c.key }) })
     lista.sort((a, b) => (a.criadoEm || 0) - (b.criadoEm || 0))
     destinosCustom.value = lista
+    try { localStorage.setItem(_destinosCacheKey(code), JSON.stringify(lista)) } catch {}
   })
 }
 
@@ -456,6 +466,10 @@ function fecharAddDestino() {
 async function salvarDestinoCustom() {
   const texto = novoDestinoTxt.value.trim()
   if (!texto) return
+  if (!navigator.onLine) {
+    showToast('Sem internet — destino não foi salvo')
+    return
+  }
   await push(dbRef(db, `encaminhamento/${_code()}/destinos`), { texto, criadoEm: Date.now() })
   form.destino = texto
   fecharAddDestino()

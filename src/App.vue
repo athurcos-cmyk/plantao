@@ -5,17 +5,19 @@
   </Transition>
   <Transition name="offline-bar">
     <div v-if="!isOnline" class="offline-bar">
-      <span>📵</span> Sem internet — anotações serão salvas localmente
-      <span v-if="anotacoes.pendentes > 0" class="offline-badge">{{ anotacoes.pendentes }}</span>
+      <span>📵</span> Sem internet — dados salvos localmente
+      <span v-if="totalPendentes > 0" class="offline-badge">{{ totalPendentes }}</span>
     </div>
   </Transition>
 </template>
 
 <script setup>
-import { watch, onMounted } from 'vue'
+import { watch, computed, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAuthStore } from './stores/auth.js'
 import { useAnotacoesStore } from './stores/anotacoes.js'
+import { usePacientesStore } from './stores/pacientes.js'
+import { useOrganizadorStore } from './stores/organizador.js'
 import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
@@ -23,9 +25,15 @@ import { useOnlineStatus } from './composables/useOnlineStatus.js'
 const { toastMsg, showToast } = useToast()
 const { isOnline } = useOnlineStatus()
 
-const auth      = useAuthStore()
-const anotacoes = useAnotacoesStore()
-const router    = useRouter()
+const auth       = useAuthStore()
+const anotacoes  = useAnotacoesStore()
+const pacientes  = usePacientesStore()
+const organizador = useOrganizadorStore()
+const router     = useRouter()
+
+const totalPendentes = computed(() =>
+  (anotacoes.pendentes || 0) + (pacientes.pendentesCount || 0)
+)
 
 // Inicia o listener do Firebase quando logado,
 // para quando deslogar ou sessão expirar
@@ -41,11 +49,17 @@ watch(
   { immediate: true }
 )
 
-// Ao voltar online: sincroniza pendentes
+// Ao voltar online: sincroniza tudo que ficou pendente
 watch(isOnline, async (online) => {
   if (online && auth.isLoggedIn) {
-    const n = await anotacoes.sincronizarPendentes()
-    if (n > 0) showToast(`${n} anotaç${n === 1 ? 'ão sincronizada' : 'ões sincronizadas'} ✓`)
+    const [nAnot, nPac] = await Promise.all([
+      anotacoes.sincronizarPendentes(),
+      pacientes.sincronizarPendentes(),
+    ])
+    await organizador.sincronizarOrganizador()
+    const total = (nAnot || 0) + (nPac || 0)
+    if (total > 0) showToast(`${total} item${total === 1 ? '' : 'ns'} sincronizado${total === 1 ? '' : 's'} ✓`)
+    else showToast('Conexão restaurada ✓')
   }
 })
 
