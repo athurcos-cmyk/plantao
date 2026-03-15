@@ -39,6 +39,16 @@
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
+          <label>Tipo de anotação</label>
+          <div class="chips-wrap">
+            <button class="chip" :class="{ 'chip-on': form.tipo === 'ida' }"
+              @click="form.tipo = 'ida'">🚑 Encaminhamento</button>
+            <button class="chip" :class="{ 'chip-on': form.tipo === 'retorno' }"
+              @click="form.tipo = 'retorno'">🔙 Retorno</button>
+          </div>
+        </div>
+
+        <div class="campo">
           <label>Horário <span class="obrigatorio">*</span></label>
           <input type="time" v-model="form.horario">
         </div>
@@ -73,12 +83,12 @@
         </div>
       </div>
 
-      <!-- ═══ BLOCO 2 — Destino e Transporte ═══ -->
+      <!-- ═══ BLOCO 2 — Destino/Origem e Transporte ═══ -->
       <div v-if="!gerado && passo === 2">
-        <h2 class="bloco-titulo">Destino e Transporte</h2>
+        <h2 class="bloco-titulo">{{ form.tipo === 'retorno' ? 'Origem e Transporte' : 'Destino e Transporte' }}</h2>
 
-        <!-- Destino -->
-        <div class="campo">
+        <!-- Destino (apenas Encaminhamento) -->
+        <div v-if="form.tipo === 'ida'" class="campo">
           <label>Para onde? <span class="obrigatorio">*</span></label>
           <div class="chips-wrap" style="margin-bottom:8px">
             <button
@@ -115,6 +125,16 @@
             placeholder="Ou digite manualmente"
             style="margin-top:6px"
           >
+        </div>
+
+        <!-- Campos Retorno -->
+        <div v-if="form.tipo === 'retorno'" class="campo">
+          <label>Local de origem <span class="obrigatorio">*</span></label>
+          <input type="text" v-model="form.localRetorno" placeholder="Ex: 3° andar do INRAD, Centro Cirúrgico...">
+        </div>
+        <div v-if="form.tipo === 'retorno'" class="campo">
+          <label>Procedimento realizado <span class="opc">(opcional)</span></label>
+          <input type="text" v-model="form.procedRetorno" placeholder="Ex: realização de tomografia, avaliação cirúrgica...">
         </div>
 
         <!-- Transporte -->
@@ -503,6 +523,7 @@ async function removerDestinoCustom(key) {
 
 // ── Formulário ──
 const form = reactive({
+  tipo:            'ida',
   horario:         '',
   nome:            '',
   leito:           '',
@@ -511,6 +532,8 @@ const form = reactive({
   transporteOutro: '',
   motivo:          '',
   condicao:        '',
+  localRetorno:    '',
+  procedRetorno:   '',
   cargo:           '',
   nomeAcomp:       '',
   recebidoPor:     '',
@@ -708,6 +731,7 @@ function limparBloco() {
   } else if (passo.value === 2) {
     form.destino = ''; form.transporte = ''; form.transporteOutro = ''
     form.motivo = ''; form.condicao = ''
+    form.localRetorno = ''; form.procedRetorno = ''
   } else if (passo.value === 3) {
     form.cargo = ''; form.nomeAcomp = ''
     limparDispositivos()
@@ -723,8 +747,12 @@ function avancar() {
       return
     }
   } else if (passo.value === 2) {
-    if (!form.destino.trim()) {
+    if (form.tipo === 'ida' && !form.destino.trim()) {
       erro.value = 'Informe o destino.'
+      return
+    }
+    if (form.tipo === 'retorno' && !form.localRetorno.trim()) {
+      erro.value = 'Informe o local de origem.'
       return
     }
     if (!form.transporte) {
@@ -777,11 +805,11 @@ function gerarTextoDispositivos() {
   if (sne.ativo) {
     let txt = 'SNE'
     if (sne.dietaTipo === 'integral') {
-      txt += ' em uso com dieta enteral integral'
+      txt += ' com dieta enteral integral'
       if (sne.mlH) txt += ` a ${sne.mlH}ml/h`
     } else if (sne.dietaTipo === 'outro') {
       const desc = sne.dietaDesc.trim()
-      txt += desc ? ` em uso com ${desc}` : ' em uso com dieta enteral'
+      txt += desc ? ` com ${desc}` : ' com dieta enteral'
       if (sne.mlH) txt += ` a ${sne.mlH}ml/h`
     }
     partes.push(txt)
@@ -810,6 +838,9 @@ function gerarTextoPulseiras() {
   return `Paciente com ${plural} de ${nomes.join(' e ')}.`
 }
 
+// ── Helper hora ──
+function formatHora(h) { return h ? h.replace(':', 'h') : '' }
+
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
@@ -820,26 +851,41 @@ function gerar() {
     ? form.transporteOutro.trim()
     : form.transporte.toLowerCase()
 
-  // Identificação
-  let texto = `Às ${form.horario}h, paciente ${form.nome}`
-  if (form.leito) texto += `, leito ${form.leito}`
-
-  // Transporte
-  texto += `, encaminhado em ${transporteTxt}`
-
-  // Acompanhante
+  // Acompanhante (compartilhado)
   const cargo = cargoOpcoes.find(c => c.label === form.cargo)
+  let acompTxt = ''
   if (cargo && cargo.texto === 'sem acompanhante') {
-    texto += ', sem acompanhante'
+    acompTxt = ', sem acompanhante'
   } else if (cargo) {
-    texto += `, acompanhado ${cargo.artigo} ${cargo.texto}`
-    if (form.nomeAcomp.trim()) texto += ` ${form.nomeAcomp.trim()}`
+    acompTxt = `, acompanhado ${cargo.artigo} ${cargo.texto}`
+    if (form.nomeAcomp.trim()) acompTxt += ` ${form.nomeAcomp.trim()}`
   }
 
-  // Destino e motivo
-  texto += `, para ${form.destino}`
-  if (form.motivo.trim()) texto += `, para ${form.motivo.trim()}`
-  texto += '.'
+  let texto = ''
+
+  if (form.tipo === 'retorno') {
+    // ── RETORNO ──
+    texto = `Às ${formatHora(form.horario)}, paciente ${form.nome}`
+    if (form.leito) texto += `, leito ${form.leito}`
+    texto += ` retorna para unidade de internação, em ${transporteTxt}`
+    texto += acompTxt
+    // Procedimento + local
+    const proc  = form.procedRetorno.trim()
+    const local = form.localRetorno.trim()
+    if (proc && local) texto += `, após ${proc} no ${local}`
+    else if (local)    texto += `, proveniente de ${local}`
+    else if (proc)     texto += `, após ${proc}`
+    texto += '.'
+  } else {
+    // ── IDA ──
+    texto = `Às ${formatHora(form.horario)}, paciente ${form.nome}`
+    if (form.leito) texto += `, leito ${form.leito}`
+    texto += `, encaminhado em ${transporteTxt}`
+    texto += acompTxt
+    texto += `, para ${form.destino}`
+    if (form.motivo.trim()) texto += `, para ${form.motivo.trim()}`
+    texto += '.'
+  }
 
   // Condição (opcional)
   if (form.condicao) texto += ` Condição clínica: ${form.condicao}.`
@@ -868,7 +914,17 @@ function gerar() {
 // ── Copiar ──
 async function copiar() {
   try {
-    await navigator.clipboard.writeText(textoGerado.value)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(textoGerado.value)
+    } else {
+      const el = document.createElement('textarea')
+      el.value = textoGerado.value
+      el.style.position = 'fixed'; el.style.opacity = '0'
+      document.body.appendChild(el)
+      el.focus(); el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+    }
     copiado.value = true
     setTimeout(() => (copiado.value = false), 2000)
     showToast('Texto copiado!')
@@ -894,8 +950,10 @@ async function salvar() {
 // ── Nova anotação ──
 function novaAnotacao() {
   Object.assign(form, {
+    tipo: 'ida',
     horario: '', nome: '', leito: '', destino: '',
     transporte: '', transporteOutro: '', motivo: '', condicao: '',
+    localRetorno: '', procedRetorno: '',
     cargo: '', nomeAcomp: '', recebidoPor: '', observacoes: '',
   })
   limparDispositivos()
