@@ -49,12 +49,12 @@
         <!-- Chips de pacientes -->
         <div v-if="pacientesStore.pacientes.length > 0" class="campo">
           <label>Paciente registrado</label>
-          <div class="chips-pac">
+          <div class="chips-wrap">
             <button
               v-for="p in pacientesStore.pacientes"
               :key="p._key"
-              class="chip-paciente"
-              :class="{ 'chip-selected': form.nome === p.nome && form.leito === (p.leito || '') }"
+              class="chip"
+              :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
               @click="selecionarPaciente(p)"
             >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
           </div>
@@ -66,7 +66,7 @@
         </div>
 
         <div class="campo">
-          <label>Leito <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
+          <label>Leito <span class="opc">(opcional)</span></label>
           <input type="text" v-model="form.leito" placeholder="Ex: 4B">
         </div>
 
@@ -77,41 +77,76 @@
         </div>
       </div>
 
-      <!-- ═══ BLOCO 2 — Destino e Condição ═══ -->
+      <!-- ═══ BLOCO 2 — Destino ═══ -->
       <div v-if="!gerado && passo === 2">
-        <h2 class="bloco-titulo">Destino e Condição</h2>
+        <h2 class="bloco-titulo">Destino</h2>
 
         <div class="campo">
-          <label>Destino <span class="obrigatorio">*</span></label>
-          <div class="chips-destino">
+          <label>Para onde? <span class="obrigatorio">*</span></label>
+
+          <!-- Chips padrão + personalizados -->
+          <div class="chips-wrap" style="margin-bottom:8px">
             <button
-              v-for="d in destinosRapidos"
+              v-for="d in destinosPadrao"
               :key="d"
-              class="chip-destino"
-              :class="{ 'chip-selected': form.destino === d }"
-              @click="selecionarDestino(d)"
+              class="chip"
+              :class="{ 'chip-on': form.destino === d }"
+              @click="toggleDestino(d)"
             >{{ d }}</button>
+
+            <button
+              v-for="d in destinosCustom"
+              :key="d._key"
+              class="chip chip-custom"
+              :class="{ 'chip-on': form.destino === d.texto }"
+              @click="toggleDestino(d.texto)"
+            >
+              {{ d.texto }}
+              <span class="chip-del" @click.stop="removerDestinoCustom(d._key)">×</span>
+            </button>
+
+            <!-- Botão adicionar destino -->
+            <button v-if="!adicionandoDestino" class="chip chip-add" @click="adicionandoDestino = true">+ Adicionar</button>
           </div>
+
+          <!-- Input inline para novo destino personalizado -->
+          <div v-if="adicionandoDestino" class="add-destino-row">
+            <input
+              class="add-destino-input"
+              type="text"
+              v-model="novoDestinoTxt"
+              placeholder="Ex: INRAD, INCOR, IOT..."
+              @keyup.enter="salvarDestinoCustom"
+              @keyup.esc="adicionandoDestino = false; novoDestinoTxt = ''"
+              ref="inputNovoDestino"
+            >
+            <button class="chip chip-on" @click="salvarDestinoCustom" :disabled="!novoDestinoTxt.trim()">Salvar</button>
+            <button class="chip" @click="adicionandoDestino = false; novoDestinoTxt = ''">Cancelar</button>
+          </div>
+
           <input
             type="text"
             v-model="form.destino"
-            placeholder="Ou digite o destino manualmente"
+            placeholder="Ou digite manualmente"
             style="margin-top:4px"
           >
         </div>
 
         <div class="campo">
-          <label>Motivo do encaminhamento <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.motivo" placeholder="Ex: realização de exame, procedimento cirúrgico">
+          <label>Motivo <span class="obrigatorio">*</span></label>
+          <input type="text" v-model="form.motivo" placeholder="Ex: realização de tomografia, avaliação especializada">
         </div>
 
         <div class="campo">
           <label>Condição clínica <span class="obrigatorio">*</span></label>
-          <div class="radio-group vertical">
-            <label class="radio-btn" v-for="op in ['Estável', 'Grave', 'Instável']" :key="op">
-              <input type="radio" v-model="form.condicao" :value="op">
-              <span>{{ op }}</span>
-            </label>
+          <div class="chips-wrap">
+            <button
+              v-for="op in ['Estável', 'Grave', 'Instável']"
+              :key="op"
+              class="chip"
+              :class="{ 'chip-on': form.condicao === op }"
+              @click="form.condicao = op"
+            >{{ op }}</button>
           </div>
         </div>
 
@@ -123,9 +158,41 @@
         </div>
       </div>
 
-      <!-- ═══ BLOCO 3 — Dispositivos e Transporte ═══ -->
+      <!-- ═══ BLOCO 3 — Transporte e Dispositivos ═══ -->
       <div v-if="!gerado && passo === 3">
-        <h2 class="bloco-titulo">Dispositivos e Transporte</h2>
+        <h2 class="bloco-titulo">Transporte e Dispositivos</h2>
+
+        <div class="campo">
+          <label>Tipo de transporte <span class="obrigatorio">*</span></label>
+          <div class="chips-wrap">
+            <button
+              v-for="t in transporteOpcoes"
+              :key="t"
+              class="chip"
+              :class="{ 'chip-on': form.transporte === t }"
+              @click="form.transporte = t"
+            >{{ t }}</button>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>Acompanhante <span class="obrigatorio">*</span></label>
+          <div class="chips-wrap" style="margin-bottom:10px">
+            <button
+              v-for="c in cargoOpcoes"
+              :key="c"
+              class="chip"
+              :class="{ 'chip-on': form.cargo === c }"
+              @click="form.cargo = c"
+            >{{ c }}</button>
+          </div>
+          <input
+            v-if="form.cargo && form.cargo !== 'Sem acompanhante'"
+            type="text"
+            v-model="form.nomeAcomp"
+            placeholder="Nome do profissional (opcional)"
+          >
+        </div>
 
         <div class="campo">
           <label>Dispositivos em uso</label>
@@ -147,23 +214,13 @@
         </div>
 
         <div class="campo">
-          <label>Acompanhante <span class="obrigatorio">*</span></label>
-          <div class="radio-group vertical">
-            <label class="radio-btn" v-for="op in acompOpcoes" :key="op">
-              <input type="radio" v-model="form.acompanhante" :value="op">
-              <span>{{ op }}</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Recebido por <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
+          <label>Recebido por <span class="opc">(opcional)</span></label>
           <input type="text" v-model="form.recebidoPor" placeholder="Ex: Enf. Maria, Dr. Carlos">
         </div>
 
         <div class="campo">
-          <label>Observações <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span></label>
-          <textarea v-model="form.observacoes" rows="3" placeholder="Ex: paciente agitado, necessitou de sedação para transporte"></textarea>
+          <label>Observações <span class="opc">(opcional)</span></label>
+          <textarea v-model="form.observacoes" rows="3" placeholder="Ex: paciente agitado durante o transporte"></textarea>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -187,12 +244,9 @@
         </button>
 
         <div class="nav-row">
-          <button
-            class="btn btn-secondary"
-            style="flex:1"
-            @click="salvar"
-            :disabled="salvando"
-          >{{ salvando ? 'Salvando...' : 'Salvar no histórico' }}</button>
+          <button class="btn btn-secondary" style="flex:1" @click="salvar" :disabled="salvando">
+            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
+          </button>
           <button class="btn btn-secondary" style="flex:1" @click="novaAnotacao">Nova anotação</button>
         </div>
 
@@ -204,38 +258,82 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
+import { db } from '../../firebase.js'
+import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
+import { useAuthStore } from '../../stores/auth.js'
 
-const router = useRouter()
+const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
-const { showToast } = useToast()
+const authStore      = useAuthStore()
+const { showToast }  = useToast()
 
 // ── Estado ──
-const passo = ref(1)
-const gerado = ref(false)
-const textoGerado = ref('')
-const erro = ref('')
+const passo    = ref(1)
+const gerado   = ref(false)
+const textoGerado  = ref('')
+const erro     = ref('')
 const salvando = ref(false)
-const copiado = ref(false)
+const copiado  = ref(false)
+
+// ── Destinos personalizados (Firebase) ──
+const destinosCustom    = ref([])
+const adicionandoDestino = ref(false)
+const novoDestinoTxt    = ref('')
+const inputNovoDestino  = ref(null)
+let unsubDestinos = null
+
+function _code() { return authStore.syncCode }
+
+function iniciarDestinos() {
+  const code = _code()
+  if (!code) return
+  const path = dbRef(db, `encaminhamento/${code}/destinos`)
+  unsubDestinos = onValue(path, (snap) => {
+    const lista = []
+    snap.forEach(c => { lista.push({ ...c.val(), _key: c.key }) })
+    lista.sort((a, b) => (a.criadoEm || 0) - (b.criadoEm || 0))
+    destinosCustom.value = lista
+  })
+}
+
+async function salvarDestinoCustom() {
+  const texto = novoDestinoTxt.value.trim()
+  if (!texto) return
+  await push(dbRef(db, `encaminhamento/${_code()}/destinos`), { texto, criadoEm: Date.now() })
+  // Seleciona automaticamente o novo destino
+  form.destino = texto
+  novoDestinoTxt.value = ''
+  adicionandoDestino.value = false
+}
+
+async function removerDestinoCustom(key) {
+  await remove(dbRef(db, `encaminhamento/${_code()}/destinos/${key}`))
+  if (form.destino === destinosCustom.value.find(d => d._key === key)?.texto) {
+    form.destino = ''
+  }
+}
 
 // ── Formulário ──
 const form = reactive({
-  horario: '',
-  nome: '',
-  leito: '',
-  destino: '',
-  motivo: '',
-  condicao: '',
+  horario:      '',
+  nome:         '',
+  leito:        '',
+  destino:      '',
+  motivo:       '',
+  condicao:     '',
+  transporte:   '',
+  cargo:        '',
+  nomeAcomp:    '',
   dispositivos: [],
-  acompanhante: '',
-  recebidoPor: '',
-  observacoes: '',
+  recebidoPor:  '',
+  observacoes:  '',
 })
 
 // ── Rascunho ──
@@ -243,36 +341,49 @@ const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
   useRascunho('rascunho_encaminhamento', form, () => !!(form.horario || form.nome || form.destino))
 
 // ── Opções ──
-const destinosRapidos = ['UTI', 'Centro Cirúrgico', 'Raio-X', 'Tomografia', 'Endoscopia', 'Hemodinâmica']
+const destinosPadrao   = ['UTI', 'Centro Cirúrgico', 'Raio-X', 'Tomografia', 'Endoscopia', 'Hemodinâmica']
+const transporteOpcoes = ['Cadeira de rodas', 'Maca', 'A pé', 'Ambulância']
+const cargoOpcoes      = ['Técnico de enfermagem', 'Técnica de enfermagem', 'Enfermeiro', 'Enfermeira', 'Médico', 'Médica', 'Sem acompanhante']
 const dispositivosOpcoes = ['SVD', 'AVP', 'CVC', 'SNG', 'TOT', 'Cateter nasal O2', 'Dreno torácico', 'Nenhum']
-const acompOpcoes = ['Técnico de enfermagem', 'Enfermeiro', 'Médico', 'Sem acompanhante']
+
+// Artigo para cada cargo
+const artigoCargo = {
+  'Técnico de enfermagem': 'do',
+  'Técnica de enfermagem': 'da',
+  'Enfermeiro':  'do',
+  'Enfermeira':  'da',
+  'Médico':      'do',
+  'Médica':      'da',
+}
 
 // ── Lifecycle ──
 onMounted(() => {
   pacientesStore.iniciar()
+  iniciarDestinos()
   iniciarRascunho()
+})
+
+onUnmounted(() => {
+  const code = _code()
+  if (code && unsubDestinos) off(dbRef(db, `encaminhamento/${code}/destinos`))
+  unsubDestinos = null
 })
 
 // ── Helpers ──
 function selecionarPaciente(p) {
-  form.nome = p.nome
+  form.nome  = p.nome
   form.leito = p.leito || ''
 }
 
-function selecionarDestino(d) {
+function toggleDestino(d) {
   form.destino = form.destino === d ? '' : d
 }
 
 function toggleDispositivo(disp) {
   if (disp === 'Nenhum') {
-    if (form.dispositivos.includes('Nenhum')) {
-      form.dispositivos = []
-    } else {
-      form.dispositivos = ['Nenhum']
-    }
+    form.dispositivos = form.dispositivos.includes('Nenhum') ? [] : ['Nenhum']
     return
   }
-  // Se selecionar outro, remove "Nenhum"
   const idx = form.dispositivos.indexOf(disp)
   if (idx === -1) {
     form.dispositivos = form.dispositivos.filter(d => d !== 'Nenhum').concat(disp)
@@ -283,29 +394,15 @@ function toggleDispositivo(disp) {
 
 // ── Navegação ──
 function voltarOuSair() {
-  if (passo.value > 1 && !gerado.value) {
-    passo.value--
-  } else {
-    router.back()
-  }
+  if (passo.value > 1 && !gerado.value) { passo.value--; return }
+  router.back()
 }
 
 function limparBloco() {
   erro.value = ''
-  if (passo.value === 1) {
-    form.horario = ''
-    form.nome = ''
-    form.leito = ''
-  } else if (passo.value === 2) {
-    form.destino = ''
-    form.motivo = ''
-    form.condicao = ''
-  } else if (passo.value === 3) {
-    form.dispositivos = []
-    form.acompanhante = ''
-    form.recebidoPor = ''
-    form.observacoes = ''
-  }
+  if (passo.value === 1) { form.horario = ''; form.nome = ''; form.leito = '' }
+  else if (passo.value === 2) { form.destino = ''; form.motivo = ''; form.condicao = '' }
+  else if (passo.value === 3) { form.transporte = ''; form.cargo = ''; form.nomeAcomp = ''; form.dispositivos = []; form.recebidoPor = ''; form.observacoes = '' }
 }
 
 function avancar() {
@@ -317,7 +414,7 @@ function avancar() {
     }
   } else if (passo.value === 2) {
     if (!form.destino.trim() || !form.motivo.trim() || !form.condicao) {
-      erro.value = 'Preencha destino, motivo e condição clínica.'
+      erro.value = 'Preencha o destino, o motivo e a condição clínica.'
       return
     }
   }
@@ -327,16 +424,29 @@ function avancar() {
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
-  if (!form.acompanhante) {
-    erro.value = 'Selecione o acompanhante.'
-    return
+  if (!form.transporte) { erro.value = 'Selecione o tipo de transporte.'; return }
+  if (!form.cargo)       { erro.value = 'Selecione o acompanhante.'; return }
+
+  // Identificação
+  let texto = `Às ${form.horario}h, paciente ${form.nome}`
+  if (form.leito) texto += `, leito ${form.leito},`
+
+  // Transporte
+  texto += ` encaminhado em ${form.transporte.toLowerCase()}`
+
+  // Acompanhante
+  if (form.cargo === 'Sem acompanhante') {
+    texto += ', sem acompanhante'
+  } else {
+    const artigo = artigoCargo[form.cargo] || 'do'
+    texto += `, acompanhado ${artigo} ${form.cargo.toLowerCase()}`
+    if (form.nomeAcomp.trim()) texto += ` ${form.nomeAcomp.trim()}`
   }
 
-  // Monta identificação
-  let texto = `Às ${form.horario}h, realizado encaminhamento de paciente ${form.nome}`
-  if (form.leito) texto += `, leito ${form.leito}`
-  texto += `. Encaminhado para ${form.destino}.`
-  texto += ` Motivo: ${form.motivo}.`
+  // Destino e motivo
+  texto += `, para ${form.destino}, para ${form.motivo}.`
+
+  // Condição
   texto += ` Condição clínica: ${form.condicao}.`
 
   // Dispositivos
@@ -344,20 +454,14 @@ function gerar() {
   if (form.dispositivos.includes('Nenhum') || disps.length === 0) {
     texto += ' Sem dispositivos.'
   } else {
-    texto += ` Dispositivos: ${disps.join(', ')}.`
+    texto += ` Dispositivos em uso: ${disps.join(', ')}.`
   }
 
-  // Acompanhante
-  texto += ` Acompanhado por ${form.acompanhante}`
-  if (form.recebidoPor.trim()) {
-    texto += `; recebido por ${form.recebidoPor.trim()}`
-  }
-  texto += '.'
+  // Recebido por
+  if (form.recebidoPor.trim()) texto += ` Recebido por ${form.recebidoPor.trim()}.`
 
   // Observações
-  if (form.observacoes.trim()) {
-    texto += ` Observações: ${form.observacoes.trim()}.`
-  }
+  if (form.observacoes.trim()) texto += ` Observações: ${form.observacoes.trim()}.`
 
   textoGerado.value = texto
   gerado.value = true
@@ -381,9 +485,9 @@ async function salvar() {
   salvando.value = true
   try {
     await anotacoesStore.salvar({
-      tipo: 'encaminhamento',
+      tipo:  'encaminhamento',
       texto: textoGerado.value,
-      nome: form.nome,
+      nome:  form.nome,
       leito: form.leito,
     })
     descartarRascunho()
@@ -398,16 +502,9 @@ async function salvar() {
 // ── Nova anotação ──
 function novaAnotacao() {
   Object.assign(form, {
-    horario: '',
-    nome: '',
-    leito: '',
-    destino: '',
-    motivo: '',
-    condicao: '',
-    dispositivos: [],
-    acompanhante: '',
-    recebidoPor: '',
-    observacoes: '',
+    horario: '', nome: '', leito: '', destino: '', motivo: '',
+    condicao: '', transporte: '', cargo: '', nomeAcomp: '',
+    dispositivos: [], recebidoPor: '', observacoes: '',
   })
   textoGerado.value = ''
   gerado.value = false
@@ -420,152 +517,97 @@ function novaAnotacao() {
 
 <style scoped>
 .btn-icon {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; padding: 6px; border-radius: 8px;
+  display: flex; align-items: center;
 }
 .btn-icon:active { background: var(--bg-hover); }
 
 .btn-home-logo {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--blue);
-  font-size: 1.05rem;
-  font-weight: 700;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
+  display: flex; align-items: center; gap: 6px;
+  color: var(--blue); font-size: 1.05rem; font-weight: 700;
+  background: none; border: none; cursor: pointer; font-family: inherit;
 }
-.btn-home-logo:active { background: var(--bg-hover); border-radius: 8px; }
 
-.progress-wrap {
-  height: 4px;
-  background: var(--border);
-  position: relative;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--blue);
-  transition: width 0.3s;
-}
-.progress-label {
-  position: absolute;
-  right: 16px;
-  top: 6px;
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
+.progress-wrap { height: 4px; background: var(--border); position: relative; }
+.progress-fill { height: 100%; background: var(--blue); transition: width 0.3s; }
+.progress-label { position: absolute; right: 16px; top: 6px; font-size: 0.7rem; color: var(--text-muted); }
 
 .bloco-titulo {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  font-size: 1.1rem; font-weight: 700; color: var(--text);
+  margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
 }
 
-.chips-pac {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 4px;
+.opc { font-size: 0.75rem; font-weight: 400; color: var(--text-muted); }
+
+/* ── Chips ── */
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.chip {
+  padding: 6px 12px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-dim); font-size: 0.85rem;
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+  display: flex; align-items: center; gap: 4px;
 }
-.chip-paciente {
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-dim);
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s;
-}
-.chip-paciente.chip-selected {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
+.chip:active { opacity: 0.8; }
+.chip-on {
+  background: var(--blue); border-color: var(--blue); color: #fff;
 }
 
-.chips-destino {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
+/* Chip personalizado — com botão × */
+.chip-custom { padding-right: 6px; }
+.chip-del {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  font-size: 0.75rem; line-height: 1;
+  background: rgba(255,255,255,0.25); color: inherit;
+  cursor: pointer; flex-shrink: 0;
 }
-.chip-destino {
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-dim);
-  font-size: 0.85rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s;
+.chip-custom:not(.chip-on) .chip-del { background: rgba(0,0,0,0.12); }
+
+/* Chip adicionar */
+.chip-add {
+  border-style: dashed; color: var(--blue); border-color: var(--blue);
+  background: rgba(30,136,229,0.06);
 }
-.chip-destino.chip-selected {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
+.chip-add:active { background: rgba(30,136,229,0.15); }
+
+/* Linha de adição de destino personalizado */
+.add-destino-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+}
+.add-destino-input {
+  flex: 1; min-width: 140px;
+  background: var(--bg-input); border: 1px solid var(--blue);
+  border-radius: var(--radius); padding: 8px 12px;
+  color: var(--text); font-family: inherit; font-size: 0.9rem; outline: none;
 }
 
+/* Navegação de bloco */
 .bloco-nav {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-  align-items: center;
+  display: flex; gap: 10px; margin-top: 12px; align-items: center;
 }
 .bloco-nav .btn-primary { flex: 1; }
 
+/* Resultado */
 .resultado-box {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--text);
-  white-space: pre-wrap;
-  font-family: inherit;
-  margin-bottom: 16px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+  font-size: 0.9rem; line-height: 1.7; color: var(--text);
+  white-space: pre-wrap; font-family: inherit; margin-bottom: 16px;
 }
 
 .btn-copy {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-dim);
-  font-family: inherit;
-  font-size: 0.95rem;
-  cursor: pointer;
-  margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text-dim);
+  font-family: inherit; font-size: 0.95rem; cursor: pointer; margin-bottom: 8px;
 }
 .btn-copy:active { background: var(--bg-hover); }
 
-.nav-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
+.nav-row { display: flex; gap: 10px; margin-top: 8px; }
 
-.erro-msg {
-  color: var(--danger);
-  font-size: 0.82rem;
-  margin-top: 6px;
-}
+.erro-msg { color: var(--danger); font-size: 0.82rem; margin-top: 6px; }
 </style>
