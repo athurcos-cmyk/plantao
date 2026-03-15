@@ -1,6 +1,6 @@
 # Plano de Testes — Plantão App
 
-> Versão do app: 0.10.2
+> Versão do app: 0.10.11
 > Última atualização: 2026-03-15
 
 ---
@@ -40,8 +40,11 @@
 
 ### 1.4 Sessão e persistência
 - [x] Sessão persiste após reload da página
+- [x] Sessão dura 30 dias (armazenada no localStorage)
 - [x] Acesso direto a `/dashboard` sem login redireciona para login
 - [x] Botão "Sair da conta" desloga, limpa localStorage e redireciona
+- [x] PWA Android: reabrir app com sessão válida → redireciona para Dashboard sem exibir tela de login
+- [x] LoginView: `onMounted` guard redireciona automaticamente se já autenticado
 
 ---
 
@@ -186,57 +189,147 @@
 
 ## 5. ENCAMINHAMENTO
 
+> Testes de lógica verificados programaticamente via setupState (v0.10.11).
+> Testes de UI/Firebase marcados com `[UI]` foram verificados manualmente no preview.
+
 ### 5.1 Interface
-- [x] Rota `/anotar/encaminhamento` carrega sem erros
+- [x] Rota `/encaminhamento` carrega sem erros
 - [x] Card "Encaminhamento" no Dashboard navega corretamente (sem badge "em breve")
 - [x] Barra de progresso exibe "Bloco X de 3"
 - [x] Botão voltar navega entre blocos (bloco 1 → volta ao Dashboard)
 
 ### 5.2 Bloco 1 — Identificação
-- [x] Campo horário obrigatório
-- [x] Chips de pacientes cadastrados aparecem (quando há pacientes registrados)
-- [x] Clicar no chip preenche nome e leito automaticamente
-- [x] Campo nome obrigatório — valida ao clicar "Próximo"
+- [x] Chips de tipo: "🚑 Encaminhamento" e "🔙 Retorno" visíveis e funcionando
+- [x] Tipo padrão é "Encaminhamento" (ida)
+- [x] Campo horário obrigatório — erro ao tentar avançar sem preencher
+- [x] Campo nome obrigatório — erro ao tentar avançar sem preencher
 - [x] Campo leito opcional
-- [x] Rascunho automático salva e restaura dados
+- [x] Chips de pacientes registrados aparecem e preenchem nome+leito ao clicar `[UI]`
+- [x] Rascunho automático salva e restaura dados (incluindo tipo ida/retorno) `[UI]`
 
-### 5.3 Bloco 2 — Destino e Transporte
-- [x] Chips de destino padrão: UTI, Centro Cirúrgico, Raio-X, Tomografia, Endoscopia, Hemodinâmica
-- [x] Clicar no mesmo chip novamente deseleciona (toggle)
-- [x] Chips personalizados salvos no Firebase aparecem com botão ×
-- [x] Botão × remove chip personalizado do Firebase
-- [x] Botão "+ Adicionar" abre input inline com placeholder "Ex: INRAD, INCOR, IOT..."
-- [x] Salvar novo destino → aparece como chip e é selecionado automaticamente
-- [x] Campo "Ou digite manualmente" preenche destino sem usar chip
+### 5.3 Bloco 2 — Encaminhamento (ida)
+- [x] Título exibe "Destino e Transporte"
+- [x] Chips de destino padrão: UTI, Centro Cirúrgico, Raio-X, Tomografia, Endoscopia, Hemodinâmica (6 chips)
+- [x] Chip toggle: clicar no ativo deseleciona
+- [x] Campo "Ou digite manualmente" preenche destino livre
+- [x] Chips personalizados salvos no Firebase aparecem com botão × `[UI/Firebase]`
+- [x] Botão × remove chip personalizado `[UI/Firebase]`
+- [x] Botão "+ Adicionar" abre input inline (placeholder "Ex: INRAD, INCOR, IOT...") `[UI]`
+- [x] Salvar novo destino → chip criado e selecionado `[UI]`
 - [x] Chips de transporte: Cadeira de rodas, Maca, A pé, Ambulância, Outro
-- [x] Chip "Outro" abre input inline para transporte livre (não salvo)
-- [x] Motivo é opcional — se vazio, não aparece no texto gerado
-- [x] Condição clínica é opcional e deselecionável (clicar no chip ativo deseleciona)
-- [x] Validação: destino e transporte são obrigatórios para avançar
+- [x] Chip "Outro" abre input de transporte livre
+- [x] Motivo: opcional — omitido do texto se vazio
+- [x] Condição clínica: opcional, toggle (clicar ativo deseleciona)
+- [x] Validação: destino vazio → erro "Informe o destino"
+- [x] Validação: transporte vazio → erro "Selecione o tipo de transporte"
+- [x] limparBloco: destino, transporte, motivo, condicao, localRetorno, procedRetorno resetados
 
-### 5.4 Bloco 3 — Acompanhante e Dispositivos
+### 5.4 Bloco 2 — Retorno
+- [x] Título exibe "Origem e Transporte"
+- [x] Campo "Local de origem" obrigatório (chips de destino ocultos)
+- [x] Campo "Procedimento realizado" opcional
+- [x] Chips de transporte mantidos (mesmo que ida)
+- [x] Validação: localRetorno vazio → erro "Informe o local de origem"
+- [x] Validação: transporte vazio → erro "Selecione o tipo de transporte"
+
+### 5.5 Bloco 3 — Acompanhante e Dispositivos
 - [x] Chips de cargo: Téc. de enfermagem, Téc.ª de enfermagem, Enf., Enf.ª, Médico, Médica, Sem acompanhante
-- [x] Campo "Nome do profissional" aparece ao selecionar cargo (exceto "Sem acompanhante")
-- [x] Checkboxes de dispositivos: SVD, AVP, CVC, SNG, TOT, Cateter nasal O2, Dreno torácico, Nenhum
-- [x] Selecionar "Nenhum" desmarca os demais; selecionar outro desmarca "Nenhum"
-- [x] Campos Recebido por e Observações opcionais
-- [x] Validação: cargo obrigatório
+- [x] Artigos corretos: "do" (masc.) / "da" (fem.) por cargo
+- [x] Campo "Nome do profissional" aparece para todos exceto "Sem acompanhante"
+- [x] Validação: cargo obrigatório — erro ao gerar sem selecionar
 
-### 5.5 Texto Gerado
-- [x] Formato: "Às Xh, paciente [nome][, leito Y], encaminhado em [transporte], acompanhado do [cargo] [nome], para [destino][, para [motivo]]."
-- [x] Artigo correto por gênero (do/da técnico/técnica, enfermeiro/enfermeira, médico/médica)
-- [x] Condição clínica omitida se não selecionada
-- [x] Motivo omitido se não preenchido
-- [x] Dispositivos listados se selecionados; omitidos se "Nenhum" ou nenhum marcado
-- [x] Botão "Copiar texto" copia e exibe toast
-- [x] Botão "Salvar no histórico" salva e exibe toast
-- [x] Botão "← Editar" retorna ao bloco 3 sem perder dados
-- [x] Botão "Nova anotação" reseta o formulário
+#### Dispositivos simples
+- [x] Chips: SVD, SNG, TOT — toggle individual
+- [x] Seleção múltipla: todos aparecem separados por vírgula no texto
+- [x] Chip "Nenhum": deseleciona todos os dispositivos/pulseiras/etc.
+- [x] Selecionar dispositivo quando "Nenhum" ativo: desmarca "Nenhum"
 
-### 5.6 Destinos Personalizados (Firebase)
-- [x] Destinos adicionados ficam salvos no Firebase em `encaminhamento/{code}/destinos`
-- [x] Persistem entre sessões e entre dispositivos com mesmo código
-- [x] Regra Firebase `encaminhamento` configurada no console
+#### Acessos centrais (cards com local)
+- [x] CVC: card com chips de local (femoral D/E, jugular D/E, subclávia D/E)
+- [x] CVC com local: "CVC em jugular D" no texto
+- [x] CVC sem local: apenas "CVC"
+- [x] PICC: card com chips de local (MSE, MSD, MIE, MID)
+- [x] PICC com local: "PICC em MSD" no texto
+- [x] Permcath: card com locais centrais → "Permcath em femoral D"
+- [x] Shilley: card com locais centrais → "Shilley em subclávia E"
+- [x] Múltiplos acessos centrais: todos listados
+
+#### AVP
+- [x] "+ AVP": adiciona card com chips MSE/MSD/MIE/MID
+- [x] AVP com local: "AVP em MSE"
+- [x] AVP com infusão: "AVP em MSD recebendo SF 0,9%"
+- [x] Múltiplos AVPs: todos listados individualmente
+- [x] Botão ✕ remove AVP específico
+
+#### Cateter nasal O₂
+- [x] Toggle chip abre card com campo L/min
+- [x] Com L/min: "cateter nasal de O₂ a 3L/min"
+- [x] Sem L/min: apenas "cateter nasal de O₂"
+- [x] Desativar: limpa lMin
+
+#### SNE
+- [x] Toggle SNE abre card com chips "Dieta integral" / "Outro"
+- [x] Sem dieta selecionada: texto apenas "SNE"
+- [x] Chip "Dieta integral": exibe campo ml/h com sufixo "ml/h"
+- [x] SNE integral + ml/h: "SNE com dieta enteral integral a 60ml/h"
+- [x] SNE integral sem ml/h: "SNE com dieta enteral integral" (sem ml/h)
+- [x] Chip "Outro": exibe campo texto livre + campo ml/h
+- [x] SNE outro + desc + ml/h: "SNE com TNE polimérica a 45ml/h"
+- [x] SNE outro sem desc + ml/h: "SNE com dieta enteral a 30ml/h" (fallback)
+- [x] SNE: NÃO gera "em uso com" (removido)
+- [x] Chips são toggle: clicar no ativo deseleciona
+- [x] Desativar SNE: limpa dietaTipo, mlH, dietaDesc
+
+#### Dreno
+- [x] "+ Dreno": adiciona card com campo de local livre
+- [x] Dreno com local: "dreno em tórax D"
+- [x] Dreno sem local: apenas "dreno"
+- [x] Múltiplos drenos: todos listados
+- [x] Botão ✕ remove dreno específico
+
+#### Outro dispositivo
+- [x] "+ Outro": adiciona card com campo descrição livre
+- [x] Outro com descrição: aparece no texto
+- [x] Outro sem descrição: não aparece no texto (omitido)
+- [x] Múltiplos "Outros": todos listados
+- [x] Botão ✕ remove "Outro" específico
+
+#### Pulseiras
+- [x] Chip "Pulseiras" abre card com 5 opções: Identificação, Alergia, Risco de queda, Precaução, Preservação de membro
+- [x] Toggle individual por opção
+- [x] Pulseira única: "Paciente com pulseira de [tipo]."
+- [x] Múltiplas pulseiras: "Paciente com pulseiras de X e Y."
+- [x] Pulseiras geram frase SEPARADA — NÃO aparecem dentro de "Dispositivos em uso:"
+- [x] Desativar chip Pulseiras: limpa todas as seleções
+
+### 5.6 Texto Gerado — Encaminhamento (ida)
+- [x] Formato horário: "09:40" → "09h40" (HHhMM)
+- [x] Formato completo: "Às 09h40, paciente [nome][, leito Y], encaminhado em [transporte], acompanhado [artigo] [cargo] [nome], para [destino][, para [motivo]]."
+- [x] Com condição clínica: "Condição clínica: Estável."
+- [x] Com recebido por: "Recebido por Enf. Ana."
+- [x] Com observações: "Observações: paciente agitado."
+- [x] Dispositivos: "Dispositivos em uso: SVD, CVC em jugular D, SNE com dieta enteral integral a 60ml/h, AVP em MSE."
+- [x] Sem dispositivos: frase de dispositivos omitida
+- [x] Ordem final: identificação → transporte → acompanhante → destino → condição → dispositivos → pulseiras → recebido → observações
+
+### 5.7 Texto Gerado — Retorno
+- [x] Formato: "Às 10h00, paciente [nome], retorna para unidade de internação, em [transporte], acompanhado [cargo], após [procedimento] no [local]."
+- [x] Com proc + local: "após realização de tomografia no 3° andar do INRAD"
+- [x] Só local (sem procedimento): "proveniente de Centro Cirúrgico"
+- [x] NÃO contém "encaminhado" nem destino da ida
+- [x] Dispositivos e pulseiras funcionam igual à ida
+
+### 5.8 Ações pós-geração
+- [x] Botão "Copiar texto": copia via navigator.clipboard (com fallback execCommand para Android)
+- [x] Botão "Salvar no histórico": salva e exibe toast `[UI]`
+- [x] Botão "← Editar": retorna ao bloco 3 sem perder dados
+- [x] Botão "Nova anotação": reseta form (tipo volta para "ida", passo=1, gerado=false)
+
+### 5.9 Destinos Personalizados
+- [x] Destinos salvos no Firebase em `encaminhamento/{code}/destinos` `[Firebase]`
+- [x] Cache em localStorage para acesso offline
+- [x] Tentativa de adicionar destino offline exibe toast de erro `[UI]`
+- [x] Persistem entre sessões `[Firebase]`
 
 ---
 
@@ -386,3 +479,71 @@
 - [x] Tarefas e progresso sincronizados via Firebase Realtime Database
 - [x] Template persiste entre sessões
 - [x] Plantão ativo persiste após reload
+
+---
+
+## 9. SUPORTE OFFLINE
+
+> Testado via simulação de rede (DevTools → offline) e reload com conexão desativada.
+
+### 9.1 Indicador de status
+- [x] Barra laranja "Sem conexão" aparece no topo do app quando offline
+- [x] Barra desaparece ao reconectar
+- [x] Toast "Conexão restaurada. Sincronizando..." exibido ao reconectar
+
+### 9.2 Anotações (Encaminhamento, Medicação, Inicial)
+- [x] Salvar offline → operação enfileirada localmente (não trava em "Salvando...")
+- [x] Toast ou feedback imediato ao salvar offline
+- [x] Ao reconectar → pendentes sincronizados automaticamente
+- [x] Contador de pendentes visível enquanto offline `[UI]`
+
+### 9.3 Pacientes
+- [x] Adicionar paciente offline → aparece imediatamente na lista (optimistic update)
+- [x] Editar paciente offline → atualização local imediata
+- [x] Excluir paciente offline → removido da lista local
+- [x] Pendências offline (add/toggle/delete) → enfileiradas
+- [x] Ao reconectar → todos os CRUDs sincronizados com mapeamento de chaves temporárias → reais
+- [x] Chips de pacientes nas anotações funcionam offline (dados do cache local)
+
+### 9.4 Organizador do Plantão
+- [x] Marcar/desmarcar tarefa offline → atualização local imediata (dirty flag)
+- [x] Adicionar tarefa extra offline → salvo localmente
+- [x] Editar template offline → salvo localmente
+- [x] Ao reconectar → estado completo enviado ao Firebase (set() full state)
+
+### 9.5 Cache de leitura
+- [x] Histórico de anotações carrega do cache localStorage se Firebase demorar
+- [x] Lista de pacientes carrega do cache offline
+- [x] Destinos personalizados do Encaminhamento carregam do cache
+
+### 9.6 Persistência de login (PWA Android)
+- [x] Sessão de 30 dias armazenada no localStorage
+- [x] Reabrir app (PWA instalado) com sessão válida → redireciona diretamente para Dashboard (não exibe tela de login)
+- [x] LoginView redireciona automaticamente se já autenticado (`onMounted` guard)
+
+---
+
+## 10. FORMATO E CONSISTÊNCIA DE TEXTO
+
+### 10.1 Formato de horário
+- [x] `formatHora("09:40")` → `"09h40"` (não "09:40h")
+- [x] `formatHora("10:00")` → `"10h00"`
+- [x] `formatHora("00:00")` → `"00h00"`
+- [x] Aplicado em: Encaminhamento ida, Encaminhamento retorno
+- [ ] Verificar Anotação Inicial e Medicação (usar mesmo padrão)
+
+### 10.2 Copiar texto
+- [x] `navigator.clipboard.writeText` usado quando disponível
+- [x] Fallback `document.execCommand('copy')` para Android/contextos sem permissão
+- [x] Toast "Texto copiado!" exibido após cópia bem-sucedida
+- [x] Toast "Erro ao copiar" em falha
+- [x] Botão muda para "Copiado!" por 2 segundos após copiar
+
+### 10.3 Artigos de gênero (acompanhante)
+- [x] Téc. de enfermagem → "acompanhado do técnico de enfermagem"
+- [x] Téc.ª de enfermagem → "acompanhado da técnica de enfermagem"
+- [x] Enf. → "acompanhado do enfermeiro"
+- [x] Enf.ª → "acompanhado da enfermeira"
+- [x] Médico → "acompanhado do médico"
+- [x] Médica → "acompanhado da médica"
+- [x] Sem acompanhante → "sem acompanhante"
