@@ -46,6 +46,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/anotar/encaminhamento',
+    name: 'encaminhamento',
+    component: () => import('../views/anotacoes/EncaminhamentoView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/pacientes',
     name: 'pacientes',
     component: () => import('../views/PacientesView.vue'),

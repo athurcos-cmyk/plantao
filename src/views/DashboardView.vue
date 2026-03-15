@@ -113,7 +113,7 @@ const tipos = [
   { id: 'inicial',   icon: '📋', nome: 'Anotação inicial',      rota: 'anotacao-inicial' },
   { id: 'sv',        icon: '📊', nome: 'Sinais vitais',          rota: 'sinais-vitais'   },
   { id: 'medicacao', icon: '💊', nome: 'Medicação',              rota: 'medicacao'   },
-  { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: null },
+  { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: 'encaminhamento' },
   { id: 'banho',     icon: '🛁', nome: 'Banho',                  rota: null },
   { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: null },
   { id: 'passagem',  icon: '🔄', nome: 'Passagem de plantão',    rota: null },

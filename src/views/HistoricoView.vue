@@ -190,7 +190,7 @@ const tiposFiltro = [
   { v: 'medicacao',l: 'Medicação'     },
   { v: 'curativo', l: 'Curativo'      },
   { v: 'banho',    l: 'Banho'         },
-  { v: 'encamin',  l: 'Encaminhamento'},
+  { v: 'encaminhamento', l: 'Encaminhamento'},
   { v: 'passagem', l: 'Passagem'      },
   { v: 'livre',    l: 'Intercorrência'},
 ]
@@ -200,6 +200,7 @@ const tipoLabels = {
   sv:        '📊 Sinais Vitais',
   medicacao: '💊 Medicação',
   encamin:   '🚑 Encaminhamento',
+  encaminhamento: '🚑 Encaminhamento',
   banho:     '🛁 Banho',
   curativo:  '🩹 Curativo',
   passagem:  '🔄 Passagem de Plantão',
