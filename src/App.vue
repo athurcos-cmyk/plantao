@@ -3,6 +3,12 @@
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
   </Transition>
+  <Transition name="offline-bar">
+    <div v-if="!isOnline" class="offline-bar">
+      <span>📵</span> Sem internet — anotações serão salvas localmente
+      <span v-if="anotacoes.pendentes > 0" class="offline-badge">{{ anotacoes.pendentes }}</span>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -12,8 +18,10 @@ import { useAuthStore } from './stores/auth.js'
 import { useAnotacoesStore } from './stores/anotacoes.js'
 import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
+import { useOnlineStatus } from './composables/useOnlineStatus.js'
 
-const { toastMsg } = useToast()
+const { toastMsg, showToast } = useToast()
+const { isOnline } = useOnlineStatus()
 
 const auth      = useAuthStore()
 const anotacoes = useAnotacoesStore()
@@ -30,8 +38,16 @@ watch(
       anotacoes.parar()
     }
   },
-  { immediate: true }  // roda também ao carregar a página (reload)
+  { immediate: true }
 )
+
+// Ao voltar online: sincroniza pendentes
+watch(isOnline, async (online) => {
+  if (online && auth.isLoggedIn) {
+    const n = await anotacoes.sincronizarPendentes()
+    if (n > 0) showToast(`${n} anotaç${n === 1 ? 'ão sincronizada' : 'ões sincronizadas'} ✓`)
+  }
+})
 
 // Verifica a sessão a cada minuto — se expirou, desloga e manda pro login
 onMounted(() => {
@@ -43,3 +59,38 @@ onMounted(() => {
   }, 60 * 1000)
 })
 </script>
+
+<style>
+.offline-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border-top: 1px solid #e57373;
+  color: #ef9a9a;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 16px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.offline-badge {
+  background: #e57373;
+  color: #1a1a2e;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.offline-bar-enter-active,
+.offline-bar-leave-active { transition: transform 0.25s ease; }
+.offline-bar-enter-from,
+.offline-bar-leave-to     { transform: translateY(100%); }
+</style>

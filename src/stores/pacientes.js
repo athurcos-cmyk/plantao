@@ -4,6 +4,15 @@ import { db } from '../firebase.js'
 import { ref as dbRef, push, onValue, off, remove, update } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
+const _pacCacheKey = code => `cache_pacientes_${code}`
+
+function _lerCachePac(code) {
+  try { return JSON.parse(localStorage.getItem(_pacCacheKey(code)) || '[]') } catch { return [] }
+}
+function _salvarCachePac(code, lista) {
+  try { localStorage.setItem(_pacCacheKey(code), JSON.stringify(lista)) } catch {}
+}
+
 export const usePacientesStore = defineStore('pacientes', () => {
   const pacientes = ref([])
   let unsubscribe = null
@@ -12,7 +21,13 @@ export const usePacientesStore = defineStore('pacientes', () => {
     if (unsubscribe) return
     const auth = useAuthStore()
     if (!auth.syncCode) return
-    const path = dbRef(db, `pacientes/${auth.syncCode}`)
+    const code = auth.syncCode
+
+    // Pré-popula do cache
+    const cached = _lerCachePac(code)
+    if (cached.length) pacientes.value = cached
+
+    const path = dbRef(db, `pacientes/${code}`)
     unsubscribe = onValue(path, (snap) => {
       const lista = []
       snap.forEach(child => {
@@ -26,6 +41,7 @@ export const usePacientesStore = defineStore('pacientes', () => {
       })
       lista.sort((a, b) => (a.leito || '').localeCompare(b.leito || '', undefined, { numeric: true }))
       pacientes.value = lista
+      _salvarCachePac(code, lista)
     })
   }
 

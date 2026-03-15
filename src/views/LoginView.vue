@@ -191,13 +191,18 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import HelpModal from '../components/HelpModal.vue'
 
 const router = useRouter()
 const auth   = useAuthStore()
+
+// Se já está logado (sessão válida no localStorage), vai direto pro dashboard
+onMounted(() => {
+  if (auth.isLoggedIn) router.replace({ name: 'dashboard' })
+})
 
 const codigo    = ref('')
 const pin       = ref('')
