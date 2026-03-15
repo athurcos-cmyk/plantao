@@ -5,13 +5,9 @@ import { ref as dbRef, get, set } from 'firebase/database'
 
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000 // 30 dias
 
-function hashPin(pin) {
-  // Hash simples — igual ao app atual
-  let h = 0
-  for (let i = 0; i < pin.length; i++) {
-    h = Math.imul(31, h) + pin.charCodeAt(i) | 0
-  }
-  return Math.abs(h).toString(36)
+async function hashPin(pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin))
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -33,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function register(code, pin, name) {
-    const pinHash = hashPin(pin)
+    const pinHash = await hashPin(pin)
     await set(dbRef(db, `usuarios/${code}`), {
       pin: pinHash,
       nome: name || '',
@@ -47,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
     const snap = await get(dbRef(db, `usuarios/${code}`))
     if (!snap.exists()) return false
     const user = snap.val()
-    if (user.pin !== hashPin(pin)) return false
+    if (user.pin !== await hashPin(pin)) return false
     _saveSession(code, user.nome || '')
     return true
   }
