@@ -172,7 +172,7 @@ const helpItens = [
   { icone: '📝', titulo: 'Adicionar pendência', desc: 'Com o card expandido, digite uma pendência no campo "＋ Nova pendência..." e pressione Enter ou toque em "Ok".' },
   { icone: '✅', titulo: 'Marcar como feito', desc: 'Toque no checkbox ao lado da pendência para marcar. O texto fica riscado e o badge do card atualiza. Toque novamente para desmarcar.' },
   { icone: '🔗', titulo: 'Integração com anotações', desc: 'Ao gerar uma anotação inicial ou de medicação, os pacientes cadastrados aparecem como chips. Toque em um chip para preencher nome e leito automaticamente.' },
-  { icone: '☁️', titulo: 'Sincronização', desc: 'Todos os pacientes e pendências são salvos em tempo real no Firebase. Aparecem instantaneamente em outros dispositivos com a mesma conta.' },
+  { icone: '☁️', titulo: 'Sincronização', desc: 'Todos os pacientes e pendências são salvos em tempo real no nosso banco de dados. Aparecem instantaneamente em outros dispositivos com a mesma conta.' },
 ]
 
 function toggleExpandir(key) {
