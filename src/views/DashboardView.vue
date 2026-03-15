@@ -10,14 +10,8 @@
         </svg>
         <span>Plantão</span>
       </div>
-      <div style="display:flex;gap:2px">
-        <button class="btn-icon" @click="helpAberto = true" title="Ajuda">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-        </button>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn-ajuda" @click="helpAberto = true">? Ajuda</button>
         <button  data-testid="auto-btn-dashboardview-1" class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>

@@ -319,3 +319,23 @@ body {
 }
 
 .obrigatorio { color: var(--danger); }
+
+/* ===== BOTÃO AJUDA GLOBAL ===== */
+.btn-ajuda {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 4px 9px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.btn-ajuda:active { background: var(--bg-hover); border-color: var(--blue); color: var(--blue); }
