@@ -201,6 +201,11 @@
               @click="toggleDispSimples(d)"
             >{{ d }}</button>
 
+            <button class="chip" :class="{ 'chip-on': cvc.ativo }"      @click="toggleAcessoLocal(cvc)">CVC</button>
+            <button class="chip" :class="{ 'chip-on': picc.ativo }"     @click="toggleAcessoLocal(picc)">PICC</button>
+            <button class="chip" :class="{ 'chip-on': permcath.ativo }" @click="toggleAcessoLocal(permcath)">Permcath</button>
+            <button class="chip" :class="{ 'chip-on': shilley.ativo }"  @click="toggleAcessoLocal(shilley)">Shilley</button>
+
             <button
               class="chip" :class="{ 'chip-on': catO2.ativo }"
               @click="toggleCatO2"
@@ -211,7 +216,7 @@
               @click="toggleSne"
             >SNE</button>
 
-                    <button
+            <button
               class="chip" :class="{ 'chip-on': pulseirasAtivas.length > 0 }"
               @click="togglePulseirasCard"
             >Pulseiras</button>
@@ -224,6 +229,22 @@
               @click="toggleNenhum"
             >Nenhum</button>
           </div>
+
+          <!-- Cards: acessos vasculares centrais -->
+          <template v-for="[nome, acc, locs] in acessosCentrais" :key="nome">
+            <div v-if="acc.ativo" class="disp-card">
+              <div class="disp-card-header">
+                <span class="disp-card-title">🩸 {{ nome }}</span>
+              </div>
+              <div class="chips-wrap" style="margin-top:4px">
+                <button
+                  v-for="loc in locs" :key="loc"
+                  class="chip chip-sm" :class="{ 'chip-on': acc.local === loc }"
+                  @click="acc.local = acc.local === loc ? '' : loc"
+                >{{ loc }}</button>
+              </div>
+            </div>
+          </template>
 
           <!-- Card: Cateter nasal O₂ -->
           <div v-if="catO2.ativo" class="disp-card">
@@ -466,15 +487,29 @@ const cargoOpcoes = [
 ]
 
 // ── Dispositivos ──
-const dispositivosSimples = ['SVD', 'CVC', 'PICC', 'Permcath', 'Shilley', 'SNG', 'TOT']
-const locaisAVP = ['MSE', 'MSD', 'MIE', 'MID']
+const dispositivosSimples = ['SVD', 'SNG', 'TOT']
+const locaisAVP     = ['MSE', 'MSD', 'MIE', 'MID']
+const locaisCentral = ['femoral D', 'femoral E', 'jugular D', 'jugular E', 'subclávia D', 'subclávia E']
 
 const dispSimplesAtivos = ref([])
-const catO2 = reactive({ ativo: false, lMin: '' })
-const sne = reactive({ ativo: false, dieta: false, dietaDesc: '' })
+const catO2    = reactive({ ativo: false, lMin: '' })
+const sne      = reactive({ ativo: false, dieta: false, dietaDesc: '' })
+const cvc      = reactive({ ativo: false, local: '' })
+const picc     = reactive({ ativo: false, local: '' })
+const permcath = reactive({ ativo: false, local: '' })
+const shilley  = reactive({ ativo: false, local: '' })
+
+// Para o v-for dos cards de acesso central no template
+const acessosCentrais = [
+  ['CVC',      cvc,      locaisCentral],
+  ['PICC',     picc,     locaisAVP],
+  ['Permcath', permcath, locaisCentral],
+  ['Shilley',  shilley,  locaisCentral],
+]
+
 const pulseirasAtivas = ref([])
 const pulseirasCardAberto = ref(false)
-const pulseirasOpcoes = ['Identificação', 'Alergia', 'Risco de queda']
+const pulseirasOpcoes = ['Identificação', 'Alergia', 'Risco de queda', 'Precaução', 'Preservação de membro']
 let avpIdCtr = 0
 let drenoIdCtr = 0
 const avps   = ref([])
@@ -490,6 +525,12 @@ function toggleDispSimples(key) {
   } else {
     dispSimplesAtivos.value = [...dispSimplesAtivos.value, key]
   }
+}
+
+function toggleAcessoLocal(acc) {
+  _limparNenhum()
+  acc.ativo = !acc.ativo
+  if (!acc.ativo) acc.local = ''
 }
 
 function toggleCatO2() {
@@ -541,6 +582,10 @@ function toggleNenhum() {
     dispSimplesAtivos.value = []
     catO2.ativo = false; catO2.lMin = ''
     sne.ativo = false; sne.dieta = false; sne.dietaDesc = ''
+    cvc.ativo = false; cvc.local = ''
+    picc.ativo = false; picc.local = ''
+    permcath.ativo = false; permcath.local = ''
+    shilley.ativo = false; shilley.local = ''
     pulseirasAtivas.value = []; pulseirasCardAberto.value = false
     avps.value = []; drenos.value = []
     nenhumAtivo.value = true
@@ -551,6 +596,10 @@ function limparDispositivos() {
   dispSimplesAtivos.value = []
   catO2.ativo = false; catO2.lMin = ''
   sne.ativo = false; sne.dieta = false; sne.dietaDesc = ''
+  cvc.ativo = false; cvc.local = ''
+  picc.ativo = false; picc.local = ''
+  permcath.ativo = false; permcath.local = ''
+  shilley.ativo = false; shilley.local = ''
   pulseirasAtivas.value = []; pulseirasCardAberto.value = false
   avps.value = []; drenos.value = []
   nenhumAtivo.value = false
@@ -638,9 +687,18 @@ function gerarTextoDispositivos() {
   if (nenhumAtivo.value) return []
   const partes = []
 
-  // Simples
+  // Simples (SVD, SNG, TOT)
   for (const d of dispositivosSimples) {
     if (dispSimplesAtivos.value.includes(d)) partes.push(d)
+  }
+
+  // Acessos vasculares centrais
+  for (const [nome, acc] of [['CVC', cvc], ['PICC', picc], ['Permcath', permcath], ['Shilley', shilley]]) {
+    if (acc.ativo) {
+      let txt = nome
+      if (acc.local) txt += ` em ${acc.local}`
+      partes.push(txt)
+    }
   }
 
   // AVPs
@@ -675,14 +733,15 @@ function gerarTextoDispositivos() {
     partes.push(txt)
   }
 
-  // Pulseiras
-  if (pulseirasAtivas.value.length > 0) {
-    const nomes = pulseirasAtivas.value.map(p => p.toLowerCase())
-    const plural = nomes.length > 1 ? 'pulseiras' : 'pulseira'
-    partes.push(`${plural} de ${nomes.join(' e ')}`)
-  }
-
   return partes
+}
+
+// ── Texto de pulseiras (frase separada) ──
+function gerarTextoPulseiras() {
+  if (!pulseirasAtivas.value.length) return ''
+  const nomes = pulseirasAtivas.value.map(p => p.toLowerCase())
+  const plural = nomes.length > 1 ? 'pulseiras' : 'pulseira'
+  return `Paciente com ${plural} de ${nomes.join(' e ')}.`
 }
 
 // ── Gerar texto ──
@@ -724,6 +783,10 @@ function gerar() {
   if (disps.length > 0) {
     texto += ` Dispositivos em uso: ${disps.join(', ')}.`
   }
+
+  // Pulseiras (frase separada)
+  const txtPulseiras = gerarTextoPulseiras()
+  if (txtPulseiras) texto += ` ${txtPulseiras}`
 
   // Recebido por
   if (form.recebidoPor.trim()) texto += ` Recebido por ${form.recebidoPor.trim()}.`
