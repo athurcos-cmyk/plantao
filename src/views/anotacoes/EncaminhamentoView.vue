@@ -189,18 +189,87 @@
           >
         </div>
 
+        <!-- ── Dispositivos em uso ── -->
         <div class="campo">
           <label>Dispositivos em uso</label>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
-            <label v-for="disp in dispositivosOpcoes" :key="disp" class="checkbox-label">
+
+          <!-- Chips de seleção -->
+          <div class="chips-wrap" style="margin-top:8px">
+            <button
+              v-for="d in dispositivosSimples" :key="d"
+              class="chip" :class="{ 'chip-on': dispSimplesAtivos.includes(d) }"
+              @click="toggleDispSimples(d)"
+            >{{ d }}</button>
+
+            <button
+              class="chip" :class="{ 'chip-on': catO2.ativo }"
+              @click="toggleCatO2"
+            >Cateter nasal O₂</button>
+
+            <button class="chip chip-add" @click="addAVP">+ AVP</button>
+            <button class="chip chip-add" @click="addDreno">+ Dreno</button>
+
+            <button
+              class="chip" :class="{ 'chip-on': nenhumAtivo }"
+              @click="toggleNenhum"
+            >Nenhum</button>
+          </div>
+
+          <!-- Card: Cateter nasal O₂ -->
+          <div v-if="catO2.ativo" class="disp-card">
+            <div class="disp-card-header">
+              <span class="disp-card-title">🫁 Cateter nasal O₂</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
               <input
-                type="checkbox"
-                :value="disp"
-                :checked="form.dispositivos.includes(disp)"
-                @change="toggleDispositivo(disp)"
+                type="number"
+                v-model="catO2.lMin"
+                placeholder="Ex: 3"
+                style="width:90px"
+                min="1" max="15" step="0.5"
               >
-              <span>{{ disp }}</span>
+              <span class="disp-unit">L/min</span>
+            </div>
+          </div>
+
+          <!-- Cards: AVP -->
+          <div v-for="avp in avps" :key="avp.id" class="disp-card">
+            <div class="disp-card-header">
+              <span class="disp-card-title">💉 AVP</span>
+              <button class="disp-del-btn" @click="removeAVP(avp.id)">✕</button>
+            </div>
+            <div class="chips-wrap" style="margin-bottom:10px">
+              <button
+                v-for="loc in locaisAVP" :key="loc"
+                class="chip chip-sm" :class="{ 'chip-on': avp.local === loc }"
+                @click="avp.local = avp.local === loc ? '' : loc"
+              >{{ loc }}</button>
+            </div>
+            <label class="toggle-row">
+              <input type="checkbox" v-model="avp.emInfusao">
+              <span>Em infusão</span>
             </label>
+            <input
+              v-if="avp.emInfusao"
+              type="text"
+              v-model="avp.infundindo"
+              placeholder="Ex: tiamina 100mg + 100ml SF0,9% a 35ml/h em BIC"
+              style="margin-top:8px"
+            >
+          </div>
+
+          <!-- Cards: Dreno -->
+          <div v-for="dreno in drenos" :key="dreno.id" class="disp-card">
+            <div class="disp-card-header">
+              <span class="disp-card-title">🩺 Dreno</span>
+              <button class="disp-del-btn" @click="removeDreno(dreno.id)">✕</button>
+            </div>
+            <input
+              type="text"
+              v-model="dreno.local"
+              placeholder="Ex: tórax direito, abdominal, lombar..."
+              style="margin-top:4px"
+            >
           </div>
         </div>
 
@@ -332,7 +401,6 @@ const form = reactive({
   condicao:        '',
   cargo:           '',
   nomeAcomp:       '',
-  dispositivos:    [],
   recebidoPor:     '',
   observacoes:     '',
 })
@@ -344,7 +412,6 @@ const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
 // ── Opções ──
 const destinosPadrao   = ['UTI', 'Centro Cirúrgico', 'Raio-X', 'Tomografia', 'Endoscopia', 'Hemodinâmica']
 const transporteOpcoes = ['Cadeira de rodas', 'Maca', 'A pé', 'Ambulância']
-const dispositivosOpcoes = ['SVD', 'AVP', 'CVC', 'SNG', 'TOT', 'Cateter nasal O2', 'Dreno torácico', 'Nenhum']
 
 const cargoOpcoes = [
   { label: 'Téc. de enfermagem', texto: 'técnico de enfermagem',  artigo: 'do' },
@@ -355,6 +422,65 @@ const cargoOpcoes = [
   { label: 'Médica',             texto: 'médica',                 artigo: 'da' },
   { label: 'Sem acompanhante',   texto: 'sem acompanhante',       artigo: ''   },
 ]
+
+// ── Dispositivos ──
+const dispositivosSimples = ['SVD', 'CVC', 'PICC', 'Permcath', 'Shilley', 'SNE', 'SNG', 'TOT']
+const locaisAVP = ['MSE', 'MSD', 'MIE', 'MID']
+
+const dispSimplesAtivos = ref([])
+const catO2 = reactive({ ativo: false, lMin: '' })
+let avpIdCtr = 0
+let drenoIdCtr = 0
+const avps   = ref([])
+const drenos = ref([])
+const nenhumAtivo = ref(false)
+
+function _limparNenhum() { nenhumAtivo.value = false }
+
+function toggleDispSimples(key) {
+  _limparNenhum()
+  if (dispSimplesAtivos.value.includes(key)) {
+    dispSimplesAtivos.value = dispSimplesAtivos.value.filter(d => d !== key)
+  } else {
+    dispSimplesAtivos.value = [...dispSimplesAtivos.value, key]
+  }
+}
+
+function toggleCatO2() {
+  _limparNenhum()
+  catO2.ativo = !catO2.ativo
+  if (!catO2.ativo) catO2.lMin = ''
+}
+
+function addAVP() {
+  _limparNenhum()
+  avps.value.push({ id: ++avpIdCtr, local: '', emInfusao: false, infundindo: '' })
+}
+function removeAVP(id) { avps.value = avps.value.filter(a => a.id !== id) }
+
+function addDreno() {
+  _limparNenhum()
+  drenos.value.push({ id: ++drenoIdCtr, local: '' })
+}
+function removeDreno(id) { drenos.value = drenos.value.filter(d => d.id !== id) }
+
+function toggleNenhum() {
+  if (nenhumAtivo.value) {
+    nenhumAtivo.value = false
+  } else {
+    dispSimplesAtivos.value = []
+    catO2.ativo = false; catO2.lMin = ''
+    avps.value = []; drenos.value = []
+    nenhumAtivo.value = true
+  }
+}
+
+function limparDispositivos() {
+  dispSimplesAtivos.value = []
+  catO2.ativo = false; catO2.lMin = ''
+  avps.value = []; drenos.value = []
+  nenhumAtivo.value = false
+}
 
 // ── Lifecycle ──
 onMounted(() => {
@@ -389,19 +515,6 @@ async function selecionarTransporte(t) {
   }
 }
 
-function toggleDispositivo(disp) {
-  if (disp === 'Nenhum') {
-    form.dispositivos = form.dispositivos.includes('Nenhum') ? [] : ['Nenhum']
-    return
-  }
-  const idx = form.dispositivos.indexOf(disp)
-  if (idx === -1) {
-    form.dispositivos = form.dispositivos.filter(d => d !== 'Nenhum').concat(disp)
-  } else {
-    form.dispositivos = form.dispositivos.filter(d => d !== disp)
-  }
-}
-
 // ── Navegação ──
 function voltarOuSair() {
   if (passo.value > 1 && !gerado.value) { passo.value--; return }
@@ -416,7 +529,8 @@ function limparBloco() {
     form.destino = ''; form.transporte = ''; form.transporteOutro = ''
     form.motivo = ''; form.condicao = ''
   } else if (passo.value === 3) {
-    form.cargo = ''; form.nomeAcomp = ''; form.dispositivos = []
+    form.cargo = ''; form.nomeAcomp = ''
+    limparDispositivos()
     form.recebidoPor = ''; form.observacoes = ''
   }
 }
@@ -445,12 +559,47 @@ function avancar() {
   passo.value++
 }
 
+// ── Texto dos dispositivos ──
+function gerarTextoDispositivos() {
+  if (nenhumAtivo.value) return []
+  const partes = []
+
+  // Simples
+  for (const d of dispositivosSimples) {
+    if (dispSimplesAtivos.value.includes(d)) partes.push(d)
+  }
+
+  // AVPs
+  for (const avp of avps.value) {
+    let txt = 'AVP'
+    if (avp.local) txt += ` em ${avp.local}`
+    if (avp.emInfusao && avp.infundindo.trim()) txt += ` recebendo ${avp.infundindo.trim()}`
+    partes.push(txt)
+  }
+
+  // Cateter nasal O₂
+  if (catO2.ativo) {
+    let txt = 'cateter nasal de O₂'
+    if (catO2.lMin) txt += ` a ${catO2.lMin}L/min`
+    partes.push(txt)
+  }
+
+  // Drenos
+  for (const dreno of drenos.value) {
+    let txt = 'dreno'
+    if (dreno.local.trim()) txt += ` em ${dreno.local.trim()}`
+    partes.push(txt)
+  }
+
+  return partes
+}
+
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
   if (!form.cargo) { erro.value = 'Selecione o acompanhante.'; return }
 
-  // Resolve transporte real
+  // Transporte
   const transporteTxt = form.transporte === '__outro__'
     ? form.transporteOutro.trim()
     : form.transporte.toLowerCase()
@@ -480,7 +629,7 @@ function gerar() {
   if (form.condicao) texto += ` Condição clínica: ${form.condicao}.`
 
   // Dispositivos
-  const disps = form.dispositivos.filter(d => d !== 'Nenhum')
+  const disps = gerarTextoDispositivos()
   if (disps.length > 0) {
     texto += ` Dispositivos em uso: ${disps.join(', ')}.`
   }
@@ -527,8 +676,9 @@ function novaAnotacao() {
   Object.assign(form, {
     horario: '', nome: '', leito: '', destino: '',
     transporte: '', transporteOutro: '', motivo: '', condicao: '',
-    cargo: '', nomeAcomp: '', dispositivos: [], recebidoPor: '', observacoes: '',
+    cargo: '', nomeAcomp: '', recebidoPor: '', observacoes: '',
   })
+  limparDispositivos()
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   descartarRascunho()
@@ -570,6 +720,7 @@ function novaAnotacao() {
 }
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.chip-sm { padding: 4px 10px; font-size: 0.8rem; }
 
 .chip-custom { padding-right: 6px; }
 .chip-del {
@@ -592,6 +743,36 @@ function novaAnotacao() {
   border-radius: var(--radius); padding: 8px 12px;
   color: var(--text); font-family: inherit; font-size: 0.9rem; outline: none;
 }
+
+/* ── Dispositivos cards ── */
+.disp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-top: 10px;
+}
+.disp-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.disp-card-title {
+  font-size: 0.85rem; font-weight: 600; color: var(--text);
+}
+.disp-del-btn {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 0.85rem; padding: 2px 6px; border-radius: 4px;
+  font-family: inherit;
+}
+.disp-del-btn:active { background: var(--bg-hover); color: var(--danger); }
+.disp-unit { font-size: 0.85rem; color: var(--text-dim); }
+
+.toggle-row {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-size: 0.85rem; color: var(--text-dim);
+  user-select: none;
+}
+.toggle-row input[type="checkbox"] { cursor: pointer; width: 15px; height: 15px; }
 
 /* ── Nav ── */
 .bloco-nav { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
