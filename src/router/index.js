@@ -51,6 +51,12 @@ const routes = [
     component: () => import('../views/PacientesView.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/organizador',
+    name: 'organizador',
+    component: () => import('../views/OrganizadorView.vue'),
+    meta: { requiresAuth: true }
+  },
 ]
 
 const router = createRouter({

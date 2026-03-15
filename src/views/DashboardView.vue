@@ -43,6 +43,20 @@
         Meus Pacientes do plantão
       </button>
 
+      <button class="btn-organizador" @click="router.push({ name: 'organizador' })">
+        <div class="btn-org-inner">
+          <span class="btn-org-icon">📋</span>
+          <div class="btn-org-info">
+            <span class="btn-org-titulo">Organizador do Plantão</span>
+            <span class="btn-org-sub" v-if="!orgStore.plantao">Nenhum plantão ativo</span>
+            <span class="btn-org-sub" v-else>
+              {{ orgStore.plantao.tarefas.filter(t => t.feito).length }}/{{ orgStore.plantao.tarefas.length }} tarefas
+              · {{ orgStore.plantao.tarefas.filter(t => !t.feito).length }} pendente{{ orgStore.plantao.tarefas.filter(t => !t.feito).length !== 1 ? 's' : '' }}
+            </span>
+          </div>
+        </div>
+      </button>
+
       <button  data-testid="auto-btn-dashboardview-3" class="btn-historico" @click="router.push({ name: 'historico' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -58,12 +72,18 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
+import { useOrganizadorStore } from '../stores/organizador.js'
 
-const router = useRouter()
-const auth   = useAuthStore()
+const router   = useRouter()
+const auth     = useAuthStore()
+const orgStore = useOrganizadorStore()
+
+onMounted(() => {
+  orgStore.iniciar()
+})
 
 const saudacaoTexto = computed(() => {
   const h = new Date().getHours()
@@ -188,4 +208,26 @@ function sair() {
   cursor: pointer; transition: all 0.15s;
 }
 .btn-pacientes:active { background: var(--bg-hover); }
+
+.btn-organizador {
+  display: block; width: 100%; margin-top: 10px; padding: 14px;
+  background: var(--bg-card); border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  font-family: inherit; cursor: pointer; transition: all 0.15s;
+  text-align: left;
+}
+.btn-organizador:active { background: var(--bg-hover); }
+.btn-org-inner {
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-org-icon { font-size: 1.4rem; flex-shrink: 0; }
+.btn-org-info {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.btn-org-titulo {
+  font-size: 0.95rem; font-weight: 600; color: var(--blue);
+}
+.btn-org-sub {
+  font-size: 0.78rem; color: var(--text-muted);
+}
 </style>

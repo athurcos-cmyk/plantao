@@ -11,6 +11,10 @@
         ".read": true,
         ".write": true
       }
+    },
+    "organizador": {
+      ".read": true,
+      ".write": true
     }
   }
 }
