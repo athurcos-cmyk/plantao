@@ -360,43 +360,70 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { useToast }          from '../../composables/useToast.js'
 import { useRascunho }       from '../../composables/useRascunho.js'
 import { useAuthStore }      from '../../stores/auth.js'
 import { sugerirMedicamentos } from '../../data/medicamentos.js'
+import { db } from '../../firebase.js'
+import { ref as dbRef, get, set } from 'firebase/database'
 
 const router   = useRouter()
 const store    = useAnotacoesStore()
 const auth     = useAuthStore()
 const { showToast } = useToast()
 
-// ── Histórico de medicamentos (localStorage) ─────────────────────────────────
-const HIST_MAX = 20
+// ── Histórico de medicamentos (Firebase + localStorage como cache) ────────────
+const HIST_MAX       = 20
+const historicoCache = ref([])   // fonte de verdade em memória
 
-function histKey() {
+function histKeyLS() {
   return `med_historico_${auth.syncCode || 'guest'}`
 }
+function histPathFB() {
+  return `med_historico/${auth.syncCode}`
+}
 
-function carregarHistorico() {
-  try { return JSON.parse(localStorage.getItem(histKey()) || '[]') }
+function _lerLS() {
+  try { return JSON.parse(localStorage.getItem(histKeyLS()) || '[]') }
   catch { return [] }
 }
-
-function salvarHistoricoLS(lista) {
-  localStorage.setItem(histKey(), JSON.stringify(lista))
+function _gravarLS(lista) {
+  localStorage.setItem(histKeyLS(), JSON.stringify(lista))
+}
+async function _gravarFB(lista) {
+  if (!auth.syncCode) return
+  try { await set(dbRef(db, histPathFB()), lista) }
+  catch { /* silencioso — localStorage já foi atualizado */ }
 }
 
+// Carrega histórico: localStorage imediato + Firebase em background
+onMounted(async () => {
+  historicoCache.value = _lerLS()          // instantâneo
+  if (!auth.syncCode) return
+  try {
+    const snap = await get(dbRef(db, histPathFB()))
+    if (snap.exists()) {
+      const remoto = snap.val()
+      if (Array.isArray(remoto) && remoto.length > 0) {
+        historicoCache.value = remoto
+        _gravarLS(remoto)                   // atualiza cache local
+      }
+    }
+  } catch { /* fica com localStorage */ }
+})
+
 function adicionarAoHistorico(med) {
-  const hist = carregarHistorico()
-  // remove duplicado exato (mesmo nome + dose + via)
-  const idx = hist.findIndex(h => h.nome === med.nome && h.dose === med.dose && h.via === med.via)
+  const hist = [...historicoCache.value]
+  const idx  = hist.findIndex(h => h.nome === med.nome && h.dose === med.dose && h.via === med.via)
   if (idx !== -1) hist.splice(idx, 1)
   hist.unshift({ ...med })
   if (hist.length > HIST_MAX) hist.splice(HIST_MAX)
-  salvarHistoricoLS(hist)
+  historicoCache.value = hist
+  _gravarLS(hist)           // síncrono (rápido)
+  _gravarFB(hist)           // assíncrono, fire-and-forget
 }
 
 // ── Autocomplete state ────────────────────────────────────────────────────────
@@ -410,7 +437,7 @@ function onNomeInput(val) {
     mostrarSug.value = false
     return
   }
-  const hist    = carregarHistorico()
+  const hist      = historicoCache.value
   const nomesHist = hist.map(h => h.nome)
   const resultados = sugerirMedicamentos(val, nomesHist, 8)
   sugestoes.value = resultados.map(nome => {
