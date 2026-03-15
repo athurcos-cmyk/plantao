@@ -484,37 +484,44 @@
 
 ## 9. SUPORTE OFFLINE
 
-> Testado via simulação de rede (DevTools → offline) e reload com conexão desativada.
+> Testado programaticamente via setupState + simulação de navigator.onLine (v0.10.11).
+> Testes de UI marcados com `[UI]` verificados manualmente.
 
 ### 9.1 Indicador de status
-- [x] Barra laranja "Sem conexão" aparece no topo do app quando offline
-- [x] Barra desaparece ao reconectar
-- [x] Toast "Conexão restaurada. Sincronizando..." exibido ao reconectar
+- [x] Barra laranja "Sem conexão" aparece no topo do app quando offline `[UI]`
+- [x] Barra desaparece ao reconectar `[UI]`
+- [x] Toast "Conexão restaurada. Sincronizando..." exibido ao reconectar `[UI]`
 
 ### 9.2 Anotações (Encaminhamento, Medicação, Inicial)
-- [x] Salvar offline → operação enfileirada localmente (não trava em "Salvando...")
-- [x] Toast ou feedback imediato ao salvar offline
-- [x] Ao reconectar → pendentes sincronizados automaticamente
-- [x] Contador de pendentes visível enquanto offline `[UI]`
+- [x] Salvar offline → enfileirado em `pendentes_{code}` no localStorage (não trava)
+- [x] `pendentes.value` incrementa corretamente a cada save offline
+- [x] Múltiplos saves offline acumulam na fila (testado: 2 saves → fila.length === 2)
+- [x] Cada item da fila tem: tipo, texto, nome, leito, timestamp
+- [x] Salvar online NÃO toca a fila (fila permanece vazia)
+- [x] `sincronizarPendentes()`: envia fila ao Firebase, zera fila, zera pendentes.value
+- [x] Ao reconectar → App.vue chama sincronizarPendentes() automaticamente via watch(isOnline)
 
 ### 9.3 Pacientes
-- [x] Adicionar paciente offline → aparece imediatamente na lista (optimistic update)
-- [x] Editar paciente offline → atualização local imediata
-- [x] Excluir paciente offline → removido da lista local
-- [x] Pendências offline (add/toggle/delete) → enfileiradas
-- [x] Ao reconectar → todos os CRUDs sincronizados com mapeamento de chaves temporárias → reais
-- [x] Chips de pacientes nas anotações funcionam offline (dados do cache local)
+- [x] Adicionar paciente offline → aparece imediatamente na lista (optimistic update) `[UI]`
+- [x] Editar paciente offline → atualização local imediata `[UI]`
+- [x] Excluir paciente offline → removido da lista local `[UI]`
+- [x] Pendências offline (add/toggle/delete) → enfileiradas `[UI]`
+- [x] Ao reconectar → CRUDs sincronizados com mapeamento temp-key → real-key `[UI]`
+- [x] Chips de pacientes nas anotações funcionam offline (dados de `cache_pacientes_{code}`)
 
 ### 9.4 Organizador do Plantão
-- [x] Marcar/desmarcar tarefa offline → atualização local imediata (dirty flag)
-- [x] Adicionar tarefa extra offline → salvo localmente
-- [x] Editar template offline → salvo localmente
-- [x] Ao reconectar → estado completo enviado ao Firebase (set() full state)
+- [x] Marcar/desmarcar tarefa offline → atualização local imediata (dirty flag) `[UI]`
+- [x] Adicionar tarefa extra offline → salvo localmente `[UI]`
+- [x] Editar template offline → salvo localmente `[UI]`
+- [x] Ao reconectar → estado completo enviado ao Firebase via set() full state `[UI]`
 
-### 9.5 Cache de leitura
-- [x] Histórico de anotações carrega do cache localStorage se Firebase demorar
-- [x] Lista de pacientes carrega do cache offline
-- [x] Destinos personalizados do Encaminhamento carregam do cache
+### 9.5 Cache de leitura (chaves no localStorage)
+- [x] `cache_anotacoes_{code}`: existe, é array, itens têm tipo/texto/timestamp
+- [x] `cache_pacientes_{code}`: existe
+- [x] `cache_enc_destinos_{code}`: existe (destinos personalizados do Encaminhamento)
+- [x] `cache_org_plantao_{code}`: existe
+- [x] `cache_org_template_{code}`: existe
+- [x] Store pré-popula da cache antes do Firebase responder (sem tela em branco offline)
 
 ### 9.6 Persistência de login (PWA Android)
 - [x] Sessão de 30 dias armazenada no localStorage
@@ -530,7 +537,7 @@
 - [x] `formatHora("10:00")` → `"10h00"`
 - [x] `formatHora("00:00")` → `"00h00"`
 - [x] Aplicado em: Encaminhamento ida, Encaminhamento retorno
-- [ ] Verificar Anotação Inicial e Medicação (usar mesmo padrão)
+- [x] Aplicado em: Encaminhamento ida, Encaminhamento retorno, Medicação, Sinais Vitais, Anotação Inicial
 
 ### 10.2 Copiar texto
 - [x] `navigator.clipboard.writeText` usado quando disponível
