@@ -65,7 +65,7 @@ const saudacaoTexto = computed(() => {
 const tipos = [
   { id: 'inicial',   icon: '📋', nome: 'Anotação inicial',      rota: 'anotacao-inicial' },
   { id: 'sv',        icon: '📊', nome: 'Sinais vitais',          rota: 'sinais-vitais'   },
-  { id: 'medicacao', icon: '💊', nome: 'Medicação',              rota: null },
+  { id: 'medicacao', icon: '💊', nome: 'Medicação',              rota: 'medicacao'   },
   { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: null },
   { id: 'banho',     icon: '🛁', nome: 'Banho',                  rota: null },
   { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: null },

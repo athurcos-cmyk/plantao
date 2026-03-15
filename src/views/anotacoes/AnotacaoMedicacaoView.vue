@@ -1,0 +1,941 @@
+<template>
+  <div class="screen">
+    <header class="app-header">
+      <button class="btn-icon" @click="router.back()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
+          <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
+          <path d="M9 17c-2-1-3-2-3-3s2-2 6-2 6 1 6 2-1 2-3 3"/>
+        </svg>
+        <span>Plantão</span>
+      </button>
+      <div style="width:34px"/>
+    </header>
+
+    <main class="container" style="padding-top:24px;padding-bottom:40px">
+
+      <!-- Banner de rascunho -->
+      <div v-if="temRascunho && !gerado" class="rascunho-banner">
+        <div class="rascunho-info">
+          <span>📝</span>
+          <span>Você tem uma medicação em rascunho</span>
+        </div>
+        <div class="rascunho-acoes">
+          <button class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
+          <button class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
+        </div>
+      </div>
+
+      <!-- ── Formulário ── -->
+      <div v-if="!gerado">
+
+        <!-- Horário -->
+        <div class="campo">
+          <label>Horário <span class="obrigatorio">*</span></label>
+          <input type="time" v-model="form.horario">
+        </div>
+
+        <!-- Cuidados -->
+        <div class="campo">
+          <label>Identificação do paciente</label>
+          <label class="checkbox-label">
+            <input type="radio"
+              :checked="form.conferencia === 'com'"
+              @click="form.conferencia = form.conferencia === 'com' ? '' : 'com'">
+            <span>Conferência de identificação com paciente</span>
+          </label>
+          <label class="checkbox-label" style="margin-top:8px">
+            <input type="radio"
+              :checked="form.conferencia === 'do'"
+              @click="form.conferencia = form.conferencia === 'do' ? '' : 'do'">
+            <span>Conferência de identificação do paciente</span>
+          </label>
+        </div>
+
+        <!-- Orientação -->
+        <div class="campo">
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="form.orienta">
+            <span>Oriento paciente sobre a medicação</span>
+          </label>
+        </div>
+
+        <!-- Conforme -->
+        <div class="campo">
+          <label>Conforme</label>
+          <label class="checkbox-label">
+            <input type="radio"
+              :checked="form.conformeTipo === 'prescricao'"
+              @click="form.conformeTipo = form.conformeTipo === 'prescricao' ? '' : 'prescricao'">
+            <span>Conforme prescrição médica</span>
+          </label>
+          <div style="margin-top:8px">
+            <label class="checkbox-label">
+              <input type="radio"
+                :checked="form.conformeTipo === 'orientacao'"
+                @click="form.conformeTipo = form.conformeTipo === 'orientacao' ? '' : 'orientacao'">
+              <span>Conforme orientação do</span>
+            </label>
+            <input
+              v-if="form.conformeTipo === 'orientacao'"
+              type="text"
+              class="campo-inline"
+              v-model="form.conformeNome"
+              placeholder="Nome do profissional"
+              style="margin-top:8px">
+          </div>
+        </div>
+
+        <!-- Medicamentos -->
+        <div class="campo">
+          <label>Medicamentos <span class="obrigatorio">*</span></label>
+
+          <p v-if="form.medicamentos.length === 0" class="lista-vazia">
+            Nenhum medicamento adicionado
+          </p>
+
+          <div v-else class="med-lista">
+            <div v-for="(med, i) in form.medicamentos" :key="i" class="med-item">
+              <div class="med-item-info">
+                <span class="med-nome">{{ med.nome }}</span>
+                <span class="med-detalhe">{{ resumirMed(med) }}</span>
+                <span v-if="med.dupla" class="badge-dupla">dupla ✓</span>
+              </div>
+              <div class="med-item-acoes">
+                <button class="btn-icon-sm" @click="editarMed(i)" title="Editar">✏</button>
+                <button class="btn-icon-sm btn-danger-sm" @click="removerMed(i)" title="Remover">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-add-med" @click="abrirModal()">
+            + Adicionar medicamento
+          </button>
+        </div>
+
+        <p v-if="erro" class="erro-msg">{{ erro }}</p>
+
+        <button class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">
+          Gerar texto
+        </button>
+
+      </div>
+
+      <!-- ── Preview ── -->
+      <div v-else>
+        <div class="preview-box">
+          <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <div style="flex:2">
+            <label class="label-small">Nome do paciente</label>
+            <input class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
+          </div>
+          <div style="flex:1">
+            <label class="label-small">Leito</label>
+            <input class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+          <button class="btn btn-primary" @click="copiar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+            Copiar texto
+          </button>
+          <button class="btn btn-secondary" @click="salvar" :disabled="salvando">
+            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
+          </button>
+          <button class="btn btn-secondary" @click="compartilhar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+            Compartilhar
+          </button>
+          <button class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
+          <button class="btn btn-secondary" @click="gerado = false">← Editar</button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ══ Modal: adicionar / editar medicamento ══ -->
+    <div v-if="modal.aberto" class="modal-overlay" @click.self="fecharModal">
+      <div class="modal-box">
+
+        <div class="modal-header">
+          <h3>{{ modal.editIdx !== null ? 'Editar' : 'Adicionar' }} medicamento</h3>
+          <button class="btn-icon" @click="fecharModal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- Nome -->
+          <div class="campo">
+            <label>Nome do medicamento <span class="obrigatorio">*</span></label>
+            <input type="text" v-model="modal.d.nome" placeholder="Ex: heparina, omeprazol, dipirona">
+          </div>
+
+          <!-- Via -->
+          <div class="campo">
+            <label>Via de administração <span class="obrigatorio">*</span></label>
+            <div class="chips-wrap">
+              <button
+                v-for="v in vias" :key="v"
+                class="chip" :class="{ ativo: modal.d.via === v }"
+                @click="selecionarVia(v)">{{ v }}</button>
+            </div>
+          </div>
+
+          <!-- Dose + Unidade (não-OFT) -->
+          <div v-if="modal.d.via && modal.d.via !== 'OFT'" class="campo">
+            <label>Dose <span class="obrigatorio">*</span></label>
+            <input type="text" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
+            <div class="chips-wrap" style="margin-top:8px">
+              <button
+                v-for="u in unidades" :key="u"
+                class="chip chip-sm" :class="{ ativo: modal.d.unidade === u }"
+                @click="modal.d.unidade = u">{{ u }}</button>
+            </div>
+          </div>
+
+          <!-- Dose OFT (Gts fixo) -->
+          <div v-if="modal.d.via === 'OFT'" class="campo">
+            <label>Quantidade <span class="obrigatorio">*</span></label>
+            <div class="input-suffix-wrap">
+              <input type="number" v-model="modal.d.dose" placeholder="1" min="1">
+              <span class="input-suffix">Gts</span>
+            </div>
+          </div>
+
+          <!-- Olho (OFT) -->
+          <div v-if="modal.d.via === 'OFT'" class="campo">
+            <label>Olho <span class="obrigatorio">*</span></label>
+            <div class="chips-wrap">
+              <button
+                v-for="op in ['direito','esquerdo','ambos']" :key="op"
+                class="chip" :class="{ ativo: modal.d.oftOlho === op }"
+                @click="modal.d.oftOlho = op">
+                {{ op.charAt(0).toUpperCase() + op.slice(1) }}
+              </button>
+            </div>
+          </div>
+
+          <!-- EV: com ou sem diluição -->
+          <div v-if="modal.d.via === 'EV'" class="campo">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="modal.d.evDiluicao">
+              <span>Com diluição</span>
+            </label>
+            <p v-if="!modal.d.evDiluicao" class="hint-text">Sem diluição = administrado direto EV</p>
+          </div>
+
+          <!-- EV: campos de diluição -->
+          <template v-if="modal.d.via === 'EV' && modal.d.evDiluicao">
+
+            <div class="campo">
+              <label>Volume <span class="obrigatorio">*</span></label>
+              <div class="input-suffix-wrap">
+                <input type="number" v-model="modal.d.evVolume" placeholder="100" min="1">
+                <span class="input-suffix">ml</span>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label>Solução <span class="obrigatorio">*</span></label>
+              <div class="chips-wrap">
+                <button class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
+                <button class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
+                <button class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
+              </div>
+            </div>
+
+            <!-- BIC toggle -->
+            <div class="campo">
+              <label class="checkbox-label">
+                <input type="checkbox" v-model="modal.d.evBic">
+                <span>BIC (Bomba de Infusão Contínua)</span>
+              </label>
+              <p v-if="modal.d.evBic" class="hint-text">Informe tempo, velocidade ou ambos</p>
+            </div>
+
+            <!-- BIC: tempo -->
+            <div v-if="modal.d.evBic" class="campo">
+              <label>
+                Tempo para infundir
+                <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span>
+              </label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="number" v-model="modal.d.evTempo" placeholder="30" min="1" style="flex:1">
+                <div class="chips-wrap" style="flex-shrink:0">
+                  <button class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'min' }" @click="modal.d.evUnidTempo = 'min'">min</button>
+                  <button class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'h' }"   @click="modal.d.evUnidTempo = 'h'">h</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- BIC: velocidade -->
+            <div v-if="modal.d.evBic" class="campo">
+              <label>
+                Velocidade
+                <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span>
+              </label>
+              <div class="input-suffix-wrap">
+                <input type="number" v-model="modal.d.evVelocidade" placeholder="5" min="0.1" step="0.1">
+                <span class="input-suffix">ml/h</span>
+              </div>
+            </div>
+
+          </template>
+
+          <!-- Dupla checagem -->
+          <div class="campo">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="modal.d.dupla">
+              <span>Dupla checagem</span>
+            </label>
+            <div v-if="modal.d.dupla" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+              <input
+                type="text"
+                v-model="modal.d.duplaCargo"
+                placeholder="Cargo (ex: técnica de enfermagem, enfermeira)">
+              <input
+                type="text"
+                v-model="modal.d.duplaNome"
+                placeholder="Nome do profissional *">
+            </div>
+          </div>
+
+        </div>
+
+        <p v-if="modal.erro" class="erro-msg" style="padding:0 16px 8px">{{ modal.erro }}</p>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
+          <button class="btn btn-primary" style="flex:2" @click="confirmarMed">
+            {{ modal.editIdx !== null ? 'Salvar alterações' : 'Adicionar' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<script setup>
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAnotacoesStore } from '../../stores/anotacoes.js'
+import { useToast }     from '../../composables/useToast.js'
+import { useRascunho }  from '../../composables/useRascunho.js'
+
+const router   = useRouter()
+const store    = useAnotacoesStore()
+const { showToast } = useToast()
+
+const gerado      = ref(false)
+const textoGerado = ref('')
+const erro        = ref('')
+const salvando    = ref(false)
+
+// ── Constantes ──────────────────────────────────────────────────────────────
+const vias     = ['VO', 'EV', 'SC', 'IM', 'SNE', 'OFT', 'Sublingual']
+const unidades = ['mg', 'mcg', 'g', 'UI', 'mEq', 'mmol', 'ml', '%', 'mg/kg', 'mcg/kg']
+
+// ── Form principal ──────────────────────────────────────────────────────────
+const form = reactive({
+  horario:       '',
+  conferencia:   'com',          // '' | 'com' | 'do'
+  orienta:       false,
+  conformeTipo:  'prescricao',   // '' | 'prescricao' | 'orientacao'
+  conformeNome:  '',
+  medicamentos:  [],
+  nomePaciente:  '',
+  leitoPaciente: ''
+})
+
+// ── Rascunho ──────────────────────────────────────────────────────────────
+const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
+  useRascunho(
+    'rascunho_medicacao',
+    form,
+    () => !!(form.horario || form.medicamentos.length > 0)
+  )
+iniciarRascunho()
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function medVazio() {
+  return {
+    nome:         '',
+    dose:         '',
+    unidade:      'mg',
+    via:          '',
+    // OFT
+    oftOlho:      '',
+    // EV
+    evDiluicao:   false,
+    evVolume:     '',
+    evSolucao:    'SF',
+    evBic:        false,
+    evTempo:      '',
+    evUnidTempo:  'min',
+    evVelocidade: '',
+    // Dupla
+    dupla:        false,
+    duplaCargo:   '',
+    duplaNome:    ''
+  }
+}
+
+const modal = reactive({
+  aberto:  false,
+  editIdx: null,
+  erro:    '',
+  d:       medVazio()
+})
+
+function abrirModal() {
+  modal.d       = medVazio()
+  modal.editIdx = null
+  modal.erro    = ''
+  modal.aberto  = true
+}
+
+function editarMed(i) {
+  modal.d       = { ...form.medicamentos[i] }
+  modal.editIdx = i
+  modal.erro    = ''
+  modal.aberto  = true
+}
+
+function fecharModal() {
+  modal.aberto = false
+}
+
+function selecionarVia(v) {
+  modal.d.via = v
+  if (v === 'OFT') modal.d.unidade = 'Gts'
+}
+
+function confirmarMed() {
+  modal.erro = ''
+  const d = modal.d
+
+  if (!d.nome.trim())  { modal.erro = 'Informe o nome do medicamento';      return }
+  if (!d.via)          { modal.erro = 'Selecione a via de administração';    return }
+  if (!String(d.dose).trim()) { modal.erro = 'Informe a dose'; return }
+
+  if (d.via === 'OFT' && !d.oftOlho) {
+    modal.erro = 'Selecione o olho'; return
+  }
+
+  if (d.via === 'EV' && d.evDiluicao) {
+    if (!d.evVolume)  { modal.erro = 'Informe o volume';    return }
+    if (!d.evSolucao) { modal.erro = 'Selecione a solução'; return }
+    if (d.evBic && !d.evTempo && !d.evVelocidade) {
+      modal.erro = 'BIC requer ao menos tempo ou velocidade (ml/h)'; return
+    }
+  }
+
+  if (d.dupla && !d.duplaNome.trim()) {
+    modal.erro = 'Informe o nome do profissional para dupla checagem'; return
+  }
+
+  const med = { ...d, nome: d.nome.trim() }
+
+  if (modal.editIdx !== null) {
+    form.medicamentos[modal.editIdx] = med
+  } else {
+    form.medicamentos.push(med)
+  }
+
+  fecharModal()
+}
+
+function removerMed(i) {
+  form.medicamentos.splice(i, 1)
+}
+
+// ── Resumo para o card da lista ─────────────────────────────────────────────
+function resumirMed(med) {
+  const un = med.via === 'OFT' ? 'Gts' : med.unidade
+  let viaLabel = med.via
+  if (med.via === 'EV') {
+    viaLabel = med.evDiluicao
+      ? (med.evBic ? 'EV BIC' : 'EV diluído')
+      : 'EV'
+  } else if (med.via === 'OFT' && med.oftOlho) {
+    viaLabel = `OFT ${med.oftOlho}`
+  }
+  return `${med.dose}${un} · ${viaLabel}`
+}
+
+// ── Geração de texto ────────────────────────────────────────────────────────
+
+// Retorna apenas a parte "nome dose via" de um medicamento (sem horário nem conforme)
+function gerarParteMed(med) {
+  const un      = med.via === 'OFT' ? 'Gts' : med.unidade
+  const doseStr = `${med.dose}${un}`
+
+  let viaTexto = ''
+  if (med.via === 'VO')           viaTexto = 'VO'
+  else if (med.via === 'SC')      viaTexto = 'SC'
+  else if (med.via === 'IM')      viaTexto = 'IM'
+  else if (med.via === 'SNE')     viaTexto = 'via SNE'
+  else if (med.via === 'Sublingual') viaTexto = 'sublingual'
+  else if (med.via === 'OFT') {
+    const olhoTexto = med.oftOlho === 'ambos' ? 'em ambos os olhos' : `olho ${med.oftOlho}`
+    viaTexto = `OFT ${olhoTexto}`
+  }
+  else if (med.via === 'EV') {
+    if (!med.evDiluicao) {
+      // Sem diluição: apenas EV, sem mencionar bolus
+      viaTexto = 'EV'
+    } else {
+      const sol = med.evSolucao === 'SF'   ? 'SF 0,9%'
+                : med.evSolucao === 'SG'   ? 'SG 5%'
+                : 'água destilada'
+      if (med.evBic) {
+        // BIC: [dose] + [vol]ml [sol] EV em BIC para infundir [tempo] [vel]
+        let infStr = ''
+        if (med.evTempo && med.evVelocidade) {
+          infStr = `em ${med.evTempo}${med.evUnidTempo} a ${med.evVelocidade}ml/h`
+        } else if (med.evTempo) {
+          infStr = `em ${med.evTempo}${med.evUnidTempo}`
+        } else if (med.evVelocidade) {
+          infStr = `a ${med.evVelocidade}ml/h`
+        }
+        // viaTexto começa com + pois o nome/dose já vem antes no template
+        viaTexto = `+ ${med.evVolume}ml ${sol} EV em BIC para infundir ${infStr}`
+      } else {
+        // Diluição simples sem BIC: [dose] EV + [vol]ml [sol]
+        viaTexto = `EV + ${med.evVolume}ml ${sol}`
+      }
+    }
+  }
+
+  return `${med.nome.toLowerCase()} ${doseStr} ${viaTexto}`
+}
+
+function gerarLinhaDupla(med) {
+  const un      = med.via === 'OFT' ? 'Gts' : med.unidade
+  const doseStr = `${med.dose}${un}`
+
+  // Via simplificada para texto da dupla
+  let viaSimples = med.via
+  if (med.via === 'EV')  viaSimples = med.evDiluicao ? 'EV' : 'EV em bolus'
+  if (med.via === 'OFT') viaSimples = `OFT olho ${med.oftOlho}`
+  if (med.via === 'SNE') viaSimples = 'via SNE'
+  if (med.via === 'Sublingual') viaSimples = 'sublingual'
+
+  const cargoStr = med.duplaCargo.trim() ? `${med.duplaCargo.trim()} ` : ''
+  return `Realizado dupla checagem de ${med.nome.toLowerCase()} ${doseStr} ${viaSimples} com ${cargoStr}${med.duplaNome.trim()}.`
+}
+
+function gerar() {
+  erro.value = ''
+
+  if (!form.horario) {
+    erro.value = 'Informe o horário'; return
+  }
+  if (form.medicamentos.length === 0) {
+    erro.value = 'Adicione pelo menos um medicamento'; return
+  }
+  if (form.conformeTipo === 'orientacao' && !form.conformeNome.trim()) {
+    erro.value = 'Informe o nome do profissional para o campo "conforme orientação do"'; return
+  }
+
+  const h = form.horario.replace(':', 'h')
+
+  let conformeTexto = ''
+  if (form.conformeTipo === 'prescricao') {
+    conformeTexto = ' conforme prescrição médica'
+  } else if (form.conformeTipo === 'orientacao') {
+    conformeTexto = ` conforme orientação do ${form.conformeNome.trim()}`
+  }
+
+  // Monta as linhas de conteúdo (sem prefixo de horário ainda)
+  const conteudo = []
+
+  const confTextos = {
+    'com': 'Realizado conferência de identificação com paciente.',
+    'do':  'Realizado conferência de identificação do paciente.'
+  }
+  if (form.conferencia && confTextos[form.conferencia]) {
+    conteudo.push(confTextos[form.conferencia])
+  }
+
+  if (form.orienta) {
+    conteudo.push('Oriento paciente, que autoriza realização de medicação prescrita.')
+  }
+
+  // Todos os meds do mesmo horário em uma única linha
+  const partes = form.medicamentos.map(gerarParteMed)
+  let medStr = partes.length === 1
+    ? partes[0]
+    : partes.slice(0, -1).join(', ') + ' e ' + partes[partes.length - 1]
+  conteudo.push(`administrado ${medStr}${conformeTexto}`)
+
+  // O horário prefixia APENAS a primeira linha; as demais ficam sem ele
+  const linhas = conteudo.map((linha, i) =>
+    i === 0 ? `${h} - ${linha}` : linha
+  )
+
+  // Dupla checagem: linhas extras sem prefixo de horário
+  for (const med of form.medicamentos) {
+    if (med.dupla && med.duplaNome.trim()) {
+      linhas.push(gerarLinhaDupla(med))
+    }
+  }
+
+  textoGerado.value = linhas.join('\n')
+  gerado.value      = true
+}
+
+// ── Ações de resultado ──────────────────────────────────────────────────────
+async function copiar() {
+  try {
+    await navigator.clipboard.writeText(textoGerado.value)
+    showToast('Texto copiado!')
+  } catch {
+    showToast('Erro ao copiar')
+  }
+}
+
+async function salvar() {
+  salvando.value = true
+  try {
+    await store.salvar({
+      tipo:  'medicacao',
+      texto: textoGerado.value,
+      nome:  form.nomePaciente.trim(),
+      leito: form.leitoPaciente.trim()
+    })
+    showToast('Salvo no histórico!')
+    descartarRascunho()
+  } catch {
+    showToast('Erro ao salvar')
+  } finally {
+    salvando.value = false
+  }
+}
+
+function compartilhar() {
+  const texto = textoGerado.value
+  if (navigator.share) {
+    navigator.share({ text: texto }).catch(() => {})
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank')
+  }
+}
+
+function novaAnotacao() {
+  Object.assign(form, {
+    horario:      '',
+    conferencia:  'com',
+    orienta:      false,
+    conformeTipo: 'prescricao',
+    conformeNome: '',
+    medicamentos: [],
+    nomePaciente:  '',
+    leitoPaciente: ''
+  })
+  erro.value   = ''
+  gerado.value = false
+  descartarRascunho()
+}
+</script>
+
+<style scoped>
+/* ── Header ── */
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icon:active { background: var(--bg-hover); }
+
+.btn-home-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.btn-home-logo:active { background: var(--bg-hover); }
+
+/* ── Lista de meds ── */
+.lista-vazia {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+}
+
+.med-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.med-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+
+.med-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.med-nome {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.med-detalhe {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.badge-dupla {
+  font-size: 0.68rem;
+  color: var(--blue);
+  background: rgba(41,98,255,0.12);
+  border-radius: 5px;
+  padding: 2px 6px;
+  width: fit-content;
+}
+
+.med-item-acoes {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-icon-sm {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1;
+  transition: all 0.15s;
+}
+.btn-icon-sm:active { background: var(--bg-hover); }
+.btn-danger-sm:active { color: var(--danger); border-color: var(--danger); }
+
+/* ── Botão adicionar medicamento ── */
+.btn-add-med {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-input);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--blue);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add-med:active {
+  background: var(--bg-hover);
+  border-style: solid;
+}
+
+/* ── Chips ── */
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.chip {
+  padding: 8px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip.ativo {
+  background: rgba(41,98,255,0.15);
+  border-color: var(--blue);
+  color: var(--blue);
+  font-weight: 600;
+}
+.chip:not(.ativo):active { background: var(--bg-hover); }
+
+.chip-sm {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+}
+
+/* ── Input suffix ── */
+.input-suffix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-suffix-wrap input {
+  width: 100%;
+  padding: 13px 52px 13px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.input-suffix-wrap input:focus { border-color: var(--blue); }
+.input-suffix {
+  position: absolute;
+  right: 14px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+/* ── Hint ── */
+.hint-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── campo-inline ── */
+.campo-inline {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 13px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+.campo-inline:focus { border-color: var(--blue); }
+
+/* ── label-small ── */
+.label-small {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+/* ── Preview ── */
+.preview-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+/* ── Erro ── */
+.erro-msg {
+  color: var(--red);
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: flex-end;
+  z-index: 200;
+}
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal-header h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.modal-body {
+  overflow-y: auto;
+  padding: 16px 20px;
+  flex: 1;
+}
+.modal-footer {
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Toast global — ver App.vue + style.css */
+/* Rascunho banner global — ver style.css */
+</style>

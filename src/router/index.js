@@ -38,6 +38,12 @@ const routes = [
     name: 'sinais-vitais',
     component: () => import('../views/anotacoes/SinaisVitaisView.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/anotar/medicacao',
+    name: 'medicacao',
+    component: () => import('../views/anotacoes/AnotacaoMedicacaoView.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
