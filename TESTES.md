@@ -1,6 +1,6 @@
 # Plano de Testes — Plantão App
 
-> Versão do app: 0.7.0
+> Versão do app: 0.8.0
 > Última atualização: 2026-03-15
 
 ---
