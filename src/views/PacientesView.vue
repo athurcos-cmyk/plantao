@@ -33,12 +33,21 @@
 
       <!-- Patient cards -->
       <div v-for="pac in store.pacientes" :key="pac._key" class="pac-card">
-        <div class="pac-header">
+        <div class="pac-header" @click="toggleExpandir(pac._key)" style="cursor:pointer">
           <div class="pac-info">
             <span v-if="pac.leito" class="pac-leito-badge">{{ pac.leito }}</span>
             <span class="pac-nome">{{ pac.nome }}</span>
+            <span v-if="pac.pendencias.length > 0" class="pend-contador" :class="{ 'pend-contador-alerta': pac.pendencias.filter(function(p){ return !p.feito; }).length > 0 }">
+              {{ pac.pendencias.filter(function(p){ return !p.feito; }).length }}/{{ pac.pendencias.length }}
+            </span>
           </div>
-          <div class="pac-acoes">
+          <div class="pac-acoes" @click.stop>
+            <button class="btn-icon-sm toggle-btn" @click="toggleExpandir(pac._key)" :title="expandido[pac._key] ? 'Recolher' : 'Expandir'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                :style="{ transform: expandido[pac._key] ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
             <button class="btn-icon-sm" @click="abrirEdit(pac)" title="Editar">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
@@ -56,7 +65,7 @@
         </div>
 
         <!-- Pendências -->
-        <div class="pend-lista" v-if="pac.pendencias.length > 0">
+        <div class="pend-lista" v-if="pac.pendencias.length > 0 && expandido[pac._key]">
           <div v-for="pend in pac.pendencias" :key="pend._key" class="pend-item" :class="{ feito: pend.feito }">
             <button class="pend-check" @click="store.togglePendencia(pac._key, pend._key, pend.feito)">
               <svg v-if="pend.feito" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -73,7 +82,7 @@
         </div>
 
         <!-- Add pendência inline -->
-        <div class="pend-add-row">
+        <div class="pend-add-row" v-if="expandido[pac._key]">
           <input
             class="pend-add-input"
             type="text"
@@ -143,8 +152,13 @@ onMounted(() => store.iniciar())
 onUnmounted(() => store.parar())
 
 // nova pendência por paciente (key → texto)
-const novaPend = reactive({})
+const novaPend  = reactive({})
+const expandido = reactive({})
 const excluindo = ref(null)
+
+function toggleExpandir(key) {
+  expandido[key] = !expandido[key]
+}
 
 const modal = reactive({
   aberto:   false,
@@ -254,6 +268,20 @@ async function adicionarPend(pacKey) {
 }
 .pac-nome { font-size: 0.95rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pac-acoes { display: flex; gap: 4px; flex-shrink: 0; margin-left: 8px; }
+
+.pend-contador {
+  font-size: 0.7rem; font-weight: 700;
+  background: var(--bg); color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 1px 6px;
+  flex-shrink: 0;
+}
+.pend-contador-alerta {
+  background: rgba(30,136,229,0.12);
+  color: var(--blue);
+  border-color: rgba(30,136,229,0.3);
+}
+.toggle-btn { color: var(--text-muted); }
 
 .btn-icon-sm {
   width: 30px; height: 30px; border: none; background: none;
