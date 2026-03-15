@@ -184,10 +184,32 @@
 
         <div class="modal-body">
 
-          <!-- Nome -->
+          <!-- Nome + autocomplete -->
           <div class="campo">
             <label>Nome do medicamento <span class="obrigatorio">*</span></label>
-            <input type="text" v-model="modal.d.nome" placeholder="Ex: heparina, omeprazol, dipirona">
+            <div class="autocomplete-wrap">
+              <input
+                type="text"
+                :value="modal.d.nome"
+                @input="onNomeInput($event.target.value)"
+                @focus="onNomeInput(modal.d.nome)"
+                @blur="fecharSugestoes"
+                placeholder="Ex: heparina, omeprazol, dipirona"
+                autocomplete="off">
+              <div v-if="mostrarSug && sugestoes.length" class="autocomplete-dropdown">
+                <button
+                  v-for="sug in sugestoes"
+                  :key="sug.nome + sug.tipo"
+                  class="autocomplete-item"
+                  @mousedown.prevent="selecionarSugestao(sug)">
+                  <span class="autocomplete-nome">{{ sug.nome }}</span>
+                  <span v-if="sug.tipo === 'hist'" class="autocomplete-badge">
+                    {{ sug.med.dose }}{{ sug.med.via === 'OFT' ? 'Gts' : sug.med.unidade }} · {{ sug.med.via }}
+                  </span>
+                  <span v-else class="autocomplete-hint">💊</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Via -->
@@ -341,12 +363,79 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
-import { useToast }     from '../../composables/useToast.js'
-import { useRascunho }  from '../../composables/useRascunho.js'
+import { useToast }          from '../../composables/useToast.js'
+import { useRascunho }       from '../../composables/useRascunho.js'
+import { useAuthStore }      from '../../stores/auth.js'
+import { sugerirMedicamentos } from '../../data/medicamentos.js'
 
 const router   = useRouter()
 const store    = useAnotacoesStore()
+const auth     = useAuthStore()
 const { showToast } = useToast()
+
+// ── Histórico de medicamentos (localStorage) ─────────────────────────────────
+const HIST_MAX = 20
+
+function histKey() {
+  return `med_historico_${auth.syncCode || 'guest'}`
+}
+
+function carregarHistorico() {
+  try { return JSON.parse(localStorage.getItem(histKey()) || '[]') }
+  catch { return [] }
+}
+
+function salvarHistoricoLS(lista) {
+  localStorage.setItem(histKey(), JSON.stringify(lista))
+}
+
+function adicionarAoHistorico(med) {
+  const hist = carregarHistorico()
+  // remove duplicado exato (mesmo nome + dose + via)
+  const idx = hist.findIndex(h => h.nome === med.nome && h.dose === med.dose && h.via === med.via)
+  if (idx !== -1) hist.splice(idx, 1)
+  hist.unshift({ ...med })
+  if (hist.length > HIST_MAX) hist.splice(HIST_MAX)
+  salvarHistoricoLS(hist)
+}
+
+// ── Autocomplete state ────────────────────────────────────────────────────────
+const sugestoes  = ref([])
+const mostrarSug = ref(false)
+
+function onNomeInput(val) {
+  modal.d.nome = val
+  if (!val || val.trim().length < 2) {
+    sugestoes.value  = []
+    mostrarSug.value = false
+    return
+  }
+  const hist    = carregarHistorico()
+  const nomesHist = hist.map(h => h.nome)
+  const resultados = sugerirMedicamentos(val, nomesHist, 8)
+  sugestoes.value = resultados.map(nome => {
+    const histItem = hist.find(h => h.nome === nome)
+    return histItem
+      ? { tipo: 'hist', nome, med: histItem }
+      : { tipo: 'base', nome }
+  })
+  mostrarSug.value = sugestoes.value.length > 0
+}
+
+function selecionarSugestao(sug) {
+  if (sug.tipo === 'hist') {
+    Object.assign(modal.d, { ...sug.med })
+  } else {
+    modal.d.nome = sug.nome
+  }
+  sugestoes.value  = []
+  mostrarSug.value = false
+}
+
+function fecharSugestoes() {
+  // pequeno delay para deixar o click na sugestão registrar antes de esconder
+  setTimeout(() => { mostrarSug.value = false }, 150)
+}
 
 const gerado      = ref(false)
 const textoGerado = ref('')
@@ -464,6 +553,7 @@ function confirmarMed() {
     form.medicamentos.push(med)
   }
 
+  adicionarAoHistorico(med)
   fecharModal()
 }
 
@@ -934,6 +1024,63 @@ function novaAnotacao() {
   gap: 10px;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
+}
+
+/* ── Autocomplete ── */
+.autocomplete-wrap {
+  position: relative;
+}
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  z-index: 300;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+.autocomplete-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  gap: 8px;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:active,
+.autocomplete-item:hover { background: var(--bg-hover); }
+.autocomplete-nome {
+  font-size: 0.92rem;
+  color: var(--text);
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.autocomplete-badge {
+  font-size: 0.72rem;
+  color: var(--blue);
+  background: rgba(41,98,255,0.12);
+  border-radius: 5px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.autocomplete-hint {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  opacity: 0.5;
 }
 
 /* Toast global — ver App.vue + style.css */
