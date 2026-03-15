@@ -1,46 +1,10 @@
 import { test, expect } from '@playwright/test';
-
-const BASE_URL = 'http://localhost:5173';
-
-// Helper: faz login com o código QA99 (cria conta na primeira vez, loga nas seguintes)
-async function fazerLogin(page) {
-  await page.goto(BASE_URL);
-
-  // Passo 1: código
-  await page.getByTestId('input-codigo').fill('QA99');
-  // Aguarda Firebase verificar se código existe antes de habilitar o botão
-  await expect(page.getByTestId('btn-continuar-passo1')).toBeEnabled({ timeout: 8000 });
-  await page.getByTestId('btn-continuar-passo1').click();
-
-  // Passo 2: PIN — aguarda tela aparecer
-  await page.getByTestId('titulo-passo2').waitFor({ state: 'visible', timeout: 8000 });
-  const tituloPasso2 = await page.getByTestId('titulo-passo2').innerText();
-  const ehNovo = tituloPasso2.includes('Crie');
-
-  await page.getByTestId('input-pin').fill('1234');
-
-  if (ehNovo) {
-    // Cadastro: avança para passo 3 (nome)
-    await page.getByTestId('btn-continuar-passo2').click();
-    await page.getByTestId('titulo-passo3').waitFor({ state: 'visible', timeout: 5000 });
-    await page.getByTestId('input-nome').fill('QA Anotacoes');
-    await page.getByTestId('btn-entrar').click();
-  } else {
-    // Login: passo 2 já finaliza
-    await page.getByTestId('btn-continuar-passo2').click();
-  }
-
-  // Aguarda Dashboard carregar
-  await expect(page.locator('text=Nova anotação')).toBeVisible({ timeout: 12000 });
-}
+import { loginAndGoTo } from './helpers/login.js';
 
 test.describe('4. MEDICAÇÃO (NOVA FEATURE)', () => {
 
   test.beforeEach(async ({ page }) => {
-    await fazerLogin(page);
-    // Navega para a tela de medicação (rota correta: /anotar/medicacao)
-    await page.goto(BASE_URL + '/anotar/medicacao');
-    // Aguarda o campo de horário aparecer como confirmação da tela carregada
+    await loginAndGoTo(page, '/anotar/medicacao');
     await page.getByTestId('auto-input-anotacaomedicacaoview-1').waitFor({ state: 'visible', timeout: 8000 });
   });
 

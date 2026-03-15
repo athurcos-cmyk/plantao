@@ -1,109 +1,202 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
+import { loginAndGoTo, BASE_URL } from './helpers/login.js'
 
-const BASE_URL = 'https://meuplantao.vercel.app';
+// ─────────────────────────────────────────────────────────────────────────────
+// 3. ANOTAÇÃO INICIAL (5 blocos)
+// ─────────────────────────────────────────────────────────────────────────────
 
-test.describe('3. ANOTAÇÃO INICIAL - FLUXO GERAL', () => {
+test.describe('3. Anotação Inicial', () => {
 
   test.beforeEach(async ({ page }) => {
-    // Faz login rápido para acessar as rotas de anotação
-    await page.goto(BASE_URL);
-    await page.getByTestId('input-codigo').fill('QA99');
-    await page.getByTestId('btn-continuar-passo1').click();
-    
-    // Testa se está criando novo usuário ou entrando com existente
-    const passo2Titulo = page.getByTestId('titulo-passo2');
-    await passo2Titulo.waitFor({ state: 'visible', timeout: 5000 });
-    const isNovo = await passo2Titulo.innerText();
-    
-    if(isNovo.includes('Crie')) {
-      await page.getByTestId('input-pin').fill('1234');
-      await page.getByTestId('btn-continuar-passo2').click();
-      await page.getByTestId('input-nome').fill('QA Anotacoes');
-      await page.locator('button', {hasText: 'Criar conta e entrar'}).click();
-    } else {
-      await page.getByTestId('input-pin').fill('1234');
-      await page.locator('button', {hasText: 'Entrar'}).click();
-    }
-    
-    // Aguarda carregar o Dashboard e clica no card "Anotação inicial"
-    await expect(page.locator('text=Nova anotação')).toBeVisible({ timeout: 10000 });
-    const cardAnotacao = page.locator('.tipo-card', { hasText: 'Anotação inicial' });
-    await cardAnotacao.click();
-    
-    // Aguarda a tela de anotação carregar
-    await expect(page.locator('text=Bloco 1')).toBeVisible({ timeout: 5000 });
-  });
+    await loginAndGoTo(page, '/anotar/inicial')
+    // Aguarda bloco 1 carregar
+    await page.getByTestId('auto-input-anotacaoinicialview-1').waitFor({ state: 'visible', timeout: 8000 })
+  })
 
-  test('3.1 e 3.2 Barra de progresso e Navegação entre blocos', async ({ page }) => {
-    // Bloco 1 de 5
-    await expect(page.locator('text=Bloco 1 de 5')).toBeVisible();
+  // ── Bloco 1 ────────────────────────────────────────────────────────────────
 
-    // Tentar avançar sem preencher (vai dar erro pois horário e sexo são obrigatórios no bloco 1)
-    const btnProximo = page.locator('button', { hasText: 'Próximo' });
-    await btnProximo.click();
-    
-    // Deve continuar no bloco 1
-    await expect(page.locator('text=Bloco 1 de 5')).toBeVisible();
+  test('3.1 Bloco 1 — campo horário visível', async ({ page }) => {
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-1')).toBeVisible()
+  })
 
-    // Preenche Horário (ex: 12:00) e Sexo (M) para conseguir avançar
-    // (Ajuste os seletores dependendo de como o HTML dos inputs foi gerado)
-    await page.locator('input[type="time"]').fill('12:00');
-    await page.locator('button', { hasText: 'M', exact: true }).click();
-    
-    // Avançar para Bloco 2
-    await btnProximo.click();
-    await expect(page.locator('text=Bloco 2 de 5')).toBeVisible();
+  test('3.1 Bloco 1 — validação: não avança sem horário e sexo', async ({ page }) => {
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click() // Próximo
+    // Deve continuar no bloco 1 (horário ainda visível)
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-1')).toBeVisible()
+  })
 
-    // Voltar para Bloco 1 (usando o botão voltar no header)
-    const btnVoltarHeader = page.locator('header button').first();
-    await btnVoltarHeader.click();
-    await expect(page.locator('text=Bloco 1 de 5')).toBeVisible();
+  test('3.1 Bloco 1 — validação: não avança só com horário (falta sexo)', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-1')).toBeVisible()
+  })
 
-    // Botão Limpar deve resetar campos
-    const btnLimpar = page.locator('button', { hasText: 'Limpar' });
-    await btnLimpar.click();
-    
-    // O valor do input time deve estar vazio
-    await expect(page.locator('input[type="time"]')).toHaveValue('');
-  });
+  test('3.1 Bloco 1 — avança para bloco 2 com horário e sexo preenchidos', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click() // Sexo F
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()   // Próximo
+    // Bloco 2 deve aparecer (neurológico)
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-8')).toBeVisible({ timeout: 3000 })
+  })
 
-  test('3.3 Rascunho automático', async ({ page }) => {
-    // Preenche algo no bloco 1
-    await page.locator('input[type="time"]').fill('10:00');
-    
-    // Espera ~1 segundo para o debounce do rascunho automático salvar no localStorage
-    await page.waitForTimeout(1200);
+  test('3.1 Bloco 1 — botão Limpar reseta campos', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('10:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click() // Sexo F
+    await page.getByTestId('auto-btn-anotacaoinicialview-5').click()   // Limpar
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-1')).toHaveValue('')
+  })
 
-    // Navegar para outra tela (ex: dashboard)
-    await page.goto(BASE_URL + '/dashboard');
-    await expect(page.locator('text=Nova anotação')).toBeVisible();
+  // ── Bloco 2 ────────────────────────────────────────────────────────────────
 
-    // Voltar para a tela de anotação inicial
-    const cardAnotacao = page.locator('.tipo-card', { hasText: 'Anotação inicial' });
-    await cardAnotacao.click();
+  test('3.2 Bloco 2 — exibe campos neurológicos e respiratórios', async ({ page }) => {
+    // Avança para bloco 2
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
 
-    // Deve aparecer o banner de rascunho salvo
-    const bannerRascunho = page.locator('text=Você tem um rascunho salvo');
-    await expect(bannerRascunho).toBeVisible();
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-8')).toBeVisible()  // Mental alterado
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-13')).toBeVisible() // Respiração padrão
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-16')).toBeVisible() // Acompanhante não
+  })
 
-    // Botão "Continuar" restaura
-    const btnContinuarRascunho = page.locator('button', { hasText: 'Continuar' });
-    await btnContinuarRascunho.click();
+  test('3.2 Bloco 2 — campo acompanhante nome aparece ao marcar "sim"', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
 
-    // O horário deve estar preenchido com '10:00'
-    await expect(page.locator('input[type="time"]')).toHaveValue('10:00');
+    await page.getByTestId('auto-input-anotacaoinicialview-17').click() // Acompanhante sim
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-18')).toBeVisible() // Nome
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-19')).toBeVisible() // Parentesco
+  })
 
-    // Voltar pro dashboard de novo para testar o "Descartar"
-    await page.goto(BASE_URL + '/dashboard');
-    await cardAnotacao.click();
-    await expect(bannerRascunho).toBeVisible();
+  test('3.2 Bloco 2 — campo litros de O2 aparece ao selecionar O2 suplementar', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
 
-    // Descartar rascunho
-    const btnDescartar = page.locator('button', { hasText: 'Descartar' });
-    await btnDescartar.click();
+    // Seleciona respiração com O2 (radio que deve exibir campo de litros)
+    await page.getByTestId('auto-input-anotacaoinicialview-14').last().click()
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-15')).toBeVisible()
+  })
 
-    // Banner some e input fica vazio
-    await expect(bannerRascunho).toBeHidden();
-    await expect(page.locator('input[type="time"]')).toHaveValue('');
-  });
-});
+  // ── Bloco 3 — Dispositivos ─────────────────────────────────────────────────
+
+  test('3.3 Bloco 3 — botões de adicionar dispositivos visíveis', async ({ page }) => {
+    // Avança blocos 1 e 2
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-9').click() // Próximo bloco 2→3
+    await page.getByTestId('auto-btn-anotacaoinicialview-13').waitFor({ state: 'visible', timeout: 3000 })
+
+    // Botões de tipo de dispositivo devem aparecer
+    await expect(page.getByTestId('auto-btn-anotacaoinicialview-13').first()).toBeVisible()
+  })
+
+  // ── Bloco 4 — Eliminações ──────────────────────────────────────────────────
+
+  test('3.4 Bloco 4 — campos de evacuação e diurese visíveis', async ({ page }) => {
+    // Navega até bloco 4
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()  // bloco 1→2
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-9').click()  // bloco 2→3
+    await page.getByTestId('auto-btn-anotacaoinicialview-13').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-15').click() // bloco 3→4
+    await page.getByTestId('auto-input-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-20')).toBeVisible() // Evacuação
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-22')).toBeVisible() // Diurese
+  })
+
+  // ── Bloco 5 — Gerar ────────────────────────────────────────────────────────
+
+  test('3.5 Bloco 5 — botão Gerar anotação visível', async ({ page }) => {
+    // Navega até bloco 5 (gerar)
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('08:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-2').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-9').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-13').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-15').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-18').click() // bloco 4→5
+    await page.getByTestId('auto-btn-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+
+    await expect(page.getByTestId('auto-btn-anotacaoinicialview-20')).toBeVisible() // Gerar anotação
+  })
+
+  test('3.5 Gerar anotação — exibe botões Copiar e Salvar', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('10:00')
+    await page.getByTestId('auto-input-anotacaoinicialview-3').click() // Sexo M
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-9').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-13').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-15').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-18').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-20').click() // Gerar
+
+    await expect(page.getByTestId('auto-btn-anotacaoinicialview-21')).toBeVisible({ timeout: 5000 }) // Copiar
+    await expect(page.getByTestId('auto-btn-anotacaoinicialview-22')).toBeVisible()                  // Salvar
+  })
+
+  test('3.5 Texto gerado contém horário preenchido', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('14:30')
+    await page.getByTestId('auto-input-anotacaoinicialview-3').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-6').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-8').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-9').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-13').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-15').click()
+    await page.getByTestId('auto-input-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-18').click()
+    await page.getByTestId('auto-btn-anotacaoinicialview-20').waitFor({ state: 'visible', timeout: 3000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-20').click()
+
+    const preview = page.locator('.preview-box p, pre, [class*="preview"]').first()
+    await expect(preview).toBeVisible({ timeout: 5000 })
+    const texto = await preview.innerText()
+    expect(texto).toContain('14:30')
+  })
+
+  // ── Rascunho ───────────────────────────────────────────────────────────────
+
+  test('3.6 Rascunho — banner aparece ao retornar com dados preenchidos', async ({ page }) => {
+    // Preenche e sai
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('09:30')
+    await page.waitForTimeout(1200) // debounce do rascunho
+
+    await page.goto(BASE_URL + '/anotar/inicial')
+    await page.getByTestId('auto-input-anotacaoinicialview-1').waitFor({ state: 'visible', timeout: 8000 })
+    // Banner de rascunho deve aparecer
+    await expect(page.getByTestId('auto-btn-anotacaoinicialview-3')).toBeVisible({ timeout: 3000 }) // Continuar
+  })
+
+  test('3.6 Rascunho — Continuar restaura o horário salvo', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('09:30')
+    await page.waitForTimeout(1200)
+    await page.goto(BASE_URL + '/anotar/inicial')
+    await page.getByTestId('auto-input-anotacaoinicialview-1').waitFor({ state: 'visible', timeout: 8000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-3').click() // Continuar
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-1')).toHaveValue('09:30')
+  })
+
+  test('3.6 Rascunho — Descartar limpa o formulário', async ({ page }) => {
+    await page.getByTestId('auto-input-anotacaoinicialview-1').fill('09:30')
+    await page.waitForTimeout(1200)
+    await page.goto(BASE_URL + '/anotar/inicial')
+    await page.getByTestId('auto-input-anotacaoinicialview-1').waitFor({ state: 'visible', timeout: 8000 })
+    await page.getByTestId('auto-btn-anotacaoinicialview-4').click() // Descartar
+    await expect(page.getByTestId('auto-input-anotacaoinicialview-1')).toHaveValue('')
+  })
+
+})
