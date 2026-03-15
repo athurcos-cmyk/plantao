@@ -44,6 +44,17 @@
           {{ op.l }}
         </button>
       </div>
+
+      <!-- Filtro por paciente registrado -->
+      <div v-if="pacientesStore.pacientes.length > 0" class="chips-scroll" style="margin-top:6px">
+        <button
+          v-for="p in pacientesStore.pacientes"
+          :key="p._key"
+          class="chip chip-pac"
+          :class="{ ativo: filtro.busca === p.nome }"
+          @click="filtro.busca = filtro.busca === p.nome ? '' : p.nome"
+        >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
+      </div>
     </div>
 
     <main class="container" style="padding-top:12px;padding-bottom:40px">
@@ -131,14 +142,18 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { useAuthStore } from '../stores/auth.js'
+import { usePacientesStore } from '../stores/pacientes.js'
 
 const router = useRouter()
 const store  = useAnotacoesStore()
 const auth   = useAuthStore()
+const pacientesStore = usePacientesStore()
+
+onMounted(() => pacientesStore.iniciar())
 
 const mostrarCodigo = ref(false)
 

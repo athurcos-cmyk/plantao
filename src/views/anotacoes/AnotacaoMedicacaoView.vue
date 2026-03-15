@@ -132,6 +132,20 @@
           <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
         </div>
 
+        <!-- Seletor de paciente registrado -->
+        <div v-if="pacientesStore.pacientes.length > 0" style="margin-bottom:6px">
+          <label class="label-small">Paciente registrado</label>
+          <div class="chips-scroll" style="margin-top:6px">
+            <button
+              v-for="p in pacientesStore.pacientes"
+              :key="p._key"
+              class="chip"
+              :class="{ ativo: form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
+              @click="selecionarPaciente(p)"
+            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
+          </div>
+        </div>
+
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
             <label class="label-small">Nome do paciente</label>
@@ -421,6 +435,7 @@ import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { useToast }          from '../../composables/useToast.js'
 import { useRascunho }       from '../../composables/useRascunho.js'
 import { useAuthStore }      from '../../stores/auth.js'
+import { usePacientesStore } from '../../stores/pacientes.js'
 import { sugerirMedicamentos } from '../../data/medicamentos.js'
 import { db } from '../../firebase.js'
 import { ref as dbRef, get, set } from 'firebase/database'
@@ -429,6 +444,12 @@ const router   = useRouter()
 const store    = useAnotacoesStore()
 const auth     = useAuthStore()
 const { showToast } = useToast()
+const pacientesStore = usePacientesStore()
+
+function selecionarPaciente(p) {
+  form.nomePaciente = p.nome
+  form.leitoPaciente = p.leito || ''
+}
 
 // ── Histórico de medicamentos (Firebase + localStorage como cache) ────────────
 const HIST_MAX       = 20
@@ -456,6 +477,7 @@ async function _gravarFB(lista) {
 
 // Carrega histórico: localStorage imediato + Firebase em background
 onMounted(async () => {
+  pacientesStore.iniciar()
   historicoCache.value = _lerLS()          // instantâneo
   if (!auth.syncCode) return
   try {
@@ -1275,4 +1297,19 @@ select.campo-inline {
 
 /* Toast global — ver App.vue + style.css */
 /* Rascunho banner global — ver style.css */
+
+/* Chips para seletor de paciente */
+.chips-scroll {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+}
+.chips-scroll::-webkit-scrollbar { display: none; }
+.chip {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 20px; color: var(--text-muted);
+  font-size: 0.78rem; font-family: inherit;
+  padding: 6px 12px; cursor: pointer; white-space: nowrap;
+  flex-shrink: 0; transition: all 0.15s;
+}
+.chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
 </style>

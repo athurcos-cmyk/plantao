@@ -44,7 +44,13 @@ const routes = [
     name: 'medicacao',
     component: () => import('../views/anotacoes/AnotacaoMedicacaoView.vue'),
     meta: { requiresAuth: true }
-  }
+  },
+  {
+    path: '/pacientes',
+    name: 'pacientes',
+    component: () => import('../views/PacientesView.vue'),
+    meta: { requiresAuth: true }
+  },
 ]
 
 const router = createRouter({

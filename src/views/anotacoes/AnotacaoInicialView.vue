@@ -310,6 +310,20 @@
           <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
         </div>
 
+        <!-- Seletor de paciente registrado -->
+        <div v-if="pacientesStore.pacientes.length > 0" style="margin-bottom:6px">
+          <label class="label-small">Paciente registrado</label>
+          <div class="chips-scroll" style="margin-top:6px">
+            <button
+              v-for="p in pacientesStore.pacientes"
+              :key="p._key"
+              class="chip"
+              :class="{ ativo: form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
+              @click="selecionarPaciente(p)"
+            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
+          </div>
+        </div>
+
         <!-- Nome e leito do paciente -->
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
@@ -384,7 +398,9 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { useAnotacaoInicial } from '../../composables/useAnotacaoInicial.js'
+import { usePacientesStore } from '../../stores/pacientes.js'
 import ModalAVP from '../../components/modais/ModalAVP.vue'
 import ModalCVC from '../../components/modais/ModalCVC.vue'
 import ModalPICC from '../../components/modais/ModalPICC.vue'
@@ -427,6 +443,14 @@ const {
   gerar, salvar, copiar, compartilhar, novaAnotacao,
   router
 } = useAnotacaoInicial()
+
+const pacientesStore = usePacientesStore()
+onMounted(() => pacientesStore.iniciar())
+
+function selecionarPaciente(p) {
+  form.nomePaciente = p.nome
+  form.leitoPaciente = p.leito || ''
+}
 </script>
 
 <style scoped>
@@ -666,4 +690,19 @@ const {
 /* .btn-sm global — ver style.css */
 
 /* Toast global — ver App.vue + style.css */
+
+/* Chips para seletor de paciente */
+.chips-scroll {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+}
+.chips-scroll::-webkit-scrollbar { display: none; }
+.chip {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 20px; color: var(--text-muted);
+  font-size: 0.78rem; font-family: inherit;
+  padding: 6px 12px; cursor: pointer; white-space: nowrap;
+  flex-shrink: 0; transition: all 0.15s;
+}
+.chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
 </style>

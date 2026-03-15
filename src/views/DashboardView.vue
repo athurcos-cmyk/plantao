@@ -33,6 +33,16 @@
         </button>
       </div>
 
+      <button class="btn-pacientes" @click="router.push({ name: 'pacientes' })">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+          <path d="M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        Meus Pacientes do plantão
+      </button>
+
       <button  data-testid="auto-btn-dashboardview-3" class="btn-historico" @click="router.push({ name: 'historico' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -168,4 +178,14 @@ function sair() {
   transition: all 0.15s;
 }
 .btn-historico:active { background: var(--bg-hover); }
+
+.btn-pacientes {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; margin-top: 16px; padding: 14px;
+  background: var(--bg-card); border: 1px solid var(--blue);
+  border-radius: var(--radius); color: var(--blue);
+  font-family: inherit; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-pacientes:active { background: var(--bg-hover); }
 </style>
