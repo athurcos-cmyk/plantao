@@ -26,8 +26,8 @@
           <span>Você tem uma aferição em rascunho</span>
         </div>
         <div class="rascunho-acoes">
-          <button class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
-          <button class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
+          <button  data-testid="auto-btn-sinaisvitaisview-1" class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
+          <button  data-testid="auto-btn-sinaisvitaisview-2" class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
         </div>
       </div>
 

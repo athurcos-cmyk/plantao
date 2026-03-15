@@ -95,7 +95,7 @@
 
         <!-- Ajuda código esquecido (passo 1) -->
         <div class="ajuda-login" style="margin-top:14px">
-          <button class="ajuda-toggle" @click="mostrarAjudaCodigo = !mostrarAjudaCodigo">
+          <button  data-testid="auto-btn-loginview-1" class="ajuda-toggle" @click="mostrarAjudaCodigo = !mostrarAjudaCodigo">
             {{ mostrarAjudaCodigo ? '▲' : '▼' }} Não lembra seu código?
           </button>
           <transition name="fade">
@@ -159,7 +159,7 @@
 
         <!-- Ajuda PIN esquecido (só no login) -->
         <div v-if="modo === 'login'" class="ajuda-login">
-          <button class="ajuda-toggle" @click="mostrarAjuda = !mostrarAjuda">
+          <button  data-testid="auto-btn-loginview-2" class="ajuda-toggle" @click="mostrarAjuda = !mostrarAjuda">
             {{ mostrarAjuda ? '▲' : '▼' }} Esqueceu o PIN?
           </button>
           <transition name="fade">

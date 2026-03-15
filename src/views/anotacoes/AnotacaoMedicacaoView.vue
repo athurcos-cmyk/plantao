@@ -1,12 +1,12 @@
 <template>
   <div class="screen">
     <header class="app-header">
-      <button class="btn-icon" @click="router.back()">
+      <button  data-testid="auto-btn-anotacaomedicacaoview-1" class="btn-icon" @click="router.back()">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
       </button>
-      <button class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+      <button  data-testid="auto-btn-anotacaomedicacaoview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
           <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
@@ -26,8 +26,8 @@
           <span>Você tem uma medicação em rascunho</span>
         </div>
         <div class="rascunho-acoes">
-          <button class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
-          <button class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
+          <button  data-testid="auto-btn-anotacaomedicacaoview-3" class="btn btn-primary btn-sm" @click="restaurarRascunho">Continuar</button>
+          <button  data-testid="auto-btn-anotacaomedicacaoview-4" class="btn btn-secondary btn-sm" @click="descartarRascunho">Descartar</button>
         </div>
       </div>
 
@@ -37,20 +37,20 @@
         <!-- Horário -->
         <div class="campo">
           <label>Horário <span class="obrigatorio">*</span></label>
-          <input type="time" v-model="form.horario">
+          <input  data-testid="auto-input-anotacaomedicacaoview-1" type="time" v-model="form.horario">
         </div>
 
         <!-- Cuidados -->
         <div class="campo">
           <label>Identificação do paciente</label>
           <label class="checkbox-label">
-            <input type="radio"
+            <input  data-testid="auto-input-anotacaomedicacaoview-2" type="radio"
               :checked="form.conferencia === 'com'"
               @click="form.conferencia = form.conferencia === 'com' ? '' : 'com'">
             <span>Conferência de identificação com paciente</span>
           </label>
           <label class="checkbox-label" style="margin-top:8px">
-            <input type="radio"
+            <input  data-testid="auto-input-anotacaomedicacaoview-3" type="radio"
               :checked="form.conferencia === 'do'"
               @click="form.conferencia = form.conferencia === 'do' ? '' : 'do'">
             <span>Conferência de identificação do paciente</span>
@@ -60,7 +60,7 @@
         <!-- Orientação -->
         <div class="campo">
           <label class="checkbox-label">
-            <input type="checkbox" v-model="form.orienta">
+            <input  data-testid="auto-input-anotacaomedicacaoview-4" type="checkbox" v-model="form.orienta">
             <span>Oriento paciente sobre a medicação</span>
           </label>
         </div>
@@ -69,20 +69,20 @@
         <div class="campo">
           <label>Conforme</label>
           <label class="checkbox-label">
-            <input type="radio"
+            <input  data-testid="auto-input-anotacaomedicacaoview-5" type="radio"
               :checked="form.conformeTipo === 'prescricao'"
               @click="form.conformeTipo = form.conformeTipo === 'prescricao' ? '' : 'prescricao'">
             <span>Conforme prescrição médica</span>
           </label>
           <div style="margin-top:8px">
             <label class="checkbox-label">
-              <input type="radio"
+              <input  data-testid="auto-input-anotacaomedicacaoview-6" type="radio"
                 :checked="form.conformeTipo === 'orientacao'"
                 @click="form.conformeTipo = form.conformeTipo === 'orientacao' ? '' : 'orientacao'">
               <span>Conforme orientação do</span>
             </label>
             <input
-              v-if="form.conformeTipo === 'orientacao'"
+               data-testid="auto-input-anotacaomedicacaoview-7" v-if="form.conformeTipo === 'orientacao'"
               type="text"
               class="campo-inline"
               v-model="form.conformeNome"
@@ -107,20 +107,20 @@
                 <span v-if="med.dupla" class="badge-dupla">dupla ✓</span>
               </div>
               <div class="med-item-acoes">
-                <button class="btn-icon-sm" @click="editarMed(i)" title="Editar">✏</button>
-                <button class="btn-icon-sm btn-danger-sm" @click="removerMed(i)" title="Remover">✕</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-5" class="btn-icon-sm" @click="editarMed(i)" title="Editar">✏</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-6" class="btn-icon-sm btn-danger-sm" @click="removerMed(i)" title="Remover">✕</button>
               </div>
             </div>
           </div>
 
-          <button class="btn-add-med" @click="abrirModal()">
+          <button  data-testid="auto-btn-anotacaomedicacaoview-7" class="btn-add-med" @click="abrirModal()">
             + Adicionar medicamento
           </button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
-        <button class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">
+        <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">
           Gerar texto
         </button>
 
@@ -135,26 +135,26 @@
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
             <label class="label-small">Nome do paciente</label>
-            <input class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
+            <input  data-testid="auto-input-anotacaomedicacaoview-8" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
           </div>
           <div style="flex:1">
             <label class="label-small">Leito</label>
-            <input class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
+            <input  data-testid="auto-input-anotacaomedicacaoview-9" class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
           </div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
-          <button class="btn btn-primary" @click="copiar">
+          <button  data-testid="auto-btn-anotacaomedicacaoview-9" class="btn btn-primary" @click="copiar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="9" y="9" width="13" height="13" rx="2"/>
               <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
             </svg>
             Copiar texto
           </button>
-          <button class="btn btn-secondary" @click="salvar" :disabled="salvando">
+          <button  data-testid="auto-btn-anotacaomedicacaoview-10" class="btn btn-secondary" @click="salvar" :disabled="salvando">
             {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
           </button>
-          <button class="btn btn-secondary" @click="compartilhar">
+          <button  data-testid="auto-btn-anotacaomedicacaoview-11" class="btn btn-secondary" @click="compartilhar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
               <polyline points="16 6 12 2 8 6"/>
@@ -162,8 +162,8 @@
             </svg>
             Compartilhar
           </button>
-          <button class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
-          <button class="btn btn-secondary" @click="gerado = false">← Editar</button>
+          <button  data-testid="auto-btn-anotacaomedicacaoview-12" class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
+          <button  data-testid="auto-btn-anotacaomedicacaoview-13" class="btn btn-secondary" @click="gerado = false">← Editar</button>
         </div>
       </div>
 
@@ -175,7 +175,7 @@
 
         <div class="modal-header">
           <h3>{{ modal.editIdx !== null ? 'Editar' : 'Adicionar' }} medicamento</h3>
-          <button class="btn-icon" @click="fecharModal">
+          <button  data-testid="auto-btn-anotacaomedicacaoview-14" class="btn-icon" @click="fecharModal">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
@@ -189,7 +189,7 @@
             <label>Nome do medicamento <span class="obrigatorio">*</span></label>
             <div class="autocomplete-wrap">
               <input
-                type="text"
+                 data-testid="auto-input-anotacaomedicacaoview-10" type="text"
                 :value="modal.d.nome"
                 @input="onNomeInput($event.target.value)"
                 @focus="onNomeInput(modal.d.nome)"
@@ -198,7 +198,7 @@
                 autocomplete="off">
               <div v-if="mostrarSug && sugestoes.length" class="autocomplete-dropdown">
                 <button
-                  v-for="sug in sugestoes"
+                   data-testid="auto-btn-anotacaomedicacaoview-15" v-for="sug in sugestoes"
                   :key="sug.nome + sug.tipo"
                   class="autocomplete-item"
                   @mousedown.prevent="selecionarSugestao(sug)">
@@ -217,7 +217,7 @@
             <label>Via de administração <span class="obrigatorio">*</span></label>
             <div class="chips-wrap">
               <button
-                v-for="v in vias" :key="v"
+                 data-testid="auto-btn-anotacaomedicacaoview-16" v-for="v in vias" :key="v"
                 class="chip" :class="{ ativo: modal.d.via === v }"
                 @click="selecionarVia(v)">{{ v }}</button>
             </div>
@@ -226,10 +226,10 @@
           <!-- Dose + Unidade (não-OFT) -->
           <div v-if="modal.d.via && modal.d.via !== 'OFT'" class="campo">
             <label>Dose <span class="obrigatorio">*</span></label>
-            <input type="text" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
+            <input  data-testid="auto-input-anotacaomedicacaoview-11" type="text" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
             <div class="chips-wrap" style="margin-top:8px">
               <button
-                v-for="u in unidades" :key="u"
+                 data-testid="auto-btn-anotacaomedicacaoview-17" v-for="u in unidades" :key="u"
                 class="chip chip-sm" :class="{ ativo: modal.d.unidade === u }"
                 @click="modal.d.unidade = u">{{ u }}</button>
             </div>
@@ -239,7 +239,7 @@
           <div v-if="modal.d.via === 'OFT'" class="campo">
             <label>Quantidade <span class="obrigatorio">*</span></label>
             <div class="input-suffix-wrap">
-              <input type="number" v-model="modal.d.dose" placeholder="1" min="1">
+              <input  data-testid="auto-input-anotacaomedicacaoview-12" type="number" v-model="modal.d.dose" placeholder="1" min="1">
               <span class="input-suffix">Gts</span>
             </div>
           </div>
@@ -249,7 +249,7 @@
             <label>Olho <span class="obrigatorio">*</span></label>
             <div class="chips-wrap">
               <button
-                v-for="op in ['direito','esquerdo','ambos']" :key="op"
+                 data-testid="auto-btn-anotacaomedicacaoview-18" v-for="op in ['direito','esquerdo','ambos']" :key="op"
                 class="chip" :class="{ ativo: modal.d.oftOlho === op }"
                 @click="modal.d.oftOlho = op">
                 {{ op.charAt(0).toUpperCase() + op.slice(1) }}
@@ -260,7 +260,7 @@
           <!-- EV: com ou sem diluição -->
           <div v-if="modal.d.via === 'EV'" class="campo">
             <label class="checkbox-label">
-              <input type="checkbox" v-model="modal.d.evDiluicao">
+              <input  data-testid="auto-input-anotacaomedicacaoview-13" type="checkbox" v-model="modal.d.evDiluicao">
               <span>Com diluição</span>
             </label>
             <p v-if="!modal.d.evDiluicao" class="hint-text">Sem diluição = administrado direto EV</p>
@@ -272,7 +272,7 @@
             <div class="campo">
               <label>Volume <span class="obrigatorio">*</span></label>
               <div class="input-suffix-wrap">
-                <input type="number" v-model="modal.d.evVolume" placeholder="100" min="1">
+                <input  data-testid="auto-input-anotacaomedicacaoview-14" type="number" v-model="modal.d.evVolume" placeholder="100" min="1">
                 <span class="input-suffix">ml</span>
               </div>
             </div>
@@ -280,16 +280,16 @@
             <div class="campo">
               <label>Solução <span class="obrigatorio">*</span></label>
               <div class="chips-wrap">
-                <button class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
-                <button class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
-                <button class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-19" class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-20" class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-21" class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
               </div>
             </div>
 
             <!-- BIC toggle -->
             <div class="campo">
               <label class="checkbox-label">
-                <input type="checkbox" v-model="modal.d.evBic">
+                <input  data-testid="auto-input-anotacaomedicacaoview-15" type="checkbox" v-model="modal.d.evBic">
                 <span>BIC (Bomba de Infusão Contínua)</span>
               </label>
               <p v-if="modal.d.evBic" class="hint-text">Informe tempo, velocidade ou ambos</p>
@@ -302,10 +302,10 @@
                 <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span>
               </label>
               <div style="display:flex;gap:8px;align-items:center">
-                <input type="number" v-model="modal.d.evTempo" placeholder="30" min="1" style="flex:1">
+                <input  data-testid="auto-input-anotacaomedicacaoview-16" type="number" v-model="modal.d.evTempo" placeholder="30" min="1" style="flex:1">
                 <div class="chips-wrap" style="flex-shrink:0">
-                  <button class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'min' }" @click="modal.d.evUnidTempo = 'min'">min</button>
-                  <button class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'h' }"   @click="modal.d.evUnidTempo = 'h'">h</button>
+                  <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'min' }" @click="modal.d.evUnidTempo = 'min'">min</button>
+                  <button  data-testid="auto-btn-anotacaomedicacaoview-23" class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'h' }"   @click="modal.d.evUnidTempo = 'h'">h</button>
                 </div>
               </div>
             </div>
@@ -317,7 +317,7 @@
                 <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span>
               </label>
               <div class="input-suffix-wrap">
-                <input type="number" v-model="modal.d.evVelocidade" placeholder="5" min="0.1" step="0.1">
+                <input  data-testid="auto-input-anotacaomedicacaoview-17" type="number" v-model="modal.d.evVelocidade" placeholder="5" min="0.1" step="0.1">
                 <span class="input-suffix">ml/h</span>
               </div>
             </div>
@@ -327,16 +327,16 @@
           <!-- Dupla checagem -->
           <div class="campo">
             <label class="checkbox-label">
-              <input type="checkbox" v-model="modal.d.dupla">
+              <input  data-testid="auto-input-anotacaomedicacaoview-18" type="checkbox" v-model="modal.d.dupla">
               <span>Dupla checagem</span>
             </label>
             <div v-if="modal.d.dupla" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
               <input
-                type="text"
+                 data-testid="auto-input-anotacaomedicacaoview-19" type="text"
                 v-model="modal.d.duplaCargo"
                 placeholder="Cargo (ex: técnica de enfermagem, enfermeira)">
               <input
-                type="text"
+                 data-testid="auto-input-anotacaomedicacaoview-20" type="text"
                 v-model="modal.d.duplaNome"
                 placeholder="Nome do profissional *">
             </div>
@@ -347,8 +347,8 @@
         <p v-if="modal.erro" class="erro-msg" style="padding:0 16px 8px">{{ modal.erro }}</p>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
-          <button class="btn btn-primary" style="flex:2" @click="confirmarMed">
+          <button  data-testid="auto-btn-anotacaomedicacaoview-24" class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
+          <button  data-testid="auto-btn-anotacaomedicacaoview-25" class="btn btn-primary" style="flex:2" @click="confirmarMed">
             {{ modal.editIdx !== null ? 'Salvar alterações' : 'Adicionar' }}
           </button>
         </div>
