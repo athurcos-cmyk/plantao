@@ -142,19 +142,29 @@
               maxlength="4"
               placeholder="••••"
               class="input-pin"
-              @keyup.enter="totalPassos === 2 ? entrar() : avancarPasso()"
+              @keyup.enter="entrar()"
             />
           </div>
+        </div>
+
+        <!-- Nome (só cadastro) -->
+        <div v-if="modo === 'cadastro'" class="campo" style="margin-top:12px">
+          <input
+            data-testid="input-nome"
+            v-model="nome"
+            type="text"
+            placeholder="Seu nome (opcional)"
+            @keyup.enter="entrar"
+          />
         </div>
 
         <button
           data-testid="btn-continuar-passo2"
           class="btn btn-primary btn-block"
           :disabled="pin.length !== 4 || carregando"
-          @click="totalPassos === 2 ? entrar() : avancarPasso()"
+          @click="entrar()"
         >
-          {{ modo === 'login' ? (carregando ? 'Entrando...' : 'Entrar') : 'Continuar' }}
-          <svg v-if="modo !== 'login'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {{ modo === 'login' ? (carregando ? 'Entrando...' : 'Entrar') : (carregando ? 'Criando conta...' : 'Criar conta e entrar') }}
         </button>
 
         <!-- Ajuda PIN esquecido (só no login) -->
@@ -170,38 +180,6 @@
         </div>
       </div>
 
-      <!-- Passo 3: Nome (só cadastro) -->
-      <div v-else-if="passo === 3">
-        <button class="btn-voltar" data-testid="btn-voltar-passo3" @click="voltarPasso">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          Voltar
-        </button>
-
-        <div class="card-header">
-          <span class="card-step" data-testid="step-indicador">3 de 3</span>
-          <h2 data-testid="titulo-passo3">Seu nome</h2>
-          <p>Opcional — aparece no topo do app.</p>
-        </div>
-
-        <div class="campo">
-          <input
-            data-testid="input-nome"
-            v-model="nome"
-            type="text"
-            placeholder="Ex: Ana Lima"
-            @keyup.enter="entrar"
-          />
-        </div>
-
-        <button
-          data-testid="btn-entrar"
-          class="btn btn-primary btn-block"
-          :disabled="carregando"
-          @click="entrar"
-        >
-          {{ carregando ? 'Criando conta...' : 'Criar conta e entrar' }}
-        </button>
-      </div>
 
       <p v-if="erroMsg" class="erro-msg" style="margin-top:12px">{{ erroMsg }}</p>
     </div>
@@ -229,7 +207,7 @@ const carregando   = ref(false)
 const mostrarAjuda       = ref(false)
 const mostrarAjudaCodigo = ref(false)
 
-const totalPassos = computed(() => modo.value === 'cadastro' ? 3 : 2)
+const totalPassos = computed(() => 2)
 
 let debounceTimer = null
 
