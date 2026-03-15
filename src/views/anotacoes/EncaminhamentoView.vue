@@ -223,6 +223,7 @@
 
             <button class="chip chip-add" @click="addAVP">+ AVP</button>
             <button class="chip chip-add" @click="addDreno">+ Dreno</button>
+            <button class="chip chip-add" @click="addOutro">+ Outro</button>
 
             <button
               class="chip" :class="{ 'chip-on': nenhumAtivo }"
@@ -317,6 +318,20 @@
               type="text"
               v-model="dreno.local"
               placeholder="Ex: tórax direito, abdominal, lombar..."
+              style="margin-top:4px"
+            >
+          </div>
+
+          <!-- Cards: Outro dispositivo -->
+          <div v-for="outro in outros" :key="outro.id" class="disp-card">
+            <div class="disp-card-header">
+              <span class="disp-card-title">📎 Outro dispositivo</span>
+              <button class="disp-del-btn" @click="removeOutro(outro.id)">✕</button>
+            </div>
+            <input
+              type="text"
+              v-model="outro.descricao"
+              placeholder="Descreva o dispositivo..."
               style="margin-top:4px"
             >
           </div>
@@ -510,10 +525,12 @@ const acessosCentrais = [
 const pulseirasAtivas = ref([])
 const pulseirasCardAberto = ref(false)
 const pulseirasOpcoes = ['Identificação', 'Alergia', 'Risco de queda', 'Precaução', 'Preservação de membro']
-let avpIdCtr = 0
+let avpIdCtr   = 0
 let drenoIdCtr = 0
+let outroIdCtr = 0
 const avps   = ref([])
 const drenos = ref([])
+const outros = ref([])
 const nenhumAtivo = ref(false)
 
 function _limparNenhum() { nenhumAtivo.value = false }
@@ -575,6 +592,12 @@ function addDreno() {
 }
 function removeDreno(id) { drenos.value = drenos.value.filter(d => d.id !== id) }
 
+function addOutro() {
+  _limparNenhum()
+  outros.value.push({ id: ++outroIdCtr, descricao: '' })
+}
+function removeOutro(id) { outros.value = outros.value.filter(o => o.id !== id) }
+
 function toggleNenhum() {
   if (nenhumAtivo.value) {
     nenhumAtivo.value = false
@@ -587,7 +610,7 @@ function toggleNenhum() {
     permcath.ativo = false; permcath.local = ''
     shilley.ativo = false; shilley.local = ''
     pulseirasAtivas.value = []; pulseirasCardAberto.value = false
-    avps.value = []; drenos.value = []
+    avps.value = []; drenos.value = []; outros.value = []
     nenhumAtivo.value = true
   }
 }
@@ -601,7 +624,7 @@ function limparDispositivos() {
   permcath.ativo = false; permcath.local = ''
   shilley.ativo = false; shilley.local = ''
   pulseirasAtivas.value = []; pulseirasCardAberto.value = false
-  avps.value = []; drenos.value = []
+  avps.value = []; drenos.value = []; outros.value = []
   nenhumAtivo.value = false
 }
 
@@ -731,6 +754,11 @@ function gerarTextoDispositivos() {
     let txt = 'dreno'
     if (dreno.local.trim()) txt += ` em ${dreno.local.trim()}`
     partes.push(txt)
+  }
+
+  // Outros
+  for (const outro of outros.value) {
+    if (outro.descricao.trim()) partes.push(outro.descricao.trim())
   }
 
   return partes
