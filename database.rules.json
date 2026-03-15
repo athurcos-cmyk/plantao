@@ -1,16 +1,20 @@
 {
   "rules": {
+    "usuarios": {
+      ".read": true,
+      ".write": true
+    },
     "anotacoes": {
-      "$syncCode": {
-        ".read": true,
-        ".write": true
-      }
+      ".read": true,
+      ".write": true
+    },
+    "anotacoes_hc": {
+      ".read": true,
+      ".write": true
     },
     "pacientes": {
-      "$syncCode": {
-        ".read": true,
-        ".write": true
-      }
+      ".read": true,
+      ".write": true
     },
     "organizador": {
       ".read": true,
