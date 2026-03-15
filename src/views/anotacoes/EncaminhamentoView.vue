@@ -206,6 +206,16 @@
               @click="toggleCatO2"
             >Cateter nasal O₂</button>
 
+            <button
+              class="chip" :class="{ 'chip-on': sne.ativo }"
+              @click="toggleSne"
+            >SNE</button>
+
+                    <button
+              class="chip" :class="{ 'chip-on': pulseirasAtivas.length > 0 }"
+              @click="togglePulseirasCard"
+            >Pulseiras</button>
+
             <button class="chip chip-add" @click="addAVP">+ AVP</button>
             <button class="chip chip-add" @click="addDreno">+ Dreno</button>
 
@@ -258,6 +268,24 @@
             >
           </div>
 
+          <!-- Card: SNE -->
+          <div v-if="sne.ativo" class="disp-card">
+            <div class="disp-card-header">
+              <span class="disp-card-title">🥤 SNE</span>
+            </div>
+            <label class="toggle-row">
+              <input type="checkbox" v-model="sne.dieta">
+              <span>Recebendo dieta enteral</span>
+            </label>
+            <input
+              v-if="sne.dieta"
+              type="text"
+              v-model="sne.dietaDesc"
+              placeholder="Ex: TNE polimérica 60ml/h, dieta jejum..."
+              style="margin-top:8px"
+            >
+          </div>
+
           <!-- Cards: Dreno -->
           <div v-for="dreno in drenos" :key="dreno.id" class="disp-card">
             <div class="disp-card-header">
@@ -270,6 +298,20 @@
               placeholder="Ex: tórax direito, abdominal, lombar..."
               style="margin-top:4px"
             >
+          </div>
+
+          <!-- Card: Pulseiras -->
+          <div v-if="pulseirasCardAberto" class="disp-card">
+            <div class="disp-card-header">
+              <span class="disp-card-title">🏷️ Pulseiras presentes</span>
+            </div>
+            <div class="chips-wrap" style="margin-top:4px">
+              <button
+                v-for="op in pulseirasOpcoes" :key="op"
+                class="chip chip-sm" :class="{ 'chip-on': pulseirasAtivas.includes(op) }"
+                @click="togglePulseiraOpcao(op)"
+              >{{ op }}</button>
+            </div>
           </div>
         </div>
 
@@ -424,11 +466,15 @@ const cargoOpcoes = [
 ]
 
 // ── Dispositivos ──
-const dispositivosSimples = ['SVD', 'CVC', 'PICC', 'Permcath', 'Shilley', 'SNE', 'SNG', 'TOT']
+const dispositivosSimples = ['SVD', 'CVC', 'PICC', 'Permcath', 'Shilley', 'SNG', 'TOT']
 const locaisAVP = ['MSE', 'MSD', 'MIE', 'MID']
 
 const dispSimplesAtivos = ref([])
 const catO2 = reactive({ ativo: false, lMin: '' })
+const sne = reactive({ ativo: false, dieta: false, dietaDesc: '' })
+const pulseirasAtivas = ref([])
+const pulseirasCardAberto = ref(false)
+const pulseirasOpcoes = ['Identificação', 'Alergia', 'Risco de queda']
 let avpIdCtr = 0
 let drenoIdCtr = 0
 const avps   = ref([])
@@ -452,6 +498,30 @@ function toggleCatO2() {
   if (!catO2.ativo) catO2.lMin = ''
 }
 
+function toggleSne() {
+  _limparNenhum()
+  sne.ativo = !sne.ativo
+  if (!sne.ativo) { sne.dieta = false; sne.dietaDesc = '' }
+}
+
+function togglePulseirasCard() {
+  _limparNenhum()
+  if (pulseirasCardAberto.value) {
+    pulseirasCardAberto.value = false
+    pulseirasAtivas.value = []
+  } else {
+    pulseirasCardAberto.value = true
+  }
+}
+
+function togglePulseiraOpcao(op) {
+  if (pulseirasAtivas.value.includes(op)) {
+    pulseirasAtivas.value = pulseirasAtivas.value.filter(p => p !== op)
+  } else {
+    pulseirasAtivas.value = [...pulseirasAtivas.value, op]
+  }
+}
+
 function addAVP() {
   _limparNenhum()
   avps.value.push({ id: ++avpIdCtr, local: '', emInfusao: false, infundindo: '' })
@@ -470,6 +540,8 @@ function toggleNenhum() {
   } else {
     dispSimplesAtivos.value = []
     catO2.ativo = false; catO2.lMin = ''
+    sne.ativo = false; sne.dieta = false; sne.dietaDesc = ''
+    pulseirasAtivas.value = []; pulseirasCardAberto.value = false
     avps.value = []; drenos.value = []
     nenhumAtivo.value = true
   }
@@ -478,6 +550,8 @@ function toggleNenhum() {
 function limparDispositivos() {
   dispSimplesAtivos.value = []
   catO2.ativo = false; catO2.lMin = ''
+  sne.ativo = false; sne.dieta = false; sne.dietaDesc = ''
+  pulseirasAtivas.value = []; pulseirasCardAberto.value = false
   avps.value = []; drenos.value = []
   nenhumAtivo.value = false
 }
@@ -584,11 +658,28 @@ function gerarTextoDispositivos() {
     partes.push(txt)
   }
 
+  // SNE
+  if (sne.ativo) {
+    let txt = 'SNE'
+    if (sne.dieta) {
+      txt += ' em uso com dieta enteral'
+      if (sne.dietaDesc.trim()) txt += ` (${sne.dietaDesc.trim()})`
+    }
+    partes.push(txt)
+  }
+
   // Drenos
   for (const dreno of drenos.value) {
     let txt = 'dreno'
     if (dreno.local.trim()) txt += ` em ${dreno.local.trim()}`
     partes.push(txt)
+  }
+
+  // Pulseiras
+  if (pulseirasAtivas.value.length > 0) {
+    const nomes = pulseirasAtivas.value.map(p => p.toLowerCase())
+    const plural = nomes.length > 1 ? 'pulseiras' : 'pulseira'
+    partes.push(`${plural} de ${nomes.join(' e ')}`)
   }
 
   return partes
