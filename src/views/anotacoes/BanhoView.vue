@@ -320,8 +320,8 @@ function gerar() {
   if (form.tipo === 'aspersao') {
     // Início da frase
     const inicio = form.protecaoCateter
-      ? `${hora}, realizado proteção de cateter, paciente ${enc} ao banho de aspersão`
-      : `${hora}, paciente ${enc} ao banho de aspersão`
+      ? `${hora} – realizado proteção de cateter, paciente ${enc} ao banho de aspersão`
+      : `${hora} – paciente ${enc} ao banho de aspersão`
 
     // Detalhes em sequência
     const detalhes = []
@@ -350,7 +350,7 @@ function gerar() {
       .filter(h => form.higiene.includes(h))
       .map(h => h.toLowerCase())
 
-    texto = `${hora}, realizado banho de leito`
+    texto = `${hora} – realizado banho de leito`
     if (higieneFeita.length > 0) {
       const last  = higieneFeita.length - 1
       const lista = higieneFeita.length === 1

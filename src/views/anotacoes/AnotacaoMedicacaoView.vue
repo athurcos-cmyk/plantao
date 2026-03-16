@@ -862,7 +862,7 @@ function gerar() {
 
   // O horário prefixia APENAS a primeira linha; as demais ficam sem ele
   const linhas = conteudo.map((linha, i) =>
-    i === 0 ? `${h} - ${linha}` : linha
+    i === 0 ? `${h} – ${linha}` : linha
   )
 
   // Recusas: agrupar por profissional → uma linha por Enf.

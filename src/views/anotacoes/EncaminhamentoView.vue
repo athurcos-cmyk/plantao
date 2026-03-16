@@ -877,7 +877,7 @@ function gerar() {
 
   if (form.tipo === 'retorno') {
     // ── RETORNO ──
-    texto = `${formatHora(form.horario)}, paciente retorna para unidade de internação, em ${transporteTxt}`
+    texto = `${formatHora(form.horario)} – paciente retorna para unidade de internação, em ${transporteTxt}`
     texto += acompTxt
     // Procedimento + local
     const proc  = form.procedRetorno.trim()
@@ -888,7 +888,7 @@ function gerar() {
     texto += '.'
   } else {
     // ── IDA ──
-    texto = `${formatHora(form.horario)}, paciente ${enc} em ${transporteTxt}`
+    texto = `${formatHora(form.horario)} – paciente ${enc} em ${transporteTxt}`
     texto += acompTxt
     texto += `, para ${form.destino}`
     if (form.motivo.trim()) texto += `, para ${form.motivo.trim()}`
