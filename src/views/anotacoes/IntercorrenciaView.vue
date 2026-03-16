@@ -471,19 +471,12 @@ function novaAnotacao() {
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
 
-/* Modelos: chips horizontais rolável */
+/* Modelos: chips com quebra de linha */
 .modelos-chips-row {
-  display: flex; gap: 8px;
-  overflow-x: auto; padding-bottom: 6px;
-  scrollbar-width: none; margin-bottom: 4px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 4px;
 }
-.modelos-chips-row::-webkit-scrollbar { display: none; }
 .chip-modelo {
-  flex-shrink: 0;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   padding: 8px 14px; border-radius: 20px;
   border: 1px solid var(--border); background: var(--bg-card);
   color: var(--text-dim); font-size: 0.85rem;
