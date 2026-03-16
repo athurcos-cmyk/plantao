@@ -207,8 +207,22 @@ const tipoLabels = {
   livre:     '📝 Intercorrência',
 }
 
+function extrairHora(texto) {
+  const m = (texto || '').match(/^(\d{2})h(\d{2})/)
+  if (!m) return -1
+  return parseInt(m[1]) * 60 + parseInt(m[2])
+}
+
 const anotacoesFiltradas = computed(() => {
-  let lista = [...store.anotacoes].sort((a, b) => b.timestamp - a.timestamp)
+  let lista = [...store.anotacoes].sort((a, b) => {
+    const diaA = new Date(a.timestamp).setHours(0, 0, 0, 0)
+    const diaB = new Date(b.timestamp).setHours(0, 0, 0, 0)
+    if (diaB !== diaA) return diaB - diaA
+    const horaA = extrairHora(a.texto)
+    const horaB = extrairHora(b.texto)
+    if (horaB !== horaA) return horaB - horaA
+    return b.timestamp - a.timestamp
+  })
   if (filtro.tipo !== 'todos') lista = lista.filter(a => a.tipo === filtro.tipo)
   const busca = filtro.busca.trim().toLowerCase()
   if (busca) lista = lista.filter(a =>
