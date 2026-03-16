@@ -81,15 +81,16 @@
         </div>
       </div>
 
-      <!-- ═══ BLOCO 2 — Detalhes do banho ═══ -->
+      <!-- ═══ BLOCO 2 — Detalhes da higienização ═══ -->
       <div v-if="!gerado && passo === 2">
-        <h2 class="bloco-titulo">Detalhes do banho</h2>
+        <h2 class="bloco-titulo">Detalhes da higienização</h2>
 
         <div class="campo">
-          <label>Tipo de banho <span class="obrigatorio">*</span></label>
+          <label>Tipo <span class="obrigatorio">*</span></label>
           <div class="chips-wrap">
             <button class="chip" :class="{ 'chip-on': form.tipo === 'aspersao' }" @click="form.tipo = 'aspersao'">🚿 Banho de aspersão</button>
             <button class="chip" :class="{ 'chip-on': form.tipo === 'leito' }" @click="form.tipo = 'leito'">🛁 Banho de leito</button>
+            <button class="chip" :class="{ 'chip-on': form.tipo === 'fralda' }" @click="form.tipo = 'fralda'">🧻 Troca de fralda</button>
           </div>
         </div>
 
@@ -154,6 +155,44 @@
                 <input type="checkbox" v-model="form.trocaFralda">
                 <span>Troca de fralda</span>
               </label>
+            </div>
+          </div>
+        </template>
+
+        <!-- ── Troca de fralda ── -->
+        <template v-if="form.tipo === 'fralda'">
+          <div class="campo">
+            <label>Eliminação <span class="obrigatorio">*</span></label>
+            <div class="chips-wrap">
+              <button class="chip" :class="{ 'chip-on': form.eliminacao === 'diurese' }" @click="form.eliminacao = 'diurese'">Diurese</button>
+              <button class="chip" :class="{ 'chip-on': form.eliminacao === 'evacuacao' }" @click="form.eliminacao = 'evacuacao'">Evacuação</button>
+              <button class="chip" :class="{ 'chip-on': form.eliminacao === 'ambos' }" @click="form.eliminacao = 'ambos'">Ambos</button>
+            </div>
+          </div>
+
+          <div v-if="form.eliminacao === 'diurese' || form.eliminacao === 'ambos'" class="campo">
+            <label>Quantidade de diurese <span class="obrigatorio">*</span></label>
+            <div class="chips-wrap">
+              <button class="chip" :class="{ 'chip-on': form.qtdDiurese === '+' }" @click="form.qtdDiurese = '+'">+</button>
+              <button class="chip" :class="{ 'chip-on': form.qtdDiurese === '++' }" @click="form.qtdDiurese = '++'">++</button>
+              <button class="chip" :class="{ 'chip-on': form.qtdDiurese === '+++' }" @click="form.qtdDiurese = '+++'">+++</button>
+            </div>
+          </div>
+
+          <div v-if="form.eliminacao === 'evacuacao' || form.eliminacao === 'ambos'" class="campo">
+            <label>Quantidade de evacuação <span class="obrigatorio">*</span></label>
+            <div class="chips-wrap">
+              <button class="chip" :class="{ 'chip-on': form.qtdEvacuacao === '+' }" @click="form.qtdEvacuacao = '+'">+</button>
+              <button class="chip" :class="{ 'chip-on': form.qtdEvacuacao === '++' }" @click="form.qtdEvacuacao = '++'">++</button>
+              <button class="chip" :class="{ 'chip-on': form.qtdEvacuacao === '+++' }" @click="form.qtdEvacuacao = '+++'">+++</button>
+            </div>
+          </div>
+
+          <div v-if="form.eliminacao" class="campo">
+            <label>Local <span class="obrigatorio">*</span></label>
+            <div class="chips-wrap">
+              <button class="chip" :class="{ 'chip-on': form.localElim === 'leito' }" @click="form.localElim = 'leito'">Em leito</button>
+              <button class="chip" :class="{ 'chip-on': form.localElim === 'fralda' }" @click="form.localElim = 'fralda'">Em fralda</button>
             </div>
           </div>
         </template>
@@ -233,7 +272,12 @@ const form = reactive({
   genero:             'M',
   nome:               '',
   leito:              '',
-  tipo:               '',      // 'aspersao' | 'leito'
+  tipo:               '',      // 'aspersao' | 'leito' | 'fralda'
+  // Fralda
+  eliminacao:         '',     // 'diurese' | 'evacuacao' | 'ambos'
+  qtdDiurese:         '',     // '+' | '++' | '+++'
+  qtdEvacuacao:       '',     // '+' | '++' | '+++'
+  localElim:          '',     // 'leito' | 'fralda'
   cadeiraBanho:       false,
   comAuxilio:         false,
   acompGenero:        'M',
@@ -276,7 +320,7 @@ function formatHora(h) { return h ? h.replace(':', 'h') : '' }
 // ── Navegação ──
 function voltarOuSair() {
   if (passo.value > 1 && !gerado.value) { passo.value--; return }
-  router.back()
+  router.push({ name: 'dashboard' })
 }
 
 function limparBloco() {
@@ -289,6 +333,7 @@ function limparBloco() {
     form.acompGenero = 'M'; form.acompNome = ''
     form.protecaoCateter = false; form.trocaRoupa = false
     form.higiene = []; form.trocaFralda = false
+    form.eliminacao = ''; form.qtdDiurese = ''; form.qtdEvacuacao = ''; form.localElim = ''
     form.semIntercorrencias = true; form.intercorrencia = ''
   }
 }
@@ -305,7 +350,19 @@ function avancar() {
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
-  if (!form.tipo) { erro.value = 'Selecione o tipo de banho.'; return }
+  if (!form.tipo) { erro.value = 'Selecione o tipo.'; return }
+
+  if (form.tipo === 'fralda') {
+    if (!form.eliminacao) { erro.value = 'Selecione o tipo de eliminação.'; return }
+    if ((form.eliminacao === 'diurese' || form.eliminacao === 'ambos') && !form.qtdDiurese) {
+      erro.value = 'Selecione a quantidade de diurese.'; return
+    }
+    if ((form.eliminacao === 'evacuacao' || form.eliminacao === 'ambos') && !form.qtdEvacuacao) {
+      erro.value = 'Selecione a quantidade de evacuação.'; return
+    }
+    if (!form.localElim) { erro.value = 'Selecione o local.'; return }
+  }
+
   if (!form.semIntercorrencias && !form.intercorrencia.trim()) {
     erro.value = 'Descreva a intercorrência ou marque "Sem intercorrências".'
     return
@@ -340,6 +397,32 @@ function gerar() {
     texto += '.'
 
     if (form.trocaRoupa) texto += ' Realizado troca de roupa de cama.'
+
+  } else if (form.tipo === 'fralda') {
+    // Troca de fralda
+    let elimPart = ''
+    if (form.eliminacao === 'diurese') {
+      elimPart = `diurese ${form.qtdDiurese}`
+    } else if (form.eliminacao === 'evacuacao') {
+      elimPart = `evacuação ${form.qtdEvacuacao}`
+    } else {
+      elimPart = `evacuação ${form.qtdEvacuacao} e diurese ${form.qtdDiurese}`
+    }
+
+    const local = form.localElim === 'leito' ? 'em leito' : 'em fralda'
+    texto = `${hora} – Paciente apresentou ${elimPart} ${local}, realizado higiene íntima`
+
+    if (form.localElim === 'leito') {
+      texto += ', troca de roupa de cama e troca de fralda'
+    } else {
+      texto += ' e troca de fralda'
+    }
+
+    if (form.semIntercorrencias) {
+      texto += ', sem intercorrências.'
+    } else {
+      texto += `. ${form.intercorrencia.trim()}.`
+    }
 
   } else {
     // Banho de leito — higiene em ordem canônica
@@ -419,6 +502,7 @@ function novaAnotacao() {
     acompGenero: 'M', acompNome: '',
     protecaoCateter: false, trocaRoupa: false,
     higiene: [], trocaFralda: false,
+    eliminacao: '', qtdDiurese: '', qtdEvacuacao: '', localElim: '',
     semIntercorrencias: true, intercorrencia: '',
   })
   textoGerado.value = ''; gerado.value = false; passo.value = 1

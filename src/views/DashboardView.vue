@@ -115,7 +115,7 @@ const tipos = [
   { id: 'sv',        icon: '📊', nome: 'Sinais vitais',          rota: 'sinais-vitais'   },
   { id: 'medicacao', icon: '💊', nome: 'Medicação',              rota: 'medicacao'   },
   { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: 'encaminhamento' },
-  { id: 'banho',     icon: '🛁', nome: 'Banho',                  rota: 'banho' },
+  { id: 'banho',     icon: '🧼', nome: 'Higienização',            rota: 'banho' },
   { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: null },
   { id: 'passagem',  icon: '🔄', nome: 'Passagem de plantão',    rota: null },
   { id: 'livre',     icon: '📝', nome: 'Intercorrência / Livre', rota: null },

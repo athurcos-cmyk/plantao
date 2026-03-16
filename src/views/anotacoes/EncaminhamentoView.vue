@@ -730,7 +730,7 @@ async function selecionarTransporte(t) {
 // ── Navegação ──
 function voltarOuSair() {
   if (passo.value > 1 && !gerado.value) { passo.value--; return }
-  router.back()
+  router.push({ name: 'dashboard' })
 }
 
 function limparBloco() {

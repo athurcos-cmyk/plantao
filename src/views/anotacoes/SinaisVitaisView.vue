@@ -1,7 +1,7 @@
 <template>
   <div class="screen">
     <header class="app-header">
-      <button  data-testid="auto-btn-sinaisvitaisview-1" class="btn-icon" @click="router.back()">
+      <button  data-testid="auto-btn-sinaisvitaisview-1" class="btn-icon" @click="router.push({ name: 'dashboard' })">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>

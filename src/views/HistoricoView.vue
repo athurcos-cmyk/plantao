@@ -1,7 +1,7 @@
 <template>
   <div class="screen">
     <header class="app-header">
-      <button  data-testid="auto-btn-historicoview-1" class="btn-icon" @click="router.back()">
+      <button  data-testid="auto-btn-historicoview-1" class="btn-icon" @click="router.push({ name: 'dashboard' })">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
@@ -189,7 +189,7 @@ const tiposFiltro = [
   { v: 'sv',       l: 'Sinais Vitais' },
   { v: 'medicacao',l: 'Medicação'     },
   { v: 'curativo', l: 'Curativo'      },
-  { v: 'banho',    l: 'Banho'         },
+  { v: 'banho',    l: 'Higienização'  },
   { v: 'encaminhamento', l: 'Encaminhamento'},
   { v: 'passagem', l: 'Passagem'      },
   { v: 'livre',    l: 'Intercorrência'},
@@ -201,7 +201,7 @@ const tipoLabels = {
   medicacao: '💊 Medicação',
   encamin:   '🚑 Encaminhamento',
   encaminhamento: '🚑 Encaminhamento',
-  banho:     '🛁 Banho',
+  banho:     '🧼 Higienização',
   curativo:  '🩹 Curativo',
   passagem:  '🔄 Passagem de Plantão',
   livre:     '📝 Intercorrência',
