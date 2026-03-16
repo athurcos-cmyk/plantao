@@ -243,8 +243,8 @@
             </div>
           </div>
 
-          <!-- Dose + Unidade (não-OFT, não-Recusa) -->
-          <div v-if="modal.d.via && modal.d.via !== 'OFT' && modal.d.via !== 'Recusa'" class="campo">
+          <!-- Dose + Unidade (não-OFT, não-Recusa, não-DERM) -->
+          <div v-if="modal.d.via && modal.d.via !== 'OFT' && modal.d.via !== 'Recusa' && modal.d.via !== 'DERM'" class="campo">
             <label>Dose <span class="obrigatorio">*</span></label>
             <input  data-testid="auto-input-anotacaomedicacaoview-11" type="text" inputmode="decimal" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
             <div class="chips-wrap" style="margin-top:8px">
@@ -681,7 +681,7 @@ function confirmarMed() {
 
   if (d.via === 'Recusa') {
     if (!d.recusaNome.trim()) { modal.erro = 'Informe o nome do profissional comunicado'; return }
-  } else {
+  } else if (d.via !== 'DERM') {
     if (!String(d.dose).trim()) { modal.erro = 'Informe a dose'; return }
   }
 
@@ -745,7 +745,13 @@ function resumirMed(med) {
 // Retorna apenas a parte "nome dose via" de um medicamento (sem horário nem conforme)
 function gerarParteMed(med) {
   const un      = med.via === 'OFT' ? 'Gts' : med.unidade
-  const doseStr = `${med.dose}${un}`
+  const doseStr = med.dose ? `${med.dose}${un} ` : ''
+
+  // DERM: sem dose obrigatória
+  if (med.via === 'DERM') {
+    const prefixoFrasco = med.loteAtivo && med.loteFrasco ? `o ${med.loteFrasco}° Frasco de ` : ''
+    return `${prefixoFrasco}${med.nome.toLowerCase()} ${doseStr}DERM`.trimEnd()
+  }
 
   let viaTexto = ''
   if (med.via === 'VO')           viaTexto = 'VO'
@@ -753,7 +759,6 @@ function gerarParteMed(med) {
   else if (med.via === 'IM')      viaTexto = 'IM'
   else if (med.via === 'SNE')     viaTexto = 'via SNE'
   else if (med.via === 'Sublingual') viaTexto = 'sublingual'
-  else if (med.via === 'DERM')       viaTexto = 'DERM'
   else if (med.via === 'OFT') {
     const olhoTexto = med.oftOlho === 'ambos' ? 'em ambos os olhos' : `olho ${med.oftOlho}`
     viaTexto = `OFT ${olhoTexto}`
@@ -803,7 +808,7 @@ function gerarParteMed(med) {
     ? `o ${med.loteFrasco}° Frasco de `
     : ''
 
-  return `${prefixoFrasco}${med.nome.toLowerCase()} ${doseStr} ${viaTexto}`
+  return `${prefixoFrasco}${med.nome.toLowerCase()} ${doseStr}${viaTexto}`
 }
 
 function gerarLinhaDupla(med) {
