@@ -477,6 +477,8 @@ function novaAnotacao() {
   margin-bottom: 4px;
 }
 .chip-modelo {
+  max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   padding: 8px 14px; border-radius: 20px;
   border: 1px solid var(--border); background: var(--bg-card);
   color: var(--text-dim); font-size: 0.85rem;
