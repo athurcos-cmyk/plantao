@@ -401,5 +401,20 @@ function novaAfericao() {
 }
 .campo-inline:focus { border-color: var(--blue); }
 
+.chips-scroll {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+  flex-wrap: wrap;
+}
+.chips-scroll::-webkit-scrollbar { display: none; }
+.chip {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 20px; color: var(--text-muted);
+  font-size: 0.85rem; font-family: inherit;
+  padding: 7px 14px; cursor: pointer; white-space: nowrap;
+  flex-shrink: 0; transition: all 0.15s;
+}
+.chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+
 /* Toast global — ver App.vue + style.css */
 </style>
