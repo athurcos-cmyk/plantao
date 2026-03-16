@@ -333,8 +333,8 @@ function mostrarFeedback(msg) {
 .chip {
   background: var(--bg-input); border: 1px solid var(--border);
   border-radius: 20px; color: var(--text-muted);
-  font-size: 0.78rem; font-family: inherit;
-  padding: 6px 12px; cursor: pointer; white-space: nowrap;
+  font-size: 0.83rem; font-family: inherit;
+  padding: 7px 13px; cursor: pointer; white-space: nowrap;
   flex-shrink: 0; transition: all 0.15s;
 }
 .chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }

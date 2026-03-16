@@ -105,10 +105,19 @@
 
           <div class="campo">
             <label>Opções</label>
-            <div class="chips-wrap">
-              <button class="chip" :class="{ 'chip-on': form.comAuxilio }" @click="form.comAuxilio = !form.comAuxilio">Com auxílio</button>
-              <button class="chip" :class="{ 'chip-on': form.protecaoCateter }" @click="form.protecaoCateter = !form.protecaoCateter">Proteção de cateter</button>
-              <button class="chip" :class="{ 'chip-on': form.trocaRoupa }" @click="form.trocaRoupa = !form.trocaRoupa">Troca de roupa de cama</button>
+            <div class="radio-group vertical">
+              <label class="checkbox-label">
+                <input type="checkbox" v-model="form.comAuxilio">
+                <span>Com auxílio</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" v-model="form.protecaoCateter">
+                <span>Proteção de cateter</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" v-model="form.trocaRoupa">
+                <span>Troca de roupa de cama</span>
+              </label>
             </div>
           </div>
 
@@ -126,21 +135,25 @@
         <template v-if="form.tipo === 'leito'">
           <div class="campo">
             <label>Higiene realizada</label>
-            <div class="chips-wrap">
-              <button
-                v-for="h in higieneOpcoes" :key="h"
-                class="chip"
-                :class="{ 'chip-on': form.higiene.includes(h) }"
-                @click="toggleHigiene(h)"
-              >{{ h }}</button>
+            <div class="radio-group vertical">
+              <label v-for="h in higieneOpcoes" :key="h" class="checkbox-label">
+                <input type="checkbox" :value="h" v-model="form.higiene">
+                <span>{{ h }}</span>
+              </label>
             </div>
           </div>
 
           <div class="campo">
             <label>Opções</label>
-            <div class="chips-wrap">
-              <button class="chip" :class="{ 'chip-on': form.trocaRoupa }" @click="form.trocaRoupa = !form.trocaRoupa">Troca de roupa de cama</button>
-              <button class="chip" :class="{ 'chip-on': form.trocaFralda }" @click="form.trocaFralda = !form.trocaFralda">Troca de fralda</button>
+            <div class="radio-group vertical">
+              <label class="checkbox-label">
+                <input type="checkbox" v-model="form.trocaRoupa">
+                <span>Troca de roupa de cama</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" v-model="form.trocaFralda">
+                <span>Troca de fralda</span>
+              </label>
             </div>
           </div>
         </template>
@@ -148,8 +161,11 @@
         <!-- Intercorrências -->
         <div v-if="form.tipo" class="campo">
           <label>Intercorrências</label>
-          <div class="chips-wrap">
-            <button class="chip" :class="{ 'chip-on': form.semIntercorrencias }" @click="form.semIntercorrencias = !form.semIntercorrencias">Sem intercorrências</button>
+          <div class="radio-group vertical">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="form.semIntercorrencias">
+              <span>Sem intercorrências</span>
+            </label>
           </div>
           <div v-if="!form.semIntercorrencias" style="margin-top:10px">
             <textarea v-model="form.intercorrencia" rows="3" placeholder="Descreva a intercorrência..."></textarea>
@@ -438,15 +454,15 @@ function novaAnotacao() {
 .chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .chip {
-  padding: 6px 12px; border-radius: 20px;
+  padding: 8px 14px; border-radius: 20px;
   border: 1px solid var(--border); background: var(--bg-card);
-  color: var(--text-dim); font-size: 0.85rem;
+  color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   display: flex; align-items: center; gap: 4px;
 }
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
-.chip-sm { padding: 4px 10px; font-size: 0.8rem; }
+.chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 
 /* ── Toggle row ── */
 .toggle-row {
@@ -493,4 +509,9 @@ function novaAnotacao() {
 .btn-copy:active { background: var(--bg-hover); }
 .nav-row { display: flex; gap: 10px; margin-top: 8px; }
 .erro-msg { color: var(--danger); font-size: 0.82rem; margin-top: 6px; }
+
+/* Remove a borda colorida no estado marcado (global usa var(--blue)) */
+.checkbox-label:has(input:checked) {
+  border-color: var(--border);
+}
 </style>

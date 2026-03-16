@@ -998,15 +998,15 @@ function novaAnotacao() {
 .chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .chip {
-  padding: 6px 12px; border-radius: 20px;
+  padding: 8px 14px; border-radius: 20px;
   border: 1px solid var(--border); background: var(--bg-card);
-  color: var(--text-dim); font-size: 0.85rem;
+  color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   display: flex; align-items: center; gap: 4px;
 }
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
-.chip-sm { padding: 4px 10px; font-size: 0.8rem; }
+.chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 
 .chip-custom { padding-right: 6px; }
 .chip-del {

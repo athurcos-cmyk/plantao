@@ -1090,13 +1090,13 @@ function novaAnotacao() {
 }
 
 .chip {
-  padding: 8px 14px;
+  padding: 9px 16px;
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 20px;
   color: var(--text-dim);
   font-family: inherit;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -1109,8 +1109,8 @@ function novaAnotacao() {
 .chip:not(.ativo):active { background: var(--bg-hover); }
 
 .chip-sm {
-  padding: 6px 10px;
-  font-size: 0.8rem;
+  padding: 7px 12px;
+  font-size: 0.85rem;
 }
 
 /* ── Input suffix ── */
@@ -1307,8 +1307,8 @@ select.campo-inline {
 .chip {
   background: var(--bg-input); border: 1px solid var(--border);
   border-radius: 20px; color: var(--text-muted);
-  font-size: 0.78rem; font-family: inherit;
-  padding: 6px 12px; cursor: pointer; white-space: nowrap;
+  font-size: 0.83rem; font-family: inherit;
+  padding: 7px 13px; cursor: pointer; white-space: nowrap;
   flex-shrink: 0; transition: all 0.15s;
 }
 .chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
