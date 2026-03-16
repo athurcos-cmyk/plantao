@@ -54,49 +54,30 @@
         </div>
       </div>
 
-      <!-- ── Meus Modelos ── -->
+      <!-- ── Meus Modelos (chips horizontais) ── -->
       <div class="secao-header">
-        <span class="secao-label-lg">Meus Modelos</span>
+        <span class="secao-label-lg">Modelos</span>
         <span v-if="modelos.length > 0" class="badge-count">{{ modelos.length }}</span>
+        <button class="btn-gerenciar" @click="abrirModalModelos">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+          Gerenciar
+        </button>
       </div>
 
-      <div class="modelos-card">
-        <!-- Lista de modelos salvos -->
-        <div v-if="modelos.length > 0" class="modelos-lista">
-          <div v-for="m in modelos" :key="m._key" class="modelo-item">
-            <button
-              class="modelo-texto-btn"
-              :class="{ 'modelo-ativo': notaTexto === m.texto }"
-              @click="notaTexto = m.texto"
-            >{{ m.texto }}</button>
-            <button class="btn-del-modelo" @click="deletarModelo(m._key)" title="Remover modelo">×</button>
-          </div>
-        </div>
-        <p v-else-if="!carregandoModelos" class="modelos-vazio">
-          Nenhum modelo salvo ainda. Adicione abaixo os textos que você usa com frequência.
-        </p>
-
-        <!-- Adicionar modelo -->
-        <div v-if="!adicionandoModelo" class="add-modelo-trigger">
-          <button class="btn-novo-modelo" @click="adicionandoModelo = true">+ Novo modelo</button>
-        </div>
-        <div v-else class="add-modelo-form">
-          <input
-            v-model="novoModelo"
-            type="text"
-            ref="novoModeloInput"
-            placeholder="Ex: Ofertado almoço, aceito por completo"
-            maxlength="150"
-            @keydown.enter="salvarModelo"
-            @keydown.escape="adicionandoModelo = false; novoModelo = ''"
-          >
-          <div class="add-modelo-acoes">
-            <button class="btn btn-secondary btn-sm" @click="adicionandoModelo = false; novoModelo = ''">Cancelar</button>
-            <button class="btn btn-primary btn-sm" @click="salvarModelo" :disabled="!novoModelo.trim() || salvandoModelo">
-              {{ salvandoModelo ? '...' : 'Salvar' }}
-            </button>
-          </div>
-        </div>
+      <div v-if="modelos.length > 0" class="modelos-chips-row">
+        <button
+          v-for="m in modelos"
+          :key="m._key"
+          class="chip-modelo"
+          :class="{ 'chip-modelo-on': notaTexto === m.texto }"
+          @click="notaTexto = notaTexto === m.texto ? '' : m.texto"
+        >{{ m.texto }}</button>
+      </div>
+      <div v-else class="modelos-vazio-row">
+        <span>Nenhum modelo —</span>
+        <button class="btn-link" @click="abrirModalModelos">criar agora</button>
       </div>
 
       <!-- ── Adicionar Nota ── -->
@@ -162,6 +143,65 @@
 
       <button class="btn btn-secondary" style="width:100%;margin-top:10px" @click="gerado = false">← Editar</button>
     </main>
+
+    <!-- ═══ MODAL: Gerenciar Modelos ═══ -->
+    <div v-if="modalModelos" class="modal-overlay" @click.self="fecharModalModelos">
+      <div class="modal-modelos">
+
+        <div class="modal-modelos-header">
+          <h3>Meus Modelos</h3>
+          <button class="btn-fechar-modal" @click="fecharModalModelos">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-modelos-body">
+
+          <!-- Lista completa -->
+          <div v-if="modelos.length > 0" class="modal-lista">
+            <div v-for="m in modelos" :key="m._key" class="modal-modelo-item">
+              <span class="modal-modelo-txt">{{ m.texto }}</span>
+              <button class="btn-del-modal" @click="deletarModelo(m._key)" title="Remover">×</button>
+            </div>
+          </div>
+          <p v-else-if="!carregandoModelos" class="modal-vazio">
+            Nenhum modelo ainda. Adicione os textos que você usa com frequência.
+          </p>
+          <p v-else class="modal-vazio">Carregando...</p>
+
+          <!-- Formulário para novo modelo -->
+          <div v-if="!adicionandoModelo" class="modal-add-trigger">
+            <button class="btn-novo-modelo" @click="iniciarAdicaoModelo">+ Novo modelo</button>
+          </div>
+          <div v-else class="modal-add-form">
+            <input
+              v-model="novoModelo"
+              type="text"
+              ref="novoModeloInput"
+              placeholder="Ex: Ofertado almoço, aceito por completo"
+              maxlength="200"
+              @keydown.enter="salvarModelo"
+              @keydown.escape="adicionandoModelo = false; novoModelo = ''"
+            >
+            <div class="modal-add-acoes">
+              <button class="btn btn-secondary btn-sm" @click="adicionandoModelo = false; novoModelo = ''">Cancelar</button>
+              <button class="btn btn-primary btn-sm" @click="salvarModelo" :disabled="!novoModelo.trim() || salvandoModelo">
+                {{ salvandoModelo ? '...' : 'Salvar' }}
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-modelos-footer">
+          <button class="btn btn-secondary" style="width:100%" @click="fecharModalModelos">Fechar</button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -191,11 +231,12 @@ const carregandoModelos = ref(true)
 const salvandoModelo    = ref(false)
 const adicionandoModelo = ref(false)
 const novoModeloInput   = ref(null)
+const modalModelos      = ref(false)
 
 // ── Modelos ──
 const modelos    = ref([])
 const novoModelo = ref('')
-let modelosOff   = null
+let   modelosOff = null
 
 // ── Notas ──
 const notas     = ref([])
@@ -214,7 +255,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (modelosOff) {
-    off(dbRef(db, `livres/${authStore.syncCode}/modelos`))
+    modelosOff()   // unsubscribe corretamente (retorno do onValue)
     modelosOff = null
   }
 })
@@ -227,11 +268,15 @@ function horaAtual() {
 
 function iniciarModelos() {
   const code = authStore.syncCode
-  if (!code) return
+  if (!code) { carregandoModelos.value = false; return }
+
+  // Cache imediato
   try {
     const cached = JSON.parse(localStorage.getItem(`modelos_${code}`) || '[]')
     if (cached.length) { modelos.value = cached; carregandoModelos.value = false }
   } catch {}
+
+  // Listener Firebase (retorna função de unsubscribe no SDK v9)
   const path = dbRef(db, `livres/${code}/modelos`)
   modelosOff = onValue(path, (snap) => {
     const lista = []
@@ -247,6 +292,25 @@ function selecionarPaciente(p) {
   form.leito = p.leito || ''
 }
 
+// ── Modal de modelos ──
+async function abrirModalModelos() {
+  modalModelos.value = true
+  adicionandoModelo.value = false
+  novoModelo.value = ''
+}
+
+function fecharModalModelos() {
+  modalModelos.value = false
+  adicionandoModelo.value = false
+  novoModelo.value = ''
+}
+
+async function iniciarAdicaoModelo() {
+  adicionandoModelo.value = true
+  await nextTick()
+  novoModeloInput.value?.focus()
+}
+
 async function salvarModelo() {
   const texto = novoModelo.value.trim()
   if (!texto) return
@@ -254,9 +318,9 @@ async function salvarModelo() {
   salvandoModelo.value = true
   try {
     const novoRef = await push(dbRef(db, `livres/${authStore.syncCode}/modelos`), { texto, criadoEm: Date.now() })
-    // Atualiza local imediatamente (não espera só pelo onValue)
+    // Garante que aparece imediatamente mesmo se o onValue demorar
     if (!modelos.value.find(m => m._key === novoRef.key)) {
-      modelos.value = [...modelos.value, { texto, _key: novoRef.key }]
+      modelos.value = [...modelos.value, { texto, criadoEm: Date.now(), _key: novoRef.key }]
     }
     novoModelo.value = ''
     adicionandoModelo.value = false
@@ -268,15 +332,19 @@ async function salvarModelo() {
 async function deletarModelo(key) {
   if (!navigator.onLine) { showToast('Sem conexão'); return }
   try {
+    // Remove local imediatamente para feedback instantâneo
+    const modelo = modelos.value.find(m => m._key === key)
+    modelos.value = modelos.value.filter(m => m._key !== key)
+    if (modelo && notaTexto.value === modelo.texto) notaTexto.value = ''
     await remove(dbRef(db, `livres/${authStore.syncCode}/modelos/${key}`))
-    if (notaTexto.value) {
-      const m = modelos.value.find(m => m._key === key)
-      if (m && notaTexto.value === m.texto) notaTexto.value = ''
-    }
     showToast('Modelo removido')
-  } catch { showToast('Erro ao remover') }
+  } catch {
+    showToast('Erro ao remover')
+    iniciarModelos() // recarrega em caso de falha
+  }
 }
 
+// ── Notas ──
 function adicionarNota() {
   const texto = notaTexto.value.trim()
   if (!texto) return
@@ -373,6 +441,7 @@ function novaAnotacao() {
 .secao-label-lg {
   font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
   text-transform: uppercase; letter-spacing: 0.08em;
+  flex: 1;
 }
 .badge-count {
   background: var(--border); color: var(--text-muted);
@@ -380,6 +449,16 @@ function novaAnotacao() {
   border-radius: 10px; padding: 1px 7px;
 }
 .badge-count.azul { background: var(--blue); color: #fff; }
+
+/* Botão gerenciar modelos */
+.btn-gerenciar {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: 1px solid var(--border);
+  border-radius: 20px; color: var(--text-muted);
+  font-size: 0.75rem; font-family: inherit;
+  padding: 4px 10px; cursor: pointer; transition: all 0.15s;
+}
+.btn-gerenciar:active { background: var(--bg-hover); color: var(--blue); border-color: var(--blue); }
 
 /* Chips paciente */
 .chips-scroll { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -392,60 +471,40 @@ function novaAnotacao() {
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
 
-/* Modelos */
-.modelos-card {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px;
-  margin-bottom: 4px;
+/* Modelos: chips horizontais rolável */
+.modelos-chips-row {
+  display: flex; gap: 8px;
+  overflow-x: auto; padding-bottom: 6px;
+  scrollbar-width: none; margin-bottom: 4px;
 }
-.modelos-lista { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-.modelo-item {
-  display: flex; align-items: center; gap: 8px;
-}
-.modelo-texto-btn {
-  flex: 1; text-align: left;
-  padding: 9px 12px; border-radius: 10px;
-  border: 1px solid var(--border); background: var(--bg);
-  color: var(--text-dim); font-size: 0.88rem;
+.modelos-chips-row::-webkit-scrollbar { display: none; }
+.chip-modelo {
+  flex-shrink: 0;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 8px 14px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-dim); font-size: 0.85rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
 }
-.modelo-texto-btn:active { background: var(--bg-hover); }
-.modelo-ativo {
-  background: rgba(59,130,246,0.12); border-color: var(--blue); color: var(--blue);
+.chip-modelo:active { opacity: 0.8; }
+.chip-modelo-on {
+  background: rgba(59,130,246,0.12); border-color: var(--blue); color: var(--blue); font-weight: 600;
 }
-.btn-del-modelo {
-  background: none; border: none; color: var(--text-muted);
-  font-size: 1.1rem; cursor: pointer; padding: 4px 8px;
-  border-radius: 6px; flex-shrink: 0; line-height: 1;
+.modelos-vazio-row {
+  font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;
+  margin-bottom: 8px;
 }
-.btn-del-modelo:active { color: var(--danger); background: rgba(220,38,38,0.08); }
-.modelos-vazio {
-  font-size: 0.83rem; color: var(--text-muted); line-height: 1.5;
-  margin-bottom: 12px; padding: 4px 0;
+.btn-link {
+  background: none; border: none; color: var(--blue);
+  font-size: inherit; font-family: inherit; cursor: pointer; padding: 0;
+  text-decoration: underline;
 }
-.add-modelo-trigger { }
-.btn-novo-modelo {
-  background: none; border: 1px dashed var(--border);
-  border-radius: 10px; color: var(--blue);
-  font-size: 0.85rem; font-family: inherit;
-  padding: 9px 14px; cursor: pointer; width: 100%;
-  transition: all 0.15s;
-}
-.btn-novo-modelo:active { background: var(--bg-hover); }
-.add-modelo-form { display: flex; flex-direction: column; gap: 8px; }
-.add-modelo-form input {
-  width: 100%; box-sizing: border-box;
-  background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: var(--radius); color: var(--text);
-  font-family: inherit; font-size: 1rem; padding: 13px 14px;
-  outline: none; transition: border-color 0.2s;
-}
-.add-modelo-form input:focus { border-color: var(--blue); }
-.add-modelo-acoes { display: flex; gap: 8px; justify-content: flex-end; }
-.btn-sm { padding: 8px 16px !important; font-size: 0.83rem !important; }
 
 /* Nota builder */
-.nota-builder { display: flex; gap: 8px; align-items: stretch; margin-bottom: 14px; }
+.nota-builder { display: flex; gap: 8px; align-items: stretch; margin-bottom: 14px; margin-top: 2px; }
 .input-hora {
   width: 110px; flex-shrink: 0;
   background: var(--bg-input); border: 1px solid var(--border);
@@ -518,4 +577,81 @@ function novaAnotacao() {
 }
 .btn-copy:active { background: var(--bg-hover); }
 .nav-row { display: flex; gap: 10px; margin-top: 8px; }
+
+/* ── Modal Modelos ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: flex-end; z-index: 200;
+}
+.modal-modelos {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-height: 80dvh;
+  display: flex; flex-direction: column;
+}
+.modal-modelos-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.modal-modelos-header h3 {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+}
+.btn-fechar-modal {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 4px; border-radius: 8px; display: flex; align-items: center;
+}
+.btn-fechar-modal:active { background: var(--bg-hover); }
+.modal-modelos-body {
+  flex: 1; overflow-y: auto; padding: 14px 16px;
+}
+.modal-modelos-footer {
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+
+/* Lista dentro do modal */
+.modal-lista { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.modal-modelo-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.modal-modelo-txt {
+  flex: 1; font-size: 0.9rem; color: var(--text-dim);
+  word-break: break-word;
+}
+.btn-del-modal {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 1.2rem; cursor: pointer; padding: 4px 8px;
+  border-radius: 6px; flex-shrink: 0; line-height: 1;
+}
+.btn-del-modal:active { color: var(--danger); background: rgba(220,38,38,0.08); }
+.modal-vazio {
+  font-size: 0.83rem; color: var(--text-muted); line-height: 1.5;
+  margin-bottom: 14px; padding: 4px 0;
+}
+
+/* Adicionar modelo no modal */
+.modal-add-trigger { }
+.btn-novo-modelo {
+  background: none; border: 1px dashed var(--border);
+  border-radius: 10px; color: var(--blue);
+  font-size: 0.85rem; font-family: inherit;
+  padding: 10px 14px; cursor: pointer; width: 100%;
+  transition: all 0.15s;
+}
+.btn-novo-modelo:active { background: var(--bg-hover); }
+.modal-add-form { display: flex; flex-direction: column; gap: 8px; }
+.modal-add-form input {
+  width: 100%; box-sizing: border-box;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text);
+  font-family: inherit; font-size: 1rem; padding: 13px 14px;
+  outline: none; transition: border-color 0.2s;
+}
+.modal-add-form input:focus { border-color: var(--blue); }
+.modal-add-acoes { display: flex; gap: 8px; justify-content: flex-end; }
+.btn-sm { padding: 8px 16px !important; font-size: 0.83rem !important; }
 </style>
