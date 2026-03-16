@@ -244,15 +244,18 @@ import { reactive, ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOrganizadorStore } from '../stores/organizador.js'
 import HelpModal from '../components/HelpModal.vue'
+import {
+  solicitarPermissaoNotificacao,
+  agendarTodasNotificacoes,
+} from '../composables/usePushNotificacoes.js'
 
 const router = useRouter()
 const store  = useOrganizadorStore()
 
-onMounted(() => {
+onMounted(async () => {
   store.iniciar()
-  if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-    Notification.requestPermission()
-  }
+  // Solicita permissão de notificação (necessário para background/app fechado)
+  await solicitarPermissaoNotificacao()
 })
 
 onUnmounted(() => {
@@ -284,10 +287,13 @@ const concluidas = computed(() => store.plantao?.tarefas.filter(t => t.feito).le
 const total      = computed(() => store.plantao?.tarefas.length ?? 0)
 const progressoPct = computed(() => total.value ? Math.round(concluidas.value / total.value * 100) : 0)
 
-// Watch tarefas for notification scheduling
+// Watch tarefas: re-agenda notificações sempre que mudar
 watch(
   () => store.plantao?.tarefas,
-  () => agendarNotificacoes(),
+  (tarefas) => {
+    agendarNotificacoes()          // fallback inline (legado)
+    agendarTodasNotificacoes(tarefas ?? []) // via SW (background/app fechado)
+  },
   { deep: true }
 )
 

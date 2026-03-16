@@ -42,6 +42,12 @@
         ".read": true,
         ".write": true
       }
+    },
+    "curativo": {
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     }
   }
 }
