@@ -52,6 +52,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/anotar/banho',
+    name: 'banho',
+    component: () => import('../views/anotacoes/BanhoView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/pacientes',
     name: 'pacientes',
     component: () => import('../views/PacientesView.vue'),

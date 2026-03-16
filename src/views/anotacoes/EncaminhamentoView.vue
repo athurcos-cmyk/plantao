@@ -53,6 +53,14 @@
           <input type="time" v-model="form.horario">
         </div>
 
+        <div class="campo">
+          <label>Gênero do paciente</label>
+          <div class="chips-wrap">
+            <button class="chip" :class="{ 'chip-on': form.genero === 'M' }" @click="form.genero = 'M'">M</button>
+            <button class="chip" :class="{ 'chip-on': form.genero === 'F' }" @click="form.genero = 'F'">F</button>
+          </div>
+        </div>
+
         <div v-if="pacientesStore.pacientes.length > 0" class="campo">
           <label>Paciente registrado</label>
           <div class="chips-wrap">
@@ -525,6 +533,7 @@ async function removerDestinoCustom(key) {
 const form = reactive({
   tipo:            'ida',
   horario:         '',
+  genero:          'M',
   nome:            '',
   leito:           '',
   destino:         '',
@@ -853,11 +862,14 @@ function gerar() {
 
   // Acompanhante (compartilhado)
   const cargo = cargoOpcoes.find(c => c.label === form.cargo)
+  const enc   = form.genero === 'F' ? 'encaminhada' : 'encaminhado'
+  const acomp = form.genero === 'F' ? 'acompanhada' : 'acompanhado'
+
   let acompTxt = ''
   if (cargo && cargo.texto === 'sem acompanhante') {
     acompTxt = ', sem acompanhante'
   } else if (cargo) {
-    acompTxt = `, acompanhado ${cargo.artigo} ${cargo.texto}`
+    acompTxt = `, ${acomp} ${cargo.artigo} ${cargo.texto}`
     if (form.nomeAcomp.trim()) acompTxt += ` ${form.nomeAcomp.trim()}`
   }
 
@@ -865,8 +877,8 @@ function gerar() {
 
   if (form.tipo === 'retorno') {
     // ── RETORNO ──
-    texto = `Às ${formatHora(form.horario)}, paciente ${form.nome}`
-    if (form.leito) texto += `, leito ${form.leito}`
+    texto = `Às ${formatHora(form.horario)}, paciente`
+    if (form.leito) texto += ` do leito ${form.leito}`
     texto += ` retorna para unidade de internação, em ${transporteTxt}`
     texto += acompTxt
     // Procedimento + local
@@ -878,9 +890,9 @@ function gerar() {
     texto += '.'
   } else {
     // ── IDA ──
-    texto = `Às ${formatHora(form.horario)}, paciente ${form.nome}`
-    if (form.leito) texto += `, leito ${form.leito}`
-    texto += `, encaminhado em ${transporteTxt}`
+    texto = `Às ${formatHora(form.horario)}, paciente`
+    if (form.leito) texto += ` do leito ${form.leito}`
+    texto += `, ${enc} em ${transporteTxt}`
     texto += acompTxt
     texto += `, para ${form.destino}`
     if (form.motivo.trim()) texto += `, para ${form.motivo.trim()}`
@@ -951,7 +963,7 @@ async function salvar() {
 function novaAnotacao() {
   Object.assign(form, {
     tipo: 'ida',
-    horario: '', nome: '', leito: '', destino: '',
+    horario: '', genero: 'M', nome: '', leito: '', destino: '',
     transporte: '', transporteOutro: '', motivo: '', condicao: '',
     localRetorno: '', procedRetorno: '',
     cargo: '', nomeAcomp: '', recebidoPor: '', observacoes: '',
