@@ -336,11 +336,10 @@
                 <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span>
               </label>
               <div style="display:flex;gap:8px;align-items:center">
-                <input  data-testid="auto-input-anotacaomedicacaoview-16" type="number" v-model="modal.d.evTempo" placeholder="30" min="1" style="flex:1">
-                <div class="chips-wrap" style="flex-shrink:0">
-                  <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'min' }" @click="modal.d.evUnidTempo = 'min'">min</button>
-                  <button  data-testid="auto-btn-anotacaomedicacaoview-23" class="chip chip-sm" :class="{ ativo: modal.d.evUnidTempo === 'h' }"   @click="modal.d.evUnidTempo = 'h'">h</button>
-                </div>
+                <input type="number" v-model="modal.d.evTempoH" placeholder="0" min="0" style="flex:1">
+                <span style="color:var(--text-muted);font-size:0.9rem;flex-shrink:0">h</span>
+                <input type="number" v-model="modal.d.evTempoMin" placeholder="30" min="0" max="59" style="flex:1">
+                <span style="color:var(--text-muted);font-size:0.9rem;flex-shrink:0">min</span>
               </div>
             </div>
 
@@ -544,6 +543,15 @@ function fecharSugestoes() {
 const duplaSugestoes  = ref([])
 const mostrarDuplaSug = ref(false)
 
+function _formatarTempo(h, m) {
+  const hh = parseInt(h) || 0
+  const mm = parseInt(m) || 0
+  if (!hh && !mm) return ''
+  if (hh && mm)  return `${hh}h${mm}min`
+  if (hh)        return `${hh}h`
+  return `${mm}min`
+}
+
 function _duplaNomesKey() { return `dupla_nomes_${auth.syncCode || 'guest'}` }
 function _lerDuplaNomes() {
   try { return JSON.parse(localStorage.getItem(_duplaNomesKey()) || '[]') } catch { return [] }
@@ -617,8 +625,8 @@ function medVazio() {
     evSolucao:       'SF',
     evSolucaoCustom: '',
     evBic:        false,
-    evTempo:      '',
-    evUnidTempo:  'min',
+    evTempoH:     '',
+    evTempoMin:   '',
     evVelocidade: '',
     // Dupla
     dupla:        false,
@@ -687,7 +695,7 @@ function confirmarMed() {
     if (!d.evVolume)  { modal.erro = 'Informe o volume';    return }
     if (!d.evSolucao) { modal.erro = 'Selecione a solução'; return }
   }
-  if (d.via === 'EV' && d.evBic && !d.evTempo && !d.evVelocidade) {
+  if (d.via === 'EV' && d.evBic && !d.evTempoH && !d.evTempoMin && !d.evVelocidade) {
     modal.erro = 'BIC requer ao menos tempo ou velocidade (ml/h)'; return
   }
 
@@ -754,11 +762,12 @@ function gerarParteMed(med) {
   else if (med.via === 'EV') {
     if (!med.evDiluicao) {
       if (med.evBic) {
+        const tempoStr = _formatarTempo(med.evTempoH, med.evTempoMin)
         let infStr = ''
-        if (med.evTempo && med.evVelocidade) {
-          infStr = `em ${med.evTempo}${med.evUnidTempo} a ${med.evVelocidade}ml/h`
-        } else if (med.evTempo) {
-          infStr = `em ${med.evTempo}${med.evUnidTempo}`
+        if (tempoStr && med.evVelocidade) {
+          infStr = `em ${tempoStr} a ${med.evVelocidade}ml/h`
+        } else if (tempoStr) {
+          infStr = `em ${tempoStr}`
         } else if (med.evVelocidade) {
           infStr = `a ${med.evVelocidade}ml/h`
         }
@@ -773,11 +782,12 @@ function gerarParteMed(med) {
                 : 'água destilada'
       if (med.evBic) {
         // BIC: [dose] + [vol]ml [sol] EV em BIC para infundir [tempo] [vel]
+        const tempoStr = _formatarTempo(med.evTempoH, med.evTempoMin)
         let infStr = ''
-        if (med.evTempo && med.evVelocidade) {
-          infStr = `em ${med.evTempo}${med.evUnidTempo} a ${med.evVelocidade}ml/h`
-        } else if (med.evTempo) {
-          infStr = `em ${med.evTempo}${med.evUnidTempo}`
+        if (tempoStr && med.evVelocidade) {
+          infStr = `em ${tempoStr} a ${med.evVelocidade}ml/h`
+        } else if (tempoStr) {
+          infStr = `em ${tempoStr}`
         } else if (med.evVelocidade) {
           infStr = `a ${med.evVelocidade}ml/h`
         }
