@@ -439,10 +439,21 @@ export function useAnotacaoInicial() {
     }
   }
 
-  function copiar() {
-    navigator.clipboard.writeText(textoGerado.value)
-      .then(() => mostrarFeedback('✓ Copiado!'))
-      .catch(() => mostrarFeedback('Erro ao copiar'))
+  async function copiar() {
+    try {
+      try {
+        await navigator.clipboard.writeText(textoGerado.value)
+      } catch {
+        const el = document.createElement('textarea')
+        el.value = textoGerado.value
+        el.style.position = 'fixed'; el.style.opacity = '0'
+        document.body.appendChild(el)
+        el.focus(); el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+      }
+      mostrarFeedback('✓ Copiado!')
+    } catch { mostrarFeedback('Erro ao copiar') }
   }
 
   function compartilhar() {

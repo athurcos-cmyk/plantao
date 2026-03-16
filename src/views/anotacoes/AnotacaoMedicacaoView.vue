@@ -905,11 +905,19 @@ function gerar() {
 // ── Ações de resultado ──────────────────────────────────────────────────────
 async function copiar() {
   try {
-    await navigator.clipboard.writeText(textoGerado.value)
+    try {
+      await navigator.clipboard.writeText(textoGerado.value)
+    } catch {
+      const el = document.createElement('textarea')
+      el.value = textoGerado.value
+      el.style.position = 'fixed'; el.style.opacity = '0'
+      document.body.appendChild(el)
+      el.focus(); el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+    }
     showToast('Texto copiado!')
-  } catch {
-    showToast('Erro ao copiar')
-  }
+  } catch { showToast('Erro ao copiar') }
 }
 
 async function salvar() {

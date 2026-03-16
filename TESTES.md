@@ -530,6 +530,47 @@
 
 ---
 
+## 11. HIGIENIZAÇÃO
+
+### 11.1 Interface
+- [x] Rota `/anotar/banho` carrega sem erros
+- [x] Card "Higienização" no Dashboard navega corretamente
+- [x] Barra de progresso exibe "Bloco X de 2"
+- [x] Botão voltar no bloco 1 retorna ao Dashboard
+
+### 11.2 Bloco 1 — Identificação
+- [x] Campo horário obrigatório
+- [x] Chips de gênero M/F visíveis
+- [x] Campo nome obrigatório
+- [x] Campo leito opcional
+- [x] Botão "Limpar" reseta campos
+- [x] Botão "Próximo" avança com campos válidos
+
+### 11.3 Bloco 2 — Tipo
+- [x] Chips: 🚿 Banho de aspersão, 🛁 Banho de leito, 🧻 Troca de fralda
+- [x] Botão "← Voltar" retorna ao bloco 1 sem perder dados
+
+### 11.4 Troca de Fralda — Campos extras
+- [x] Ao selecionar "Troca de fralda": campo ELIMINAÇÃO aparece (Diurese / Evacuação / Ambos)
+- [x] Diurese → campos QUANTIDADE (+/++/+++) e LOCAL (Em leito / Em fralda) aparecem
+- [x] Evacuação → campos QUANTIDADE (+/++/+++) e LOCAL (Em leito / Em fralda) aparecem
+- [x] Ambos → dois grupos de QUANTIDADE (evacuação + diurese) e LOCAL aparecem
+- [x] Campo INTERCORRÊNCIAS visível (toggle "Sem intercorrências")
+
+### 11.5 Textos gerados
+- [x] Banho de leito: `10h00 – realizado banho de leito, sem intercorrências.`
+- [x] Diurese +++ em leito: `10h00 – Paciente apresentou diurese +++ em leito, realizado higiene íntima, troca de roupa de cama e troca de fralda, sem intercorrências.`
+- [x] Evacuação ++ em fralda: `10h00 – Paciente apresentou evacuação ++ em fralda, realizado higiene íntima e troca de fralda, sem intercorrências.`
+- [x] Ambos (evacuação + diurese) em leito: texto com ambas eliminações, higiene íntima, troca de roupa de cama e troca de fralda
+
+### 11.6 Pós-geração
+- [x] Botão "Salvar no histórico" salva e exibe toast "Salvo no histórico!"
+- [x] Botão "Nova anotação" reseta formulário e volta ao bloco 1
+- [x] Botão "← Editar" retorna ao bloco 2 sem perder dados
+- [x] Botão "Copiar texto" funciona (com fallback execCommand)
+
+---
+
 ## 10. FORMATO E CONSISTÊNCIA DE TEXTO
 
 ### 10.1 Formato de horário
@@ -540,11 +581,12 @@
 - [x] Aplicado em: Encaminhamento ida, Encaminhamento retorno, Medicação, Sinais Vitais, Anotação Inicial
 
 ### 10.2 Copiar texto
-- [x] `navigator.clipboard.writeText` usado quando disponível
-- [x] Fallback `document.execCommand('copy')` para Android/contextos sem permissão
+- [x] `navigator.clipboard.writeText` tentado primeiro
+- [x] Fallback `document.execCommand('copy')` quando clipboard falha (permissão negada, foco perdido, Android)
 - [x] Toast "Texto copiado!" exibido após cópia bem-sucedida
-- [x] Toast "Erro ao copiar" em falha
+- [x] Toast "Erro ao copiar" só se ambos falharem
 - [x] Botão muda para "Copiado!" por 2 segundos após copiar
+- [x] Corrigido em: BanhoView, EncaminhamentoView, AnotacaoMedicacaoView, SinaisVitaisView, useAnotacaoInicial
 
 ### 10.3 Artigos de gênero (acompanhante)
 - [x] Téc. de enfermagem → "acompanhado do técnico de enfermagem"

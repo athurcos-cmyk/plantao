@@ -460,9 +460,9 @@ function gerar() {
 // ── Copiar ──
 async function copiar() {
   try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
       await navigator.clipboard.writeText(textoGerado.value)
-    } else {
+    } catch {
       const el = document.createElement('textarea')
       el.value = textoGerado.value
       el.style.position = 'fixed'; el.style.opacity = '0'
