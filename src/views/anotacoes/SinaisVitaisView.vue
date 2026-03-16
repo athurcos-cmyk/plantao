@@ -121,7 +121,20 @@
           <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
         </div>
 
-        <div style="display:flex;gap:10px;margin-top:16px">
+        <div v-if="pacientesStore.pacientes.length > 0" style="margin-top:16px;margin-bottom:6px">
+          <label class="label-small">Paciente registrado</label>
+          <div class="chips-scroll" style="margin-top:6px">
+            <button
+              v-for="p in pacientesStore.pacientes"
+              :key="p._key"
+              class="chip"
+              :class="{ ativo: form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
+              @click="selecionarPaciente(p)"
+            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:10px">
           <div style="flex:2">
             <label class="label-small">Nome do paciente</label>
             <input  data-testid="auto-input-sinaisvitaisview-13" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
@@ -163,15 +176,23 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes'
 import { useToast } from '../../composables/useToast.js'
 import { useRascunho } from '../../composables/useRascunho.js'
+import { usePacientesStore } from '../../stores/pacientes.js'
 
 const router  = useRouter()
 const store   = useAnotacoesStore()
 const { showToast } = useToast()
+const pacientesStore = usePacientesStore()
+onMounted(() => pacientesStore.iniciar())
+
+function selecionarPaciente(p) {
+  form.nomePaciente = p.nome
+  form.leitoPaciente = p.leito || ''
+}
 
 const gerado      = ref(false)
 const textoGerado = ref('')
