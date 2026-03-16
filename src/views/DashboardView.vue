@@ -91,8 +91,10 @@ const helpAberto = ref(false)
 
 const helpItens = [
   { icone: '🩺', titulo: 'Anotação Inicial', desc: 'Registre o estado do paciente: posição da cama, dispositivos, neurológico, respiratório e eliminações. Gere o texto formatado e copie para o sistema.' },
+  { icone: '📊', titulo: 'Sinais Vitais', desc: 'Registre PA, FC, FR, Tax e SpO₂ com horário. O texto é gerado automaticamente com os valores e suas referências.' },
   { icone: '💊', titulo: 'Medicação', desc: 'Documente os medicamentos administrados com dose, via, diluição e dupla checagem. Suporta múltiplos medicamentos no mesmo horário.' },
   { icone: '🚑', titulo: 'Encaminhamento', desc: 'Gere a anotação de encaminhamento do paciente: destino (com chips personalizados por conta), tipo de transporte, acompanhante e dispositivos em uso.' },
+  { icone: '🧼', titulo: 'Higienização', desc: 'Registre banho de aspersão, banho de leito ou troca de fralda. Na troca de fralda, selecione o tipo de eliminação (diurese, evacuação ou ambos), a quantidade e o local — troca de roupa de cama é incluída automaticamente quando em leito.' },
   { icone: '🛏️', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantão por leito. Adicione pendências para cada um e marque conforme resolve. Aparecem como atalho nas anotações.' },
   { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do seu turno com horários e alertas. Anote o que precisa ser passado para o próximo plantão.' },
   { icone: '🕐', titulo: 'Histórico', desc: 'Acesse, busque, edite e compartilhe todas as anotações já geradas. Filtre por tipo ou por paciente.' },
