@@ -160,21 +160,28 @@
 
           <!-- Infusão venosa -->
           <label class="checkbox-label" style="margin-bottom:8px">
-            <input type="checkbox" v-model="form.infusao">
+            <input type="checkbox" v-model="form.infusao" @change="onToggleInfusao">
             <span>Infusão venosa</span>
           </label>
-          <div v-if="form.infusao" style="margin-top:4px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;padding-left:8px">
-            <input type="text" v-model="form.infusaoSolucao" placeholder="Solução (ex: SF 0,9% 500ml)">
-            <input type="text" v-model="form.infusaoVol" placeholder="Volume (ml)">
-            <input type="text" v-model="form.infusaoMl" placeholder="ml/h">
+          <div v-if="form.infusao" style="margin-top:4px;margin-bottom:12px;padding-left:8px">
+            <div v-for="(inf, i) in form.infusoes" :key="i" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:0.78rem;color:var(--text-muted);font-weight:600">INFUSÃO {{ i + 1 }}</span>
+                <button v-if="form.infusoes.length > 1" class="btn-remove-inf" @click="removeInfusao(i)">× remover</button>
+              </div>
+              <input type="text" v-model="inf.solucao" placeholder="Solução (ex: SF 0,9% 500ml)">
+              <input type="text" v-model="inf.ml" placeholder="ml/h">
+            </div>
+            <button class="btn-add-inf" @click="addInfusao">+ Adicionar infusão</button>
           </div>
 
-          <!-- SVD -->
+          <!-- Débito urinário -->
           <label class="checkbox-label" style="margin-bottom:8px">
             <input type="checkbox" v-model="form.svd">
-            <span>SVD</span>
+            <span>Débito urinário</span>
           </label>
           <div v-if="form.svd" style="margin-top:4px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;padding-left:8px">
+            <input type="text" v-model="form.svdDispositivo" placeholder="Dispositivo (ex: SVD, nefrostomia D)">
             <input type="text" v-model="form.svdDebito" placeholder="Débito (ml)">
           </div>
         </div>
@@ -258,10 +265,9 @@ const form = reactive({
   dietaDesc:      '',
   dietaMl:        '',
   infusao:        false,
-  infusaoSolucao: '',
-  infusaoVol:     '',
-  infusaoMl:      '',
+  infusoes:       [],
   svd:            false,
+  svdDispositivo: 'SVD',
   svdDebito:      '',
   obs:            '',
 })
@@ -291,6 +297,18 @@ function selecionarPaciente(p) {
 
 function toggleRefeicao(r) {
   form.refeicao = form.refeicao === r ? '' : r
+}
+
+function onToggleInfusao() {
+  if (form.infusao && form.infusoes.length === 0)
+    form.infusoes.push({ solucao: '', ml: '' })
+  else if (!form.infusao)
+    form.infusoes.splice(0)
+}
+function addInfusao() { form.infusoes.push({ solucao: '', ml: '' }) }
+function removeInfusao(i) {
+  form.infusoes.splice(i, 1)
+  if (form.infusoes.length === 0) form.infusao = false
 }
 
 function formatHora(h) {
@@ -354,7 +372,7 @@ function gerar() {
   }
 
   if (form.svd && !form.svdDebito.trim()) {
-    erro.value = 'Informe o débito da SVD.'
+    erro.value = 'Informe o débito.'
     return
   }
 
@@ -376,11 +394,16 @@ function gerar() {
   }
 
   if (form.infusao) {
-    texto += ` Recebendo ${form.infusaoSolucao.trim()} ${form.infusaoVol.trim()}ml a ${form.infusaoMl.trim()}ml/h.`
+    for (const inf of form.infusoes) {
+      const sol = inf.solucao.trim()
+      const ml  = inf.ml.trim()
+      if (sol && ml) texto += ` Recebendo ${sol} a ${ml}ml/h.`
+    }
   }
 
   if (form.svd) {
-    texto += ` Desprezado débito de SVD no total de ${form.svdDebito.trim()}ml no dia de hoje, atualizado em balanço hídrico.`
+    const disp = form.svdDispositivo.trim() || 'SVD'
+    texto += ` Desprezado débito de ${disp} no total de ${form.svdDebito.trim()}ml no dia de hoje, atualizado em balanço hídrico.`
   }
 
   const obs = form.obs.trim()
@@ -451,10 +474,9 @@ function novaAnotacao() {
     dietaDesc:      '',
     dietaMl:        '',
     infusao:        false,
-    infusaoSolucao: '',
-    infusaoVol:     '',
-    infusaoMl:      '',
+    infusoes:       [],
     svd:            false,
+    svdDispositivo: 'SVD',
     svdDebito:      '',
     obs:            '',
   })
@@ -552,4 +574,19 @@ function novaAnotacao() {
 .btn-copy:active { background: var(--bg-hover); }
 .nav-row { display: flex; gap: 10px; margin-top: 8px; }
 .erro-msg { color: var(--danger); font-size: 0.82rem; margin-top: 6px; }
+
+.btn-add-inf {
+  background: none; border: 1px dashed var(--border);
+  border-radius: var(--radius); color: var(--blue);
+  font-size: 0.85rem; font-family: inherit;
+  padding: 8px 14px; cursor: pointer; width: 100%;
+  transition: all 0.15s;
+}
+.btn-add-inf:active { background: var(--bg-hover); }
+.btn-remove-inf {
+  background: none; border: none; color: var(--danger);
+  font-size: 0.78rem; font-family: inherit;
+  cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.btn-remove-inf:active { background: rgba(220,38,38,0.1); }
 </style>
