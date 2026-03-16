@@ -192,7 +192,7 @@ const tiposFiltro = [
   { v: 'banho',    l: 'Higienização'  },
   { v: 'encaminhamento', l: 'Encaminhamento'},
   { v: 'passagem', l: 'Passagem'      },
-  { v: 'livre',    l: 'Intercorrência'},
+  { v: 'livre',    l: 'Notas Livres'},
 ]
 
 const tipoLabels = {
@@ -204,7 +204,7 @@ const tipoLabels = {
   banho:     '🧼 Higienização',
   curativo:  '🩹 Curativo',
   passagem:  '🔄 Passagem de Plantão',
-  livre:     '📝 Intercorrência',
+  livre:     '📝 Notas Livres',
 }
 
 function extrairHora(texto) {

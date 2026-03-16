@@ -272,6 +272,22 @@
                   @click="acc.local = acc.local === loc ? '' : loc"
                 >{{ loc }}</button>
               </div>
+              <!-- Infusões (até 3) -->
+              <div v-for="(_, idx) in acc.infusoes" :key="idx" style="display:flex;align-items:center;gap:6px;margin-top:8px">
+                <input
+                  type="text"
+                  v-model="acc.infusoes[idx]"
+                  placeholder="Ex: noradrenalina + SF 0,9% a 10ml/h"
+                  style="flex:1"
+                >
+                <button class="disp-del-btn" @click="acc.infusoes.splice(idx, 1)" style="padding:2px 8px">✕</button>
+              </div>
+              <button
+                v-if="acc.infusoes.length < 3"
+                class="chip chip-add"
+                style="margin-top:8px;font-size:0.78rem;padding:5px 12px"
+                @click="acc.infusoes.push('')"
+              >+ Infusão</button>
             </div>
           </template>
 
@@ -419,7 +435,7 @@
 
       <!-- ═══ RESULTADO ═══ -->
       <div v-if="gerado">
-        <pre class="resultado-box">{{ textoGerado }}</pre>
+        <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
 
         <button class="btn-copy" @click="copiar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -575,10 +591,10 @@ const locaisCentral = ['femoral D', 'femoral E', 'jugular D', 'jugular E', 'subc
 const dispSimplesAtivos = ref([])
 const catO2    = reactive({ ativo: false, lMin: '' })
 const sne      = reactive({ ativo: false, dietaTipo: '', dietaDesc: '', mlH: '' })
-const cvc      = reactive({ ativo: false, local: '' })
-const picc     = reactive({ ativo: false, local: '' })
-const permcath = reactive({ ativo: false, local: '' })
-const shilley  = reactive({ ativo: false, local: '' })
+const cvc      = reactive({ ativo: false, local: '', infusoes: [] })
+const picc     = reactive({ ativo: false, local: '', infusoes: [] })
+const permcath = reactive({ ativo: false, local: '', infusoes: [] })
+const shilley  = reactive({ ativo: false, local: '', infusoes: [] })
 
 // Para o v-for dos cards de acesso central no template
 const acessosCentrais = [
@@ -613,7 +629,7 @@ function toggleDispSimples(key) {
 function toggleAcessoLocal(acc) {
   _limparNenhum()
   acc.ativo = !acc.ativo
-  if (!acc.ativo) acc.local = ''
+  if (!acc.ativo) { acc.local = ''; acc.infusoes = [] }
 }
 
 function toggleCatO2() {
@@ -671,10 +687,10 @@ function toggleNenhum() {
     dispSimplesAtivos.value = []
     catO2.ativo = false; catO2.lMin = ''
     sne.ativo = false; sne.dietaTipo = ''; sne.dietaDesc = ''; sne.mlH = ''
-    cvc.ativo = false; cvc.local = ''
-    picc.ativo = false; picc.local = ''
-    permcath.ativo = false; permcath.local = ''
-    shilley.ativo = false; shilley.local = ''
+    cvc.ativo = false; cvc.local = ''; cvc.infusoes = []
+    picc.ativo = false; picc.local = ''; picc.infusoes = []
+    permcath.ativo = false; permcath.local = ''; permcath.infusoes = []
+    shilley.ativo = false; shilley.local = ''; shilley.infusoes = []
     pulseirasAtivas.value = []; pulseirasCardAberto.value = false
     avps.value = []; drenos.value = []; outros.value = []
     nenhumAtivo.value = true
@@ -685,10 +701,10 @@ function limparDispositivos() {
   dispSimplesAtivos.value = []
   catO2.ativo = false; catO2.lMin = ''
   sne.ativo = false; sne.dieta = false; sne.dietaDesc = ''
-  cvc.ativo = false; cvc.local = ''
-  picc.ativo = false; picc.local = ''
-  permcath.ativo = false; permcath.local = ''
-  shilley.ativo = false; shilley.local = ''
+  cvc.ativo = false; cvc.local = ''; cvc.infusoes = []
+  picc.ativo = false; picc.local = ''; picc.infusoes = []
+  permcath.ativo = false; permcath.local = ''; permcath.infusoes = []
+  shilley.ativo = false; shilley.local = ''; shilley.infusoes = []
   pulseirasAtivas.value = []; pulseirasCardAberto.value = false
   avps.value = []; drenos.value = []; outros.value = []
   nenhumAtivo.value = false
@@ -791,6 +807,9 @@ function gerarTextoDispositivos() {
     if (acc.ativo) {
       let txt = nome
       if (acc.local) txt += ` em ${acc.local}`
+      const infs = (acc.infusoes || []).map(i => i.trim()).filter(Boolean)
+      if (infs.length === 1) txt += ` recebendo ${infs[0]}`
+      else if (infs.length > 1) txt += ` recebendo ${infs.join(', ')}`
       partes.push(txt)
     }
   }
@@ -1072,6 +1091,7 @@ function novaAnotacao() {
   border-radius: var(--radius); padding: 16px;
   font-size: 0.9rem; line-height: 1.7; color: var(--text);
   white-space: pre-wrap; font-family: inherit; margin-bottom: 16px;
+  width: 100%; box-sizing: border-box; resize: vertical; outline: none;
 }
 .btn-copy {
   display: flex; align-items: center; justify-content: center; gap: 8px;

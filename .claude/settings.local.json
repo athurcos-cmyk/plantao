@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(\"/c/Program Files/nodejs/npm.cmd\" install)",
+      "Bash(grep -r \"higieniz\\\\|banho\\\\|Higieniz\\\\|Banho\" /c/Users/Thurcos/Desktop/plantao/src/router --include=*.js --include=*.ts -l)",
+      "Bash(grep -r \"higieniz\\\\|banho\\\\|Higieniz\\\\|Banho\" /c/Users/Thurcos/Desktop/plantao/src --include=*.vue -l)",
+      "Bash(grep -n \"navigator.clipboard\" /c/Users/Thurcos/Desktop/plantao/src/views/anotacoes/*.vue)",
+      "Bash(grep -n \"clipboard\\\\|copiar\\\\|execCommand\" /c/Users/Thurcos/Desktop/plantao/src/composables/*.js)",
+      "Bash(grep '\"\"version\"\"' /c/Users/Thurcos/Desktop/plantao/package.json)"
+    ]
+  }
+}

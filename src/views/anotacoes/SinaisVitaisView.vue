@@ -130,9 +130,7 @@
 
       <!-- ── Preview ── -->
       <div v-else>
-        <div class="preview-box">
-          <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
-        </div>
+        <textarea v-model="textoGerado" class="preview-box" rows="7"></textarea>
 
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
@@ -378,6 +376,10 @@ function novaAfericao() {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
+  width: 100%; box-sizing: border-box;
+  font-size: 0.95rem; line-height: 1.7; color: var(--text);
+  font-family: inherit; white-space: pre-wrap;
+  resize: vertical; outline: none;
 }
 
 .label-small {

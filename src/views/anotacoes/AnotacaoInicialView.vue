@@ -319,9 +319,7 @@
 
       <!-- ═══ PREVIEW ═══ -->
       <div v-if="gerado">
-        <div class="preview-box">
-          <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
-        </div>
+        <textarea v-model="textoGerado" class="preview-box" rows="7"></textarea>
 
         <!-- Nome e leito do paciente -->
         <div style="display:flex;gap:10px;margin-top:16px">
@@ -683,6 +681,10 @@ function selecionarPaciente(p) {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
+  width: 100%; box-sizing: border-box;
+  font-size: 0.95rem; line-height: 1.7; color: var(--text);
+  font-family: inherit; white-space: pre-wrap;
+  resize: vertical; outline: none;
 }
 /* ── Rascunho banner ── */
 /* rascunho-banner global — ver style.css */

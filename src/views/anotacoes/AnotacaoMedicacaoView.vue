@@ -141,9 +141,7 @@
 
       <!-- ── Preview ── -->
       <div v-else>
-        <div class="preview-box">
-          <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
-        </div>
+        <textarea v-model="textoGerado" class="preview-box" rows="8"></textarea>
 
         <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
@@ -586,8 +584,8 @@ const erro        = ref('')
 const salvando    = ref(false)
 
 // ── Constantes ──────────────────────────────────────────────────────────────
-const vias     = ['VO', 'EV', 'SC', 'IM', 'SNE', 'OFT', 'Sublingual', 'Recusa']
-const unidades = ['mg', 'mcg', 'g', 'UI', 'mEq', 'mmol', 'ml', '%', 'mg/kg', 'mcg/kg']
+const vias     = ['VO', 'EV', 'SC', 'IM', 'SNE', 'OFT', 'DERM', 'Sublingual', 'Recusa']
+const unidades = ['mg', 'mcg', 'g', 'UI', 'mEq', 'mmol', 'ml', 'Gts', '%', 'mg/kg', 'mcg/kg']
 
 // ── Form principal ──────────────────────────────────────────────────────────
 const form = reactive({
@@ -755,6 +753,7 @@ function gerarParteMed(med) {
   else if (med.via === 'IM')      viaTexto = 'IM'
   else if (med.via === 'SNE')     viaTexto = 'via SNE'
   else if (med.via === 'Sublingual') viaTexto = 'sublingual'
+  else if (med.via === 'DERM')       viaTexto = 'DERM'
   else if (med.via === 'OFT') {
     const olhoTexto = med.oftOlho === 'ambos' ? 'em ambos os olhos' : `olho ${med.oftOlho}`
     viaTexto = `OFT ${olhoTexto}`
@@ -1206,6 +1205,10 @@ select.campo-inline {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
+  width: 100%; box-sizing: border-box;
+  font-size: 0.95rem; line-height: 1.7; color: var(--text);
+  font-family: inherit; white-space: pre-wrap;
+  resize: vertical; outline: none;
 }
 
 /* ── Erro ── */

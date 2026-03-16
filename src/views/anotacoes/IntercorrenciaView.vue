@@ -143,7 +143,7 @@
 
     <!-- ═══ RESULTADO ═══ -->
     <main v-if="gerado" class="container" style="padding-top:20px;padding-bottom:40px">
-      <pre class="resultado-box">{{ textoGerado }}</pre>
+      <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
 
       <button class="btn-copy" @click="copiar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -253,7 +253,11 @@ async function salvarModelo() {
   if (!navigator.onLine) { showToast('Sem conexão — modelos requerem internet'); return }
   salvandoModelo.value = true
   try {
-    await push(dbRef(db, `livres/${authStore.syncCode}/modelos`), { texto })
+    const novoRef = await push(dbRef(db, `livres/${authStore.syncCode}/modelos`), { texto, criadoEm: Date.now() })
+    // Atualiza local imediatamente (não espera só pelo onValue)
+    if (!modelos.value.find(m => m._key === novoRef.key)) {
+      modelos.value = [...modelos.value, { texto, _key: novoRef.key }]
+    }
     novoModelo.value = ''
     adicionandoModelo.value = false
     showToast('Modelo salvo!')
@@ -503,6 +507,7 @@ function novaAnotacao() {
   border-radius: var(--radius); padding: 16px;
   font-size: 0.9rem; line-height: 1.7; color: var(--text);
   white-space: pre-wrap; font-family: inherit; margin-bottom: 16px;
+  width: 100%; box-sizing: border-box; resize: vertical; outline: none;
 }
 .btn-copy {
   display: flex; align-items: center; justify-content: center; gap: 8px;
