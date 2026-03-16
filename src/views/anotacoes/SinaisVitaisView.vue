@@ -34,6 +34,19 @@
       <!-- ── Formulário ── -->
       <div v-if="!gerado">
 
+        <div v-if="pacientesStore.pacientes.length > 0" style="margin-bottom:16px">
+          <label class="label-small">Paciente registrado</label>
+          <div class="chips-scroll" style="margin-top:6px">
+            <button
+              v-for="p in pacientesStore.pacientes"
+              :key="p._key"
+              class="chip"
+              :class="{ ativo: form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
+              @click="selecionarPaciente(p)"
+            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
+          </div>
+        </div>
+
         <div class="sv-grid">
 
           <!-- Horário -->
@@ -121,20 +134,7 @@
           <p style="white-space:pre-wrap;line-height:1.7;font-size:0.95rem">{{ textoGerado }}</p>
         </div>
 
-        <div v-if="pacientesStore.pacientes.length > 0" style="margin-top:16px;margin-bottom:6px">
-          <label class="label-small">Paciente registrado</label>
-          <div class="chips-scroll" style="margin-top:6px">
-            <button
-              v-for="p in pacientesStore.pacientes"
-              :key="p._key"
-              class="chip"
-              :class="{ ativo: form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
-              @click="selecionarPaciente(p)"
-            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:10px;margin-top:10px">
+        <div style="display:flex;gap:10px;margin-top:16px">
           <div style="flex:2">
             <label class="label-small">Nome do paciente</label>
             <input  data-testid="auto-input-sinaisvitaisview-13" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
