@@ -1,28 +1,47 @@
 {
   "rules": {
     "usuarios": {
-      ".read": true,
-      ".write": true
+      "$code": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChildren(['pin', 'criadoEm'])"
+      }
     },
     "anotacoes": {
-      ".read": true,
-      ".write": true
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     },
     "anotacoes_hc": {
-      ".read": true,
-      ".write": true
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     },
     "pacientes": {
-      ".read": true,
-      ".write": true
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     },
     "organizador": {
-      ".read": true,
-      ".write": true
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     },
     "encaminhamento": {
-      ".read": true,
-      ".write": true
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "livres": {
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     }
   }
 }
