@@ -86,21 +86,29 @@
         <span v-if="notas.length > 0" class="badge-count azul">{{ notas.length }}</span>
       </div>
 
-      <div class="nota-builder">
-        <input type="time" v-model="notaHora" class="input-hora">
-        <input
-          type="text"
-          v-model="notaTexto"
-          class="input-nota"
-          placeholder="Selecione um modelo ou escreva..."
-          @keydown.enter="adicionarNota"
-        >
-        <button
-          class="btn-add-nota"
-          @click="adicionarNota"
-          :disabled="!notaTexto.trim()"
-          title="Adicionar nota"
-        >+</button>
+      <div class="nota-composer">
+        <div class="nota-composer-row">
+          <input type="time" v-model="notaHora" class="nc-hora">
+          <div class="nc-divider"></div>
+          <input
+            type="text"
+            v-model="notaTexto"
+            class="nc-texto"
+            placeholder="Escreva a nota..."
+            @keydown.enter="adicionarNota"
+          >
+        </div>
+        <div class="nc-footer">
+          <span class="nc-hint">Enter ou botão para adicionar</span>
+          <button
+            class="nc-btn-add"
+            @click="adicionarNota"
+            :disabled="!notaTexto.trim()"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar
+          </button>
+        </div>
       </div>
 
       <!-- Timeline -->
@@ -498,24 +506,48 @@ function novaAnotacao() {
   text-decoration: underline;
 }
 
-/* Nota builder */
-.nota-builder { display: flex; gap: 8px; align-items: stretch; margin-bottom: 14px; margin-top: 2px; }
-.input-hora {
-  width: 110px; flex-shrink: 0;
-  background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: var(--radius); color: var(--text);
-  font-family: inherit; font-size: 0.95rem; padding: 12px 10px;
+/* Nota composer */
+.nota-composer {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  margin-bottom: 14px; margin-top: 2px;
 }
-.input-nota { flex: 1; }
-.btn-add-nota {
-  width: 46px; flex-shrink: 0;
+.nota-composer-row {
+  display: flex; align-items: center;
+  padding: 4px 4px 0 4px; gap: 0;
+}
+.nc-hora {
+  flex-shrink: 0; width: 94px;
+  background: transparent; border: none;
+  color: var(--blue); font-family: inherit; font-size: 0.95rem;
+  font-weight: 700; padding: 12px 8px 12px 10px;
+  outline: none; cursor: pointer;
+}
+.nc-divider {
+  width: 1px; height: 22px; background: var(--border); flex-shrink: 0;
+}
+.nc-texto {
+  flex: 1; background: transparent; border: none;
+  color: var(--text); font-family: inherit; font-size: 0.95rem;
+  padding: 12px 12px; outline: none;
+}
+.nc-texto::placeholder { color: var(--text-muted); }
+.nc-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 10px 10px 12px;
+}
+.nc-hint {
+  font-size: 0.72rem; color: var(--text-muted);
+}
+.nc-btn-add {
+  display: flex; align-items: center; gap: 5px;
   background: var(--blue); color: #fff; border: none;
-  border-radius: var(--radius); font-size: 1.3rem; font-weight: 700;
-  cursor: pointer; font-family: inherit; transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center;
+  border-radius: 20px; font-family: inherit; font-size: 0.82rem;
+  font-weight: 600; padding: 7px 14px; cursor: pointer;
+  transition: all 0.15s;
 }
-.btn-add-nota:active { opacity: 0.8; transform: scale(0.95); }
-.btn-add-nota:disabled { background: var(--border); cursor: default; }
+.nc-btn-add:active { opacity: 0.85; transform: scale(0.97); }
+.nc-btn-add:disabled { background: var(--border); cursor: default; }
 
 /* Timeline */
 .timeline { margin-bottom: 4px; }
