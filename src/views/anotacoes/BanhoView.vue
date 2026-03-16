@@ -104,10 +104,12 @@
           </div>
 
           <div class="campo">
-            <label class="toggle-row">
-              <input type="checkbox" v-model="form.comAuxilio">
-              <span>Com auxílio</span>
-            </label>
+            <label>Opções</label>
+            <div class="chips-wrap">
+              <button class="chip" :class="{ 'chip-on': form.comAuxilio }" @click="form.comAuxilio = !form.comAuxilio">Com auxílio</button>
+              <button class="chip" :class="{ 'chip-on': form.protecaoCateter }" @click="form.protecaoCateter = !form.protecaoCateter">Proteção de cateter</button>
+              <button class="chip" :class="{ 'chip-on': form.trocaRoupa }" @click="form.trocaRoupa = !form.trocaRoupa">Troca de roupa de cama</button>
+            </div>
           </div>
 
           <div v-if="form.comAuxilio" class="campo">
@@ -117,20 +119,6 @@
               <button class="chip chip-sm" :class="{ 'chip-on': form.acompGenero === 'F' }" @click="form.acompGenero = 'F'">Téc.ª</button>
             </div>
             <input type="text" v-model="form.acompNome" placeholder="Nome do técnico(a)">
-          </div>
-
-          <div class="campo">
-            <label class="toggle-row">
-              <input type="checkbox" v-model="form.protecaoCateter">
-              <span>Proteção de cateter</span>
-            </label>
-          </div>
-
-          <div class="campo">
-            <label class="toggle-row">
-              <input type="checkbox" v-model="form.trocaRoupa">
-              <span>Troca de roupa de cama</span>
-            </label>
           </div>
         </template>
 
@@ -149,26 +137,20 @@
           </div>
 
           <div class="campo">
-            <label class="toggle-row">
-              <input type="checkbox" v-model="form.trocaRoupa">
-              <span>Troca de roupa de cama</span>
-            </label>
-          </div>
-
-          <div class="campo">
-            <label class="toggle-row">
-              <input type="checkbox" v-model="form.trocaFralda">
-              <span>Troca de fralda</span>
-            </label>
+            <label>Opções</label>
+            <div class="chips-wrap">
+              <button class="chip" :class="{ 'chip-on': form.trocaRoupa }" @click="form.trocaRoupa = !form.trocaRoupa">Troca de roupa de cama</button>
+              <button class="chip" :class="{ 'chip-on': form.trocaFralda }" @click="form.trocaFralda = !form.trocaFralda">Troca de fralda</button>
+            </div>
           </div>
         </template>
 
         <!-- Intercorrências -->
         <div v-if="form.tipo" class="campo">
-          <label class="toggle-row">
-            <input type="checkbox" v-model="form.semIntercorrencias">
-            <span>Sem intercorrências</span>
-          </label>
+          <label>Intercorrências</label>
+          <div class="chips-wrap">
+            <button class="chip" :class="{ 'chip-on': form.semIntercorrencias }" @click="form.semIntercorrencias = !form.semIntercorrencias">Sem intercorrências</button>
+          </div>
           <div v-if="!form.semIntercorrencias" style="margin-top:10px">
             <textarea v-model="form.intercorrencia" rows="3" placeholder="Descreva a intercorrência..."></textarea>
           </div>
