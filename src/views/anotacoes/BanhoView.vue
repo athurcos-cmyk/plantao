@@ -189,7 +189,7 @@
         <button class="btn-copy" @click="copiar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2v1"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
           </svg>
           {{ copiado ? 'Copiado!' : 'Copiar texto' }}
         </button>
@@ -320,8 +320,8 @@ function gerar() {
   if (form.tipo === 'aspersao') {
     // Início da frase
     const inicio = form.protecaoCateter
-      ? `Às ${hora}, realizado proteção de cateter, paciente ${enc} ao banho de aspersão`
-      : `Às ${hora}, paciente ${enc} ao banho de aspersão`
+      ? `${hora}, realizado proteção de cateter, paciente ${enc} ao banho de aspersão`
+      : `${hora}, paciente ${enc} ao banho de aspersão`
 
     // Detalhes em sequência
     const detalhes = []
@@ -350,7 +350,7 @@ function gerar() {
       .filter(h => form.higiene.includes(h))
       .map(h => h.toLowerCase())
 
-    texto = `Às ${hora}, realizado banho de leito`
+    texto = `${hora}, realizado banho de leito`
     if (higieneFeita.length > 0) {
       const last  = higieneFeita.length - 1
       const lista = higieneFeita.length === 1
@@ -471,8 +471,13 @@ function novaAnotacao() {
   display: flex; align-items: center; gap: 8px;
   cursor: pointer; font-size: 0.9rem; color: var(--text-dim);
   user-select: none;
+  /* sobrescreve .campo label global */
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+  margin-bottom: 0;
 }
-.toggle-row input[type="checkbox"] { cursor: pointer; width: 16px; height: 16px; }
+.toggle-row input[type="checkbox"] { cursor: pointer; width: 16px; height: 16px; flex-shrink: 0; }
 
 /* ── Nav ── */
 .bloco-nav { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
