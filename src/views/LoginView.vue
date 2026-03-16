@@ -29,7 +29,7 @@
         <div class="card-header">
           <span class="card-step">1 de {{ totalPassos }}</span>
           <h2>Seu código pessoal</h2>
-          <p>Suas iniciais + um número. Ex: <strong>ANA1</strong>, <strong>JOAO2</strong></p>
+          <p>Exatamente 6 letras/números. Ex: <strong>ANA123</strong>, <strong>JOAO42</strong></p>
         </div>
 
         <!-- Instruções rápidas (antes de digitar) -->
@@ -41,7 +41,7 @@
             </div>
             <div class="instrucao-item">
               <span>✨</span>
-              <span><strong>Primeira vez?</strong> Escolha um código de 3 a 6 letras/números</span>
+              <span><strong>Primeira vez?</strong> Escolha um código de exatamente 6 letras/números</span>
             </div>
           </div>
         </transition>
@@ -52,15 +52,15 @@
             v-model="codigo"
             type="text"
             class="input-grande"
-            placeholder="Ex: ANA1"
+            placeholder="Ex: ANA123"
             maxlength="6"
             autocomplete="off"
             autocorrect="off"
             spellcheck="false"
             @input="codigo = codigo.toUpperCase(); verificarCodigo()"
-            @keyup.enter="codigo.length >= 3 && modo && avancarPasso()"
+            @keyup.enter="codigo.length === 6 && modo && avancarPasso()"
           />
-          <p class="campo-hint">3 a 6 letras ou números · maiúsculas automáticas</p>
+          <p class="campo-hint">Exatamente 6 letras ou números · maiúsculas automáticas</p>
           <transition name="fade">
             <p v-if="statusMsg" class="status-msg" :class="statusClass">{{ statusMsg }}</p>
           </transition>
@@ -86,7 +86,7 @@
         <button
           data-testid="btn-continuar-passo1"
           class="btn btn-primary btn-block"
-          :disabled="!modo || carregando"
+          :disabled="!modo || carregando || codigo.length < 6"
           @click="avancarPasso"
         >
           Continuar
@@ -116,7 +116,7 @@
         <div class="card-header">
           <span class="card-step" data-testid="step-indicador">2 de {{ totalPassos }}</span>
           <h2 data-testid="titulo-passo2">{{ modo === 'cadastro' ? 'Crie seu PIN' : 'Digite seu PIN' }}</h2>
-          <p v-if="modo === 'cadastro'">4 dígitos numéricos.</p>
+          <p v-if="modo === 'cadastro'">6 dígitos numéricos — como um cartão de banco.</p>
           <p v-else>Bem-vindo de volta, <strong>{{ codigo }}</strong>.</p>
         </div>
 
@@ -128,7 +128,7 @@
           </div>
           <div class="aviso-pin-linha aviso-pin-perigo">
             <span>⚠️</span>
-            <span>Evite PINs óbvios: <strong>1234, 0000, 1111</strong> ou data de nascimento.</span>
+            <span>Evite PINs óbvios: <strong>123456, 000000, 111111</strong> ou data de nascimento.</span>
           </div>
         </div>
 
@@ -139,8 +139,8 @@
               v-model="pin"
               type="password"
               inputmode="numeric"
-              maxlength="4"
-              placeholder="••••"
+              maxlength="6"
+              placeholder="••••••"
               class="input-pin"
               @keyup.enter="entrar()"
             />
@@ -161,7 +161,7 @@
         <button
           data-testid="btn-continuar-passo2"
           class="btn btn-primary btn-block"
-          :disabled="pin.length !== 4 || carregando"
+          :disabled="pin.length !== 6 || carregando"
           @click="entrar()"
         >
           {{ modo === 'login' ? (carregando ? 'Entrando...' : 'Entrar') : (carregando ? 'Criando conta...' : 'Criar conta e entrar') }}
@@ -218,8 +218,8 @@ const mostrarAjudaCodigo = ref(false)
 const helpAberto         = ref(false)
 
 const helpItens = [
-  { icone: '🔑', titulo: 'Código de acesso', desc: 'Escolha um código de 3 a 6 letras ou números. Ele identifica sua conta — use o mesmo em todos os seus dispositivos para sincronizar os dados.' },
-  { icone: '🔒', titulo: 'PIN de segurança', desc: 'Senha numérica de 4 dígitos para proteger sua conta. Não há recuperação de PIN — se esquecer, precisará criar uma nova conta com outro código.' },
+  { icone: '🔑', titulo: 'Código de acesso', desc: 'Escolha um código de exatamente 6 letras ou números. Ele identifica sua conta — use o mesmo em todos os seus dispositivos para sincronizar os dados.' },
+  { icone: '🔒', titulo: 'PIN de segurança', desc: 'Senha numérica de 6 dígitos para proteger sua conta. Não há recuperação de PIN — se esquecer, precisará criar uma nova conta com outro código.' },
   { icone: '📱', titulo: 'Múltiplos dispositivos', desc: 'Acesse pelo celular, tablet ou computador usando o mesmo código e PIN. Todos os dados ficam sincronizados automaticamente.' },
   { icone: '⚠️', titulo: 'Segurança do código', desc: 'Quem souber seu código e PIN terá acesso aos seus dados. Use um código difícil de adivinhar e não compartilhe seu PIN.' },
   { icone: '🔄', titulo: 'Sincronização', desc: 'Pacientes, anotações, histórico e organizador ficam salvos na nuvem e acessíveis de qualquer lugar com internet.' },
@@ -241,7 +241,7 @@ function voltarPasso() {
 
 async function verificarCodigo() {
   erroMsg.value = ''
-  if (codigo.value.length < 3) {
+  if (codigo.value.length < 6) {
     modo.value = null
     statusMsg.value = ''
     return
