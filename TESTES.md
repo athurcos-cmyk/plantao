@@ -1,6 +1,6 @@
 # Plano de Testes — Plantão App
 
-> Versão do app: 0.10.18
+> Versão do app: 0.10.19
 > Última atualização: 2026-03-16
 
 ---
