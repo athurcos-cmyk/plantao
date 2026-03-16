@@ -208,18 +208,37 @@ function tempoRelativo(ts) {
 }
 
 // ── Notificações de pendências ──────────────────────────────
-function _tagPend(pendKey) { return `pend-${pendKey}` }
+function _tagPend(pendKey)      { return `pend-${pendKey}` }
+function _tagPendAviso(pendKey) { return `pend-${pendKey}-aviso` }
 
 function _labelPend(pac, pend) {
   const leito = pac.leito ? ` · Leito ${pac.leito}` : ''
   return `${pend.texto} — ${pac.nome}${leito}`
 }
 
+// Agenda as duas notificações: aviso 30min antes + no horário exato
+async function _agendarDuas(pac, pend) {
+  const label = _labelPend(pac, pend)
+  const [h, m] = pend.horario.split(':').map(Number)
+  const alvo = new Date(); alvo.setHours(h, m, 0, 0)
+
+  // Aviso antecipado (30min antes)
+  const aviso = new Date(alvo.getTime() - 30 * 60 * 1000)
+  if (aviso > new Date()) {
+    const aH = aviso.getHours().toString().padStart(2, '0')
+    const aM = aviso.getMinutes().toString().padStart(2, '0')
+    await agendarNotificacaoTarefa(`${aH}:${aM}`, `⚠️ em 30min — ${label}`, _tagPendAviso(pend._key))
+  }
+
+  // Notificação no horário exato
+  await agendarNotificacaoTarefa(pend.horario, `⏰ Agora — ${label}`, _tagPend(pend._key))
+}
+
 async function agendarNotifPendencias() {
   for (const pac of store.pacientes) {
     for (const pend of pac.pendencias) {
       if (pend.feito || !pend.horario) continue
-      await agendarNotificacaoTarefa(pend.horario, _labelPend(pac, pend), _tagPend(pend._key))
+      await _agendarDuas(pac, pend)
     }
   }
 }
@@ -333,28 +352,33 @@ async function adicionarPend(pacKey) {
   await store.adicionarPendencia(pacKey, texto)
 }
 
-// Agenda/cancela notificação ao definir horário na pendência
+// Cancela as duas notificações (aviso + exato)
+async function _cancelarDuas(pendKey) {
+  await cancelarNotificacao(_tagPend(pendKey))
+  await cancelarNotificacao(_tagPendAviso(pendKey))
+}
+
+// Agenda/cancela ao definir horário na pendência
 async function definirHorarioPend(pac, pend, horario) {
   await store.definirHorarioPendencia(pac._key, pend._key, horario)
+  await _cancelarDuas(pend._key)
   if (horario) {
-    await agendarNotificacaoTarefa(horario, _labelPend(pac, pend), _tagPend(pend._key))
-  } else {
-    await cancelarNotificacao(_tagPend(pend._key))
+    // pend.horario ainda não atualizou no objeto local, passa o novo
+    await _agendarDuas(pac, { ...pend, horario })
   }
 }
 
-// Marcar feita: cancela notificação pendente
+// Marcar feita: cancela as duas notificações
 async function togglePend(pac, pend) {
   await store.togglePendencia(pac._key, pend._key, pend.feito)
-  // Se acabou de marcar como feita, cancela notificação
   if (!pend.feito && pend.horario) {
-    await cancelarNotificacao(_tagPend(pend._key))
+    await _cancelarDuas(pend._key)
   }
 }
 
-// Excluir: cancela notificação pendente
+// Excluir: cancela as duas notificações
 async function excluirPend(pac, pend) {
-  if (pend.horario) await cancelarNotificacao(_tagPend(pend._key))
+  if (pend.horario) await _cancelarDuas(pend._key)
   await store.excluirPendencia(pac._key, pend._key)
 }
 </script>
