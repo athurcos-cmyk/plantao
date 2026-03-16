@@ -58,6 +58,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/anotar/curativo',
+    name: 'curativo',
+    component: () => import('../views/anotacoes/CurativoView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/pacientes',
     name: 'pacientes',
     component: () => import('../views/PacientesView.vue'),

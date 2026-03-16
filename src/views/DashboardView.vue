@@ -118,7 +118,7 @@ const tipos = [
   { id: 'medicacao', icon: '💊', nome: 'Medicação',              rota: 'medicacao'   },
   { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: 'encaminhamento' },
   { id: 'banho',     icon: '🧼', nome: 'Higienização',            rota: 'banho' },
-  { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: null },
+  { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: 'curativo' },
   { id: 'passagem',  icon: '🔄', nome: 'Passagem de plantão',    rota: null },
   { id: 'livre',     icon: '📝', nome: 'Intercorrência / Livre', rota: null },
 ]
