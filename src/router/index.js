@@ -70,6 +70,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/anotar/intercorrencia',
+    name: 'intercorrencia',
+    component: () => import('../views/anotacoes/IntercorrenciaView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/pacientes',
     name: 'pacientes',
     component: () => import('../views/PacientesView.vue'),
