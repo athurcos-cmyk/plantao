@@ -429,7 +429,14 @@ function novaAnotacao() {
 }
 .btn-novo-modelo:active { background: var(--bg-hover); }
 .add-modelo-form { display: flex; flex-direction: column; gap: 8px; }
-.add-modelo-form input { width: 100%; box-sizing: border-box; }
+.add-modelo-form input {
+  width: 100%; box-sizing: border-box;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text);
+  font-family: inherit; font-size: 1rem; padding: 13px 14px;
+  outline: none; transition: border-color 0.2s;
+}
+.add-modelo-form input:focus { border-color: var(--blue); }
 .add-modelo-acoes { display: flex; gap: 8px; justify-content: flex-end; }
 .btn-sm { padding: 8px 16px !important; font-size: 0.83rem !important; }
 
