@@ -96,6 +96,7 @@ const helpItens = [
   { icone: '🚑', titulo: 'Encaminhamento', desc: 'Gere a anotação de encaminhamento do paciente: destino (com chips personalizados por conta), tipo de transporte, acompanhante e dispositivos em uso.' },
   { icone: '🧼', titulo: 'Higienização', desc: 'Registre banho de aspersão, banho de leito ou troca de fralda. Na troca de fralda, selecione o tipo de eliminação (diurese, evacuação ou ambos), a quantidade e o local — troca de roupa de cama é incluída automaticamente quando em leito.' },
   { icone: '🩹', titulo: 'Curativo', desc: 'Documente curativo simples, troca de curativo ou troca de placa de hidrocoloide. Selecione o local por chips predefinidos (MSD, MIE...) ou chips salvos por conta, ou escreva livremente. Materiais podem ser marcados da lista, salvos por conta ou digitados rapidamente. Para curativo de dreno, descreva o tipo do dreno.' },
+  { icone: '🔄', titulo: 'Passagem de plantão', desc: 'Gere a anotação de passagem de plantão: registre refeição ofertada, queixas, posição da cama, rodas, grades e decúbito. Inclua opcionalmente dieta enteral, infusão venosa, SVD e observações livres.' },
   { icone: '🛏️', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantão por leito. Adicione pendências para cada um e marque conforme resolve. Aparecem como atalho nas anotações.' },
   { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do seu turno com horários e alertas. Anote o que precisa ser passado para o próximo plantão.' },
   { icone: '🕐', titulo: 'Histórico', desc: 'Acesse, busque, edite e compartilhe todas as anotações já geradas. Filtre por tipo ou por paciente.' },
@@ -120,7 +121,7 @@ const tipos = [
   { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: 'encaminhamento' },
   { id: 'banho',     icon: '🧼', nome: 'Higienização',            rota: 'banho' },
   { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: 'curativo' },
-  { id: 'passagem',  icon: '🔄', nome: 'Passagem de plantão',    rota: null },
+  { id: 'passagem',  icon: '🔄', nome: 'Passagem de plantão',    rota: 'passagem' },
   { id: 'livre',     icon: '📝', nome: 'Intercorrência / Livre', rota: null },
 ]
 
