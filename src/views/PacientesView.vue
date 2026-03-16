@@ -67,13 +67,49 @@
         <!-- Pendências -->
         <div class="pend-lista" v-if="pac.pendencias.length > 0 && expandido[pac._key]">
           <div v-for="pend in pac.pendencias" :key="pend._key" class="pend-item" :class="{ feito: pend.feito }">
-            <button class="pend-check" @click="store.togglePendencia(pac._key, pend._key, pend.feito)">
+            <button class="pend-check" @click="togglePend(pac, pend)">
               <svg v-if="pend.feito" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
             </button>
             <span class="pend-texto">{{ pend.texto }}</span>
-            <button class="pend-del" @click="store.excluirPendencia(pac._key, pend._key)">
+
+            <!-- Badge de horário agendado -->
+            <span
+              v-if="pend.horario && !editandoHorarioPend[pac._key + pend._key] && !pend.feito"
+              class="pend-horario-badge"
+              :class="urgenciaPend(pend)"
+              @click="editandoHorarioPend[pac._key + pend._key] = true"
+            >{{ pend.horario }}</span>
+
+            <!-- Input inline horário -->
+            <input
+              v-if="editandoHorarioPend[pac._key + pend._key]"
+              type="time"
+              class="pend-time-input"
+              :value="pend.horario"
+              @change="e => { definirHorarioPend(pac, pend, e.target.value); editandoHorarioPend[pac._key + pend._key] = false }"
+              @blur="editandoHorarioPend[pac._key + pend._key] = false"
+              autofocus
+            >
+
+            <!-- Tempo relativo de criação (só sem horário agendado) -->
+            <span v-if="pend.criadoEm && !pend.feito && !pend.horario" class="pend-tempo">{{ tempoRelativo(pend.criadoEm) }}</span>
+
+            <!-- Ícone relógio -->
+            <button
+              v-if="!editandoHorarioPend[pac._key + pend._key] && !pend.feito"
+              class="pend-clock-btn"
+              :style="{ color: pend.horario ? 'var(--blue)' : 'var(--text-muted)' }"
+              @click="editandoHorarioPend[pac._key + pend._key] = true"
+              title="Definir horário limite"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </button>
+
+            <button class="pend-del" @click="excluirPend(pac, pend)">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
@@ -143,20 +179,81 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, onUnmounted } from 'vue'
+import { reactive, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePacientesStore } from '../stores/pacientes.js'
 import HelpModal from '../components/HelpModal.vue'
+import {
+  solicitarPermissaoNotificacao,
+  agendarNotificacaoTarefa,
+  cancelarNotificacao,
+} from '../composables/usePushNotificacoes.js'
 
 const router = useRouter()
 const store  = usePacientesStore()
 
-onMounted(() => store.iniciar())
-onUnmounted(() => store.parar())
+// ── Tempo relativo ──────────────────────────────────────────
+const agora = ref(Date.now())
+let timerAgora = null
+
+function tempoRelativo(ts) {
+  if (!ts) return ''
+  const diff = Math.floor((agora.value - ts) / 1000)
+  if (diff < 60) return 'agora'
+  const min = Math.floor(diff / 60)
+  if (min < 60) return `há ${min}min`
+  const h = Math.floor(min / 60)
+  if (h < 24) return `há ${h}h`
+  return `há ${Math.floor(h / 24)}d`
+}
+
+// ── Notificações de pendências ──────────────────────────────
+function _tagPend(pendKey) { return `pend-${pendKey}` }
+
+function _labelPend(pac, pend) {
+  const leito = pac.leito ? ` · Leito ${pac.leito}` : ''
+  return `${pend.texto} — ${pac.nome}${leito}`
+}
+
+async function agendarNotifPendencias() {
+  for (const pac of store.pacientes) {
+    for (const pend of pac.pendencias) {
+      if (pend.feito || !pend.horario) continue
+      await agendarNotificacaoTarefa(pend.horario, _labelPend(pac, pend), _tagPend(pend._key))
+    }
+  }
+}
+
+onMounted(async () => {
+  store.iniciar()
+  timerAgora = setInterval(() => { agora.value = Date.now() }, 30000)
+  await solicitarPermissaoNotificacao()
+  // agenda após store carregar
+  setTimeout(agendarNotifPendencias, 1500)
+})
+
+onUnmounted(() => {
+  store.parar()
+  clearInterval(timerAgora)
+})
+
+// Re-agenda quando pacientes mudam (horário setado/removido)
+watch(() => store.pacientes, agendarNotifPendencias, { deep: true })
 
 // nova pendência por paciente (key → texto)
 const novaPend  = reactive({})
 const expandido = reactive({})
+const editandoHorarioPend = reactive({}) // chave: pacKey+pendKey
+
+function urgenciaPend(pend) {
+  if (!pend.horario || pend.feito) return 'pend-horario-ok'
+  const [h, m] = pend.horario.split(':').map(Number)
+  const alvo = new Date(); alvo.setHours(h, m, 0, 0)
+  const diff = (alvo - new Date()) / 60000
+  if (diff < 0)  return 'pend-horario-vencida'
+  if (diff <= 30) return 'pend-horario-proxima'
+  return 'pend-horario-ok'
+}
 const excluindo = ref(null)
 const helpAberto = ref(false)
 
@@ -234,6 +331,31 @@ async function adicionarPend(pacKey) {
   if (!texto) return
   novaPend[pacKey] = ''
   await store.adicionarPendencia(pacKey, texto)
+}
+
+// Agenda/cancela notificação ao definir horário na pendência
+async function definirHorarioPend(pac, pend, horario) {
+  await store.definirHorarioPendencia(pac._key, pend._key, horario)
+  if (horario) {
+    await agendarNotificacaoTarefa(horario, _labelPend(pac, pend), _tagPend(pend._key))
+  } else {
+    await cancelarNotificacao(_tagPend(pend._key))
+  }
+}
+
+// Marcar feita: cancela notificação pendente
+async function togglePend(pac, pend) {
+  await store.togglePendencia(pac._key, pend._key, pend.feito)
+  // Se acabou de marcar como feita, cancela notificação
+  if (!pend.feito && pend.horario) {
+    await cancelarNotificacao(_tagPend(pend._key))
+  }
+}
+
+// Excluir: cancela notificação pendente
+async function excluirPend(pac, pend) {
+  if (pend.horario) await cancelarNotificacao(_tagPend(pend._key))
+  await store.excluirPendencia(pac._key, pend._key)
 }
 </script>
 
@@ -337,6 +459,35 @@ async function adicionarPend(pacKey) {
   line-height: 1.4;
 }
 .pend-item.feito .pend-texto { text-decoration: line-through; color: var(--text-muted); }
+
+.pend-tempo {
+  font-size: 0.68rem; color: var(--text-muted);
+  flex-shrink: 0; white-space: nowrap;
+}
+
+.pend-horario-badge {
+  font-size: 0.7rem; font-weight: 700;
+  padding: 2px 6px; border-radius: 7px; flex-shrink: 0;
+  cursor: pointer;
+}
+.pend-horario-ok      { background: rgba(30,136,229,0.1); color: var(--blue); }
+.pend-horario-proxima { background: rgba(255,152,0,0.15); color: #f57c00; }
+.pend-horario-vencida { background: rgba(229,57,53,0.12); color: var(--danger); }
+
+.pend-time-input {
+  font-size: 0.78rem; border: 1px solid var(--border);
+  border-radius: 6px; padding: 2px 5px;
+  background: var(--bg-input); color: var(--text);
+  font-family: inherit; outline: none; flex-shrink: 0;
+}
+
+.pend-clock-btn {
+  width: 22px; height: 22px; border: none; background: none;
+  cursor: pointer; border-radius: 4px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.pend-clock-btn:active { opacity: 0.7; }
 
 .pend-del {
   width: 22px; height: 22px; border: none; background: none;

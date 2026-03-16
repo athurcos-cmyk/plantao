@@ -158,6 +158,26 @@ export const usePacientesStore = defineStore('pacientes', () => {
     await update(dbRef(db, `pacientes/${code}/${pacKey}/pendencias/${pendKey}`), { feito: novoFeito })
   }
 
+  async function definirHorarioPendencia(pacKey, pendKey, horario) {
+    const auth = useAuthStore()
+    const code = auth.syncCode
+    const valor = horario || null
+
+    if (!navigator.onLine) {
+      const lista = pacientes.value.map(p =>
+        p._key !== pacKey ? p
+          : { ...p, pendencias: p.pendencias.map(pend =>
+              pend._key === pendKey ? { ...pend, horario: valor } : pend) }
+      )
+      pacientes.value = lista
+      _salvarCache(code, lista)
+      _enfileirar(code, { op: 'horarioPend', pacKey, pendKey, horario: valor })
+      pendentesCount.value++
+      return
+    }
+    await update(dbRef(db, `pacientes/${code}/${pacKey}/pendencias/${pendKey}`), { horario: valor })
+  }
+
   async function excluirPendencia(pacKey, pendKey) {
     const auth = useAuthStore()
     const code = auth.syncCode
@@ -210,6 +230,10 @@ export const usePacientesStore = defineStore('pacientes', () => {
           const realPend = pendKeyMap[`${item.pacKey}:${item.pendKey}`] || item.pendKey
           await update(dbRef(db, `pacientes/${code}/${realPacP}/pendencias/${realPend}`), { feito: item.novoFeito })
 
+        } else if (item.op === 'horarioPend') {
+          const realPend = pendKeyMap[`${item.pacKey}:${item.pendKey}`] || item.pendKey
+          await update(dbRef(db, `pacientes/${code}/${realPacP}/pendencias/${realPend}`), { horario: item.horario })
+
         } else if (item.op === 'deletePend') {
           const realPend = pendKeyMap[`${item.pacKey}:${item.pendKey}`] || item.pendKey
           await remove(dbRef(db, `pacientes/${code}/${realPacP}/pendencias/${realPend}`))
@@ -227,7 +251,7 @@ export const usePacientesStore = defineStore('pacientes', () => {
   return {
     pacientes, pendentesCount, iniciar, parar,
     adicionar, atualizar, excluir,
-    adicionarPendencia, togglePendencia, excluirPendencia,
+    adicionarPendencia, togglePendencia, excluirPendencia, definirHorarioPendencia,
     sincronizarPendentes,
   }
 })
