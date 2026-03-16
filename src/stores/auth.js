@@ -1,15 +1,21 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, get, set } from 'firebase/database'
+import { ref as dbRef, get, set, update } from 'firebase/database'
 
 const SESSION_DURATION_MS = 24 * 60 * 60 * 1000 // 24 horas (era 30 dias)
 const PIN_SALT_PREFIX = 'plantao_hc_2025_'
 
 async function hashPin(pin, code) {
-  // salt = prefixo fixo + syncCode — impede rainbow tables genéricos
+  // hash novo: salt = prefixo fixo + syncCode
   const salted = PIN_SALT_PREFIX + code.toUpperCase() + ':' + pin
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted))
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function hashPinLegacy(pin) {
+  // hash antigo: SHA-256 sem salt — usado apenas para migração
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin))
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
@@ -46,9 +52,24 @@ export const useAuthStore = defineStore('auth', () => {
     const snap = await get(dbRef(db, `usuarios/${code}`))
     if (!snap.exists()) return false
     const user = snap.val()
-    if (user.pin !== await hashPin(pin, code)) return false
-    _saveSession(code, user.nome || '')
-    return true
+
+    const hashNovo   = await hashPin(pin, code)
+    const hashAntigo = await hashPinLegacy(pin)
+
+    if (user.pin === hashNovo) {
+      // hash atual — login normal
+      _saveSession(code, user.nome || '')
+      return true
+    }
+
+    if (user.pin === hashAntigo) {
+      // hash legado — migra silenciosamente para o novo formato
+      await update(dbRef(db, `usuarios/${code}`), { pin: hashNovo })
+      _saveSession(code, user.nome || '')
+      return true
+    }
+
+    return false
   }
 
   function _saveSession(code, name) {
