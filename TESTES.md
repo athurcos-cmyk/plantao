@@ -1,6 +1,6 @@
 # Plano de Testes — Plantão App
 
-> Versão do app: 0.10.17
+> Versão do app: 0.10.18
 > Última atualização: 2026-03-16
 
 ---
@@ -410,10 +410,9 @@
 - [x] Leito exibido como badge azul no card
 
 ### 7.6 Integração — Seletor nas Anotações
-- [x] Ao gerar anotação inicial (preview): chips de pacientes registrados aparecem
+- [x] Chips de pacientes aparecem no INÍCIO do formulário em todas as views (Inicial, SV, Medicação, Curativo, Banho, Encaminhamento, Passagem)
 - [x] Clicar no chip preenche nome e leito automaticamente
 - [x] Chip fica marcado como ativo quando nome+leito correspondem ao formulário
-- [x] Mesmo comportamento na tela de Medicação e Encaminhamento
 - [x] Se não há pacientes registrados, seção de chips não aparece
 
 ### 7.7 Sincronização Firebase
@@ -681,3 +680,72 @@
 - [x] Médico → "acompanhado do médico"
 - [x] Médica → "acompanhado da médica"
 - [x] Sem acompanhante → "sem acompanhante"
+
+---
+
+## 13. PASSAGEM DE PLANTÃO
+
+### 13.1 Interface
+- [x] Rota `/anotar/passagem` carrega sem erros
+- [x] Card "Passagem de plantão" no Dashboard navega corretamente (sem badge "EM BREVE")
+- [x] Barra de progresso exibe "Bloco X de 2"
+- [x] Botão voltar no bloco 1 retorna ao Dashboard
+
+### 13.2 Bloco 1 — Identificação
+- [x] Campo horário obrigatório — erro "Preencha o horário e o nome do paciente." ao tentar avançar sem preencher
+- [x] Campo nome obrigatório — mesmo erro
+- [x] Campo leito opcional
+- [x] Chips de refeição: café da manhã, almoço, lanche, janta, ceia (toggle — clicar no ativo deseleciona)
+- [x] Chips de pacientes registrados aparecem no início e preenchem nome+leito ao clicar
+- [x] Botão "Limpar" reseta campos do bloco
+- [x] Botão "Próximo →" avança com campos válidos
+
+### 13.3 Bloco 2 — Condições
+- [x] Checkbox "Paciente com queixas" — ao marcar: campo de texto aparece; ao desmarcar: some
+- [x] Gerar com queixas marcado mas sem descrição → erro "Descreva as queixas do paciente."
+- [x] Radio chips Cama: baixa (padrão), média, alta
+- [x] Radio chips Rodas: travadas (padrão), soltas
+- [x] Radio chips Grades: totalmente elevadas, parcialmente elevadas (padrão), abaixadas
+- [x] Radio chips Decúbito: parcialmente elevado (padrão), dorsal, lateral direito, lateral esquerdo, Fowler
+- [x] Botão "← Voltar" retorna ao bloco 1 sem perder dados
+
+### 13.4 Informações adicionais
+- [x] Checkbox "Dieta enteral" — ao marcar: campos descrição e ml/h aparecem; gerar sem ml/h → erro
+- [x] Checkbox "Infusão venosa" — ao marcar: campos solução, volume e ml/h aparecem
+- [x] Checkbox "SVD" — ao marcar: campo débito aparece; gerar sem débito → erro "Informe o débito da SVD."
+- [x] Campo observações livre (opcional)
+
+### 13.5 Fusão grades + decúbito
+- [x] Grades "parcialmente elevadas" + decúbito "parcialmente elevado" → `"grades e decúbito parcialmente elevados"` (fusão)
+- [x] Qualquer outra combinação → `"grades X e decúbito Y"` (separado)
+
+### 13.6 Textos gerados
+- [x] Básico sem refeição: `18h00 – Paciente em seu leito sem queixas, Mantenho cama baixa, rodas travadas, grades e decúbito parcialmente elevados, campainha próxima e oriento a chamar sempre que necessário.`
+- [x] Com refeição + queixas: `18h00 – Ofertado janta. Paciente em seu leito referindo dor abdominal, Mantenho cama baixa, rodas travadas, grades e decúbito parcialmente elevados, campainha próxima e oriento a chamar sempre que necessário.`
+- [x] Grades/decúbito distintos: `08h00 – Ofertado café da manhã. Paciente em seu leito sem queixas, Mantenho cama baixa, rodas travadas, grades totalmente elevadas e decúbito lateral direito, campainha próxima e oriento a chamar sempre que necessário.`
+- [x] Com dieta enteral + SVD: `14h00 – ... Recebendo dieta enteral polimérica a 50ml/h. Desprezado débito de SVD no total de 350ml no dia de hoje, atualizado em balanço hídrico.`
+- [x] Com infusão + obs: `10h00 – ... Recebendo SF 0,9% 500ml a 125ml/h. Aguardando resultado de exames.`
+
+### 13.7 Pós-geração
+- [x] Botão "Copiar texto" funciona (com fallback execCommand)
+- [x] Botão "Salvar no histórico" salva e exibe toast "Salvo no histórico!" (testado com conta real TESTE1)
+- [x] Botão "Nova anotação" reseta formulário e volta ao bloco 1
+- [x] Botão "← Editar" retorna ao bloco 2 sem perder dados
+
+### 13.8 Rascunho automático
+- [x] `useRascunho('rascunho_passagem', form, ...)` ativo — banner aparece ao retornar com dados
+- [x] Botão "Continuar" restaura os dados
+- [x] Botão "Descartar" limpa e remove banner
+
+---
+
+## 14. HISTÓRICO — MELHORIAS
+
+### 14.1 Ordenação por horário da anotação
+- [x] Histórico ordena por data (dia mais recente primeiro, via `timestamp`)
+- [x] Dentro do mesmo dia, ordena pelo horário extraído do texto (`"18h00 –"` → 1080 min)
+- [x] `extrairHora("18h00 – ...")` → 1080 (18×60)
+- [x] `extrairHora("08h00 – ...")` → 480 (8×60)
+- [x] Anotação sem horário no texto → ordenada ao final do dia (retorna -1)
+- [x] Empate no horário → fallback por `timestamp` desc (mais recente salvo primeiro)
+- [x] Verificado no preview: 16/03 18h00 aparece antes de 15/03 22h33
