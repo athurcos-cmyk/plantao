@@ -97,18 +97,19 @@
           </div>
         </div>
 
-        <!-- Local (quando não é dreno) -->
+        <!-- Local (quando não é dreno) — MULTI-SELECT -->
         <div v-if="form.tipo && !form.ehDreno" class="campo">
           <label>Local <span class="obrigatorio">*</span></label>
           <div class="chips-wrap" style="margin-bottom:8px">
             <button v-for="l in locaisChips" :key="l" class="chip chip-sm"
-              :class="{ 'chip-on': form.local === l }"
-              @click="setLocal(l)">{{ l }}</button>
+              :class="{ 'chip-on': form.local.includes(l) }"
+              @click="toggleLocal(l)">{{ l }}</button>
           </div>
-          <input type="text" v-model="form.local" placeholder="Ou descreva o local...">
+          <input type="text" v-model="localLivre" placeholder="Ou adicione outro local (Enter)..."
+            @keyup.enter="adicionarLocalLivre">
         </div>
 
-        <!-- Materiais (não para placa) -->
+        <!-- Materiais padrão + customizados -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
           <label>Em uso de <span class="opc">(opcional)</span></label>
           <div class="radio-group vertical">
@@ -116,8 +117,31 @@
               <input type="checkbox" :value="m" v-model="form.materiais">
               <span>{{ m }}</span>
             </label>
+            <!-- Materiais customizados salvos no Firebase -->
+            <label v-for="m in materiaisCustom" :key="m._key" class="checkbox-label checkbox-custom">
+              <input type="checkbox" :value="m.texto" v-model="form.materiais">
+              <span>{{ m.texto }}</span>
+              <button class="chip-del-btn" @click.prevent="removerMaterialCustom(m._key)">×</button>
+            </label>
           </div>
-          <input type="text" v-model="form.materiaisLivre" placeholder="Outro material..." style="margin-top:8px">
+
+          <!-- Adicionar material customizado -->
+          <div v-if="!adicionandoMaterial" style="margin-top:8px">
+            <button class="chip chip-add" @click="abrirAddMaterial">+ Adicionar material</button>
+          </div>
+          <div v-else class="add-row" style="margin-top:8px">
+            <input
+              class="add-input"
+              type="text"
+              v-model="novoMaterialTxt"
+              placeholder="Ex: Vaselina, Sulfadiazina de prata..."
+              @keyup.enter="salvarMaterialCustom"
+              @keyup.esc="fecharAddMaterial"
+              ref="refNovoMaterial"
+            >
+            <button class="chip chip-on" @click="salvarMaterialCustom" :disabled="!novoMaterialTxt.trim()">Salvar</button>
+            <button class="chip" @click="fecharAddMaterial">✕</button>
+          </div>
         </div>
 
         <!-- Condição (não para placa) -->
@@ -175,16 +199,20 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
+import { useAuthStore } from '../../stores/auth.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
+import { db } from '../../firebase.js'
+import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 
 const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
+const authStore      = useAuthStore()
 const { showToast }  = useToast()
 
 // ── Estado ──
@@ -194,21 +222,80 @@ const textoGerado = ref('')
 const erro        = ref('')
 const salvando    = ref(false)
 const copiado     = ref(false)
+const localLivre  = ref('')
 
 // ── Formulário ──
 const form = reactive({
-  horario:       '',
-  nome:          '',
-  leito:         '',
-  tipo:          '',      // 'curativo' | 'troca' | 'placa'
-  ehDreno:       false,
-  dreno:         '',      // ex: "da nefrostomia D e E"
-  local:         '',      // ex: "MSD", "região sacral"
-  materiais:     [],
-  materiaisLivre: '',
-  condicao:      true,    // Ocluído, limpo e seco externamente
-  aspecto:       '',      // Ferida apresentando ...
+  horario:        '',
+  nome:           '',
+  leito:          '',
+  tipo:           '',      // 'curativo' | 'troca' | 'placa'
+  ehDreno:        false,
+  dreno:          '',      // ex: "da nefrostomia D e E"
+  local:          [],      // array de locais selecionados
+  materiais:      [],
+  condicao:       true,
+  aspecto:        '',
 })
+
+// ── Materiais customizados (Firebase) ──
+const materiaisCustom     = ref([])
+const adicionandoMaterial = ref(false)
+const novoMaterialTxt     = ref('')
+const refNovoMaterial     = ref(null)
+let unsubMateriais = null
+
+function _code() { return authStore.syncCode }
+const _matCacheKey = code => `cache_curativo_materiais_${code}`
+
+function iniciarMateriais() {
+  const code = _code()
+  if (!code) return
+  try {
+    const cached = JSON.parse(localStorage.getItem(_matCacheKey(code)) || '[]')
+    if (cached.length) materiaisCustom.value = cached
+  } catch {}
+  const path = dbRef(db, `curativo/${code}/materiais`)
+  unsubMateriais = onValue(path, (snap) => {
+    const lista = []
+    snap.forEach(c => { lista.push({ ...c.val(), _key: c.key }) })
+    lista.sort((a, b) => (a.criadoEm || 0) - (b.criadoEm || 0))
+    materiaisCustom.value = lista
+    try { localStorage.setItem(_matCacheKey(code), JSON.stringify(lista)) } catch {}
+  })
+}
+
+async function abrirAddMaterial() {
+  adicionandoMaterial.value = true
+  await nextTick()
+  refNovoMaterial.value?.focus()
+}
+
+function fecharAddMaterial() {
+  adicionandoMaterial.value = false
+  novoMaterialTxt.value = ''
+}
+
+async function salvarMaterialCustom() {
+  const texto = novoMaterialTxt.value.trim()
+  if (!texto) return
+  if (!navigator.onLine) {
+    showToast('Sem internet — material não foi salvo')
+    return
+  }
+  await push(dbRef(db, `curativo/${_code()}/materiais`), { texto, criadoEm: Date.now() })
+  form.materiais.push(texto)
+  fecharAddMaterial()
+}
+
+async function removerMaterialCustom(key) {
+  const mat = materiaisCustom.value.find(m => m._key === key)
+  if (mat) {
+    const idx = form.materiais.indexOf(mat.texto)
+    if (idx >= 0) form.materiais.splice(idx, 1)
+  }
+  await remove(dbRef(db, `curativo/${_code()}/materiais/${key}`))
+}
 
 // ── Rascunho ──
 const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
@@ -232,7 +319,13 @@ const aspectoChips = [
 // ── Lifecycle ──
 onMounted(() => {
   pacientesStore.iniciar()
+  iniciarMateriais()
   iniciarRascunho()
+})
+
+onUnmounted(() => {
+  const code = _code()
+  if (code && unsubMateriais) off(dbRef(db, `curativo/${code}/materiais`))
 })
 
 // ── Helpers ──
@@ -241,12 +334,27 @@ function selecionarPaciente(p) {
   form.leito = p.leito || ''
 }
 
-function setLocal(value) {
-  form.local = form.local === value ? '' : value
+function toggleLocal(value) {
+  const idx = form.local.indexOf(value)
+  if (idx >= 0) form.local.splice(idx, 1)
+  else form.local.push(value)
+}
+
+function adicionarLocalLivre() {
+  const val = localLivre.value.trim()
+  if (!val || form.local.includes(val)) { localLivre.value = ''; return }
+  form.local.push(val)
+  localLivre.value = ''
 }
 
 function setAspecto(value) {
   form.aspecto = form.aspecto === value ? '' : value
+}
+
+function localTexto(locs) {
+  if (locs.length === 0) return ''
+  if (locs.length === 1) return locs[0]
+  return locs.slice(0, -1).join(', ') + ' e ' + locs[locs.length - 1]
 }
 
 function formatHora(h) { return h ? h.replace(':', 'h') : '' }
@@ -263,8 +371,8 @@ function limparBloco() {
     form.horario = ''; form.nome = ''; form.leito = ''
   } else {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
-    form.local = ''; form.materiais = []; form.materiaisLivre = ''
-    form.condicao = true; form.aspecto = ''
+    form.local = []; localLivre.value = ''
+    form.materiais = []; form.condicao = true; form.aspecto = ''
   }
 }
 
@@ -286,21 +394,19 @@ function gerar() {
     if (form.ehDreno && !form.dreno.trim()) {
       erro.value = 'Descreva o dreno.'; return
     }
-    if (!form.ehDreno && !form.local.trim()) {
-      erro.value = 'Informe o local do curativo.'; return
+    if (!form.ehDreno && form.local.length === 0) {
+      erro.value = 'Informe ao menos um local do curativo.'; return
     }
   } else {
-    if (!form.local.trim()) { erro.value = 'Informe o local.'; return }
+    if (form.local.length === 0) { erro.value = 'Informe o local.'; return }
   }
 
   const hora = formatHora(form.horario)
 
-  // Localização
   const localPart = form.ehDreno
     ? ` de dreno ${form.dreno.trim()}`
-    : ` em ${form.local.trim()}`
+    : ` em ${localTexto(form.local)}`
 
-  // Placa de hidrocoloide — texto simples
   if (form.tipo === 'placa') {
     textoGerado.value = `${hora} – Realizado troca de placa de hidrocoloide${localPart}.`
     gerado.value = true
@@ -308,9 +414,9 @@ function gerar() {
     return
   }
 
-  // Materiais (na ordem da lista)
+  // Materiais: padrão na ordem da lista, depois customizados na ordem de criação
   const mats = materiaisOpcoes.filter(m => form.materiais.includes(m))
-  if (form.materiaisLivre.trim()) mats.push(form.materiaisLivre.trim())
+  materiaisCustom.value.forEach(m => { if (form.materiais.includes(m.texto)) mats.push(m.texto) })
 
   const verbo = form.tipo === 'troca' ? 'troca de curativo' : 'curativo'
   let texto = `${hora} – Realizado ${verbo}${localPart}`
@@ -374,9 +480,10 @@ function novaAnotacao() {
   Object.assign(form, {
     horario: '', nome: '', leito: '',
     tipo: '', ehDreno: false, dreno: '',
-    local: '', materiais: [], materiaisLivre: '',
+    local: [], materiais: [],
     condicao: true, aspecto: '',
   })
+  localLivre.value = ''
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   descartarRascunho()
@@ -418,6 +525,25 @@ function novaAnotacao() {
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
+.chip-add { border-style: dashed; color: var(--text-muted); }
+
+.chip-del { margin-left: 4px; opacity: 0.7; font-size: 1rem; line-height: 1; }
+.chip-del-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 1rem; padding: 0 0 0 6px;
+  line-height: 1; flex-shrink: 0;
+}
+.chip-del-btn:hover { color: var(--danger); }
+
+.add-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.add-input {
+  flex: 1; min-width: 160px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 8px 12px;
+  color: var(--text); font-family: inherit; font-size: 0.9rem;
+}
+
+.checkbox-custom { position: relative; }
 
 .bloco-nav { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
 .bloco-nav .btn-primary { flex: 1; }
