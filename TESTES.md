@@ -1,7 +1,7 @@
 # Plano de Testes — Plantão App
 
-> Versão do app: 0.10.11
-> Última atualização: 2026-03-15
+> Versão do app: 0.10.17
+> Última atualização: 2026-03-16
 
 ---
 
@@ -568,6 +568,91 @@
 - [x] Botão "Nova anotação" reseta formulário e volta ao bloco 1
 - [x] Botão "← Editar" retorna ao bloco 2 sem perder dados
 - [x] Botão "Copiar texto" funciona (com fallback execCommand)
+
+---
+
+## 12. CURATIVO
+
+### 12.1 Interface
+- [x] Rota `/anotar/curativo` carrega sem erros
+- [x] Card "Curativo" no Dashboard navega corretamente (sem badge "EM BREVE")
+- [x] Barra de progresso exibe "Bloco X de 2"
+- [x] Botão voltar no bloco 1 retorna ao Dashboard
+
+### 12.2 Bloco 1 — Identificação
+- [x] Campo horário obrigatório — erro "Preencha o horário e o nome do paciente." ao tentar avançar sem preencher
+- [x] Campo nome obrigatório — mesmo erro
+- [x] Campo leito opcional
+- [x] Botão "Limpar" reseta campos do bloco
+- [x] Botão "Próximo →" avança para bloco 2 com campos válidos
+- [x] Chips de pacientes registrados aparecem e preenchem nome+leito ao clicar
+
+### 12.3 Bloco 2 — Tipo
+- [x] Chips: 🩹 Curativo, 🔄 Troca de curativo, 🟦 Troca de placa de hidrocoloide
+- [x] Tentativa de gerar sem tipo → erro "Selecione o tipo de curativo."
+- [x] Botão "← Voltar" retorna ao bloco 1 sem perder dados
+
+### 12.4 Curativo de Dreno
+- [x] Checkbox "Curativo de dreno" aparece para tipos Curativo e Troca (não para Placa)
+- [x] Ao marcar: campo de descrição do dreno aparece; campo Local fica oculto
+- [x] Ao desmarcar: campo Local volta a aparecer
+- [x] Gerar sem descrição → erro "Descreva o dreno."
+- [x] Com descrição → texto correto: `10h00 – Realizado curativo de dreno de tórax D. Ocluído, limpo e seco externamente.`
+
+### 12.5 Local (não-dreno)
+- [x] Chips predefinidos visíveis: MSD, MID, MSE, MIE, MMII, MMSS, região abdominal, região sacral, região lombar, região cervical
+- [x] Chips predefinidos são multi-select (toggle individual)
+- [x] Botão "+ Adicionar local" aparece → abre input inline com "Salvar" (salva no Firebase)
+- [x] Campo "Ou escreva o local aqui (sem salvar)..." sempre visível abaixo dos chips
+- [x] Tentativa de gerar sem local (sem chip, sem texto livre) → erro "Informe ao menos um local do curativo."
+- [x] Multi-select: dois chips → texto com "MIE e MSD"
+- [x] Chip + texto livre: texto combina corretamente (ex: "MSD e joelho D")
+
+### 12.6 Materiais (não para placa)
+- [x] Checkboxes padrão visíveis: SF 0,9%, Gaze, Rayon, AGE, Atadura, Hidrogel, Adaptic, Clorexidina aquosa, Papaína gel 2%, Placa de alginato de cálcio, Placa de alginato de cálcio com prata
+- [x] Botão "+ Adicionar material" → salva no Firebase (persiste entre sessões)
+- [x] Campo "Ou escreva o material aqui (sem salvar)..." sempre visível
+- [x] Nenhum material selecionado → omite "em uso de" do texto
+- [x] Com material(s) → `em uso de SF 0,9%` ou `em uso de SF 0,9% + Gaze`
+- [x] Material livre aparece no texto após os da lista
+
+### 12.7 Placa de Hidrocoloide
+- [x] Ao selecionar placa: campos Dreno, Materiais e Condição ficam ocultos
+- [x] Campo Local visível (chips predefinidos + local livre)
+- [x] Sem local → erro "Informe o local."
+- [x] Texto gerado: `14h00 – Realizado troca de placa de hidrocoloide em região sacral.`
+
+### 12.8 Condição e Aspecto
+- [x] Checkbox "Ocluído, limpo e seco externamente" marcado por padrão
+- [x] Desmarcado → frase omitida do texto
+- [x] Chips de aspecto: exsudato sanguinolento, exsudato purolento, exsudato seroso, exsudato serossanguinolento
+- [x] Chip toggle: clicar no ativo deseleciona
+- [x] Campo de texto livre para aspecto funciona
+- [x] Aspecto vazio → frase "Ferida apresentando..." omitida
+
+### 12.9 Textos gerados
+- [x] Curativo simples: `10h00 – Realizado curativo em MSD. Ocluído, limpo e seco externamente.`
+- [x] Troca com multi-local + material + aspecto: `08h30 – Realizado troca de curativo em MIE e MSD, em uso de SF 0,9%. Ocluído, limpo e seco externamente. Ferida apresentando exsudato seroso.`
+- [x] Placa de hidrocoloide: `14h00 – Realizado troca de placa de hidrocoloide em região sacral.`
+- [x] Curativo de dreno: `10h00 – Realizado curativo de dreno de tórax D. Ocluído, limpo e seco externamente.`
+
+### 12.10 Pós-geração
+- [x] Botão "Copiar texto" funciona (com fallback execCommand)
+- [x] Botão "Salvar no histórico" salva e exibe toast "Salvo no histórico!"
+- [x] Botão "Nova anotação" reseta formulário e volta ao bloco 1
+- [x] Botão "← Editar" retorna ao bloco 2 sem perder dados
+
+### 12.11 Rascunho automático
+- [x] Banner de rascunho aparece ao retornar com dados preenchidos
+- [x] Botão "Continuar" restaura os dados
+- [x] Botão "Descartar" limpa e remove banner
+
+### 12.12 Firebase — Locais e Materiais customizados
+- [x] Locais salvos em `curativo/{code}/locais` (cache em localStorage)
+- [x] Materiais salvos em `curativo/{code}/materiais` (cache em localStorage)
+- [x] Tentativa de salvar offline → toast "Sem internet"
+- [x] Persistem entre sessões
+- [x] Botão × remove local/material customizado do Firebase e da seleção atual
 
 ---
 
