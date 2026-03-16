@@ -100,13 +100,32 @@
         <!-- Local (quando não é dreno) — MULTI-SELECT -->
         <div v-if="form.tipo && !form.ehDreno" class="campo">
           <label>Local <span class="obrigatorio">*</span></label>
-          <div class="chips-wrap" style="margin-bottom:8px">
+          <div class="chips-wrap">
+            <!-- Chips predefinidos -->
             <button v-for="l in locaisChips" :key="l" class="chip chip-sm"
               :class="{ 'chip-on': form.local.includes(l) }"
               @click="toggleLocal(l)">{{ l }}</button>
+            <!-- Locais customizados salvos no Firebase -->
+            <span v-for="l in locaisCustom" :key="l._key" class="chip chip-sm"
+              :class="{ 'chip-on': form.local.includes(l.texto) }"
+              @click="toggleLocal(l.texto)">
+              {{ l.texto }}
+              <button class="chip-del-btn" @click.stop="removerLocalCustom(l._key)">×</button>
+            </span>
+            <!-- Botão salvar no Firebase -->
+            <button v-if="!adicionandoLocal" class="chip chip-sm chip-add" @click="abrirAddLocal">+ Adicionar local</button>
           </div>
-          <input type="text" v-model="localLivre" placeholder="Ou adicione outro local (Enter)..."
-            @keyup.enter="adicionarLocalLivre">
+          <!-- Input inline para salvar no Firebase -->
+          <div v-if="adicionandoLocal" class="add-row" style="margin-top:8px">
+            <input class="add-input" type="text" v-model="novoLocalTxt"
+              placeholder="Ex: região cervical esquerda, joelho D..."
+              @keyup.enter="salvarLocalCustom" @keyup.esc="fecharAddLocal"
+              ref="refNovoLocal">
+            <button class="chip chip-on" @click="salvarLocalCustom" :disabled="!novoLocalTxt.trim()">Salvar</button>
+            <button class="chip" @click="fecharAddLocal">✕</button>
+          </div>
+          <!-- Campo livre sem salvar no Firebase -->
+          <input type="text" v-model="localLivre" placeholder="Ou escreva o local aqui (sem salvar)..." style="margin-top:8px">
         </div>
 
         <!-- Materiais padrão + customizados -->
@@ -142,6 +161,8 @@
             <button class="chip chip-on" @click="salvarMaterialCustom" :disabled="!novoMaterialTxt.trim()">Salvar</button>
             <button class="chip" @click="fecharAddMaterial">✕</button>
           </div>
+          <!-- Campo livre sem salvar no Firebase -->
+          <input type="text" v-model="materialLivre" placeholder="Ou escreva o material aqui (sem salvar)..." style="margin-top:8px">
         </div>
 
         <!-- Condição (não para placa) -->
@@ -216,13 +237,14 @@ const authStore      = useAuthStore()
 const { showToast }  = useToast()
 
 // ── Estado ──
-const passo       = ref(1)
-const gerado      = ref(false)
-const textoGerado = ref('')
-const erro        = ref('')
-const salvando    = ref(false)
-const copiado     = ref(false)
-const localLivre  = ref('')
+const passo            = ref(1)
+const gerado           = ref(false)
+const textoGerado      = ref('')
+const erro             = ref('')
+const salvando         = ref(false)
+const copiado          = ref(false)
+const localLivre    = ref('')
+const materialLivre = ref('')
 
 // ── Formulário ──
 const form = reactive({
@@ -238,6 +260,13 @@ const form = reactive({
   aspecto:        '',
 })
 
+// ── Locais customizados (Firebase) ──
+const locaisCustom     = ref([])
+const adicionandoLocal = ref(false)
+const novoLocalTxt     = ref('')
+const refNovoLocal     = ref(null)
+let unsubLocais = null
+
 // ── Materiais customizados (Firebase) ──
 const materiaisCustom     = ref([])
 const adicionandoMaterial = ref(false)
@@ -246,7 +275,54 @@ const refNovoMaterial     = ref(null)
 let unsubMateriais = null
 
 function _code() { return authStore.syncCode }
+const _locCacheKey = code => `cache_curativo_locais_${code}`
 const _matCacheKey = code => `cache_curativo_materiais_${code}`
+
+function iniciarLocais() {
+  const code = _code()
+  if (!code) return
+  try {
+    const cached = JSON.parse(localStorage.getItem(_locCacheKey(code)) || '[]')
+    if (cached.length) locaisCustom.value = cached
+  } catch {}
+  const path = dbRef(db, `curativo/${code}/locais`)
+  unsubLocais = onValue(path, (snap) => {
+    const lista = []
+    snap.forEach(c => { lista.push({ ...c.val(), _key: c.key }) })
+    lista.sort((a, b) => (a.criadoEm || 0) - (b.criadoEm || 0))
+    locaisCustom.value = lista
+    try { localStorage.setItem(_locCacheKey(code), JSON.stringify(lista)) } catch {}
+  })
+}
+
+async function abrirAddLocal() {
+  adicionandoLocal.value = true
+  await nextTick()
+  refNovoLocal.value?.focus()
+}
+
+function fecharAddLocal() {
+  adicionandoLocal.value = false
+  novoLocalTxt.value = ''
+}
+
+async function salvarLocalCustom() {
+  const texto = novoLocalTxt.value.trim()
+  if (!texto) return
+  if (!navigator.onLine) { showToast('Sem internet — local não foi salvo'); return }
+  await push(dbRef(db, `curativo/${_code()}/locais`), { texto, criadoEm: Date.now() })
+  form.local.push(texto)
+  fecharAddLocal()
+}
+
+async function removerLocalCustom(key) {
+  const loc = locaisCustom.value.find(l => l._key === key)
+  if (loc) {
+    const idx = form.local.indexOf(loc.texto)
+    if (idx >= 0) form.local.splice(idx, 1)
+  }
+  await remove(dbRef(db, `curativo/${_code()}/locais/${key}`))
+}
 
 function iniciarMateriais() {
   const code = _code()
@@ -319,12 +395,14 @@ const aspectoChips = [
 // ── Lifecycle ──
 onMounted(() => {
   pacientesStore.iniciar()
+  iniciarLocais()
   iniciarMateriais()
   iniciarRascunho()
 })
 
 onUnmounted(() => {
   const code = _code()
+  if (code && unsubLocais)   off(dbRef(db, `curativo/${code}/locais`))
   if (code && unsubMateriais) off(dbRef(db, `curativo/${code}/materiais`))
 })
 
@@ -340,21 +418,18 @@ function toggleLocal(value) {
   else form.local.push(value)
 }
 
-function adicionarLocalLivre() {
-  const val = localLivre.value.trim()
-  if (!val || form.local.includes(val)) { localLivre.value = ''; return }
-  form.local.push(val)
-  localLivre.value = ''
-}
 
 function setAspecto(value) {
   form.aspecto = form.aspecto === value ? '' : value
 }
 
-function localTexto(locs) {
-  if (locs.length === 0) return ''
-  if (locs.length === 1) return locs[0]
-  return locs.slice(0, -1).join(', ') + ' e ' + locs[locs.length - 1]
+function localTexto() {
+  const todos = [...form.local]
+  const livre = localLivre.value.trim()
+  if (livre) todos.push(livre)
+  if (todos.length === 0) return ''
+  if (todos.length === 1) return todos[0]
+  return todos.slice(0, -1).join(', ') + ' e ' + todos[todos.length - 1]
 }
 
 function formatHora(h) { return h ? h.replace(':', 'h') : '' }
@@ -372,7 +447,7 @@ function limparBloco() {
   } else {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; localLivre.value = ''
-    form.materiais = []; form.condicao = true; form.aspecto = ''
+    form.materiais = []; materialLivre.value = ''; form.condicao = true; form.aspecto = ''
   }
 }
 
@@ -394,18 +469,18 @@ function gerar() {
     if (form.ehDreno && !form.dreno.trim()) {
       erro.value = 'Descreva o dreno.'; return
     }
-    if (!form.ehDreno && form.local.length === 0) {
+    if (!form.ehDreno && form.local.length === 0 && !localLivre.value.trim()) {
       erro.value = 'Informe ao menos um local do curativo.'; return
     }
   } else {
-    if (form.local.length === 0) { erro.value = 'Informe o local.'; return }
+    if (form.local.length === 0 && !localLivre.value.trim()) { erro.value = 'Informe o local.'; return }
   }
 
   const hora = formatHora(form.horario)
 
   const localPart = form.ehDreno
     ? ` de dreno ${form.dreno.trim()}`
-    : ` em ${localTexto(form.local)}`
+    : ` em ${localTexto()}`
 
   if (form.tipo === 'placa') {
     textoGerado.value = `${hora} – Realizado troca de placa de hidrocoloide${localPart}.`
@@ -414,9 +489,10 @@ function gerar() {
     return
   }
 
-  // Materiais: padrão na ordem da lista, depois customizados na ordem de criação
+  // Materiais: padrão na ordem da lista, depois customizados, depois livre
   const mats = materiaisOpcoes.filter(m => form.materiais.includes(m))
   materiaisCustom.value.forEach(m => { if (form.materiais.includes(m.texto)) mats.push(m.texto) })
+  if (materialLivre.value.trim()) mats.push(materialLivre.value.trim())
 
   const verbo = form.tipo === 'troca' ? 'troca de curativo' : 'curativo'
   let texto = `${hora} – Realizado ${verbo}${localPart}`
@@ -483,7 +559,7 @@ function novaAnotacao() {
     local: [], materiais: [],
     condicao: true, aspecto: '',
   })
-  localLivre.value = ''
+  localLivre.value = ''; materialLivre.value = ''
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   descartarRascunho()
