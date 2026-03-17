@@ -16,19 +16,27 @@ function _salvar(lista) {
 }
 
 // Verifica a cada 20 segundos se há notificações para disparar
-setInterval(() => {
+// Usa registration.showNotification() via SW — funciona em background no Android
+setInterval(async () => {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   const agora = Date.now()
   const lista = _getAgendadas()
   const restantes = []
+
+  let reg = null
+  if ('serviceWorker' in navigator) {
+    try { reg = await navigator.serviceWorker.ready } catch (_) {}
+  }
+
   for (const item of lista) {
     if (item.timestamp <= agora) {
+      const opts = { body: item.body, icon: '/icons/icon-192.png', tag: item.tag }
       try {
-        new Notification('⏰ Plantão', {
-          body: item.body,
-          icon: '/icons/icon-192.png',
-          tag: item.tag,
-        })
+        if (reg) {
+          await reg.showNotification('⏰ Plantão', opts)
+        } else {
+          new Notification('⏰ Plantão', opts)
+        }
       } catch (_) {}
     } else {
       restantes.push(item)
