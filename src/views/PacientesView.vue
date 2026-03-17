@@ -183,11 +183,14 @@ import { reactive, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePacientesStore } from '../stores/pacientes.js'
 import HelpModal from '../components/HelpModal.vue'
+import { useToast } from '../composables/useToast.js'
 import {
   solicitarPermissaoNotificacao,
   agendarNotificacaoTarefa,
   cancelarNotificacao,
 } from '../composables/usePushNotificacoes.js'
+
+const { showToast } = useToast()
 
 const router = useRouter()
 const store  = usePacientesStore()
@@ -365,6 +368,7 @@ async function definirHorarioPend(pac, pend, horario) {
   if (horario) {
     // pend.horario ainda não atualizou no objeto local, passa o novo
     await _agendarDuas(pac, { ...pend, horario })
+    showToast(`🔔 Notificação agendada para ${horario}`)
   }
 }
 

@@ -5,9 +5,10 @@
  * Para REATIVAR notificações: mude NOTIFICACOES_HABILITADAS para true
  */
 
-// ⚠️ Notificações desabilitadas temporariamente
-// Para reativar: mude para true
-const NOTIFICACOES_HABILITADAS = false
+// Notificações ativas. Funcionam com o app aberto ou em segundo plano.
+// Com o app completamente fechado, o Android pode matar o timer — mantenha
+// o app nos recentes durante o plantão para garantir o funcionamento.
+const NOTIFICACOES_HABILITADAS = true
 
 let _swReg = null
 
