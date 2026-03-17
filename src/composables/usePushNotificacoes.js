@@ -55,40 +55,41 @@ export function notificacoesHabilitadas() {
   return 'Notification' in window && Notification.permission === 'granted'
 }
 
+// Calcula o próximo timestamp para HH:MM
+// Se já passou hoje, agenda para amanhã (útil para plantão noturno)
+function _proximoTimestamp(horario) {
+  const [h, m] = horario.split(':').map(Number)
+  const alvo = new Date()
+  alvo.setHours(h, m, 0, 0)
+  if (alvo <= new Date()) alvo.setDate(alvo.getDate() + 1)
+  return alvo.getTime()
+}
+
 /**
  * Agenda uma notificação para um horário específico (HH:MM).
+ * Se o horário já passou hoje, agenda para amanhã.
  */
 export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
   if (!notificacoesHabilitadas() || !horario) return
 
-  const [h, m] = horario.split(':').map(Number)
-  const alvo = new Date()
-  alvo.setHours(h, m, 0, 0)
-  if (alvo <= new Date()) return
-
-  const lista = _getAgendadas().filter(n => n.tag !== (tag || `auto-${horario}`))
-  lista.push({
-    body: texto,
-    timestamp: alvo.getTime(),
-    tag: tag || `auto-${horario.replace(':', '')}`,
-  })
+  const timestamp = _proximoTimestamp(horario)
+  const tagFinal = tag || `auto-${horario.replace(':', '')}`
+  const lista = _getAgendadas().filter(n => n.tag !== tagFinal)
+  lista.push({ body: texto, timestamp, tag: tagFinal })
   _salvar(lista)
 }
 
 /**
  * Agenda notificações para todas as tarefas pendentes com horário.
+ * Se o horário já passou hoje, agenda para amanhã.
  */
 export async function agendarTodasNotificacoes(tarefas) {
   if (!notificacoesHabilitadas() || !tarefas?.length) return
   for (const t of tarefas) {
     if (t.feito || !t.horario) continue
-    const [h, m] = t.horario.split(':').map(Number)
-    const alvo = new Date()
-    alvo.setHours(h, m, 0, 0)
-    if (alvo <= new Date()) continue
-
+    const timestamp = _proximoTimestamp(t.horario)
     const lista = _getAgendadas().filter(n => n.tag !== `tarefa-${t._key}`)
-    lista.push({ body: t.texto, timestamp: alvo.getTime(), tag: `tarefa-${t._key}` })
+    lista.push({ body: t.texto, timestamp, tag: `tarefa-${t._key}` })
     _salvar(lista)
   }
 }
