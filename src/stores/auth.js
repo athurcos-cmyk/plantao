@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { db } from '../firebase.js'
 import { ref as dbRef, get, set, update } from 'firebase/database'
 
-const SESSION_DURATION_MS = 6 * 60 * 60 * 1000 // 6 horas (duração de um plantão)
+const SESSION_DURATION_MS = 20 * 60 * 60 * 1000 // 20 horas (cobre plantão de 12h + folga)
 const PIN_SALT_PREFIX = 'plantao_hc_2025_'
 
 async function hashPin(pin, code) {
