@@ -1,34 +1,46 @@
 /**
  * usePushNotificacoes.js
- * Composable para gerenciar notificações push via Service Worker.
- *
- * Para REATIVAR notificações: mude NOTIFICACOES_HABILITADAS para true
+ * Notificações agendadas via localStorage + setInterval no app.
+ * Funciona com o app aberto ou em segundo plano (minimizado).
+ * Não funciona com o app completamente fechado — mantenha nos recentes.
  */
 
-// Notificações ativas. Funcionam com o app aberto ou em segundo plano.
-// Com o app completamente fechado, o Android pode matar o timer — mantenha
-// o app nos recentes durante o plantão para garantir o funcionamento.
-const NOTIFICACOES_HABILITADAS = true
+const STORAGE_KEY = 'plantao_notifs_v2'
 
-let _swReg = null
-
-async function _getSW() {
-  if (_swReg) return _swReg
-  if (!('serviceWorker' in navigator)) return null
-  try {
-    _swReg = await navigator.serviceWorker.ready
-    return _swReg
-  } catch {
-    return null
-  }
+function _getAgendadas() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] }
 }
+
+function _salvar(lista) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
+}
+
+// Verifica a cada 20 segundos se há notificações para disparar
+setInterval(() => {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return
+  const agora = Date.now()
+  const lista = _getAgendadas()
+  const restantes = []
+  for (const item of lista) {
+    if (item.timestamp <= agora) {
+      try {
+        new Notification('⏰ Plantão', {
+          body: item.body,
+          icon: '/icons/icon-192.png',
+          tag: item.tag,
+        })
+      } catch (_) {}
+    } else {
+      restantes.push(item)
+    }
+  }
+  _salvar(restantes)
+}, 20 * 1000)
 
 /**
  * Solicita permissão de notificação.
- * @returns {Promise<boolean>} true se permissão concedida
  */
 export async function solicitarPermissaoNotificacao() {
-  if (!NOTIFICACOES_HABILITADAS) return false
   if (!('Notification' in window)) return false
   if (Notification.permission === 'granted') return true
   if (Notification.permission === 'denied') return false
@@ -40,110 +52,51 @@ export async function solicitarPermissaoNotificacao() {
  * Verifica se notificações estão habilitadas.
  */
 export function notificacoesHabilitadas() {
-  if (!NOTIFICACOES_HABILITADAS) return false
   return 'Notification' in window && Notification.permission === 'granted'
 }
 
 /**
  * Agenda uma notificação para um horário específico (HH:MM).
- * Usa o Service Worker para persistência em background.
- *
- * @param {string} horario  - Formato "HH:MM"
- * @param {string} texto    - Corpo da notificação
- * @param {string} [tag]    - Tag única para identificar/cancelar
  */
 export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
-  if (!NOTIFICACOES_HABILITADAS || !notificacoesHabilitadas()) return
-  if (!horario) return
+  if (!notificacoesHabilitadas() || !horario) return
 
   const [h, m] = horario.split(':').map(Number)
   const alvo = new Date()
   alvo.setHours(h, m, 0, 0)
-
-  // Se horário já passou hoje, não agenda
   if (alvo <= new Date()) return
 
-  const reg = await _getSW()
-  const worker = reg?.active
-
-  if (worker) {
-    // Delega ao service worker para persistência em background
-    worker.postMessage({
-      type: 'SCHEDULE_NOTIFICATION',
-      title: '⏰ Plantão',
-      body: texto,
-      timestamp: alvo.getTime(),
-      tag: tag || `tarefa-${horario.replace(':', '')}`,
-    })
-  } else {
-    // Fallback inline (app precisa estar aberto)
-    const diff = alvo.getTime() - Date.now()
-    if (diff > 0) {
-      setTimeout(() => {
-        if (Notification.permission === 'granted') {
-          new Notification('⏰ Plantão', {
-            body: texto,
-            icon: '/icons/icon-192.png',
-            tag: tag || `tarefa-${horario}`,
-          })
-        }
-      }, diff)
-    }
-  }
+  const lista = _getAgendadas().filter(n => n.tag !== (tag || `auto-${horario}`))
+  lista.push({
+    body: texto,
+    timestamp: alvo.getTime(),
+    tag: tag || `auto-${horario.replace(':', '')}`,
+  })
+  _salvar(lista)
 }
 
 /**
  * Agenda notificações para todas as tarefas pendentes com horário.
- * Chamado ao abrir o Organizador ou ao atualizar as tarefas.
- *
- * @param {Array<{horario: string, texto: string, feito: boolean, _key: string}>} tarefas
  */
 export async function agendarTodasNotificacoes(tarefas) {
-  if (!NOTIFICACOES_HABILITADAS || !notificacoesHabilitadas() || !tarefas?.length) return
-
-  const reg = await _getSW()
-  const worker = reg?.active
-
-  for (const tarefa of tarefas) {
-    if (tarefa.feito || !tarefa.horario) continue
-
-    const [h, m] = tarefa.horario.split(':').map(Number)
+  if (!notificacoesHabilitadas() || !tarefas?.length) return
+  for (const t of tarefas) {
+    if (t.feito || !t.horario) continue
+    const [h, m] = t.horario.split(':').map(Number)
     const alvo = new Date()
     alvo.setHours(h, m, 0, 0)
     if (alvo <= new Date()) continue
 
-    const payload = {
-      type: 'SCHEDULE_NOTIFICATION',
-      title: '⏰ Plantão',
-      body: tarefa.texto,
-      timestamp: alvo.getTime(),
-      tag: `tarefa-${tarefa._key}`,
-    }
-
-    if (worker) {
-      worker.postMessage(payload)
-    } else {
-      const diff = alvo.getTime() - Date.now()
-      if (diff > 0) {
-        setTimeout(() => {
-          if (Notification.permission === 'granted') {
-            new Notification(payload.title, {
-              body: payload.body,
-              icon: '/icons/icon-192.png',
-              tag: payload.tag,
-            })
-          }
-        }, diff)
-      }
-    }
+    const lista = _getAgendadas().filter(n => n.tag !== `tarefa-${t._key}`)
+    lista.push({ body: t.texto, timestamp: alvo.getTime(), tag: `tarefa-${t._key}` })
+    _salvar(lista)
   }
 }
 
 /**
- * Cancela uma notificação agendada por tag.
- * @param {string} [tag] - Se omitido, cancela todas
+ * Cancela notificação agendada por tag. Se omitido, cancela todas.
  */
 export async function cancelarNotificacao(tag = '') {
-  const reg = await _getSW()
-  reg?.active?.postMessage({ type: 'CANCEL_NOTIFICATION', tag })
+  if (!tag) { _salvar([]); return }
+  _salvar(_getAgendadas().filter(n => n.tag !== tag))
 }
