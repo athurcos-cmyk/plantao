@@ -223,7 +223,11 @@ function _labelPend(pac, pend) {
 async function _agendarDuas(pac, pend) {
   const label = _labelPend(pac, pend)
   const [h, m] = pend.horario.split(':').map(Number)
-  const alvo = new Date(); alvo.setHours(h, m, 0, 0)
+
+  // Calcula o alvo correto (hoje ou amanhã se já passou)
+  const alvo = new Date()
+  alvo.setHours(h, m, 0, 0)
+  if (alvo <= new Date()) alvo.setDate(alvo.getDate() + 1)
 
   // Aviso antecipado (30min antes)
   const aviso = new Date(alvo.getTime() - 30 * 60 * 1000)
