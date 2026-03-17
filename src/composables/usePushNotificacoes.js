@@ -2,14 +2,12 @@
  * usePushNotificacoes.js
  * Composable para gerenciar notificações push via Service Worker.
  *
- * Como funciona:
- *  1. Solicita permissão de notificação ao usuário
- *  2. Aguarda o SW estar pronto
- *  3. Envia mensagens postMessage para o SW agendar notificações
- *  4. O SW usa Notification Trigger API (Chrome Android) quando disponível,
- *     o que permite notificar mesmo com app fechado/tela bloqueada.
- *     Fallback: setTimeout no SW (funciona com app em background).
+ * Para REATIVAR notificações: mude NOTIFICACOES_HABILITADAS para true
  */
+
+// ⚠️ Notificações desabilitadas temporariamente
+// Para reativar: mude para true
+const NOTIFICACOES_HABILITADAS = false
 
 let _swReg = null
 
@@ -29,6 +27,7 @@ async function _getSW() {
  * @returns {Promise<boolean>} true se permissão concedida
  */
 export async function solicitarPermissaoNotificacao() {
+  if (!NOTIFICACOES_HABILITADAS) return false
   if (!('Notification' in window)) return false
   if (Notification.permission === 'granted') return true
   if (Notification.permission === 'denied') return false
@@ -40,6 +39,7 @@ export async function solicitarPermissaoNotificacao() {
  * Verifica se notificações estão habilitadas.
  */
 export function notificacoesHabilitadas() {
+  if (!NOTIFICACOES_HABILITADAS) return false
   return 'Notification' in window && Notification.permission === 'granted'
 }
 
@@ -52,7 +52,7 @@ export function notificacoesHabilitadas() {
  * @param {string} [tag]    - Tag única para identificar/cancelar
  */
 export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
-  if (!notificacoesHabilitadas()) return
+  if (!NOTIFICACOES_HABILITADAS || !notificacoesHabilitadas()) return
   if (!horario) return
 
   const [h, m] = horario.split(':').map(Number)
@@ -98,7 +98,7 @@ export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
  * @param {Array<{horario: string, texto: string, feito: boolean, _key: string}>} tarefas
  */
 export async function agendarTodasNotificacoes(tarefas) {
-  if (!notificacoesHabilitadas() || !tarefas?.length) return
+  if (!NOTIFICACOES_HABILITADAS || !notificacoesHabilitadas() || !tarefas?.length) return
 
   const reg = await _getSW()
   const worker = reg?.active

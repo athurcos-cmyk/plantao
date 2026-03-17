@@ -9,10 +9,18 @@
       <span v-if="totalPendentes > 0" class="offline-badge">{{ totalPendentes }}</span>
     </div>
   </Transition>
+  <Transition name="install-bar">
+    <div v-if="mostrarInstall" class="install-bar">
+      <span class="install-icon">📱</span>
+      <span class="install-texto">Instalar o app Plantão</span>
+      <button class="install-btn" @click="instalarApp">Instalar</button>
+      <button class="install-fechar" @click="mostrarInstall = false">✕</button>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
-import { watch, computed, onMounted } from 'vue'
+import { watch, computed, onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAuthStore } from './stores/auth.js'
 import { useAnotacoesStore } from './stores/anotacoes.js'
@@ -63,6 +71,26 @@ watch(isOnline, async (online) => {
   }
 })
 
+// Banner de instalação PWA
+const mostrarInstall = ref(false)
+let _installPrompt = null
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  _installPrompt = e
+  // Só mostra se não estiver em modo standalone (já instalado)
+  const jaInstalado = window.matchMedia('(display-mode: standalone)').matches
+  if (!jaInstalado) mostrarInstall.value = true
+})
+
+async function instalarApp() {
+  if (!_installPrompt) return
+  _installPrompt.prompt()
+  const { outcome } = await _installPrompt.userChoice
+  if (outcome === 'accepted') mostrarInstall.value = false
+  _installPrompt = null
+}
+
 // Verifica a sessão a cada minuto — se expirou, desloga e manda pro login
 onMounted(() => {
   setInterval(() => {
@@ -107,4 +135,48 @@ onMounted(() => {
 .offline-bar-leave-active { transition: transform 0.25s ease; }
 .offline-bar-enter-from,
 .offline-bar-leave-to     { transform: translateY(100%); }
+
+.install-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1e3a5f;
+  border-top: 1px solid #4a90d9;
+  color: #e8f4fd;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 12px 16px;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.install-icon { font-size: 1.2rem; flex-shrink: 0; }
+.install-texto { flex: 1; }
+.install-btn {
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.install-fechar {
+  background: transparent;
+  border: none;
+  color: #8ab8e8;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.install-bar-enter-active,
+.install-bar-leave-active { transition: transform 0.3s ease; }
+.install-bar-enter-from,
+.install-bar-leave-to     { transform: translateY(100%); }
 </style>
