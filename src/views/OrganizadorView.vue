@@ -244,18 +244,21 @@ import { reactive, ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOrganizadorStore } from '../stores/organizador.js'
 import HelpModal from '../components/HelpModal.vue'
+import { useAuthStore } from '../stores/auth.js'
 import {
   solicitarPermissaoNotificacao,
   agendarTodasNotificacoes,
+  configurarFCM,
 } from '../composables/usePushNotificacoes.js'
 
 const router = useRouter()
 const store  = useOrganizadorStore()
+const auth   = useAuthStore()
 
 onMounted(async () => {
   store.iniciar()
-  // Solicita permissão de notificação (necessário para background/app fechado)
-  await solicitarPermissaoNotificacao()
+  await solicitarPermissaoNotificacao(auth.syncCode)
+  await configurarFCM(auth.syncCode)
 })
 
 onUnmounted(() => {

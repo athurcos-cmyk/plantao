@@ -184,16 +184,19 @@ import { useRouter } from 'vue-router'
 import { usePacientesStore } from '../stores/pacientes.js'
 import HelpModal from '../components/HelpModal.vue'
 import { useToast } from '../composables/useToast.js'
+import { useAuthStore } from '../stores/auth.js'
 import {
   solicitarPermissaoNotificacao,
   agendarNotificacaoTarefa,
   cancelarNotificacao,
+  configurarFCM,
 } from '../composables/usePushNotificacoes.js'
 
 const { showToast } = useToast()
 
 const router = useRouter()
 const store  = usePacientesStore()
+const auth   = useAuthStore()
 
 // ── Tempo relativo ──────────────────────────────────────────
 const agora = ref(Date.now())
@@ -253,7 +256,8 @@ async function agendarNotifPendencias() {
 onMounted(async () => {
   store.iniciar()
   timerAgora = setInterval(() => { agora.value = Date.now() }, 30000)
-  await solicitarPermissaoNotificacao()
+  await solicitarPermissaoNotificacao(auth.syncCode)
+  await configurarFCM(auth.syncCode)
   // agenda após store carregar
   setTimeout(agendarNotifPendencias, 1500)
 })

@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
+import { getMessaging, isSupported } from 'firebase/messaging'
 
 const firebaseConfig = {
   apiKey:        'AIzaSyCHW_CTip-v1oOsbYvMJ79Ql1JvbUY7NC4',
@@ -13,3 +14,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 export const db = getDatabase(app)
+
+// FCM Messaging — só disponível em HTTPS com service worker
+export let messaging = null
+isSupported().then(ok => {
+  if (ok) messaging = getMessaging(app)
+}).catch(() => {})
