@@ -17,6 +17,12 @@
       <button class="install-fechar" @click="mostrarInstall = false">✕</button>
     </div>
   </Transition>
+  <Transition name="update-bar">
+    <div v-if="temAtualizacao" class="update-bar">
+      <span>🆕 Nova versão disponível</span>
+      <button class="update-btn" @click="recarregarApp">Atualizar</button>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -70,6 +76,15 @@ watch(isOnline, async (online) => {
     else showToast('Conexão restaurada ✓')
   }
 })
+
+// Banner de atualização — aparece quando novo SW toma controle
+const temAtualizacao = ref(false)
+function recarregarApp() { window.location.reload() }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    temAtualizacao.value = true
+  })
+}
 
 // Banner de instalação PWA
 const mostrarInstall = ref(false)
@@ -179,4 +194,37 @@ onMounted(() => {
 .install-bar-leave-active { transition: transform 0.3s ease; }
 .install-bar-enter-from,
 .install-bar-leave-to     { transform: translateY(100%); }
+
+.update-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #1a3a2e;
+  border-bottom: 1px solid #4caf82;
+  color: #a5d6b7;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 10px 16px;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.update-btn {
+  background: #4caf82;
+  color: #0a1a14;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.update-bar-enter-active,
+.update-bar-leave-active { transition: transform 0.3s ease; }
+.update-bar-enter-from,
+.update-bar-leave-to     { transform: translateY(-100%); }
 </style>
