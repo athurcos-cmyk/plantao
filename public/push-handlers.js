@@ -1,6 +1,7 @@
 /**
  * push-handlers.js — importado pelo service worker gerado pelo Workbox
  * Gerencia notificações push do FCM e do agendador local.
+ * v2 — FCM via Vercel Cron + firebase-admin
  */
 
 // ── Push recebido do FCM (via Vercel Cron + Firebase Admin) ──────────────────
