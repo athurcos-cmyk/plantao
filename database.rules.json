@@ -48,6 +48,18 @@
         ".read": true,
         ".write": true
       }
+    },
+    "fcm_tokens": {
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "notificacoes_agendadas": {
+      "$code": {
+        ".read": true,
+        ".write": true
+      }
     }
   }
 }
