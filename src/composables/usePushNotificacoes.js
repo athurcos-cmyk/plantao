@@ -16,7 +16,7 @@
 
 import { getToken } from 'firebase/messaging'
 import { ref as dbRef, set, push, remove, get } from 'firebase/database'
-import { db, messaging } from '../firebase.js'
+import { db, messagingReady } from '../firebase.js'
 
 // ── VAPID Key (gerada no Firebase Console → Project Settings → Cloud Messaging)
 const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY || ''
@@ -62,15 +62,20 @@ setInterval(async () => {
 
 // ── FCM helpers ──────────────────────────────────────────────────────────────
 async function _registrarTokenFCM(syncCode) {
-  if (!VAPID_KEY || !messaging) return
+  if (!VAPID_KEY) return
   try {
+    // Aguarda messaging inicializar (isSupported é assíncrono — pode estar null ao montar)
+    const msg = await messagingReady
+    if (!msg) return
     const swReg = await navigator.serviceWorker.ready
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
+    const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
     if (token) {
       await set(dbRef(db, `fcm_tokens/${syncCode}`), token)
+      console.log('[FCM] Token registrado no Firebase ✓')
     }
   } catch (e) {
     // FCM não disponível (HTTP local, iOS, etc.) — fallback localStorage funciona
+    console.warn('[FCM] Token não registrado:', e.message)
   }
 }
 

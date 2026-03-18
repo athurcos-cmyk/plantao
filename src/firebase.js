@@ -16,7 +16,8 @@ const app = initializeApp(firebaseConfig)
 export const db = getDatabase(app)
 
 // FCM Messaging — só disponível em HTTPS com service worker
+// Exporta a promise para permitir await antes de usar o objeto messaging
 export let messaging = null
-isSupported().then(ok => {
-  if (ok) messaging = getMessaging(app)
-}).catch(() => {})
+export const messagingReady = isSupported()
+  .then(ok => { if (ok) messaging = getMessaging(app); return messaging })
+  .catch(() => null)
