@@ -104,7 +104,7 @@ export default async function handler(req, res) {
       console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago), claiming...`)
       totalProcessados++
 
-      // Log do estado ANTES da transaction
+      // Log do estado ANTES
       const estadoAntes = {
         timestamp: notif.timestamp,
         body: notif.body,
@@ -115,58 +115,32 @@ export default async function handler(req, res) {
       }
       console.log(`[CRON] ${syncCode}/${key}: estado antes=`, JSON.stringify(estadoAntes))
 
-      const claimTx = await notifRef.transaction((current) => {
-        if (!current) {
-          console.log(`[CRON] ${syncCode}/${key}: transaction abort - notificação não existe mais`)
-          return
-        }
-
-        const ts = Number(current.timestamp)
-        if (!Number.isFinite(ts) || ts <= 0) {
-          console.log(`[CRON] ${syncCode}/${key}: transaction abort - timestamp inválido: ${ts}`)
-          return
-        }
-        if (ts > Date.now()) {
-          console.log(`[CRON] ${syncCode}/${key}: transaction abort - future timestamp`)
-          return
-        }
-        if (current.sentAt) {
-          console.log(`[CRON] ${syncCode}/${key}: transaction abort - já foi enviada`)
-          return
-        }
-
-        const processingAt = Number(current.processingAt || 0)
-        const locked = processingAt > 0 && (Date.now() - processingAt) < LOCK_TIMEOUT_MS
-        if (locked) {
-          const lockIdade = Math.round((Date.now() - processingAt) / 1000)
-          const lockTempoRestante = Math.round((LOCK_TIMEOUT_MS - (Date.now() - processingAt)) / 1000)
-          console.log(`[CRON] ${syncCode}/${key}: transaction abort - locked por ${current.processingBy} há ${lockIdade}s (${lockTempoRestante}s até liberar)`)
-          return
-        }
-
-        return {
-          ...current,
+      // Lock atômico simples para evitar problemas com .transaction() em Serverless functions do Vercel
+      // Verifica o current state que lemos no .get()
+      const locked = notif.processingAt > 0 && (Date.now() - notif.processingAt) < LOCK_TIMEOUT_MS
+      if (locked) {
+        console.log(`[CRON] ${syncCode}/${key}: skipping, already processing by ${notif.processingBy}`)
+        continue
+      }
+      
+      // Assinala que ESTAMOS processando isso agora
+      try {
+        await notifRef.update({
           processingAt: Date.now(),
           processingBy: runId,
-        }
-      })
-
-      if (!claimTx.committed) {
-        // Log detalhado: por que falhou?
-        const estadoApos = claimTx.snapshot?.val() || null
-        console.log(`[CRON] ${syncCode}/${key}: transaction nao foi committed`)
-        console.log(`[CRON] ${syncCode}/${key}: snapshot.val()=`, JSON.stringify(estadoApos))
+        })
+      } catch (e) {
+        console.log(`[CRON] ${syncCode}/${key}: falha ao fazer claim - ${e.message}`)
         continue
       }
 
-      const claimed = claimTx.snapshot.val() || notif
-      console.log(`[CRON] ${syncCode}/${key}: sending "${claimed.body || ''}"`)
+      console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}"`)
       totalEnviados++
 
       envios.push(
         admin.messaging().send({
           token,
-          notification: { title: '⏰ Plantão', body: claimed.body || '' },
+          notification: { title: '⏰ Plantão', body: notif.body || '' },
           webpush: {
             notification: {
               title: '⏰ Plantão',
