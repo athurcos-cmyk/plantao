@@ -510,7 +510,7 @@ async function iniciarModelos() {
   try {
     const snap = await get(path)
     const lista = []
-    snap.forEach(child => lista.push({ ...child.val(), _key: child.key }))
+    snap.forEach(child => {lista.push({ ...child.val(), _key: child.key })})
     modelosBancoCount.value = lista.length
     const normalizada = _normalizarModelos(lista)
     modelos.value = normalizada
@@ -523,7 +523,7 @@ async function iniciarModelos() {
   // Listener Firebase (retorna função de unsubscribe no SDK v9)
   modelosOff = onValue(path, (snap) => {
     const lista = []
-    snap.forEach(child => lista.push({ ...child.val(), _key: child.key }))
+    snap.forEach(child => {lista.push({ ...child.val(), _key: child.key })})
     modelosBancoCount.value = lista.length
     const normalizada = _normalizarModelos(lista)
     const pendLocais = modelos.value.filter(m => String(m._key || '').startsWith('local-'))
