@@ -346,14 +346,46 @@ function _tituloPadrao(texto = '') {
   return base.length > 34 ? `${base.slice(0, 34)}...` : base
 }
 
+function _textoModeloSeguro(m) {
+  const base = [
+    m?.texto,
+    m?.modelo,
+    m?.body,
+    m?.template,
+    m?.conteudo,
+    m?.titulo,
+    m?.nome,
+  ]
+    .map(v => String(v || '').trim())
+    .find(Boolean)
+
+  return base || 'Modelo sem texto'
+}
+
 function _normalizarModelos(lista) {
-  const arr = (lista || [])
-    .filter(m => m && m._key && String(m.texto || '').trim())
+  const mapa = new Map()
+
+  ;(lista || [])
+    .filter(m => m && (m._key || m.key))
     .map((m) => {
-      const texto = String(m.texto || '').trim()
-      const titulo = String(m.titulo || '').trim() || _tituloPadrao(texto)
-      return { ...m, titulo, texto }
+      const texto = _textoModeloSeguro(m)
+      const titulo = String(m.titulo || m.nome || '').trim() || _tituloPadrao(texto)
+      const criadoEm = Number(m.criadoEm || m.createdAt || 0)
+      return {
+        ...m,
+        _key: String(m._key || m.key),
+        texto,
+        titulo,
+        criadoEm,
+      }
     })
+    .filter(Boolean)
+    .forEach((m) => {
+      // Mantem ultimo registro por key para evitar duplicacoes de cache/fila.
+      mapa.set(m._key, m)
+    })
+
+  const arr = Array.from(mapa.values())
 
   arr.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0))
   return arr
@@ -561,6 +593,7 @@ async function salvarModelo() {
       modelos.value = _normalizarModelos([...modelos.value, { ...data, _key: novoRef.key }])
       _salvarCacheModelos(code, modelos.value)
     }
+    await iniciarModelos()
     fecharModalNovoModelo()
     showToast('Modelo salvo!')
   } catch { showToast('Erro ao salvar modelo') }
