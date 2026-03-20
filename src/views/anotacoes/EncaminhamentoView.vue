@@ -962,14 +962,15 @@ async function copiar() {
 async function salvar() {
   salvando.value = true
   try {
-    await anotacoesStore.salvar({
+    const r = await anotacoesStore.salvar({
       tipo:  'encaminhamento',
       texto: textoGerado.value,
       nome:  form.nome,
       leito: form.leito,
     })
     descartarRascunho()
-    showToast('Salvo no histórico!')
+    if (r?.modo === 'offline') showToast('Salvo offline - sincroniza automatico')
+    else showToast('Salvo no histórico!')
   } catch { showToast('Erro ao salvar') }
   finally { salvando.value = false }
 }

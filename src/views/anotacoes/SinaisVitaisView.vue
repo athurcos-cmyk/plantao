@@ -285,8 +285,9 @@ async function copiar() {
 async function salvar() {
   salvando.value = true
   try {
-    await store.salvar({ tipo: 'sv', texto: textoGerado.value, nome: form.nomePaciente.trim(), leito: form.leitoPaciente.trim() })
-    mostrarFeedback('Salvo no histórico!')
+    const r = await store.salvar({ tipo: 'sv', texto: textoGerado.value, nome: form.nomePaciente.trim(), leito: form.leitoPaciente.trim() })
+    if (r?.modo === 'offline') mostrarFeedback('Salvo offline - sincroniza automatico')
+    else mostrarFeedback('Salvo no histórico!')
   } catch {
     mostrarFeedback('Erro ao salvar')
   } finally {

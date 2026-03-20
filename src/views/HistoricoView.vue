@@ -213,8 +213,8 @@ function extrairHora(texto) {
   return parseInt(m[1]) * 60 + parseInt(m[2])
 }
 
-const anotacoesFiltradas = computed(() => {
-  let lista = [...store.anotacoes].sort((a, b) => {
+const anotacoesOrdenadas = computed(() =>
+  [...store.anotacoes].sort((a, b) => {
     const diaA = new Date(a.timestamp).setHours(0, 0, 0, 0)
     const diaB = new Date(b.timestamp).setHours(0, 0, 0, 0)
     if (diaB !== diaA) return diaB - diaA
@@ -223,6 +223,10 @@ const anotacoesFiltradas = computed(() => {
     if (horaB !== horaA) return horaB - horaA
     return b.timestamp - a.timestamp
   })
+)
+
+const anotacoesFiltradas = computed(() => {
+  let lista = anotacoesOrdenadas.value
   if (filtro.tipo !== 'todos') lista = lista.filter(a => a.tipo === filtro.tipo)
   const busca = filtro.busca.trim().toLowerCase()
   if (busca) lista = lista.filter(a =>
@@ -357,6 +361,8 @@ function mostrarFeedback(msg) {
 .anot-card {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+  content-visibility: auto;
+  contain-intrinsic-size: 260px;
 }
 .anot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .anot-tipo { font-size: 0.8rem; font-weight: 700; color: var(--blue); }

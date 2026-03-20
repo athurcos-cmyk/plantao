@@ -58,12 +58,20 @@
       <div class="secao-header">
         <span class="secao-label-lg">Modelos</span>
         <span v-if="modelos.length > 0" class="badge-count">{{ modelos.length }}</span>
-        <button class="btn-gerenciar" @click="abrirModalModelos">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-          </svg>
-          Gerenciar
-        </button>
+        <div class="modelos-acoes">
+          <button class="btn-gerenciar" @click="abrirModalModelos">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+            </svg>
+            Gerenciar
+          </button>
+          <button class="btn-novo-modelo-topo" @click="abrirModalNovoModelo">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Novo
+          </button>
+        </div>
       </div>
 
       <div v-if="modelos.length > 0" class="modelos-chips-row">
@@ -71,13 +79,13 @@
           v-for="m in modelos"
           :key="m._key"
           class="chip-modelo"
-          :class="{ 'chip-modelo-on': notaTexto === m.texto }"
-          @click="notaTexto = notaTexto === m.texto ? '' : m.texto"
-        >{{ m.texto }}</button>
+          :class="{ 'chip-modelo-on': modeloSelecionadoKey === m._key }"
+          @click="selecionarModelo(m)"
+        >{{ m.titulo }}</button>
       </div>
       <div v-else class="modelos-vazio-row">
         <span>Nenhum modelo —</span>
-        <button class="btn-link" @click="abrirModalModelos">criar agora</button>
+        <button class="btn-link" @click="abrirModalNovoModelo">criar agora</button>
       </div>
 
       <!-- ── Adicionar Nota ── -->
@@ -90,16 +98,18 @@
         <div class="nota-composer-row">
           <input type="time" v-model="notaHora" class="nc-hora">
           <div class="nc-divider"></div>
-          <input
-            type="text"
+          <textarea
+            ref="notaTextoEl"
             v-model="notaTexto"
             class="nc-texto"
+            rows="1"
             placeholder="Escreva a nota..."
-            @keydown.enter="adicionarNota"
-          >
+            @input="ajustarAlturaNota"
+            @keydown.enter.exact.prevent="adicionarNota"
+          ></textarea>
         </div>
         <div class="nc-footer">
-          <span class="nc-hint">Enter ou botão para adicionar</span>
+          <span class="nc-hint">Enter adiciona · Shift+Enter quebra linha</span>
           <button
             class="nc-btn-add"
             @click="adicionarNota"
@@ -170,36 +180,14 @@
           <!-- Lista completa -->
           <div v-if="modelos.length > 0" class="modal-lista">
             <div v-for="m in modelos" :key="m._key" class="modal-modelo-item">
-              <span class="modal-modelo-txt">{{ m.texto }}</span>
+              <span class="modal-modelo-txt">{{ m.titulo }}</span>
               <button class="btn-del-modal" @click="deletarModelo(m._key)" title="Remover">×</button>
             </div>
           </div>
           <p v-else-if="!carregandoModelos" class="modal-vazio">
-            Nenhum modelo ainda. Adicione os textos que você usa com frequência.
+            Nenhum modelo ainda. Crie o primeiro em "Novo".
           </p>
           <p v-else class="modal-vazio">Carregando...</p>
-
-          <!-- Formulário para novo modelo -->
-          <div v-if="!adicionandoModelo" class="modal-add-trigger">
-            <button class="btn-novo-modelo" @click="iniciarAdicaoModelo">+ Novo modelo</button>
-          </div>
-          <div v-else class="modal-add-form">
-            <input
-              v-model="novoModelo"
-              type="text"
-              ref="novoModeloInput"
-              placeholder="Ex: Ofertado almoço, aceito por completo"
-              maxlength="200"
-              @keydown.enter="salvarModelo"
-              @keydown.escape="adicionandoModelo = false; novoModelo = ''"
-            >
-            <div class="modal-add-acoes">
-              <button class="btn btn-secondary btn-sm" @click="adicionandoModelo = false; novoModelo = ''">Cancelar</button>
-              <button class="btn btn-primary btn-sm" @click="salvarModelo" :disabled="!novoModelo.trim() || salvandoModelo">
-                {{ salvandoModelo ? '...' : 'Salvar' }}
-              </button>
-            </div>
-          </div>
 
         </div>
 
@@ -210,24 +198,71 @@
       </div>
     </div>
 
+    <!-- ═══ MODAL: Novo Modelo ═══ -->
+    <div v-if="modalNovoModelo" class="modal-overlay" @click.self="fecharModalNovoModelo">
+      <div class="modal-modelos">
+        <div class="modal-modelos-header">
+          <h3>Novo Modelo</h3>
+          <button class="btn-fechar-modal" @click="fecharModalNovoModelo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-modelos-body">
+          <div class="campo">
+            <label>Título do modelo <span class="obrigatorio">*</span></label>
+            <input
+              ref="novoModeloTituloInput"
+              v-model="novoModeloTitulo"
+              type="text"
+              maxlength="60"
+              placeholder="Ex: Banho no leito"
+            >
+          </div>
+          <div class="campo" style="margin-bottom:0">
+            <label>Texto do modelo <span class="obrigatorio">*</span></label>
+            <textarea
+              v-model="novoModeloTexto"
+              rows="4"
+              maxlength="400"
+              placeholder="Ex: Paciente em seu leito, banho no leito realizado sem intercorrências."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-modelos-footer">
+          <div style="display:flex; gap:8px">
+            <button class="btn btn-secondary" style="flex:1" @click="fecharModalNovoModelo">Cancelar</button>
+            <button class="btn btn-primary" style="flex:1" @click="salvarModelo" :disabled="!podeSalvarModelo || salvandoModelo">
+              {{ salvandoModelo ? 'Salvando...' : 'Salvar modelo' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { db } from '../../firebase.js'
-import { ref as dbRef, push, remove, onValue, off } from 'firebase/database'
+import { ref as dbRef, push, remove, onValue, get } from 'firebase/database'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useAuthStore } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
+import { useOnlineStatus } from '../../composables/useOnlineStatus.js'
 
 const router          = useRouter()
 const anotacoesStore  = useAnotacoesStore()
 const pacientesStore  = usePacientesStore()
 const authStore       = useAuthStore()
 const { showToast }   = useToast()
+const { isOnline }    = useOnlineStatus()
 
 // ── Estado ──
 const gerado            = ref(false)
@@ -237,19 +272,27 @@ const salvando          = ref(false)
 const copiado           = ref(false)
 const carregandoModelos = ref(true)
 const salvandoModelo    = ref(false)
-const adicionandoModelo = ref(false)
-const novoModeloInput   = ref(null)
 const modalModelos      = ref(false)
+const modalNovoModelo   = ref(false)
+const sincronizandoModelos = ref(false)
 
 // ── Modelos ──
-const modelos    = ref([])
-const novoModelo = ref('')
-let   modelosOff = null
+const modelos             = ref([])
+const modeloSelecionadoKey = ref('')
+const novoModeloTitulo    = ref('')
+const novoModeloTexto     = ref('')
+const novoModeloTituloInput = ref(null)
+let modelosOff = null
+let syncModelosTimer = null
 
 // ── Notas ──
 const notas     = ref([])
 const notaHora  = ref('')
 const notaTexto = ref('')
+const notaTextoEl = ref(null)
+const podeSalvarModelo = computed(() =>
+  novoModeloTitulo.value.trim().length > 0 && novoModeloTexto.value.trim().length > 0
+)
 
 // ── Form ──
 const form = reactive({ nome: '', leito: '' })
@@ -259,6 +302,11 @@ onMounted(() => {
   pacientesStore.iniciar()
   notaHora.value = horaAtual()
   iniciarModelos()
+  ajustarAlturaNota()
+  if (navigator.onLine) sincronizarModelosPendentes()
+  syncModelosTimer = setInterval(() => {
+    if (navigator.onLine) sincronizarModelosPendentes()
+  }, 15000)
 })
 
 onUnmounted(() => {
@@ -266,6 +314,20 @@ onUnmounted(() => {
     modelosOff()   // unsubscribe corretamente (retorno do onValue)
     modelosOff = null
   }
+  if (syncModelosTimer) {
+    clearInterval(syncModelosTimer)
+    syncModelosTimer = null
+  }
+})
+
+watch(
+  () => authStore.syncCode,
+  (novo, antigo) => {
+    if (novo !== antigo) iniciarModelos()
+  }
+)
+watch(isOnline, (online) => {
+  if (online) sincronizarModelosPendentes()
 })
 
 // ── Helpers ──
@@ -274,24 +336,171 @@ function horaAtual() {
   return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0')
 }
 
-function iniciarModelos() {
-  const code = authStore.syncCode
-  if (!code) { carregandoModelos.value = false; return }
+function _code() {
+  return (authStore.syncCode || '').trim()
+}
 
-  // Cache imediato
+function _tituloPadrao(texto = '') {
+  const base = String(texto || '').replace(/\s+/g, ' ').trim()
+  if (!base) return 'Modelo'
+  return base.length > 34 ? `${base.slice(0, 34)}...` : base
+}
+
+function _normalizarModelos(lista) {
+  const arr = (lista || [])
+    .filter(m => m && m._key && String(m.texto || '').trim())
+    .map((m) => {
+      const texto = String(m.texto || '').trim()
+      const titulo = String(m.titulo || '').trim() || _tituloPadrao(texto)
+      return { ...m, titulo, texto }
+    })
+
+  arr.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0))
+  return arr
+}
+
+function _salvarCacheModelos(code, lista) {
+  try { localStorage.setItem(`modelos_${code}`, JSON.stringify(lista)) } catch {}
+}
+
+function _carregarCacheModelos(code) {
   try {
     const cached = JSON.parse(localStorage.getItem(`modelos_${code}`) || '[]')
-    if (cached.length) { modelos.value = cached; carregandoModelos.value = false }
-  } catch {}
+    return Array.isArray(cached) ? _normalizarModelos(cached) : []
+  } catch {
+    return []
+  }
+}
+
+function _queueKeyModelos(code) {
+  return `modelos_queue_${code}`
+}
+
+function _lerQueueModelos(code) {
+  try {
+    return JSON.parse(localStorage.getItem(_queueKeyModelos(code)) || '[]')
+  } catch {
+    return []
+  }
+}
+
+function _salvarQueueModelos(code, fila) {
+  try { localStorage.setItem(_queueKeyModelos(code), JSON.stringify(fila || [])) } catch {}
+}
+
+function _enfileirarModelo(code, op) {
+  const fila = _lerQueueModelos(code)
+
+  // Se apagar um item que ainda está só no add local, cancela ambas operações.
+  if (op.op === 'delete') {
+    const tinhaAdd = fila.some(item => item.op === 'add' && item.key === op.key)
+    const semAdd = fila.filter(item => !(item.op === 'add' && item.key === op.key))
+    if (tinhaAdd) {
+      _salvarQueueModelos(code, semAdd)
+      return
+    }
+    semAdd.push(op)
+    _salvarQueueModelos(code, semAdd)
+    return
+  }
+
+  fila.push(op)
+  _salvarQueueModelos(code, fila)
+}
+
+function _nextLocalKey() {
+  return `local-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
+}
+
+async function sincronizarModelosPendentes() {
+  const code = _code()
+  if (!code || !navigator.onLine || sincronizandoModelos.value) return 0
+
+  const fila = _lerQueueModelos(code)
+  if (!fila.length) return 0
+
+  sincronizandoModelos.value = true
+
+  const keyMap = {}
+  const restantes = []
+  let feitos = 0
+
+  for (const item of fila) {
+    try {
+      if (item.op === 'add') {
+        const r = await push(dbRef(db, `livres/${code}/modelos`), item.data)
+        keyMap[item.key] = r.key
+        modelos.value = modelos.value.map(m =>
+          m._key === item.key ? { ...m, _key: r.key, _pending: false } : m
+        )
+        feitos++
+      } else if (item.op === 'delete') {
+        const real = keyMap[item.key] || item.key
+        if (String(real).startsWith('local-')) {
+          feitos++
+          continue
+        }
+        await remove(dbRef(db, `livres/${code}/modelos/${real}`))
+        feitos++
+      } else {
+        restantes.push(item)
+      }
+    } catch (_) {
+      restantes.push(item)
+    }
+  }
+
+  _salvarQueueModelos(code, restantes)
+  _salvarCacheModelos(code, modelos.value)
+  sincronizandoModelos.value = false
+  return feitos
+}
+
+async function iniciarModelos() {
+  const code = _code()
+  if (modelosOff) {
+    modelosOff()
+    modelosOff = null
+  }
+  if (!code) {
+    modelos.value = []
+    carregandoModelos.value = false
+    return
+  }
+
+  carregandoModelos.value = true
+
+  // Cache imediato
+  const cached = _carregarCacheModelos(code)
+  if (cached.length) {
+    modelos.value = cached
+    carregandoModelos.value = false
+  }
+
+  // Snapshot pontual para forçar consistência mesmo se listener atrasar.
+  const path = dbRef(db, `livres/${code}/modelos`)
+  try {
+    const snap = await get(path)
+    const lista = []
+    snap.forEach(child => lista.push({ ...child.val(), _key: child.key }))
+    const normalizada = _normalizarModelos(lista)
+    modelos.value = normalizada
+    carregandoModelos.value = false
+    _salvarCacheModelos(code, normalizada)
+  } catch (_) {
+    // segue com listener em tempo real
+  }
 
   // Listener Firebase (retorna função de unsubscribe no SDK v9)
-  const path = dbRef(db, `livres/${code}/modelos`)
   modelosOff = onValue(path, (snap) => {
     const lista = []
     snap.forEach(child => lista.push({ ...child.val(), _key: child.key }))
-    modelos.value = lista
+    const normalizada = _normalizarModelos(lista)
+    const pendLocais = modelos.value.filter(m => String(m._key || '').startsWith('local-'))
+    const manterPend = pendLocais.filter(p => !normalizada.some(r => r._key === p._key))
+    modelos.value = _normalizarModelos([...manterPend, ...normalizada])
     carregandoModelos.value = false
-    try { localStorage.setItem(`modelos_${code}`, JSON.stringify(lista)) } catch {}
+    _salvarCacheModelos(code, modelos.value)
   }, () => { carregandoModelos.value = false })
 }
 
@@ -303,52 +512,86 @@ function selecionarPaciente(p) {
 // ── Modal de modelos ──
 async function abrirModalModelos() {
   modalModelos.value = true
-  adicionandoModelo.value = false
-  novoModelo.value = ''
+  await iniciarModelos()
 }
 
 function fecharModalModelos() {
   modalModelos.value = false
-  adicionandoModelo.value = false
-  novoModelo.value = ''
 }
 
-async function iniciarAdicaoModelo() {
-  adicionandoModelo.value = true
+function limparFormModelo() {
+  novoModeloTitulo.value = ''
+  novoModeloTexto.value = ''
+}
+
+async function abrirModalNovoModelo() {
+  modalNovoModelo.value = true
+  limparFormModelo()
   await nextTick()
-  novoModeloInput.value?.focus()
+  novoModeloTituloInput.value?.focus()
+}
+
+function fecharModalNovoModelo() {
+  modalNovoModelo.value = false
+  limparFormModelo()
 }
 
 async function salvarModelo() {
-  const texto = novoModelo.value.trim()
-  if (!texto) return
-  if (!navigator.onLine) { showToast('Sem conexão — modelos requerem internet'); return }
+  const code = _code()
+  const titulo = novoModeloTitulo.value.trim()
+  const texto = novoModeloTexto.value.trim()
+  if (!titulo || !texto) return
+  if (!code) { showToast('Sessão inválida'); return }
   salvandoModelo.value = true
+  const criadoEm = Date.now()
+  const data = { titulo, texto, criadoEm }
   try {
-    const novoRef = await push(dbRef(db, `livres/${authStore.syncCode}/modelos`), { texto, criadoEm: Date.now() })
-    // Garante que aparece imediatamente mesmo se o onValue demorar
-    if (!modelos.value.find(m => m._key === novoRef.key)) {
-      modelos.value = [...modelos.value, { texto, criadoEm: Date.now(), _key: novoRef.key }]
+    if (!navigator.onLine) {
+      const localKey = _nextLocalKey()
+      modelos.value = _normalizarModelos([...modelos.value, { ...data, _key: localKey, _pending: true }])
+      _salvarCacheModelos(code, modelos.value)
+      _enfileirarModelo(code, { op: 'add', key: localKey, data })
+      fecharModalNovoModelo()
+      showToast('Modelo salvo offline - sincroniza automatico')
+      return
     }
-    novoModelo.value = ''
-    adicionandoModelo.value = false
+
+    const novoRef = await push(dbRef(db, `livres/${code}/modelos`), data)
+    if (!modelos.value.find(m => m._key === novoRef.key)) {
+      modelos.value = _normalizarModelos([...modelos.value, { ...data, _key: novoRef.key }])
+      _salvarCacheModelos(code, modelos.value)
+    }
+    fecharModalNovoModelo()
     showToast('Modelo salvo!')
   } catch { showToast('Erro ao salvar modelo') }
   finally { salvandoModelo.value = false }
 }
 
 async function deletarModelo(key) {
-  if (!navigator.onLine) { showToast('Sem conexão'); return }
+  const code = _code()
+  if (!code) { showToast('Sessão inválida'); return }
   try {
     // Remove local imediatamente para feedback instantâneo
     const modelo = modelos.value.find(m => m._key === key)
     modelos.value = modelos.value.filter(m => m._key !== key)
-    if (modelo && notaTexto.value === modelo.texto) notaTexto.value = ''
-    await remove(dbRef(db, `livres/${authStore.syncCode}/modelos/${key}`))
+    if (modeloSelecionadoKey.value === key) {
+      modeloSelecionadoKey.value = ''
+      if (modelo && notaTexto.value === modelo.texto) notaTexto.value = ''
+      ajustarAlturaNota()
+    }
+    _salvarCacheModelos(code, modelos.value)
+
+    if (!navigator.onLine) {
+      _enfileirarModelo(code, { op: 'delete', key })
+      showToast('Removido offline - sincroniza automatico')
+      return
+    }
+
+    await remove(dbRef(db, `livres/${code}/modelos/${key}`))
     showToast('Modelo removido')
   } catch {
-    showToast('Erro ao remover')
-    iniciarModelos() // recarrega em caso de falha
+    _enfileirarModelo(code, { op: 'delete', key })
+    showToast('Sem conexão estável - remoção em fila')
   }
 }
 
@@ -358,7 +601,30 @@ function adicionarNota() {
   if (!texto) return
   const hora = (notaHora.value || horaAtual()).replace(':', 'h')
   notas.value.push({ hora, texto })
+  modeloSelecionadoKey.value = ''
   notaTexto.value = ''
+  ajustarAlturaNota()
+}
+
+function selecionarModelo(modelo) {
+  if (!modelo?._key) return
+  if (modeloSelecionadoKey.value === modelo._key) {
+    modeloSelecionadoKey.value = ''
+    notaTexto.value = ''
+  } else {
+    modeloSelecionadoKey.value = modelo._key
+    notaTexto.value = modelo.texto || ''
+  }
+  ajustarAlturaNota()
+}
+
+function ajustarAlturaNota() {
+  nextTick(() => {
+    const el = notaTextoEl.value
+    if (!el) return
+    el.style.height = '0px'
+    el.style.height = `${Math.min(el.scrollHeight, 120)}px`
+  })
 }
 
 function removerNota(i) {
@@ -404,8 +670,9 @@ async function copiar() {
 async function salvar() {
   salvando.value = true
   try {
-    await anotacoesStore.salvar({ tipo: 'livre', texto: textoGerado.value, nome: form.nome, leito: form.leito })
-    showToast('Salvo no histórico!')
+    const r = await anotacoesStore.salvar({ tipo: 'livre', texto: textoGerado.value, nome: form.nome, leito: form.leito })
+    if (r?.modo === 'offline') showToast('Salvo offline - sincroniza automatico')
+    else showToast('Salvo no histórico!')
   } catch { showToast('Erro ao salvar') }
   finally { salvando.value = false }
 }
@@ -419,6 +686,12 @@ function novaAnotacao() {
   textoGerado.value = ''; gerado.value = false
   erro.value = ''; copiado.value = false
 }
+
+watch(notaTexto, (txt) => {
+  if (!modeloSelecionadoKey.value) return
+  const atual = modelos.value.find(m => m._key === modeloSelecionadoKey.value)
+  if (!atual || (atual.texto || '') !== txt) modeloSelecionadoKey.value = ''
+})
 </script>
 
 <style scoped>
@@ -459,6 +732,7 @@ function novaAnotacao() {
 .badge-count.azul { background: var(--blue); color: #fff; }
 
 /* Botão gerenciar modelos */
+.modelos-acoes { display: flex; align-items: center; gap: 6px; }
 .btn-gerenciar {
   display: flex; align-items: center; gap: 5px;
   background: none; border: 1px solid var(--border);
@@ -467,6 +741,14 @@ function novaAnotacao() {
   padding: 4px 10px; cursor: pointer; transition: all 0.15s;
 }
 .btn-gerenciar:active { background: var(--bg-hover); color: var(--blue); border-color: var(--blue); }
+.btn-novo-modelo-topo {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--blue); border: 1px solid var(--blue);
+  border-radius: 20px; color: #fff;
+  font-size: 0.75rem; font-family: inherit;
+  padding: 4px 10px; cursor: pointer; transition: all 0.15s;
+}
+.btn-novo-modelo-topo:active { opacity: 0.85; transform: scale(0.98); }
 
 /* Chips paciente */
 .chips-scroll { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -513,7 +795,7 @@ function novaAnotacao() {
   margin-bottom: 14px; margin-top: 2px;
 }
 .nota-composer-row {
-  display: flex; align-items: center;
+  display: flex; align-items: flex-start;
   padding: 4px 4px 0 4px; gap: 0;
 }
 .nc-hora {
@@ -530,6 +812,8 @@ function novaAnotacao() {
   flex: 1; background: transparent; border: none;
   color: var(--text); font-family: inherit; font-size: 0.95rem;
   padding: 12px 12px; outline: none;
+  min-height: 44px; max-height: 120px; resize: none; overflow-y: auto;
+  line-height: 1.35; white-space: pre-wrap; overflow-wrap: anywhere;
 }
 .nc-texto::placeholder { color: var(--text-muted); }
 .nc-footer {
@@ -647,7 +931,7 @@ function novaAnotacao() {
 }
 .modal-modelo-txt {
   flex: 1; font-size: 0.9rem; color: var(--text-dim);
-  word-break: break-word;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .btn-del-modal {
   background: none; border: none; color: var(--text-muted);
@@ -660,25 +944,4 @@ function novaAnotacao() {
   margin-bottom: 14px; padding: 4px 0;
 }
 
-/* Adicionar modelo no modal */
-.modal-add-trigger { }
-.btn-novo-modelo {
-  background: none; border: 1px dashed var(--border);
-  border-radius: 10px; color: var(--blue);
-  font-size: 0.85rem; font-family: inherit;
-  padding: 10px 14px; cursor: pointer; width: 100%;
-  transition: all 0.15s;
-}
-.btn-novo-modelo:active { background: var(--bg-hover); }
-.modal-add-form { display: flex; flex-direction: column; gap: 8px; }
-.modal-add-form input {
-  width: 100%; box-sizing: border-box;
-  background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: var(--radius); color: var(--text);
-  font-family: inherit; font-size: 1rem; padding: 13px 14px;
-  outline: none; transition: border-color 0.2s;
-}
-.modal-add-form input:focus { border-color: var(--blue); }
-.modal-add-acoes { display: flex; gap: 8px; justify-content: flex-end; }
-.btn-sm { padding: 8px 16px !important; font-size: 0.83rem !important; }
 </style>

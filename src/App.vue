@@ -44,10 +44,34 @@ const anotacoes  = useAnotacoesStore()
 const pacientes  = usePacientesStore()
 const organizador = useOrganizadorStore()
 const router     = useRouter()
+const sincronizando = ref(false)
+const SYNC_RETRY_MS = 10 * 1000
 
 const totalPendentes = computed(() =>
   (anotacoes.pendentes || 0) + (pacientes.pendentesCount || 0)
 )
+
+async function sincronizarTudo(avisarSemPendencia = false) {
+  if (sincronizando.value) return
+  if (!auth.isLoggedIn || !isOnline.value) return
+
+  sincronizando.value = true
+  try {
+    const [nAnot, nPac] = await Promise.all([
+      anotacoes.sincronizarPendentes(),
+      pacientes.sincronizarPendentes(),
+    ])
+    await organizador.sincronizarOrganizador()
+
+    const total = (nAnot || 0) + (nPac || 0)
+    if (total > 0) showToast(`${total} item${total === 1 ? '' : 'ns'} sincronizado${total === 1 ? '' : 's'} ✓`)
+    else if (avisarSemPendencia) showToast('Conexão restaurada ✓')
+  } catch (_) {
+    // Rede instável: mantém pendências e tenta novamente no próximo ciclo.
+  } finally {
+    sincronizando.value = false
+  }
+}
 
 // Inicia o listener do Firebase quando logado,
 // para quando deslogar ou sessão expirar
@@ -56,6 +80,7 @@ watch(
   (logado) => {
     if (logado) {
       anotacoes.iniciar()
+      if (isOnline.value) sincronizarTudo(false)
     } else {
       anotacoes.parar()
     }
@@ -66,14 +91,7 @@ watch(
 // Ao voltar online: sincroniza tudo que ficou pendente
 watch(isOnline, async (online) => {
   if (online && auth.isLoggedIn) {
-    const [nAnot, nPac] = await Promise.all([
-      anotacoes.sincronizarPendentes(),
-      pacientes.sincronizarPendentes(),
-    ])
-    await organizador.sincronizarOrganizador()
-    const total = (nAnot || 0) + (nPac || 0)
-    if (total > 0) showToast(`${total} item${total === 1 ? '' : 'ns'} sincronizado${total === 1 ? '' : 's'} ✓`)
-    else showToast('Conexão restaurada ✓')
+    await sincronizarTudo(true)
   }
 })
 
@@ -114,6 +132,13 @@ onMounted(() => {
       router.push({ name: 'login' })
     }
   }, 60 * 1000)
+
+  // Retry contínuo de sync enquanto houver pendências e internet.
+  setInterval(() => {
+    if (isOnline.value && auth.isLoggedIn && totalPendentes.value > 0) {
+      sincronizarTudo(false)
+    }
+  }, SYNC_RETRY_MS)
 })
 </script>
 

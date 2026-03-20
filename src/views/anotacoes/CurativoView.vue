@@ -131,20 +131,38 @@
         <!-- Materiais padrão + customizados -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
           <label>Em uso de <span class="opc">(opcional)</span></label>
-          <div class="radio-group vertical">
-            <label v-for="m in materiaisOpcoes" :key="m" class="checkbox-label">
-              <input type="checkbox" :value="m" v-model="form.materiais">
-              <span>{{ m }}</span>
-            </label>
-            <!-- Materiais customizados salvos no Firebase -->
-            <label v-for="m in materiaisCustom" :key="m._key" class="checkbox-label checkbox-custom">
-              <input type="checkbox" :value="m.texto" v-model="form.materiais">
-              <span>{{ m.texto }}</span>
-              <button class="chip-del-btn" @click.prevent="removerMaterialCustom(m._key)">×</button>
-            </label>
+          <div class="chips-wrap" style="margin-bottom:8px">
+            <button
+              v-for="m in materiaisOpcoes"
+              :key="m"
+              class="chip chip-material"
+              :class="{ 'chip-on': materialSelecionado(m) }"
+              @click="toggleMaterial(m)"
+            >{{ m }}</button>
+
+            <span
+              v-for="m in materiaisCustom"
+              :key="m._key"
+              class="chip chip-material chip-has-action"
+              :class="{ 'chip-on': materialSelecionado(m.texto) }"
+              @click="toggleMaterial(m.texto)"
+            >
+              {{ m.texto }}
+              <button class="chip-del-btn" @click.stop="removerMaterialCustom(m._key)">×</button>
+            </span>
+
+            <span
+              v-for="m in materiaisTemporarios"
+              :key="`tmp-${m}`"
+              class="chip chip-material chip-has-action chip-temp"
+              :class="{ 'chip-on': materialSelecionado(m) }"
+              @click="toggleMaterial(m)"
+            >
+              {{ m }}
+              <button class="chip-del-btn" @click.stop="removerMaterialTemporario(m)">×</button>
+            </span>
           </div>
 
-          <!-- Adicionar material customizado -->
           <div v-if="!adicionandoMaterial" style="margin-top:8px">
             <button class="chip chip-add" @click="abrirAddMaterial">+ Adicionar material</button>
           </div>
@@ -154,15 +172,17 @@
               type="text"
               v-model="novoMaterialTxt"
               placeholder="Ex: Vaselina, Sulfadiazina de prata..."
-              @keyup.enter="salvarMaterialCustom"
+              @keyup.enter="adicionarMaterialTemporario"
               @keyup.esc="fecharAddMaterial"
               ref="refNovoMaterial"
             >
-            <button class="chip chip-on" @click="salvarMaterialCustom" :disabled="!novoMaterialTxt.trim()">Salvar</button>
-            <button class="chip" @click="fecharAddMaterial">✕</button>
+            <div class="material-actions">
+              <button class="chip chip-on" @click="salvarMaterialCustom" :disabled="!novoMaterialTxt.trim()">Salvar no banco de dados</button>
+              <button class="chip chip-temp" @click="adicionarMaterialTemporario" :disabled="!novoMaterialTxt.trim()">Só nesta anotação</button>
+              <button class="chip" @click="fecharAddMaterial">✕</button>
+            </div>
           </div>
-          <!-- Campo livre sem salvar no Firebase -->
-          <input type="text" v-model="materialLivre" placeholder="Ou escreva o material aqui (sem salvar)..." style="margin-top:8px">
+          <small class="material-tip">Enter adiciona só nesta anotação.</small>
         </div>
 
         <!-- Condição (não para placa) -->
@@ -244,7 +264,7 @@ const erro             = ref('')
 const salvando         = ref(false)
 const copiado          = ref(false)
 const localLivre    = ref('')
-const materialLivre = ref('')
+const materiaisTemporarios = ref([])
 
 // ── Formulário ──
 const form = reactive({
@@ -352,25 +372,93 @@ function fecharAddMaterial() {
   novoMaterialTxt.value = ''
 }
 
+function _txtEq(a, b) {
+  return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase()
+}
+
+function _containsText(lista, texto) {
+  return lista.some(item => _txtEq(item, texto))
+}
+
+function _resolverMaterialExistente(texto) {
+  if (_containsText(materiaisOpcoes, texto)) {
+    return materiaisOpcoes.find(item => _txtEq(item, texto))
+  }
+  if (materiaisCustom.value.some(item => _txtEq(item.texto, texto))) {
+    return materiaisCustom.value.find(item => _txtEq(item.texto, texto))?.texto || texto
+  }
+  if (_containsText(materiaisTemporarios.value, texto)) {
+    return materiaisTemporarios.value.find(item => _txtEq(item, texto))
+  }
+  return ''
+}
+
+function materialSelecionado(texto) {
+  return form.materiais.some(item => _txtEq(item, texto))
+}
+
+function toggleMaterial(texto) {
+  const idx = form.materiais.findIndex(item => _txtEq(item, texto))
+  if (idx >= 0) form.materiais.splice(idx, 1)
+  else form.materiais.push(texto)
+}
+
+function removerMaterialSelecionado(texto) {
+  const idx = form.materiais.findIndex(item => _txtEq(item, texto))
+  if (idx >= 0) form.materiais.splice(idx, 1)
+}
+
+function adicionarMaterialSelecionado(texto) {
+  if (!materialSelecionado(texto)) form.materiais.push(texto)
+}
+
+function adicionarMaterialTemporario() {
+  const texto = novoMaterialTxt.value.trim()
+  if (!texto) return
+
+  const existente = _resolverMaterialExistente(texto)
+  if (existente) {
+    adicionarMaterialSelecionado(existente)
+    fecharAddMaterial()
+    return
+  }
+
+  materiaisTemporarios.value.push(texto)
+  adicionarMaterialSelecionado(texto)
+  fecharAddMaterial()
+}
+
 async function salvarMaterialCustom() {
   const texto = novoMaterialTxt.value.trim()
   if (!texto) return
+
+  const existente = _resolverMaterialExistente(texto)
+  if (existente) {
+    adicionarMaterialSelecionado(existente)
+    fecharAddMaterial()
+    return
+  }
+
   if (!navigator.onLine) {
     showToast('Sem internet — material não foi salvo')
     return
   }
   await push(dbRef(db, `curativo/${_code()}/materiais`), { texto, criadoEm: Date.now() })
-  form.materiais.push(texto)
+  adicionarMaterialSelecionado(texto)
   fecharAddMaterial()
 }
 
 async function removerMaterialCustom(key) {
   const mat = materiaisCustom.value.find(m => m._key === key)
   if (mat) {
-    const idx = form.materiais.indexOf(mat.texto)
-    if (idx >= 0) form.materiais.splice(idx, 1)
+    removerMaterialSelecionado(mat.texto)
   }
   await remove(dbRef(db, `curativo/${_code()}/materiais/${key}`))
+}
+
+function removerMaterialTemporario(texto) {
+  materiaisTemporarios.value = materiaisTemporarios.value.filter(item => !_txtEq(item, texto))
+  removerMaterialSelecionado(texto)
 }
 
 // ── Rascunho ──
@@ -432,6 +520,22 @@ function localTexto() {
   return todos.slice(0, -1).join(', ') + ' e ' + todos[todos.length - 1]
 }
 
+function materiaisTexto() {
+  const ordenados = []
+  const add = (valor) => {
+    if (!materialSelecionado(valor)) return
+    if (_containsText(ordenados, valor)) return
+    ordenados.push(valor)
+  }
+
+  materiaisOpcoes.forEach(add)
+  materiaisCustom.value.forEach(item => add(item.texto))
+  materiaisTemporarios.value.forEach(add)
+  form.materiais.forEach(add)
+
+  return ordenados
+}
+
 function formatHora(h) { return h ? h.replace(':', 'h') : '' }
 
 // ── Navegação ──
@@ -447,7 +551,8 @@ function limparBloco() {
   } else {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; localLivre.value = ''
-    form.materiais = []; materialLivre.value = ''; form.condicao = true; form.aspecto = ''
+    form.materiais = []; materiaisTemporarios.value = []
+    form.condicao = true; form.aspecto = ''
   }
 }
 
@@ -489,10 +594,7 @@ function gerar() {
     return
   }
 
-  // Materiais: padrão na ordem da lista, depois customizados, depois livre
-  const mats = materiaisOpcoes.filter(m => form.materiais.includes(m))
-  materiaisCustom.value.forEach(m => { if (form.materiais.includes(m.texto)) mats.push(m.texto) })
-  if (materialLivre.value.trim()) mats.push(materialLivre.value.trim())
+  const mats = materiaisTexto()
 
   const verbo = form.tipo === 'troca' ? 'troca de curativo' : 'curativo'
   let texto = `${hora} – Realizado ${verbo}${localPart}`
@@ -539,14 +641,15 @@ async function copiar() {
 async function salvar() {
   salvando.value = true
   try {
-    await anotacoesStore.salvar({
+    const r = await anotacoesStore.salvar({
       tipo:  'curativo',
       texto: textoGerado.value,
       nome:  form.nome,
       leito: form.leito,
     })
     descartarRascunho()
-    showToast('Salvo no histórico!')
+    if (r?.modo === 'offline') showToast('Salvo offline - sincroniza automatico')
+    else showToast('Salvo no histórico!')
   } catch { showToast('Erro ao salvar') }
   finally { salvando.value = false }
 }
@@ -559,7 +662,8 @@ function novaAnotacao() {
     local: [], materiais: [],
     condicao: true, aspecto: '',
   })
-  localLivre.value = ''; materialLivre.value = ''
+  localLivre.value = ''
+  materiaisTemporarios.value = []
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   descartarRascunho()
@@ -602,6 +706,9 @@ function novaAnotacao() {
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 .chip-add { border-style: dashed; color: var(--text-muted); }
+.chip-material { padding: 10px 16px; border-radius: 14px; font-size: 0.9rem; }
+.chip-temp { border-style: dashed; }
+.chip-has-action { padding-right: 8px; user-select: none; }
 
 .chip-del { margin-left: 4px; opacity: 0.7; font-size: 1rem; line-height: 1; }
 .chip-del-btn {
@@ -609,6 +716,7 @@ function novaAnotacao() {
   color: var(--text-muted); font-size: 1rem; padding: 0 0 0 6px;
   line-height: 1; flex-shrink: 0;
 }
+.chip-on .chip-del-btn { color: rgba(255, 255, 255, 0.9); }
 .chip-del-btn:hover { color: var(--danger); }
 
 .add-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -619,7 +727,8 @@ function novaAnotacao() {
   color: var(--text); font-family: inherit; font-size: 0.9rem;
 }
 
-.checkbox-custom { position: relative; }
+.material-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.material-tip { display: inline-block; margin-top: 8px; color: var(--text-muted); font-size: 0.78rem; }
 
 .bloco-nav { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
 .bloco-nav .btn-primary { flex: 1; }

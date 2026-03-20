@@ -26,6 +26,27 @@
         <h2 v-if="auth.userName">{{ auth.userName }}</h2>
       </div>
 
+      <section class="sync-card">
+        <div class="sync-top">
+          <p class="sync-title">Sincronização</p>
+          <span class="sync-last">{{ ultimoSyncLabel }}</span>
+        </div>
+        <div class="sync-chips">
+          <span class="sync-chip" :class="{ 'sync-chip-on': pendAnotacoes > 0 }">Anotações {{ pendAnotacoes }}</span>
+          <span class="sync-chip" :class="{ 'sync-chip-on': pendPacientes > 0 }">Pacientes {{ pendPacientes }}</span>
+          <span class="sync-chip" :class="{ 'sync-chip-on': pendModelos > 0 }">Modelos {{ pendModelos }}</span>
+          <span class="sync-chip" :class="{ 'sync-chip-on': pendOrganizador > 0 }">Organizador {{ pendOrganizador }}</span>
+        </div>
+        <div class="sync-row">
+          <span class="sync-status">
+            {{ totalPendencias > 0 ? `${totalPendencias} pendência${totalPendencias !== 1 ? 's' : ''}` : 'Tudo sincronizado' }}
+          </span>
+          <button class="sync-btn" :disabled="sincronizandoAgora || !isOnline" @click="sincronizarAgora">
+            {{ sincronizandoAgora ? 'Sincronizando...' : (isOnline ? 'Tentar agora' : 'Sem internet') }}
+          </button>
+        </div>
+      </section>
+
       <p class="secao-label">Nova anotação</p>
 
       <div class="tipos-grid">
@@ -77,15 +98,25 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
+import { useAnotacoesStore } from '../stores/anotacoes.js'
+import { usePacientesStore } from '../stores/pacientes.js'
 import { useOrganizadorStore } from '../stores/organizador.js'
+import { useToast } from '../composables/useToast.js'
+import { useOnlineStatus } from '../composables/useOnlineStatus.js'
+import { db } from '../firebase.js'
+import { ref as dbRef, push, remove } from 'firebase/database'
 import HelpModal from '../components/HelpModal.vue'
 
 const router   = useRouter()
 const auth     = useAuthStore()
+const anotacoesStore = useAnotacoesStore()
+const pacientesStore = usePacientesStore()
 const orgStore = useOrganizadorStore()
+const { showToast } = useToast()
+const { isOnline } = useOnlineStatus()
 
 const helpAberto = ref(false)
 
@@ -104,8 +135,142 @@ const helpItens = [
   { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo. Use o mesmo código e PIN no celular, tablet ou computador.' },
 ]
 
+const sincronizandoAgora = ref(false)
+const ultimoSyncAt = ref(0)
+const pendAnotacoes = ref(0)
+const pendPacientes = ref(0)
+const pendModelos = ref(0)
+const pendOrganizador = ref(0)
+let painelTimer = null
+
+const _queueAnotKey = code => `pendentes_${code}`
+const _queuePacKey = code => `pac_queue_${code}`
+const _queueModelosKey = code => `modelos_queue_${code}`
+const _orgDirtyPlantaoKey = code => `org_dirty_${code}_plantao`
+const _orgDirtyTemplateKey = code => `org_dirty_${code}_template`
+const _lastSyncKey = code => `last_sync_${code}`
+
+function _lenFila(key) {
+  try {
+    const arr = JSON.parse(localStorage.getItem(key) || '[]')
+    return Array.isArray(arr) ? arr.length : 0
+  } catch {
+    return 0
+  }
+}
+
+function atualizarPainelSync() {
+  const code = auth.syncCode
+  if (!code) {
+    pendAnotacoes.value = 0
+    pendPacientes.value = 0
+    pendModelos.value = 0
+    pendOrganizador.value = 0
+    ultimoSyncAt.value = 0
+    return
+  }
+
+  pendAnotacoes.value = _lenFila(_queueAnotKey(code))
+  pendPacientes.value = _lenFila(_queuePacKey(code))
+  pendModelos.value = _lenFila(_queueModelosKey(code))
+  pendOrganizador.value =
+    (localStorage.getItem(_orgDirtyPlantaoKey(code)) === '1' ? 1 : 0) +
+    (localStorage.getItem(_orgDirtyTemplateKey(code)) === '1' ? 1 : 0)
+  ultimoSyncAt.value = Number(localStorage.getItem(_lastSyncKey(code)) || 0)
+}
+
+async function sincronizarModelosPendentes(code) {
+  if (!code || !navigator.onLine) return 0
+  const fila = (() => {
+    try { return JSON.parse(localStorage.getItem(_queueModelosKey(code)) || '[]') } catch { return [] }
+  })()
+  if (!fila.length) return 0
+
+  const keyMap = {}
+  const restantes = []
+  let feitos = 0
+
+  for (const item of fila) {
+    try {
+      if (item.op === 'add') {
+        const r = await push(dbRef(db, `livres/${code}/modelos`), item.data)
+        keyMap[item.key] = r.key
+        feitos++
+      } else if (item.op === 'delete') {
+        const real = keyMap[item.key] || item.key
+        if (String(real).startsWith('local-')) {
+          feitos++
+          continue
+        }
+        await remove(dbRef(db, `livres/${code}/modelos/${real}`))
+        feitos++
+      } else {
+        restantes.push(item)
+      }
+    } catch (_) {
+      restantes.push(item)
+    }
+  }
+
+  try { localStorage.setItem(_queueModelosKey(code), JSON.stringify(restantes)) } catch {}
+  return feitos
+}
+
+const totalPendencias = computed(() =>
+  pendAnotacoes.value + pendPacientes.value + pendModelos.value + pendOrganizador.value
+)
+
+const ultimoSyncLabel = computed(() => {
+  if (!ultimoSyncAt.value) return 'Nunca sincronizado'
+  return `Último: ${new Date(ultimoSyncAt.value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+})
+
+async function sincronizarAgora() {
+  if (sincronizandoAgora.value) return
+  if (!isOnline.value) {
+    showToast('Sem internet para sincronizar')
+    return
+  }
+  const code = auth.syncCode
+  if (!code) return
+
+  sincronizandoAgora.value = true
+  try {
+    const orgAntes = pendOrganizador.value
+    const [nAnot, nPac, nMod] = await Promise.all([
+      anotacoesStore.sincronizarPendentes(),
+      pacientesStore.sincronizarPendentes(),
+      sincronizarModelosPendentes(code),
+    ])
+    await orgStore.sincronizarOrganizador()
+
+    const total = (nAnot || 0) + (nPac || 0) + (nMod || 0)
+    ultimoSyncAt.value = Date.now()
+    try { localStorage.setItem(_lastSyncKey(code), String(ultimoSyncAt.value)) } catch {}
+    atualizarPainelSync()
+
+    if (total > 0 || orgAntes > 0) showToast('Sincronização concluída ✓')
+    else showToast('Tudo já estava sincronizado')
+  } catch (_) {
+    showToast('Erro ao sincronizar')
+  } finally {
+    sincronizandoAgora.value = false
+  }
+}
+
 onMounted(() => {
   orgStore.iniciar()
+  atualizarPainelSync()
+  painelTimer = setInterval(atualizarPainelSync, 2500)
+  window.addEventListener('online', atualizarPainelSync)
+  window.addEventListener('focus', atualizarPainelSync)
+})
+
+onUnmounted(() => {
+  if (painelTimer) clearInterval(painelTimer)
+  painelTimer = null
+  window.removeEventListener('online', atualizarPainelSync)
+  window.removeEventListener('focus', atualizarPainelSync)
 })
 
 const saudacaoTexto = computed(() => {
@@ -163,6 +328,77 @@ function sair() {
 .saudacao { margin-bottom: 28px; }
 .saudacao-hora { color: var(--text-muted); font-size: 0.9rem; }
 .saudacao h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+.sync-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 18px;
+}
+.sync-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.sync-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.sync-last {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+.sync-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.sync-chip {
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--text-muted);
+  background: var(--bg-input);
+}
+.sync-chip-on {
+  color: var(--blue);
+  border-color: var(--blue);
+  background: rgba(30, 136, 229, 0.08);
+}
+.sync-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sync-status {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.sync-btn {
+  border: 1px solid var(--blue);
+  background: rgba(30, 136, 229, 0.1);
+  color: var(--blue);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.sync-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .secao-label {
   font-size: 0.75rem;

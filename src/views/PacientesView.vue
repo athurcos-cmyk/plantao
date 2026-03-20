@@ -190,6 +190,7 @@ import {
   agendarNotificacaoTarefa,
   cancelarNotificacao,
   configurarFCM,
+  limparNotificacoesPorPrefixo,
 } from '../composables/usePushNotificacoes.js'
 
 const { showToast } = useToast()
@@ -245,6 +246,17 @@ async function _agendarDuas(pac, pend) {
 }
 
 async function agendarNotifPendencias() {
+  const tagsAtivas = []
+
+  for (const pac of store.pacientes) {
+    for (const pend of pac.pendencias) {
+      if (pend.feito || !pend.horario) continue
+      tagsAtivas.push(_tagPend(pend._key), _tagPendAviso(pend._key))
+    }
+  }
+
+  await limparNotificacoesPorPrefixo('pend-', tagsAtivas)
+
   for (const pac of store.pacientes) {
     for (const pend of pac.pendencias) {
       if (pend.feito || !pend.horario) continue
@@ -351,7 +363,12 @@ function pedirExcluir(pac) {
 
 async function executarExcluir() {
   if (!excluindo.value) return
-  try { await store.excluir(excluindo.value._key) }
+  try {
+    for (const pend of (excluindo.value.pendencias || [])) {
+      await _cancelarDuas(pend._key)
+    }
+    await store.excluir(excluindo.value._key)
+  }
   catch {}
   excluindo.value = null
 }

@@ -11,7 +11,13 @@
       "Bash(grep -r \"higieniz\\\\|banho\\\\|Higieniz\\\\|Banho\" /c/Users/Thurcos/Desktop/plantao/src --include=*.vue -l)",
       "Bash(grep -n \"navigator.clipboard\" /c/Users/Thurcos/Desktop/plantao/src/views/anotacoes/*.vue)",
       "Bash(grep -n \"clipboard\\\\|copiar\\\\|execCommand\" /c/Users/Thurcos/Desktop/plantao/src/composables/*.js)",
-      "Bash(grep '\"\"version\"\"' /c/Users/Thurcos/Desktop/plantao/package.json)"
+      "Bash(grep '\"\"version\"\"' /c/Users/Thurcos/Desktop/plantao/package.json)",
+      "Bash(find /c/Users/Thurcos/Desktop/plantao -type f \\\\\\(-name *rules* -o -name *config* -o -name *.env -o -name firestore* \\\\\\))",
+      "Bash(grep -n \"modal.d.via !== ''Recusa''\" \"/c/Users/Thurcos/Desktop/plantao/src/views/anotacoes/AnotacaoMedicacaoView.vue\")",
+      "Bash(dir \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\\\\public\")",
+      "Bash(dir \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\")",
+      "Bash(npm run:*)",
+      "Bash(grep -roh \"dbRef\\(db, \\\\`[^/]*\" \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\\\\src\")"
     ]
   }
 }

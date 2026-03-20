@@ -429,9 +429,14 @@ export function useAnotacaoInicial() {
   async function salvar() {
     salvando.value = true
     try {
-      await store.salvar({ tipo: 'inicial', texto: textoGerado.value,
-        nome: form.nomePaciente, leito: form.leitoPaciente })
-      mostrarFeedback('✓ Salvo no histórico!')
+      const r = await store.salvar({
+        tipo: 'inicial',
+        texto: textoGerado.value,
+        nome: form.nomePaciente,
+        leito: form.leitoPaciente,
+      })
+      if (r?.modo === 'offline') mostrarFeedback('Salvo offline - sincroniza automatico')
+      else mostrarFeedback('✓ Salvo no histórico!')
     } catch {
       mostrarFeedback('Erro ao salvar. Tente novamente.')
     } finally {

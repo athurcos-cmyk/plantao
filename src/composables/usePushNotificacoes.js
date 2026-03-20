@@ -15,7 +15,7 @@
  */
 
 import { getToken } from 'firebase/messaging'
-import { ref as dbRef, set, push, remove, get } from 'firebase/database'
+import { ref as dbRef, set, remove, get } from 'firebase/database'
 import { db, messagingReady } from '../firebase.js'
 
 // ── VAPID Key (gerada no Firebase Console → Project Settings → Cloud Messaging)
@@ -26,6 +26,11 @@ let _syncCode = null
 
 // ── localStorage fallback ────────────────────────────────────────────────────
 const STORAGE_KEY = 'plantao_notifs_v2'
+
+function _tagKey(tag = '') {
+  const safe = encodeURIComponent(String(tag || '')).replace(/\./g, '%2E')
+  return `tag_${safe}`
+}
 
 function _getAgendadas() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') } catch { return [] }
@@ -82,18 +87,29 @@ async function _registrarTokenFCM(syncCode) {
 async function _salvarNoFirebase(syncCode, timestamp, body, tag) {
   if (!syncCode) return
   try {
-    await push(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas`), { timestamp, body, tag })
+    const key = _tagKey(tag || `auto-${timestamp}`)
+    await set(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas/${key}`), {
+      timestamp,
+      body,
+      tag,
+    })
   } catch (_) {}
 }
 
 async function _removerDoFirebase(syncCode, tag) {
   if (!syncCode) return
   try {
+    // Remove formato novo (chave derivada da tag)
+    await remove(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas/${_tagKey(tag)}`))
+
+    // Compatibilidade: remove registros legados (push keys) com mesma tag
     const snap = await get(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas`))
     if (!snap.exists()) return
+    const ops = []
     snap.forEach(child => {
-      if (child.val().tag === tag) remove(child.ref)
+      if (child.val()?.tag === tag) ops.push(remove(child.ref))
     })
+    if (ops.length) await Promise.all(ops)
   } catch (_) {}
 }
 
@@ -191,4 +207,39 @@ export async function cancelarNotificacao(tag = '') {
     _salvar(_getAgendadas().filter(n => n.tag !== tag))
     await _removerDoFirebase(_syncCode, tag)
   }
+}
+
+/**
+ * Remove notificações por prefixo que não estão na lista de tags ativas.
+ * Ex.: prefixo "pend-" mantém apenas pendências ainda existentes.
+ */
+export async function limparNotificacoesPorPrefixo(prefixo, tagsAtivas = []) {
+  if (!prefixo) return
+  const manter = new Set((tagsAtivas || []).filter(Boolean))
+
+  // Limpeza local (fallback)
+  const lista = _getAgendadas().filter((item) => {
+    const tag = item?.tag || ''
+    if (!tag.startsWith(prefixo)) return true
+    return manter.has(tag)
+  })
+  _salvar(lista)
+
+  // Limpeza Firebase (FCM/cron)
+  if (!_syncCode) return
+  try {
+    const base = dbRef(db, `notificacoes_agendadas/${_syncCode}/agendadas`)
+    const snap = await get(base)
+    if (!snap.exists()) return
+
+    const ops = []
+    snap.forEach((child) => {
+      const tag = child.val()?.tag || ''
+      if (tag.startsWith(prefixo) && !manter.has(tag)) {
+        ops.push(remove(child.ref))
+      }
+    })
+
+    if (ops.length) await Promise.all(ops)
+  } catch (_) {}
 }
