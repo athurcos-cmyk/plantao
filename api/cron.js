@@ -100,17 +100,31 @@ export default async function handler(req, res) {
       console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago), claiming...`)
       totalProcessados++
       const claimTx = await notifRef.transaction((current) => {
-        if (!current) return
+        if (!current) {
+          console.log(`[CRON] ${syncCode}/${key}: transaction abort - notificação não existe mais`)
+          return
+        }
 
         const ts = Number(current.timestamp)
-        if (!Number.isFinite(ts) || ts <= 0) return
-        if (ts > Date.now()) return
-        if (current.sentAt) return
+        if (!Number.isFinite(ts) || ts <= 0) {
+          console.log(`[CRON] ${syncCode}/${key}: transaction abort - timestamp inválido: ${ts}`)
+          return
+        }
+        if (ts > Date.now()) {
+          console.log(`[CRON] ${syncCode}/${key}: transaction abort - future timestamp`)
+          return
+        }
+        if (current.sentAt) {
+          console.log(`[CRON] ${syncCode}/${key}: transaction abort - já foi enviada`)
+          return
+        }
 
         const processingAt = Number(current.processingAt || 0)
         const locked = processingAt > 0 && (Date.now() - processingAt) < LOCK_TIMEOUT_MS
         if (locked) {
-          console.log(`[CRON] ${syncCode}/${key}: locked by ${current.processingBy} ${Math.round((Date.now() - processingAt) / 1000)}s ago`)
+          const lockIdade = Math.round((Date.now() - processingAt) / 1000)
+          const lockTempoRestante = Math.round((LOCK_TIMEOUT_MS - (Date.now() - processingAt)) / 1000)
+          console.log(`[CRON] ${syncCode}/${key}: transaction abort - locked por ${current.processingBy} há ${lockIdade}s (${lockTempoRestante}s até liberar)`)
           return
         }
 
@@ -122,7 +136,7 @@ export default async function handler(req, res) {
       })
 
       if (!claimTx.committed) {
-        console.log(`[CRON] ${syncCode}/${key}: skipped (transaction failed or locked)`)
+        console.log(`[CRON] ${syncCode}/${key}: transaction nao foi committed (aborted pelo code)`)
         continue
       }
 
