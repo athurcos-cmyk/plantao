@@ -120,6 +120,9 @@
           </button>
         </div>
       </div>
+      <p class="modelos-debug">
+        Carregados: {{ modelos.length }} | Banco: {{ modelosBancoCount }}
+      </p>
 
       <div v-if="modelos.length > 0" class="modelos-chips-row">
         <button
@@ -275,6 +278,7 @@ const salvandoModelo    = ref(false)
 const modalModelos      = ref(false)
 const modalNovoModelo   = ref(false)
 const sincronizandoModelos = ref(false)
+const modelosBancoCount = ref(0)
 
 // ── Modelos ──
 const modelos             = ref([])
@@ -364,7 +368,7 @@ function _textoModeloSeguro(m) {
 
 function _normalizarModelos(lista) {
   const arr = (lista || [])
-    .filter(Boolean)
+    .map((m) => (m || {}))
     .map((m, idx) => {
       const texto = _textoModeloSeguro(m)
       const titulo = String(m.titulo || m.nome || '').trim() || _tituloPadrao(texto)
@@ -507,6 +511,7 @@ async function iniciarModelos() {
     const snap = await get(path)
     const lista = []
     snap.forEach(child => lista.push({ ...child.val(), _key: child.key }))
+    modelosBancoCount.value = lista.length
     const normalizada = _normalizarModelos(lista)
     modelos.value = normalizada
     carregandoModelos.value = false
@@ -519,6 +524,7 @@ async function iniciarModelos() {
   modelosOff = onValue(path, (snap) => {
     const lista = []
     snap.forEach(child => lista.push({ ...child.val(), _key: child.key }))
+    modelosBancoCount.value = lista.length
     const normalizada = _normalizarModelos(lista)
     const pendLocais = modelos.value.filter(m => String(m._key || '').startsWith('local-'))
     const manterPend = pendLocais.filter(p => !normalizada.some(r => r._key === p._key))
@@ -806,6 +812,11 @@ watch(notaTexto, (txt) => {
 .modelos-vazio-row {
   font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;
   margin-bottom: 8px;
+}
+.modelos-debug {
+  margin: -4px 0 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
 }
 .btn-link {
   background: none; border: none; color: var(--blue);
