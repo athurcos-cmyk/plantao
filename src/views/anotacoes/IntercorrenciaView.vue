@@ -54,40 +54,6 @@
         </div>
       </div>
 
-      <!-- ── Meus Modelos (chips horizontais) ── -->
-      <div class="secao-header">
-        <span class="secao-label-lg">Modelos</span>
-        <span v-if="modelos.length > 0" class="badge-count">{{ modelos.length }}</span>
-        <div class="modelos-acoes">
-          <button class="btn-gerenciar" @click="abrirModalModelos">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-            </svg>
-            Gerenciar
-          </button>
-          <button class="btn-novo-modelo-topo" @click="abrirModalNovoModelo">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Novo
-          </button>
-        </div>
-      </div>
-
-      <div v-if="modelos.length > 0" class="modelos-chips-row">
-        <button
-          v-for="m in modelos"
-          :key="m._key"
-          class="chip-modelo"
-          :class="{ 'chip-modelo-on': modeloSelecionadoKey === m._key }"
-          @click="selecionarModelo(m)"
-        >{{ m.titulo }}</button>
-      </div>
-      <div v-else class="modelos-vazio-row">
-        <span>Nenhum modelo —</span>
-        <button class="btn-link" @click="abrirModalNovoModelo">criar agora</button>
-      </div>
-
       <!-- ── Adicionar Nota ── -->
       <div class="secao-header" style="margin-top:20px">
         <span class="secao-label-lg">Notas</span>
@@ -133,6 +99,40 @@
           </div>
           <button class="btn-del-nota" @click="removerNota(i)">×</button>
         </div>
+      </div>
+
+      <!-- ── Meus Modelos (parte inferior) ── -->
+      <div class="secao-header" style="margin-top:16px">
+        <span class="secao-label-lg">Modelos</span>
+        <span v-if="modelos.length > 0" class="badge-count">{{ modelos.length }}</span>
+        <div class="modelos-acoes">
+          <button class="btn-gerenciar" @click="abrirModalModelos">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+            </svg>
+            Gerenciar
+          </button>
+          <button class="btn-novo-modelo-topo" @click="abrirModalNovoModelo">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Novo
+          </button>
+        </div>
+      </div>
+
+      <div v-if="modelos.length > 0" class="modelos-chips-row">
+        <button
+          v-for="m in modelos"
+          :key="m._key"
+          class="chip-modelo"
+          :class="{ 'chip-modelo-on': modeloSelecionadoKey === m._key }"
+          @click="selecionarModelo(m)"
+        >{{ m.titulo }}</button>
+      </div>
+      <div v-else class="modelos-vazio-row">
+        <span>Nenhum modelo —</span>
+        <button class="btn-link" @click="abrirModalNovoModelo">criar agora</button>
       </div>
 
       <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -363,29 +363,21 @@ function _textoModeloSeguro(m) {
 }
 
 function _normalizarModelos(lista) {
-  const mapa = new Map()
-
-  ;(lista || [])
-    .filter(m => m && (m._key || m.key))
-    .map((m) => {
+  const arr = (lista || [])
+    .filter(Boolean)
+    .map((m, idx) => {
       const texto = _textoModeloSeguro(m)
       const titulo = String(m.titulo || m.nome || '').trim() || _tituloPadrao(texto)
       const criadoEm = Number(m.criadoEm || m.createdAt || 0)
+      const keyBase = String(m._key || m.key || `${criadoEm || Date.now()}-${idx}`)
       return {
         ...m,
-        _key: String(m._key || m.key),
+        _key: keyBase,
         texto,
         titulo,
         criadoEm,
       }
     })
-    .filter(Boolean)
-    .forEach((m) => {
-      // Mantem ultimo registro por key para evitar duplicacoes de cache/fila.
-      mapa.set(m._key, m)
-    })
-
-  const arr = Array.from(mapa.values())
 
   arr.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0))
   return arr
