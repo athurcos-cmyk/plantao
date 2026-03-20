@@ -69,13 +69,17 @@ export default async function handler(req, res) {
     const token = tokenSnap.val()
     console.log(`[CRON] ${syncCode}: token ok (${token.slice(0, 20)}...)`)
 
-    for (const [key, notif] of Object.entries(entry.agendadas)) {
+    for (const [key, _notif] of Object.entries(entry.agendadas)) {
       const notifRef = db.ref(`notificacoes_agendadas/${syncCode}/agendadas/${key}`)
+      
+      // ⚠️ RE-LER a notificação do Firebase (pode ter mudado enquanto iterava)
+      const freshSnap = await notifRef.get()
+      const notif = freshSnap.val()
+      
       console.log(`[CRON] ${syncCode}/${key}: ts=${notif?.timestamp}, now=${agora}`)
 
       if (!notif?.timestamp) {
-        console.log(`[CRON] ${syncCode}/${key}: invalid timestamp, removing`)
-        await notifRef.remove()
+        console.log(`[CRON] ${syncCode}/${key}: invalid timestamp or deleted, skipping`)
         continue
       }
 
