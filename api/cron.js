@@ -50,7 +50,8 @@ export default async function handler(req, res) {
   const data = snap.val() || {}
   console.log('[CRON] syncCodes found:', Object.keys(data))
 
-  const envios = []
+  let totalProcessados = 0
+  let totalEnviados = 0
   const erros = []
 
   for (const [syncCode, entry] of Object.entries(data)) {
@@ -83,15 +84,20 @@ export default async function handler(req, res) {
         continue
       }
 
-      if (notif.timestamp > agora) continue
+      if (notif.timestamp > agora) {
+        const msAte = notif.timestamp - agora
+        console.log(`[CRON] ${syncCode}/${key}: future (${Math.round(msAte / 1000)}s away), skipping`)
+        continue
+      }
 
       if ((agora - notif.timestamp) > MAX_ATRASO_ENVIO_MS) {
-        console.log(`[CRON] ${syncCode}/${key}: too old, removing without send`)
+        console.log(`[CRON] ${syncCode}/${key}: too old (${Math.round((agora - notif.timestamp) / 1000)}s), removing without send`)
         await notifRef.remove()
         continue
       }
 
-      // Claim atomico: evita duas execucoes enviarem a mesma notificacao.
+      console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago), claiming...`)
+      totalProcessados++
       const claimTx = await notifRef.transaction((current) => {
         if (!current) return
 
@@ -102,7 +108,10 @@ export default async function handler(req, res) {
 
         const processingAt = Number(current.processingAt || 0)
         const locked = processingAt > 0 && (Date.now() - processingAt) < LOCK_TIMEOUT_MS
-        if (locked) return
+        if (locked) {
+          console.log(`[CRON] ${syncCode}/${key}: locked by ${current.processingBy} ${Math.round((Date.now() - processingAt) / 1000)}s ago`)
+          return
+        }
 
         return {
           ...current,
@@ -112,12 +121,13 @@ export default async function handler(req, res) {
       })
 
       if (!claimTx.committed) {
-        console.log(`[CRON] ${syncCode}/${key}: skipped (already processing in another run)`)
+        console.log(`[CRON] ${syncCode}/${key}: skipped (transaction failed or locked)`)
         continue
       }
 
       const claimed = claimTx.snapshot.val() || notif
       console.log(`[CRON] ${syncCode}/${key}: sending "${claimed.body || ''}"`)
+      totalEnviados++
 
       envios.push(
         admin.messaging().send({
@@ -159,6 +169,6 @@ export default async function handler(req, res) {
   }
 
   await Promise.all(envios)
-  console.log('[CRON] done. sent=', envios.length, 'errors=', erros.length)
-  return res.json({ sent: envios.length, erros, agora })
+  console.log(`[CRON] done. processados=${totalProcessados}, enviados=${totalEnviados}, errors=${erros.length}`)
+  return res.json({ sent: totalEnviados, processados: totalProcessados, erros, agora })
 }

@@ -166,9 +166,16 @@ export function notificacoesHabilitadas() {
 // Calcula próximo timestamp — se já passou hoje, agenda para amanhã
 function _proximoTimestamp(horario) {
   const [h, m] = horario.split(':').map(Number)
-  const alvo = new Date()
+  const agora = new Date()
+  const alvo = new Date(agora) // copia agora
   alvo.setHours(h, m, 0, 0)
-  if (alvo <= new Date()) alvo.setDate(alvo.getDate() + 1)
+  
+  // Se o horário já passou (ou é "agora"), agenda para amanhã
+  if (alvo.getTime() <= agora.getTime()) {
+    alvo.setDate(alvo.getDate() + 1)
+  }
+  
+  console.log('[TS] _proximoTimestamp:', { horario, agora: agora.toISOString(), alvo: alvo.toISOString(), diff: (alvo - agora) / 1000 + 's' })
   return alvo.getTime()
 }
 
