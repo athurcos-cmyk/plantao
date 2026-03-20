@@ -99,6 +99,18 @@ export default async function handler(req, res) {
 
       console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago), claiming...`)
       totalProcessados++
+
+      // Log do estado ANTES da transaction
+      const estadoAntes = {
+        timestamp: notif.timestamp,
+        body: notif.body,
+        tag: notif.tag,
+        sentAt: notif.sentAt,
+        processingAt: notif.processingAt,
+        processingBy: notif.processingBy,
+      }
+      console.log(`[CRON] ${syncCode}/${key}: estado antes=`, JSON.stringify(estadoAntes))
+
       const claimTx = await notifRef.transaction((current) => {
         if (!current) {
           console.log(`[CRON] ${syncCode}/${key}: transaction abort - notificação não existe mais`)
@@ -136,7 +148,10 @@ export default async function handler(req, res) {
       })
 
       if (!claimTx.committed) {
-        console.log(`[CRON] ${syncCode}/${key}: transaction nao foi committed (aborted pelo code)`)
+        // Log detalhado: por que falhou?
+        const estadoApos = claimTx.snapshot?.val() || null
+        console.log(`[CRON] ${syncCode}/${key}: transaction nao foi committed`)
+        console.log(`[CRON] ${syncCode}/${key}: snapshot.val()=`, JSON.stringify(estadoApos))
         continue
       }
 
