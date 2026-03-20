@@ -85,15 +85,22 @@ async function _registrarTokenFCM(syncCode) {
 }
 
 async function _salvarNoFirebase(syncCode, timestamp, body, tag) {
-  if (!syncCode) return
+  if (!syncCode) {
+    console.warn('[FCM] _salvarNoFirebase: syncCode é null! Não salvando no Firebase')
+    return
+  }
   try {
     const key = _tagKey(tag || `auto-${timestamp}`)
+    console.log('[FCM] Salvando notificação:', { syncCode, key, timestamp, body, tag })
     await set(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas/${key}`), {
       timestamp,
       body,
       tag,
     })
-  } catch (_) {}
+    console.log('[FCM] ✓ Salvo com sucesso')
+  } catch (e) {
+    console.error('[FCM] Erro ao salvar:', e.message)
+  }
 }
 
 async function _removerDoFirebase(syncCode, tag) {
@@ -124,9 +131,13 @@ async function _removerTodosFirebase(syncCode) {
  * Configura FCM para o usuário logado. Chamar após login.
  */
 export async function configurarFCM(syncCode) {
+  console.log('[FCM] configurarFCM chamado com syncCode:', syncCode)
   _syncCode = syncCode
   if (syncCode && notificacoesHabilitadas()) {
+    console.log('[FCM] Registrando token FCM...')
     await _registrarTokenFCM(syncCode)
+  } else {
+    console.warn('[FCM] Não registrando: syncCode=', syncCode, 'notificacoes habilitadas=', notificacoesHabilitadas())
   }
 }
 
@@ -166,15 +177,23 @@ function _proximoTimestamp(horario) {
  * Salva em localStorage (fallback) E no Firebase (FCM via cron).
  */
 export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
-  if (!notificacoesHabilitadas() || !horario) return
+  console.log('[NOTIF] agendarNotificacaoTarefa chamado:', { horario, texto, tag, _syncCode })
+  
+  if (!notificacoesHabilitadas() || !horario) {
+    console.warn('[NOTIF] Notificações não habilitadas ou horário inválido')
+    return
+  }
 
   const timestamp = _proximoTimestamp(horario)
   const tagFinal  = tag || `auto-${horario.replace(':', '')}`
+
+  console.log('[NOTIF] Timestamp calculado:', { horario, timestamp, tagFinal, dataHora: new Date(timestamp) })
 
   // localStorage (app aberto/Chrome)
   const lista = _getAgendadas().filter(n => n.tag !== tagFinal)
   lista.push({ body: texto, timestamp, tag: tagFinal })
   _salvar(lista)
+  console.log('[NOTIF] ✓ Salvo em localStorage')
 
   // Firebase (FCM quando app fechado)
   await _salvarNoFirebase(_syncCode, timestamp, texto, tagFinal)
