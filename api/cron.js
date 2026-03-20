@@ -53,6 +53,7 @@ export default async function handler(req, res) {
   let totalProcessados = 0
   let totalEnviados = 0
   const erros = []
+  const envios = []
 
   for (const [syncCode, entry] of Object.entries(data)) {
     if (!entry?.agendadas) {
