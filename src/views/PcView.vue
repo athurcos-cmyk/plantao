@@ -116,7 +116,8 @@ h1 {
   font-size: 0.82rem;
   font-family: inherit;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px 8px;
+  min-height: 44px;
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.2s;
