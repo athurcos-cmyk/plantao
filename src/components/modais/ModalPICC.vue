@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="campo">
-      <label>Membro <span class="obrigatorio">*</span></label>
+      <label>Membro </label>
       <div class="radio-group">
         <label class="radio-btn" v-for="op in ['MSD','MSE']" :key="op">
           <input  data-testid="auto-input-modalpicc-1" type="radio" v-model="d.membro" :value="op"><span>{{ op }}</span>
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="campo">
-      <label>Lúmens <span class="obrigatorio">*</span></label>
+      <label>Lúmens </label>
       <div class="radio-group">
         <label class="radio-btn" v-for="op in ['mono','duplo']" :key="op">
           <input  data-testid="auto-input-modalpicc-2" type="radio" v-model="d.lumens" :value="op"><span>{{ cap(op) }}</span>
@@ -32,7 +32,7 @@
     </div>
     <div v-if="d.emInfusao">
       <div class="campo">
-        <label>Solução <span class="obrigatorio">*</span></label>
+        <label>Solução </label>
         <input  data-testid="auto-input-modalpicc-9" type="text" v-model="d.solucao" placeholder="Ex: SF0,9% 500ml">
       </div>
       <div class="campo">

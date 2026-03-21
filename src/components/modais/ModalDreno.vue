@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="campo">
-      <label>Tipo do dreno <span class="obrigatorio">*</span></label>
+      <label>Tipo do dreno </label>
       <input  data-testid="auto-input-modaldreno-1" type="text" v-model="d.drenoTipo" placeholder="Ex: tórax, abdominal, penrose, blake">
     </div>
     <div class="campo">
-      <label>Localização <span class="obrigatorio">*</span></label>
+      <label>Localização </label>
       <input  data-testid="auto-input-modaldreno-2" type="text" v-model="d.drenoLocal" placeholder="Ex: flanco direito, hipocôndrio esquerdo">
     </div>
     <div class="campo">

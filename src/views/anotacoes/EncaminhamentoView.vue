@@ -49,7 +49,7 @@
         </div>
 
         <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
+          <label>Horário </label>
           <input type="time" v-model="form.horario">
         </div>
 
@@ -97,7 +97,7 @@
 
         <!-- Destino (apenas Encaminhamento) -->
         <div v-if="form.tipo === 'ida'" class="campo">
-          <label>Para onde? <span class="obrigatorio">*</span></label>
+          <label>Para onde? </label>
           <div class="chips-wrap" style="margin-bottom:8px">
             <button
               v-for="d in destinosPadrao" :key="d"
@@ -137,7 +137,7 @@
 
         <!-- Campos Retorno -->
         <div v-if="form.tipo === 'retorno'" class="campo">
-          <label>Local de origem <span class="obrigatorio">*</span></label>
+          <label>Local de origem </label>
           <input type="text" v-model="form.localRetorno" placeholder="Ex: 3° andar do INRAD, Centro Cirúrgico...">
         </div>
         <div v-if="form.tipo === 'retorno'" class="campo">
@@ -147,7 +147,7 @@
 
         <!-- Transporte -->
         <div class="campo">
-          <label>Tipo de transporte <span class="obrigatorio">*</span></label>
+          <label>Tipo de transporte </label>
           <div class="chips-wrap">
             <button
               v-for="t in transporteOpcoes" :key="t"
@@ -201,7 +201,7 @@
         <h2 class="bloco-titulo">Acompanhante e Dispositivos</h2>
 
         <div class="campo">
-          <label>Acompanhante <span class="obrigatorio">*</span></label>
+          <label>Acompanhante </label>
           <div class="chips-wrap" style="margin-bottom:10px">
             <button
               v-for="c in cargoOpcoes" :key="c.label"
@@ -766,28 +766,9 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (passo.value === 1) {
-    if (!form.horario || !form.nome.trim()) {
-      erro.value = 'Preencha o horário e o nome do paciente.'
-      return
-    }
-  } else if (passo.value === 2) {
-    if (form.tipo === 'ida' && !form.destino.trim()) {
-      erro.value = 'Informe o destino.'
-      return
-    }
-    if (form.tipo === 'retorno' && !form.localRetorno.trim()) {
-      erro.value = 'Informe o local de origem.'
-      return
-    }
-    if (!form.transporte) {
-      erro.value = 'Selecione o tipo de transporte.'
-      return
-    }
-    if (form.transporte === '__outro__' && !form.transporteOutro.trim()) {
-      erro.value = 'Descreva o tipo de transporte.'
-      return
-    }
+  if (passo.value === 1 && !form.nome.trim()) {
+    erro.value = 'Informe o nome do paciente.'
+    return
   }
   passo.value++
 }
@@ -872,7 +853,6 @@ function formatHora(h) { return h ? h.replace(':', 'h') : '' }
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
-  if (!form.cargo) { erro.value = 'Selecione o acompanhante.'; return }
 
   // Transporte
   const transporteTxt = form.transporte === '__outro__'

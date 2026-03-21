@@ -38,7 +38,7 @@
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
+          <label>Horário</label>
           <input type="time" v-model="form.horario">
         </div>
 
@@ -345,8 +345,8 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (!form.horario || !form.nome.trim()) {
-    erro.value = 'Preencha o horário e o nome do paciente.'
+  if (!form.nome.trim()) {
+    erro.value = 'Informe o nome do paciente.'
     return
   }
   passo.value++
@@ -355,26 +355,6 @@ function avancar() {
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
-
-  if (!form.horario || !form.nome.trim()) {
-    erro.value = 'Preencha o horário e o nome do paciente.'
-    return
-  }
-
-  if (form.queixas && !form.queixasDesc.trim()) {
-    erro.value = 'Descreva as queixas do paciente.'
-    return
-  }
-
-  if (form.dietaEnteral && !form.dietaMl.trim()) {
-    erro.value = 'Informe o ml/h da dieta enteral.'
-    return
-  }
-
-  if (form.svd && !form.svdDebito.trim()) {
-    erro.value = 'Informe o débito.'
-    return
-  }
 
   const hora = formatHora(form.horario)
 

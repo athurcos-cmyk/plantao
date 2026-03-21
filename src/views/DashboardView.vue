@@ -27,18 +27,6 @@
         <h2 v-if="auth.userName">{{ auth.userName }}</h2>
       </div>
 
-      <!-- Banner: Primeiro Sucesso Guiado -->
-      <div v-if="primeiraSessao" class="banner-primeiro-sucesso">
-        <div class="bps-esquerda">
-          <span class="bps-icon">✍️</span>
-          <div class="bps-texto">
-            <strong>Pronto para começar?</strong>
-            <span>Crie sua primeira anotação e veja como é simples.</span>
-          </div>
-        </div>
-        <button class="bps-cta" @click="navegar(tipos[0])">Criar →</button>
-      </div>
-
       <section class="sync-card">
         <div class="sync-top">
           <p class="sync-title">Sincronização</p>
@@ -163,11 +151,7 @@ const {
   verificarPulso,
   dispensar: dispensarPulso,
   enviar: enviarPulso,
-  primeiraCopiaFeita,
 } = usePulso()
-
-// Computed reativo — some imediatamente quando useCopia fizer a primeira cópia
-const primeiraSessao = computed(() => !primeiraCopiaFeita.value)
 
 function abrirFeedback() {
   if (!auth.syncCode) return

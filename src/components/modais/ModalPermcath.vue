@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="campo">
-      <label>Local <span class="obrigatorio">*</span></label>
+      <label>Local </label>
       <div class="radio-group vertical">
         <label class="radio-btn" v-for="op in locaisCentral" :key="op">
           <input  data-testid="auto-input-modalpermcath-1" type="radio" v-model="d.local" :value="op"><span>{{ op }}</span>
@@ -24,7 +24,7 @@
     </div>
     <div v-if="d.emInfusao">
       <div class="campo">
-        <label>Solução <span class="obrigatorio">*</span></label>
+        <label>Solução </label>
         <input  data-testid="auto-input-modalpermcath-8" type="text" v-model="d.solucao" placeholder="Ex: SF0,9% 500ml">
       </div>
       <div class="campo">

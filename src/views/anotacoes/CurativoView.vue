@@ -38,7 +38,7 @@
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
+          <label>Horário</label>
           <input type="time" v-model="form.horario">
         </div>
 
@@ -78,7 +78,7 @@
 
         <!-- Tipo -->
         <div class="campo">
-          <label>Tipo <span class="obrigatorio">*</span></label>
+          <label>Tipo</label>
           <div class="chips-wrap">
             <button class="chip" :class="{ 'chip-on': form.tipo === 'curativo' }" @click="form.tipo = 'curativo'">🩹 Curativo</button>
             <button class="chip" :class="{ 'chip-on': form.tipo === 'troca' }" @click="form.tipo = 'troca'">🔄 Troca de curativo</button>
@@ -99,7 +99,7 @@
 
         <!-- Local (quando não é dreno) — MULTI-SELECT -->
         <div v-if="form.tipo && !form.ehDreno" class="campo">
-          <label>Local <span class="obrigatorio">*</span></label>
+          <label>Local</label>
           <div class="chips-wrap">
             <!-- Chips predefinidos -->
             <button v-for="l in locaisChips" :key="l" class="chip chip-sm"
@@ -558,8 +558,8 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (!form.horario || !form.nome.trim()) {
-    erro.value = 'Preencha o horário e o nome do paciente.'
+  if (!form.nome.trim()) {
+    erro.value = 'Informe o nome do paciente.'
     return
   }
   passo.value++
@@ -568,18 +568,6 @@ function avancar() {
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
-  if (!form.tipo) { erro.value = 'Selecione o tipo de curativo.'; return }
-
-  if (form.tipo !== 'placa') {
-    if (form.ehDreno && !form.dreno.trim()) {
-      erro.value = 'Descreva o dreno.'; return
-    }
-    if (!form.ehDreno && form.local.length === 0 && !localLivre.value.trim()) {
-      erro.value = 'Informe ao menos um local do curativo.'; return
-    }
-  } else {
-    if (form.local.length === 0 && !localLivre.value.trim()) { erro.value = 'Informe o local.'; return }
-  }
 
   const hora = formatHora(form.horario)
 

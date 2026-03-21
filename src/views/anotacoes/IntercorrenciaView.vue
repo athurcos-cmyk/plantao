@@ -678,7 +678,6 @@ function removerNota(i) {
 function gerar() {
   erro.value = ''
   if (!form.nome.trim()) { erro.value = 'Informe o nome do paciente.'; return }
-  if (notas.value.length === 0) { erro.value = 'Adicione pelo menos uma nota.'; return }
 
   const linhas = notas.value.map(n => {
     let t = n.texto.charAt(0).toUpperCase() + n.texto.slice(1)

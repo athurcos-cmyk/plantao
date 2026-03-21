@@ -39,7 +39,7 @@
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
+          <label>Horário</label>
           <input type="time" v-model="form.horario">
         </div>
 
@@ -86,7 +86,7 @@
         <h2 class="bloco-titulo">Detalhes da higienização</h2>
 
         <div class="campo">
-          <label>Tipo <span class="obrigatorio">*</span></label>
+          <label>Tipo</label>
           <div class="chips-wrap">
             <button class="chip" :class="{ 'chip-on': form.tipo === 'aspersao' }" @click="form.tipo = 'aspersao'">🚿 Banho de aspersão</button>
             <button class="chip" :class="{ 'chip-on': form.tipo === 'leito' }" @click="form.tipo = 'leito'">🛁 Banho de leito</button>
@@ -162,7 +162,7 @@
         <!-- ── Troca de fralda ── -->
         <template v-if="form.tipo === 'fralda'">
           <div class="campo">
-            <label>Eliminação <span class="obrigatorio">*</span></label>
+            <label>Eliminação</label>
             <div class="chips-wrap">
               <button class="chip" :class="{ 'chip-on': form.eliminacao === 'diurese' }" @click="form.eliminacao = 'diurese'">Diurese</button>
               <button class="chip" :class="{ 'chip-on': form.eliminacao === 'evacuacao' }" @click="form.eliminacao = 'evacuacao'">Evacuação</button>
@@ -171,7 +171,7 @@
           </div>
 
           <div v-if="form.eliminacao === 'diurese' || form.eliminacao === 'ambos'" class="campo">
-            <label>Quantidade de diurese <span class="obrigatorio">*</span></label>
+            <label>Quantidade de diurese</label>
             <div class="chips-wrap">
               <button class="chip" :class="{ 'chip-on': form.qtdDiurese === '+' }" @click="form.qtdDiurese = '+'">+</button>
               <button class="chip" :class="{ 'chip-on': form.qtdDiurese === '++' }" @click="form.qtdDiurese = '++'">++</button>
@@ -180,7 +180,7 @@
           </div>
 
           <div v-if="form.eliminacao === 'evacuacao' || form.eliminacao === 'ambos'" class="campo">
-            <label>Quantidade de evacuação <span class="obrigatorio">*</span></label>
+            <label>Quantidade de evacuação</label>
             <div class="chips-wrap">
               <button class="chip" :class="{ 'chip-on': form.qtdEvacuacao === '+' }" @click="form.qtdEvacuacao = '+'">+</button>
               <button class="chip" :class="{ 'chip-on': form.qtdEvacuacao === '++' }" @click="form.qtdEvacuacao = '++'">++</button>
@@ -189,7 +189,7 @@
           </div>
 
           <div v-if="form.eliminacao" class="campo">
-            <label>Local <span class="obrigatorio">*</span></label>
+            <label>Local</label>
             <div class="chips-wrap">
               <button class="chip" :class="{ 'chip-on': form.localElim === 'leito' }" @click="form.localElim = 'leito'">Em leito</button>
               <button class="chip" :class="{ 'chip-on': form.localElim === 'fralda' }" @click="form.localElim = 'fralda'">Em fralda</button>
@@ -341,8 +341,8 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (!form.horario || !form.nome.trim()) {
-    erro.value = 'Preencha o horário e o nome do paciente.'
+  if (!form.nome.trim()) {
+    erro.value = 'Informe o nome do paciente.'
     return
   }
   passo.value++
@@ -351,23 +351,6 @@ function avancar() {
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
-  if (!form.tipo) { erro.value = 'Selecione o tipo.'; return }
-
-  if (form.tipo === 'fralda') {
-    if (!form.eliminacao) { erro.value = 'Selecione o tipo de eliminação.'; return }
-    if ((form.eliminacao === 'diurese' || form.eliminacao === 'ambos') && !form.qtdDiurese) {
-      erro.value = 'Selecione a quantidade de diurese.'; return
-    }
-    if ((form.eliminacao === 'evacuacao' || form.eliminacao === 'ambos') && !form.qtdEvacuacao) {
-      erro.value = 'Selecione a quantidade de evacuação.'; return
-    }
-    if (!form.localElim) { erro.value = 'Selecione o local.'; return }
-  }
-
-  if (!form.semIntercorrencias && !form.intercorrencia.trim()) {
-    erro.value = 'Descreva a intercorrência ou marque "Sem intercorrências".'
-    return
-  }
 
   const hora = formatHora(form.horario)
   const enc  = form.genero === 'F' ? 'encaminhada' : 'encaminhado'

@@ -194,32 +194,10 @@ export function useAnotacaoInicial() {
   function avancar() {
     erro.value = ''
     if (passo.value === 1) {
-      if (!form.horario)     return (erro.value = 'Informe o horário')
-      if (!form.posicaoCama) return (erro.value = 'Selecione a posição da cama')
-      if (!form.rodas)       return (erro.value = 'Selecione o estado das rodas')
-      if (!form.grades)      return (erro.value = 'Selecione o estado das grades')
-      if (!form.decubito)    return (erro.value = 'Selecione o decúbito')
       passo.value = 2
     } else if (passo.value === 2) {
-      if (!form.colaboracao)  return (erro.value = 'Selecione a colaboração')
-      if (form.deambulacao === 'deambula com auxílio' && !form.deambulaAuxilio)
-        return (erro.value = 'Informe com qual auxílio deambula')
-      if (!form.respiracao)   return (erro.value = 'Selecione a respiração')
-      if ((form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂') && !form.oxigenioLitros)
-        return (erro.value = 'Informe os litros por minuto')
-      if (!form.acompanhante) return (erro.value = 'Selecione se há acompanhante')
-      if (form.acompanhante === 'sim') {
-        if (!form.acompanhanteNome)       return (erro.value = 'Informe o nome do acompanhante')
-        if (!form.acompanhanteParentesco) return (erro.value = 'Informe o parentesco')
-      }
       passo.value = 3
     } else if (passo.value === 4) {
-      if (!form.evacuacaoOpcao) return (erro.value = 'Informe a última evacuação')
-      if (form.evacuacaoOpcao === 'data' && !form.evacuacaoData)
-        return (erro.value = 'Selecione a data da evacuação')
-      if (form.diurese.length === 0 && !form.diureseObs.trim()) return (erro.value = 'Selecione ao menos uma opção de diurese ou descreva no campo livre')
-      if (form.diurese.includes('SVD') && !form.svdDebito)
-        return (erro.value = 'Informe o débito da SVD')
       atualizarFechamento()
       passo.value = 5
     }

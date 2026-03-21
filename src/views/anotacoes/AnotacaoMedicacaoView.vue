@@ -49,7 +49,7 @@
 
         <!-- Horário -->
         <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
+          <label>Horário </label>
           <input  data-testid="auto-input-anotacaomedicacaoview-1" type="time" v-model="form.horario">
         </div>
 
@@ -106,7 +106,7 @@
 
         <!-- Medicamentos -->
         <div class="campo">
-          <label>Medicamentos <span class="obrigatorio">*</span></label>
+          <label>Medicamentos </label>
 
           <p v-if="form.medicamentos.length === 0" class="lista-vazia">
             Nenhum medicamento adicionado
@@ -197,7 +197,7 @@
 
           <!-- Nome + autocomplete -->
           <div class="campo">
-            <label>Nome do medicamento <span class="obrigatorio">*</span></label>
+            <label>Nome do medicamento </label>
             <div class="autocomplete-wrap">
               <input
                  data-testid="auto-input-anotacaomedicacaoview-10" type="text"
@@ -225,7 +225,7 @@
 
           <!-- Via -->
           <div class="campo">
-            <label>Via de administração <span class="obrigatorio">*</span></label>
+            <label>Via de administração </label>
             <div class="chips-wrap">
               <button
                  data-testid="auto-btn-anotacaomedicacaoview-16" v-for="v in vias" :key="v"
@@ -236,7 +236,7 @@
 
           <!-- Campo profissional (Recusa) -->
           <div v-if="modal.d.via === 'Recusa'" class="campo">
-            <label>Comunicado a <span class="obrigatorio">*</span></label>
+            <label>Comunicado a </label>
             <div class="input-suffix-wrap">
               <input type="text" v-model="modal.d.recusaNome" placeholder="Nome do profissional" class="campo-inline">
               <span class="input-suffix" style="font-size:0.8rem">Enf.</span>
@@ -245,7 +245,7 @@
 
           <!-- Dose + Unidade (não-OFT, não-Recusa, não-DERM) -->
           <div v-if="modal.d.via && modal.d.via !== 'OFT' && modal.d.via !== 'Recusa' && modal.d.via !== 'DERM'" class="campo">
-            <label>Dose <span class="obrigatorio">*</span></label>
+            <label>Dose </label>
             <input  data-testid="auto-input-anotacaomedicacaoview-11" type="text" inputmode="decimal" v-model="modal.d.dose" placeholder="Ex: 5000, 10, 500">
             <div class="chips-wrap" style="margin-top:8px">
               <button
@@ -257,7 +257,7 @@
 
           <!-- Dose OFT (Gts fixo) -->
           <div v-if="modal.d.via === 'OFT'" class="campo">
-            <label>Quantidade <span class="obrigatorio">*</span></label>
+            <label>Quantidade </label>
             <div class="input-suffix-wrap">
               <input  data-testid="auto-input-anotacaomedicacaoview-12" type="number" v-model="modal.d.dose" placeholder="1" min="1">
               <span class="input-suffix">Gts</span>
@@ -266,7 +266,7 @@
 
           <!-- Olho (OFT) -->
           <div v-if="modal.d.via === 'OFT'" class="campo">
-            <label>Olho <span class="obrigatorio">*</span></label>
+            <label>Olho </label>
             <div class="chips-wrap">
               <button
                  data-testid="auto-btn-anotacaomedicacaoview-18" v-for="op in ['direito','esquerdo','ambos']" :key="op"
@@ -290,7 +290,7 @@
           <template v-if="modal.d.via === 'EV' && modal.d.evDiluicao">
 
             <div class="campo">
-              <label>Volume <span class="obrigatorio">*</span></label>
+              <label>Volume </label>
               <div class="input-suffix-wrap">
                 <input  data-testid="auto-input-anotacaomedicacaoview-14" type="number" v-model="modal.d.evVolume" placeholder="100" min="1">
                 <span class="input-suffix">ml</span>
@@ -298,7 +298,7 @@
             </div>
 
             <div class="campo">
-              <label>Solução <span class="obrigatorio">*</span></label>
+              <label>Solução </label>
               <div class="chips-wrap">
                 <button  data-testid="auto-btn-anotacaomedicacaoview-19" class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
                 <button  data-testid="auto-btn-anotacaomedicacaoview-20" class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
@@ -832,15 +832,6 @@ function gerarLinhaDupla(med) {
 function gerar() {
   erro.value = ''
 
-  if (!form.horario) {
-    erro.value = 'Informe o horário'; return
-  }
-  if (form.medicamentos.length === 0) {
-    erro.value = 'Adicione pelo menos um medicamento'; return
-  }
-  if (form.conformeTipo === 'orientacao' && !form.conformeNome.trim()) {
-    erro.value = 'Informe o nome do profissional para o campo "conforme orientação do"'; return
-  }
 
   const h = form.horario.replace(':', 'h')
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="campo">
-      <label>Narina <span class="obrigatorio">*</span></label>
+      <label>Narina </label>
       <div class="radio-group">
         <label class="radio-btn" v-for="op in [{ v:'D', l:'Direita' },{ v:'E', l:'Esquerda' }]" :key="op.v">
           <input  data-testid="auto-input-modalsng-1" type="radio" v-model="d.narina" :value="op.v"><span>{{ op.l }}</span>
@@ -9,11 +9,11 @@
       </div>
     </div>
     <div class="campo">
-      <label>Marcação (cm) <span class="obrigatorio">*</span></label>
+      <label>Marcação (cm) </label>
       <input  data-testid="auto-input-modalsng-2" type="number" v-model="d.marcacao" placeholder="65" min="1">
     </div>
     <div class="campo">
-      <label>Modo <span class="obrigatorio">*</span></label>
+      <label>Modo </label>
       <div class="radio-group vertical">
         <label class="radio-btn" v-for="op in [{ v:'aberta', l:'Aberta' },{ v:'fechada', l:'Fechada' },{ v:'dieta', l:'Recebendo dieta enteral' },{ v:'dren', l:'Em drenagem (frasco coletor)' }]" :key="op.v">
           <input  data-testid="auto-input-modalsng-3" type="radio" v-model="d.modo" :value="op.v"><span>{{ op.l }}</span>
@@ -21,7 +21,7 @@
       </div>
     </div>
     <div v-if="d.modo === 'dieta'" class="campo">
-      <label>Velocidade da dieta <span class="obrigatorio">*</span></label>
+      <label>Velocidade da dieta </label>
       <div class="input-suffix-wrap">
         <input  data-testid="auto-input-modalsng-4" type="number" v-model="d.velocidadeDieta" placeholder="60" min="1">
         <span class="input-suffix">ml/h</span>
@@ -29,7 +29,7 @@
     </div>
     <div v-if="d.modo === 'dren'">
       <div class="campo">
-        <label>Débito <span class="obrigatorio">*</span></label>
+        <label>Débito </label>
         <div class="radio-group">
           <label class="radio-btn" v-for="op in [{ v:'sem', l:'Sem débito' },{ v:'com', l:'Com débito' }]" :key="op.v">
             <input  data-testid="auto-input-modalsng-5" type="radio" v-model="d.debito" :value="op.v"><span>{{ op.l }}</span>

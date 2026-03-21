@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="campo">
-      <label>Membro <span class="obrigatorio">*</span></label>
+      <label>Membro </label>
       <div class="radio-group">
         <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID']" :key="op">
           <input  data-testid="auto-input-modalpulseira-1" type="radio" v-model="d.membro" :value="op"><span>{{ op }}</span>
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="campo">
-      <label>Tipos <span class="obrigatorio">*</span></label>
+      <label>Tipos </label>
       <div class="radio-group vertical">
         <label
           class="checkbox-label pulseira-label"

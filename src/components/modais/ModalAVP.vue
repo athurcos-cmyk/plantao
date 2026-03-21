@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="campo">
-      <label>Local <span class="obrigatorio">*</span></label>
+      <label>Local </label>
       <div class="radio-group vertical">
         <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID','jugular D','jugular E']" :key="op">
           <input  data-testid="auto-input-modalavp-1" type="radio" v-model="d.local" :value="op"><span>{{ op }}</span>
@@ -23,7 +23,7 @@
     </div>
     <div v-if="d.emInfusao">
       <div class="campo">
-        <label>Solução <span class="obrigatorio">*</span></label>
+        <label>Solução </label>
         <input  data-testid="auto-input-modalavp-7" type="text" v-model="d.solucao" placeholder="Ex: tiamina 100mg + SF0,9% 100ml EV">
       </div>
       <div class="campo">

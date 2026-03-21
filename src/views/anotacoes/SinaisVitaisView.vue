@@ -51,7 +51,7 @@
 
           <!-- Horário -->
           <div class="campo campo-full">
-            <label>Horário <span class="obrigatorio">*</span></label>
+            <label>Horário </label>
             <input  data-testid="auto-input-sinaisvitaisview-1" type="time" v-model="form.horario">
           </div>
 
@@ -119,7 +119,7 @@
         </div>
 
         <div class="campo" v-if="form.algias === 'refere'">
-          <label>Descreva a dor <span class="obrigatorio">*</span></label>
+          <label>Descreva a dor </label>
           <input  data-testid="auto-input-sinaisvitaisview-12" type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia leve, dor em MMII">
         </div>
 
@@ -231,11 +231,6 @@ function mostrarFeedback(msg) {
 function gerar() {
   erro.value = ''
 
-  if (!form.horario) { erro.value = 'Informe o horário'; return }
-  if (form.algias === 'refere' && !form.dorDesc.trim()) {
-    erro.value = 'Descreva a dor do paciente'
-    return
-  }
 
   const h = form.horario.replace(':', 'h')
 

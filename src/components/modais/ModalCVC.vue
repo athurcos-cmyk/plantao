@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="campo">
-      <label>Local <span class="obrigatorio">*</span></label>
+      <label>Local </label>
       <div class="radio-group vertical">
         <label class="radio-btn" v-for="op in locaisCentral" :key="op">
           <input  data-testid="auto-input-modalcvc-1" type="radio" v-model="d.local" :value="op"><span>{{ op }}</span>
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="campo">
-      <label>Lúmens <span class="obrigatorio">*</span></label>
+      <label>Lúmens </label>
       <div class="radio-group">
         <label class="radio-btn" v-for="op in ['mono','duplo','triplo']" :key="op">
           <input  data-testid="auto-input-modalcvc-2" type="radio" v-model="d.lumens" :value="op"><span>{{ cap(op) }}</span>
@@ -31,7 +31,7 @@
     </div>
     <div v-if="d.emInfusao">
       <div class="campo">
-        <label>Solução <span class="obrigatorio">*</span></label>
+        <label>Solução </label>
         <input  data-testid="auto-input-modalcvc-8" type="text" v-model="d.solucao" placeholder="Ex: SF0,9% 500ml">
       </div>
       <div class="campo">

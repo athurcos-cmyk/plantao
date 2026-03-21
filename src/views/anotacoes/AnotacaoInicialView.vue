@@ -55,12 +55,12 @@
         </div>
 
         <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
+          <label>Horário </label>
           <input  data-testid="auto-input-anotacaoinicialview-1" type="time" v-model="form.horario">
         </div>
 
         <div class="campo">
-          <label>Sexo <span class="obrigatorio">*</span></label>
+          <label>Sexo </label>
           <div class="radio-group">
             <label class="radio-btn">
               <input  data-testid="auto-input-anotacaoinicialview-2" type="radio" v-model="form.sexo" value="F">
@@ -74,7 +74,7 @@
         </div>
 
         <div class="campo">
-          <label>Posição da cama <span class="obrigatorio">*</span></label>
+          <label>Posição da cama </label>
           <div class="radio-group">
             <label class="radio-btn" v-for="op in ['baixa','média','alta']" :key="op">
               <input  data-testid="auto-input-anotacaoinicialview-4" type="radio" v-model="form.posicaoCama" :value="op">
@@ -84,7 +84,7 @@
         </div>
 
         <div class="campo">
-          <label>Rodas <span class="obrigatorio">*</span></label>
+          <label>Rodas </label>
           <div class="radio-group">
             <label class="radio-btn" v-for="op in ['travadas','soltas']" :key="op">
               <input  data-testid="auto-input-anotacaoinicialview-5" type="radio" v-model="form.rodas" :value="op">
@@ -94,7 +94,7 @@
         </div>
 
         <div class="campo">
-          <label>Grades <span class="obrigatorio">*</span></label>
+          <label>Grades </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['totalmente elevadas','parcialmente elevadas','abaixadas']" :key="op">
               <input  data-testid="auto-input-anotacaoinicialview-6" type="radio" v-model="form.grades" :value="op">
@@ -104,7 +104,7 @@
         </div>
 
         <div class="campo">
-          <label>Decúbito <span class="obrigatorio">*</span></label>
+          <label>Decúbito </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['parcialmente elevado','dorsal','lateral direito','lateral esquerdo','Fowler']" :key="op">
               <input  data-testid="auto-input-anotacaoinicialview-7" type="radio" v-model="form.decubito" :value="op">
@@ -136,7 +136,7 @@
         </div>
 
         <div class="campo">
-          <label>Colaboração <span class="obrigatorio">*</span></label>
+          <label>Colaboração </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in colaboracaoOpcoes" :key="op.value">
               <input  data-testid="auto-input-anotacaoinicialview-10" type="radio" v-model="form.colaboracao" :value="op.value">
@@ -169,7 +169,7 @@
         </div>
 
         <div class="campo">
-          <label>Respiração <span class="obrigatorio">*</span></label>
+          <label>Respiração </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['em ar ambiente','cateter nasal de O₂','máscara de O₂','ventilação mecânica']" :key="op">
               <input  data-testid="auto-input-anotacaoinicialview-14" type="radio" v-model="form.respiracao" :value="op" @change="onRespChange">
@@ -185,7 +185,7 @@
         </div>
 
         <div class="campo">
-          <label>Acompanhante <span class="obrigatorio">*</span></label>
+          <label>Acompanhante </label>
           <div class="radio-group">
             <label class="radio-btn">
               <input  data-testid="auto-input-anotacaoinicialview-16" type="radio" v-model="form.acompanhante" value="nao">
@@ -250,7 +250,7 @@
         <h2 class="bloco-titulo">Eliminações</h2>
 
         <div class="campo">
-          <label>Última evacuação <span class="obrigatorio">*</span></label>
+          <label>Última evacuação </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in evacuacaoOpcoes" :key="op.v">
               <input  data-testid="auto-input-anotacaoinicialview-20" type="radio" v-model="form.evacuacaoOpcao" :value="op.v">
@@ -264,7 +264,7 @@
         </div>
 
         <div class="campo">
-          <label>Diurese <span class="obrigatorio">*</span></label>
+          <label>Diurese </label>
           <div class="radio-group vertical">
             <label class="checkbox-label" v-for="op in diureseOpcoes" :key="op.v">
               <input  data-testid="auto-input-anotacaoinicialview-22" type="checkbox" :value="op.v" v-model="form.diurese" @change="onDiureseChange">
