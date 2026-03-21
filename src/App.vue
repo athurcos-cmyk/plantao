@@ -78,7 +78,7 @@
     </div>
   </Transition>
   <Transition name="update-bar">
-    <div v-if="temAtualizacao" class="update-bar">
+    <div v-if="temAtualizacao && auth.isLoggedIn" class="update-bar">
       <span>🆕 Nova versão disponível</span>
       <button class="update-btn" @click="recarregarApp">Atualizar</button>
     </div>

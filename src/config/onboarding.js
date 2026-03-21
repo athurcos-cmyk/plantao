@@ -20,7 +20,7 @@ export const ONBOARDING_TELAS = [
     descricao: 'Sem depender do sistema do hospital. Funciona em qualquer celular, mesmo sem instalar.',
   },
   {
-    icone: '🚀',
+    icone: '✅',
     titulo: 'Crie sua conta gratuita',
     descricao: 'Comece agora e veja como é fácil.',
     cta: true,

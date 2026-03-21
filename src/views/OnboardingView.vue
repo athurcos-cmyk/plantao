@@ -156,7 +156,7 @@ function concluir() {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--border);
+  background: var(--text-muted);
   transition: all 0.2s;
 }
 .dot-ativo {
