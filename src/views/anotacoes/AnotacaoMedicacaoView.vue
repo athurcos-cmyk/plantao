@@ -728,6 +728,7 @@ function removerMed(i) {
 // ── Resumo para o card da lista ─────────────────────────────────────────────
 function resumirMed(med) {
   if (med.via === 'Recusa') return `Recusa · Enf. ${med.recusaNome || '?'}`
+  if (med.via === 'DERM') return med.dose ? `${med.dose}${med.unidade} · DERM` : 'DERM'
   const un = med.via === 'OFT' ? 'Gts' : med.unidade
   let viaLabel = med.via
   if (med.via === 'EV') {
