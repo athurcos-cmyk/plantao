@@ -23,3 +23,21 @@ async function hashPin(pin, code) {
 ```
 **Dependências:** Nenhuma.
 **Contexto:** Gap pré-existente identificado durante plan-eng-review (2026-03-21). Em produção (Vercel HTTPS) nunca ocorre, mas afeta testes locais via IP.
+
+---
+
+### [ ] Criar DESIGN.md formal
+**O quê:** Documentar o design system do app em `DESIGN.md` — tokens de cor, tipografia, espaçamento, padrões de componentes e diretrizes de UI.
+**Por quê:** Sem DESIGN.md, cada sessão de desenvolvimento tende a adicionar cores ad-hoc fora do sistema (como o roxo `#9b59b6` encontrado e corrigido no plan-design-review). Ter um documento formal evita deriva visual.
+**Como:** Rodar `/design-consultation` para gerar automaticamente um DESIGN.md com base no style.css existente e nas decisões de UI do app.
+**Dependências:** Nenhuma.
+**Contexto:** Identificado durante plan-design-review (2026-03-21). O de-facto design system já existe em `src/assets/style.css` — só precisa ser formalizado.
+
+---
+
+### [ ] Adicionar token --warning ao design system
+**O quê:** Adicionar `--warning: #FFC107` e `--warning-muted: rgba(255, 193, 7, 0.1)` ao `:root` do `style.css`.
+**Por quê:** `aviso-fcm` em `OrganizadorView.vue` usa `rgba(255,193,7,...)` hardcoded. Se aparecerem outros avisos amarelos no app, cada um vai reinventar a cor na mão.
+**Como:** Adicionar 2 linhas ao `:root` em `src/assets/style.css` e atualizar o `aviso-fcm` para usar `var(--warning)` e `var(--warning-muted)`.
+**Dependências:** Nenhuma. Opcional: fazer junto com a criação do DESIGN.md.
+**Contexto:** Identificado durante plan-design-review (2026-03-21).
