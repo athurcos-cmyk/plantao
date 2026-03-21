@@ -225,9 +225,6 @@
           <span class="nav-logo">Plantão</span>
         </div>
         <p class="footer-sub">App de anotações de enfermagem para uso no plantão hospitalar.</p>
-        <a class="footer-contact" href="https://wa.me/55?text=Oi%2C+vi+o+Plantão+app" target="_blank" rel="noopener">
-          💬 Fale conosco no WhatsApp
-        </a>
       </div>
     </footer>
 
@@ -965,20 +962,6 @@ const testimonials = [
   color: var(--text-muted);
   font-size: 0.85rem;
   margin: 0;
-}
-.footer-contact {
-  color: var(--text-dim);
-  font-size: 0.85rem;
-  text-decoration: none;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-  transition: border-color 0.2s, color 0.2s;
-  margin-top: 4px;
-}
-.footer-contact:hover {
-  border-color: rgba(30, 136, 229, 0.4);
-  color: var(--blue);
 }
 
 /* ── MOBILE RESPONSIVE ── */
