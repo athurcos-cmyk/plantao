@@ -131,6 +131,57 @@
       </div>
     </section>
 
+    <!-- ── INSTALAR ── -->
+    <section class="install-section">
+      <div class="install-inner">
+        <div class="install-text">
+          <div class="install-eyebrow">
+            <span class="install-eyebrow-dot"></span>
+            O diferencial
+          </div>
+          <h2 class="install-title">Sem App Store.<br>Sem Play Store.</h2>
+          <p class="install-sub">
+            Abra o link no celular, toque em <strong>"Adicionar à tela inicial"</strong> e o app
+            aparece igual a um nativo — sem nenhuma loja de aplicativos.
+          </p>
+          <div class="install-steps">
+            <div class="install-step">
+              <span class="install-step-num">1</span>
+              <span>Abra o link no navegador do celular</span>
+            </div>
+            <div class="install-step">
+              <span class="install-step-num">2</span>
+              <span>Toque em <strong>"Adicionar à tela inicial"</strong></span>
+            </div>
+            <div class="install-step">
+              <span class="install-step-num">3</span>
+              <span>Pronto — ícone na tela inicial, abre offline</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="install-card">
+          <div class="install-card-header">
+            <span class="install-card-icon">📲</span>
+            <span class="install-card-label">Link do app</span>
+          </div>
+          <div class="install-url-box">
+            <span class="install-url-text">{{ displayUrl }}</span>
+            <button class="install-url-copy" @click="copiarUrl" :class="{ copied: urlCopiada }">
+              {{ urlCopiada ? '✓ Copiado' : 'Copiar' }}
+            </button>
+          </div>
+          <p class="install-card-hint">Cole no navegador do celular ou compartilhe pelo WhatsApp</p>
+          <div class="install-card-divider"></div>
+          <p class="install-pc-label">Está vendo isso no PC?</p>
+          <button class="btn-pc" @click="acessarNoPc">
+            Acessar no PC mesmo assim →
+          </button>
+          <p class="install-pc-hint">O app é mobile-first, mas funciona no computador também.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ── DESTAQUES ── -->
     <section class="section">
       <div class="section-inner">
@@ -232,7 +283,29 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 const appUrl = window.location.origin + window.location.pathname + '#/'
+const displayUrl = window.location.origin + window.location.pathname
+
+const urlCopiada = ref(false)
+function copiarUrl() {
+  navigator.clipboard.writeText(appUrl).catch(() => {
+    const el = document.createElement('textarea')
+    el.value = appUrl
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+  })
+  urlCopiada.value = true
+  setTimeout(() => { urlCopiada.value = false }, 2000)
+}
+
+function acessarNoPc() {
+  sessionStorage.setItem('pc_allowed', '1')
+  window.location.href = appUrl
+}
 
 const feats = [
   { icon: '⚡', title: 'Texto pronto para copiar', desc: 'Avaliação inicial, sinais vitais, medicação, curativo e mais. Texto formatado para colar direto no sistema do hospital.' },
@@ -964,6 +1037,197 @@ const testimonials = [
   margin: 0;
 }
 
+/* ── INSTALL SECTION ── */
+.install-section {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.install-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle, rgba(30, 136, 229, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+.install-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.install-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 14px;
+}
+.install-eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue);
+  animation: pulse 2s ease-in-out infinite;
+}
+.install-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0 0 16px;
+}
+.install-sub {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin: 0 0 28px;
+  max-width: 400px;
+}
+.install-sub strong { color: var(--text); }
+.install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.install-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+.install-step strong { color: var(--text); }
+.install-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--blue-muted);
+  border: 1px solid rgba(30, 136, 229, 0.35);
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* card direito */
+.install-card {
+  background: var(--bg);
+  border: 1px solid rgba(30, 136, 229, 0.25);
+  border-radius: 20px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 0 0 1px rgba(30, 136, 229, 0.06), 0 16px 48px rgba(0,0,0,0.3);
+}
+.install-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.install-card-icon { font-size: 1.3rem; }
+.install-card-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.install-url-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.install-url-text {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--blue);
+  font-weight: 500;
+  word-break: break-all;
+  font-family: monospace;
+}
+.install-url-copy {
+  background: var(--blue-muted);
+  border: 1px solid rgba(30, 136, 229, 0.3);
+  color: var(--blue);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.install-url-copy.copied {
+  background: var(--success-muted);
+  border-color: rgba(67, 160, 71, 0.4);
+  color: var(--success);
+}
+.install-card-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+.install-card-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+.install-pc-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin: 0;
+}
+.btn-pc {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  text-align: left;
+}
+.btn-pc:hover {
+  border-color: rgba(30, 136, 229, 0.45);
+  color: var(--text);
+  background: var(--blue-muted);
+}
+.install-pc-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 780px) {
   .hero { padding: 48px 20px 56px; }
@@ -1011,5 +1275,12 @@ const testimonials = [
   .cta-section { padding: 64px 20px; }
   .cta-title br { display: none; }
   .footer { padding: 40px 20px; }
+
+  .install-section { padding: 56px 20px; }
+  .install-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .install-sub { max-width: 100%; }
 }
 </style>
