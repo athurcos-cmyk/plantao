@@ -33,11 +33,11 @@
 
   <!-- Modal tutorial Safari -->
   <Transition name="modal-fade">
-    <div v-if="tutorialAberto" class="modal-overlay" @click.self="tutorialAberto = false">
-      <div class="modal-tutorial">
+    <div v-if="tutorialAberto" class="modal-overlay" @click.self="tutorialAberto = false" @keydown.esc="tutorialAberto = false">
+      <div class="modal-tutorial" role="dialog" aria-modal="true" aria-labelledby="modal-instalar-titulo">
         <div class="modal-tutorial-header">
-          <span class="modal-tutorial-titulo">Instalar no iPhone</span>
-          <button class="install-fechar" @click="tutorialAberto = false">✕</button>
+          <span id="modal-instalar-titulo" class="modal-tutorial-titulo">Instalar no iPhone</span>
+          <button class="install-fechar" @click="tutorialAberto = false" aria-label="Fechar tutorial">✕</button>
         </div>
         <ol class="tutorial-passos">
           <li>
@@ -71,8 +71,8 @@
     <div v-if="mostrarBannerIOS" class="ios-bar">
       <span class="ios-bar-icon">🍎</span>
       <span class="ios-bar-texto">Para instalar o app, abra no <strong>Safari</strong></span>
-      <button class="ios-bar-btn" @click="copiarLinkIOS">
-        {{ linkCopiado ? 'Copiado ✓' : 'Copiar link' }}
+      <button class="ios-bar-btn" @click="copiarLinkIOS" :class="{ 'ios-bar-btn-erro': erroCopia }">
+        {{ linkCopiado ? 'Copiado ✓' : erroCopia ? 'Erro — tente manualmente' : 'Copiar link' }}
       </button>
       <button class="install-fechar" @click="mostrarBannerIOS = false">✕</button>
     </div>
@@ -197,6 +197,7 @@ const tutorialAberto = ref(false)
 // iOS não expõe beforeinstallprompt — usuário precisa instalar pelo Safari
 const mostrarBannerIOS = ref(false)
 const linkCopiado = ref(false)
+const erroCopia = ref(false)
 
 ;(function detectarIOSChrome() {
   const ua = navigator.userAgent
@@ -210,19 +211,28 @@ const linkCopiado = ref(false)
 })()
 
 async function copiarLinkIOS() {
+  let ok = false
   try {
     await navigator.clipboard.writeText(window.location.href)
+    ok = true
   } catch {
-    // fallback
-    const ta = document.createElement('textarea')
-    ta.value = window.location.href
-    document.body.appendChild(ta)
-    ta.select()
-    document.execCommand('copy')
-    document.body.removeChild(ta)
+    try {
+      const ta = document.createElement('textarea')
+      ta.value = window.location.href
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      document.body.removeChild(ta)
+      ok = true
+    } catch { /* ambos falharam */ }
   }
-  linkCopiado.value = true
-  setTimeout(() => { linkCopiado.value = false }, 2500)
+  if (ok) {
+    linkCopiado.value = true
+    setTimeout(() => { linkCopiado.value = false }, 2500)
+  } else {
+    erroCopia.value = true
+    setTimeout(() => { erroCopia.value = false }, 3000)
+  }
 }
 
 async function instalarApp() {
@@ -332,10 +342,15 @@ onMounted(() => {
 .install-fechar {
   background: transparent;
   border: none;
-  color: #8ab8e8;
+  color: var(--text-dim);
   font-size: 1rem;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 10px 12px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   line-height: 1;
 }
@@ -389,8 +404,8 @@ onMounted(() => {
   justify-content: center;
 }
 .modal-tutorial {
-  background: #0f1f35;
-  border: 1px solid #2196f3;
+  background: var(--bg-card);
+  border: 1px solid var(--blue);
   border-bottom: none;
   border-radius: 20px 20px 0 0;
   padding: 24px 20px 32px;
@@ -406,7 +421,7 @@ onMounted(() => {
 .modal-tutorial-titulo {
   font-size: 1rem;
   font-weight: 700;
-  color: #e8f4fd;
+  color: var(--text);
 }
 .tutorial-passos {
   list-style: none;
@@ -425,7 +440,7 @@ onMounted(() => {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #2196f3;
+  background: var(--blue);
   color: white;
   font-size: 0.8rem;
   font-weight: 800;
@@ -437,23 +452,23 @@ onMounted(() => {
 }
 .tutorial-passos li div strong {
   font-size: 0.9rem;
-  color: #e8f4fd;
+  color: var(--text);
   display: block;
   margin-bottom: 2px;
 }
 .tutorial-passos li div p {
   font-size: 0.82rem;
-  color: #8ab8d8;
+  color: var(--text-dim);
   margin: 0;
   line-height: 1.45;
 }
 .tutorial-destaque {
-  color: #64b5f6 !important;
+  color: var(--blue) !important;
 }
 .tutorial-icone-inline { font-size: 0.9rem; }
 .btn-tutorial-ok {
   width: 100%;
-  background: #2196f3;
+  background: var(--blue);
   color: white;
   border: none;
   border-radius: 12px;
@@ -473,9 +488,9 @@ onMounted(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #2a1a3e;
-  border-top: 1px solid #9b59b6;
-  color: #e8d5f5;
+  background: #0d2137;
+  border-top: 1px solid var(--blue);
+  color: #b3d9f7;
   font-size: 0.85rem;
   font-weight: 500;
   padding: 12px 16px;
@@ -487,7 +502,7 @@ onMounted(() => {
 .ios-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
 .ios-bar-texto { flex: 1; }
 .ios-bar-btn {
-  background: #9b59b6;
+  background: var(--blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -497,6 +512,10 @@ onMounted(() => {
   cursor: pointer;
   flex-shrink: 0;
   white-space: nowrap;
+}
+.ios-bar-btn-erro {
+  background: var(--danger) !important;
+  font-size: 0.75rem;
 }
 .ios-bar-enter-active,
 .ios-bar-leave-active { transition: transform 0.3s ease; }
