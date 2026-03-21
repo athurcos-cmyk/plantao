@@ -14,7 +14,10 @@
   <Transition name="install-bar">
     <div v-if="mostrarInstall" class="install-bar">
       <span class="install-icon">📱</span>
-      <span class="install-texto">Instalar o app Plantão</span>
+      <div class="install-texto">
+        <span class="install-titulo">Instalar o app Plantão</span>
+        <span class="install-sub">Sem loja de apps — fica na tela de início como qualquer app</span>
+      </div>
       <button class="install-btn" @click="instalarApp">Instalar</button>
       <button class="install-fechar" @click="mostrarInstall = false">✕</button>
     </div>
@@ -299,7 +302,22 @@ onMounted(() => {
   gap: 10px;
 }
 .install-icon { font-size: 1.2rem; flex-shrink: 0; }
-.install-texto { flex: 1; }
+.install-texto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.install-titulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e8f4fd;
+}
+.install-sub {
+  font-size: 0.75rem;
+  color: #8ab8d8;
+  font-weight: 400;
+}
 .install-btn {
   background: #4a90d9;
   color: white;
