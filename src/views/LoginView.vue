@@ -295,6 +295,8 @@ async function entrar() {
   } catch (e) {
     if (e?.code === 'PERMISSION_DENIED' || e?.message?.includes('PERMISSION_DENIED')) {
       erroMsg.value = 'Sem permissão no banco de dados.'
+    } else if (e?.message?.includes('Contexto inseguro')) {
+      erroMsg.value = 'Acesse o app via HTTPS para usar o PIN.'
     } else {
       erroMsg.value = 'Erro de conexão. Tente novamente.'
     }

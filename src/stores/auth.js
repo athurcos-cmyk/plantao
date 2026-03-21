@@ -18,6 +18,7 @@ function _testLocalStorage() {
 const _lsOk = _testLocalStorage()
 
 async function hashPin(pin, code) {
+  if (!crypto?.subtle) throw new Error('Contexto inseguro — acesse o app via HTTPS')
   // hash novo: salt = prefixo fixo + syncCode
   const salted = PIN_SALT_PREFIX + code.toUpperCase() + ':' + pin
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted))
@@ -25,6 +26,7 @@ async function hashPin(pin, code) {
 }
 
 async function hashPinLegacy(pin) {
+  if (!crypto?.subtle) throw new Error('Contexto inseguro — acesse o app via HTTPS')
   // hash antigo: SHA-256 sem salt — usado apenas para migração
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin))
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
