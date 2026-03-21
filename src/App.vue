@@ -19,6 +19,51 @@
       <button class="install-fechar" @click="mostrarInstall = false">✕</button>
     </div>
   </Transition>
+  <Transition name="safari-bar">
+    <div v-if="mostrarTutorialSafari" class="safari-bar">
+      <span class="safari-bar-icon">📲</span>
+      <span class="safari-bar-texto">Instale o app no seu iPhone</span>
+      <button class="safari-bar-btn" @click="tutorialAberto = true">Ver como</button>
+      <button class="install-fechar" @click="mostrarTutorialSafari = false">✕</button>
+    </div>
+  </Transition>
+
+  <!-- Modal tutorial Safari -->
+  <Transition name="modal-fade">
+    <div v-if="tutorialAberto" class="modal-overlay" @click.self="tutorialAberto = false">
+      <div class="modal-tutorial">
+        <div class="modal-tutorial-header">
+          <span class="modal-tutorial-titulo">Instalar no iPhone</span>
+          <button class="install-fechar" @click="tutorialAberto = false">✕</button>
+        </div>
+        <ol class="tutorial-passos">
+          <li>
+            <span class="tutorial-num">1</span>
+            <div>
+              <strong>Toque em Compartilhar</strong>
+              <p>O botão fica na barra inferior do Safari — quadrado com seta para cima <span class="tutorial-icone-inline">⬆️</span></p>
+            </div>
+          </li>
+          <li>
+            <span class="tutorial-num">2</span>
+            <div>
+              <strong>Role a lista e toque em</strong>
+              <p><strong class="tutorial-destaque">Adicionar à Tela de Início</strong></p>
+            </div>
+          </li>
+          <li>
+            <span class="tutorial-num">3</span>
+            <div>
+              <strong>Toque em Adicionar</strong>
+              <p>O app aparecerá na sua tela de início como qualquer outro app</p>
+            </div>
+          </li>
+        </ol>
+        <button class="btn-tutorial-ok" @click="tutorialAberto = false">Entendido</button>
+      </div>
+    </div>
+  </Transition>
+
   <Transition name="ios-bar">
     <div v-if="mostrarBannerIOS" class="ios-bar">
       <span class="ios-bar-icon">🍎</span>
@@ -129,6 +174,21 @@ window.addEventListener('beforeinstallprompt', (e) => {
   const jaInstalado = window.matchMedia('(display-mode: standalone)').matches
   if (!jaInstalado) mostrarInstall.value = true
 })
+
+// Banner iOS Safari: detecta Safari no iPhone/iPad fora do standalone → mostra tutorial
+const mostrarTutorialSafari = ref(false)
+const tutorialAberto = ref(false)
+
+;(function detectarIOSSafari() {
+  const ua = navigator.userAgent
+  const isIOS = /iphone|ipad|ipod/i.test(ua)
+  const isSafari = /safari/i.test(ua) && !/chrome|crios|fxios|edgios/i.test(ua)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || navigator.standalone === true
+  if (isIOS && isSafari && !isStandalone) {
+    mostrarTutorialSafari.value = true
+  }
+})()
 
 // Banner iOS + Chrome: detecta iPhone/iPad no Chrome (não-Safari) fora do standalone
 // iOS não expõe beforeinstallprompt — usuário precisa instalar pelo Safari
@@ -265,6 +325,130 @@ onMounted(() => {
 .install-bar-leave-active { transition: transform 0.3s ease; }
 .install-bar-enter-from,
 .install-bar-leave-to     { transform: translateY(100%); }
+
+.safari-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #0d2137;
+  border-top: 1px solid #2196f3;
+  color: #b3d9f7;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 12px 16px;
+  z-index: 9996;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.safari-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
+.safari-bar-texto { flex: 1; }
+.safari-bar-btn {
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.safari-bar-enter-active,
+.safari-bar-leave-active { transition: transform 0.3s ease; }
+.safari-bar-enter-from,
+.safari-bar-leave-to     { transform: translateY(100%); }
+
+/* ── Modal tutorial Safari ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 10001;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-tutorial {
+  background: #0f1f35;
+  border: 1px solid #2196f3;
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  width: 100%;
+  max-width: 480px;
+}
+.modal-tutorial-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-tutorial-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e8f4fd;
+}
+.tutorial-passos {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tutorial-passos li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.tutorial-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #2196f3;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.tutorial-passos li div strong {
+  font-size: 0.9rem;
+  color: #e8f4fd;
+  display: block;
+  margin-bottom: 2px;
+}
+.tutorial-passos li div p {
+  font-size: 0.82rem;
+  color: #8ab8d8;
+  margin: 0;
+  line-height: 1.45;
+}
+.tutorial-destaque {
+  color: #64b5f6 !important;
+}
+.tutorial-icone-inline { font-size: 0.9rem; }
+.btn-tutorial-ok {
+  width: 100%;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 13px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.modal-fade-enter-active,
+.modal-fade-leave-active { transition: opacity 0.2s ease; }
+.modal-fade-enter-from,
+.modal-fade-leave-to     { opacity: 0; }
 
 .ios-bar {
   position: fixed;

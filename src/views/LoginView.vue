@@ -184,6 +184,14 @@
       <p v-if="erroMsg" class="erro-msg" style="margin-top:12px">{{ erroMsg }}</p>
     </div>
 
+    <!-- Aviso modo privado -->
+    <transition name="fade">
+      <div v-if="auth.modoPrivado" class="aviso-privado">
+        <span>🔒</span>
+        <span>Modo privado — sua sessão <strong>não será salva</strong> ao fechar o app</span>
+      </div>
+    </transition>
+
     <button class="btn-como-funciona" @click="helpAberto = true">❓ Como funciona?</button>
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como funciona o acesso" :itens="helpItens" />
@@ -593,6 +601,24 @@ async function entrar() {
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s, transform 0.2s; }
 .fade-enter-from { opacity: 0; transform: translateY(4px); }
 .fade-leave-to   { opacity: 0; transform: translateY(-4px); }
+
+/* ── Aviso modo privado ── */
+.aviso-privado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px;
+  max-width: 380px;
+  width: 100%;
+}
+.aviso-privado strong {
+  color: var(--text);
+}
 
 /* ── Como funciona button ── */
 .btn-como-funciona {
