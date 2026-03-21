@@ -100,32 +100,35 @@
         <!-- Local (quando não é dreno) — MULTI-SELECT -->
         <div v-if="form.tipo && !form.ehDreno" class="campo">
           <label>Local</label>
-          <div class="chips-wrap">
-            <!-- Chips predefinidos -->
+          <div class="chips-wrap" style="margin-bottom:8px">
             <button v-for="l in locaisChips" :key="l" class="chip chip-sm"
               :class="{ 'chip-on': form.local.includes(l) }"
               @click="toggleLocal(l)">{{ l }}</button>
-            <!-- Locais customizados salvos no Firebase -->
-            <span v-for="l in locaisCustom" :key="l._key" class="chip chip-sm"
+            <span v-for="l in locaisCustom" :key="l._key" class="chip chip-sm chip-has-action"
               :class="{ 'chip-on': form.local.includes(l.texto) }"
               @click="toggleLocal(l.texto)">
               {{ l.texto }}
               <button class="chip-del-btn" @click.stop="removerLocalCustom(l._key)">×</button>
             </span>
-            <!-- Botão salvar no Firebase -->
+            <span v-for="l in locaisTemporarios" :key="`tmp-${l}`" class="chip chip-sm chip-has-action chip-temp"
+              :class="{ 'chip-on': form.local.includes(l) }"
+              @click="toggleLocal(l)">
+              {{ l }}
+              <button class="chip-del-btn" @click.stop="removerLocalTemporario(l)">×</button>
+            </span>
             <button v-if="!adicionandoLocal" class="chip chip-sm chip-add" @click="abrirAddLocal">+ Adicionar local</button>
           </div>
-          <!-- Input inline para salvar no Firebase -->
           <div v-if="adicionandoLocal" class="add-row" style="margin-top:8px">
             <input class="add-input" type="text" v-model="novoLocalTxt"
               placeholder="Ex: região cervical esquerda, joelho D..."
-              @keyup.enter="salvarLocalCustom" @keyup.esc="fecharAddLocal"
+              @keyup.enter="adicionarLocalTemporario" @keyup.esc="fecharAddLocal"
               ref="refNovoLocal">
-            <button class="chip chip-on" @click="salvarLocalCustom" :disabled="!novoLocalTxt.trim()">Salvar</button>
-            <button class="chip" @click="fecharAddLocal">✕</button>
+            <div class="material-actions">
+              <button class="chip chip-on" @click="salvarLocalCustom" :disabled="!novoLocalTxt.trim()">Salvar no banco de dados</button>
+              <button class="chip chip-temp" @click="adicionarLocalTemporario" :disabled="!novoLocalTxt.trim()">Só nesta anotação</button>
+              <button class="chip" @click="fecharAddLocal">✕</button>
+            </div>
           </div>
-          <!-- Campo livre sem salvar no Firebase -->
-          <input type="text" v-model="localLivre" placeholder="Ou escreva o local aqui (sem salvar)..." style="margin-top:8px">
         </div>
 
         <!-- Materiais padrão + customizados -->
@@ -194,15 +197,103 @@
           </label>
         </div>
 
-        <!-- Aspecto da ferida (não para placa) -->
-        <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
+        <!-- ── Avaliação COREN (só curativo/troca sem dreno) ── -->
+        <template v-if="form.tipo && form.tipo !== 'placa' && !form.ehDreno">
+
+          <!-- Tipo de lesão -->
+          <div class="campo">
+            <label>Tipo de lesão <span class="opc">(opcional)</span></label>
+            <div class="chips-wrap">
+              <button v-for="t in ['LPP', 'ferida operatória', 'escoriação']" :key="t"
+                class="chip chip-sm"
+                :class="{ 'chip-on': form.tipoLesao === t }"
+                @click="form.tipoLesao = form.tipoLesao === t ? '' : t">{{ t }}</button>
+            </div>
+          </div>
+
+          <!-- Tamanho -->
+          <div class="campo">
+            <label>Tamanho da lesão <span class="opc">(opcional)</span></label>
+            <div class="tamanho-row">
+              <div class="input-cm">
+                <input type="number" v-model="form.largura" placeholder="0" min="0" step="0.1">
+                <span class="cm-label">cm larg.</span>
+              </div>
+              <span class="cm-sep">×</span>
+              <div class="input-cm">
+                <input type="number" v-model="form.comprimento" placeholder="0" min="0" step="0.1">
+                <span class="cm-label">cm comp.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leito da ferida -->
+          <div class="campo">
+            <label>Leito da ferida <span class="opc">(opcional)</span></label>
+            <div class="chips-wrap">
+              <button v-for="l in leitoOpcoes" :key="l" class="chip chip-sm"
+                :class="{ 'chip-on': form.leitoFerida.includes(l) }"
+                @click="toggleLeitoFerida(l)">{{ l }}</button>
+              <button class="chip chip-sm"
+                :class="{ 'chip-on': form.leitoFerida.includes('outro') }"
+                @click="toggleLeitoFerida('outro')">Outro</button>
+            </div>
+            <input v-if="form.leitoFerida.includes('outro')" type="text" v-model="form.leitoOutro"
+              placeholder="Descreva o leito da ferida..." style="margin-top:8px">
+          </div>
+
+          <!-- Exsudato — quantidade + aspecto -->
+          <div class="campo">
+            <label>Exsudato <span class="opc">(opcional)</span></label>
+            <div class="chips-wrap" style="margin-bottom:8px">
+              <button v-for="q in ['ausente', 'pequena quantidade', 'média quantidade', 'grande quantidade']" :key="q"
+                class="chip chip-sm"
+                :class="{ 'chip-on': form.exsudatoQtd === q }"
+                @click="form.exsudatoQtd = form.exsudatoQtd === q ? '' : q">{{ q }}</button>
+            </div>
+            <div class="chips-wrap" style="margin-bottom:8px">
+              <button v-for="a in aspectoChips" :key="a" class="chip chip-sm"
+                :class="{ 'chip-on': form.aspecto === a }"
+                @click="setAspecto(a)">{{ a }}</button>
+            </div>
+            <input type="text" v-model="form.aspecto" placeholder="Ou descreva o aspecto...">
+          </div>
+
+          <!-- Pele perilesão -->
+          <div class="campo">
+            <label>Pele perilesão <span class="opc">(opcional)</span></label>
+            <div class="chips-wrap">
+              <button v-for="p in ['íntegra', 'hiperemiada', 'macerada', 'queratose', 'outro']" :key="p"
+                class="chip chip-sm"
+                :class="{ 'chip-on': form.perilesao === p }"
+                @click="form.perilesao = form.perilesao === p ? '' : p">{{ p }}</button>
+            </div>
+            <input v-if="form.perilesao === 'outro'" type="text" v-model="form.perilesaoOutro"
+              placeholder="Descreva a pele perilesão..." style="margin-top:8px">
+          </div>
+
+          <!-- Bordas -->
+          <div class="campo">
+            <label>Bordas <span class="opc">(opcional)</span></label>
+            <div class="chips-wrap">
+              <button v-for="b in ['regular', 'irregular', 'aproximadas', 'abertas']" :key="b"
+                class="chip chip-sm"
+                :class="{ 'chip-on': form.bordas === b }"
+                @click="form.bordas = form.bordas === b ? '' : b">{{ b }}</button>
+            </div>
+          </div>
+
+        </template>
+
+        <!-- Aspecto (só dreno — caso específico) -->
+        <div v-if="form.tipo && form.tipo !== 'placa' && form.ehDreno" class="campo">
           <label>Aspecto da ferida <span class="opc">(opcional)</span></label>
           <div class="chips-wrap" style="margin-bottom:8px">
             <button v-for="a in aspectoChips" :key="a" class="chip chip-sm"
               :class="{ 'chip-on': form.aspecto === a }"
               @click="setAspecto(a)">{{ a }}</button>
           </div>
-          <input type="text" v-model="form.aspecto" placeholder="Ex: tecido de granulação, necrose...">
+          <input type="text" v-model="form.aspecto" placeholder="Ex: exsudato seroso...">
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -278,13 +369,24 @@ const form = reactive({
   materiais:      [],
   condicao:       true,
   aspecto:        '',
+  // Avaliação COREN
+  tipoLesao:      '',      // LPP | ferida operatória | escoriação
+  largura:        '',
+  comprimento:    '',
+  leitoFerida:    [],      // granulação | epitelização | necrose | esfacelo...
+  leitoOutro:     '',
+  exsudatoQtd:   '',      // pequena | média | grande | ausente
+  perilesao:      '',      // íntegra | hiperemiada | macerada | queratose | outro
+  perilesaoOutro: '',
+  bordas:         '',      // regular | irregular | aproximadas | abertas
 })
 
 // ── Locais customizados (Firebase) ──
-const locaisCustom     = ref([])
-const adicionandoLocal = ref(false)
-const novoLocalTxt     = ref('')
-const refNovoLocal     = ref(null)
+const locaisCustom      = ref([])
+const locaisTemporarios = ref([])
+const adicionandoLocal  = ref(false)
+const novoLocalTxt      = ref('')
+const refNovoLocal      = ref(null)
 let unsubLocais = null
 
 // ── Materiais customizados (Firebase) ──
@@ -331,8 +433,24 @@ async function salvarLocalCustom() {
   if (!texto) return
   if (!navigator.onLine) { showToast('Sem internet — local não foi salvo'); return }
   await push(dbRef(db, `curativo/${_code()}/locais`), { texto, criadoEm: Date.now() })
-  form.local.push(texto)
+  if (!form.local.includes(texto)) form.local.push(texto)
   fecharAddLocal()
+}
+
+function adicionarLocalTemporario() {
+  const texto = novoLocalTxt.value.trim()
+  if (!texto) return
+  if (!locaisTemporarios.value.includes(texto) && !locaisCustom.value.some(l => l.texto === texto) && !locaisChips.includes(texto)) {
+    locaisTemporarios.value.push(texto)
+  }
+  if (!form.local.includes(texto)) form.local.push(texto)
+  fecharAddLocal()
+}
+
+function removerLocalTemporario(texto) {
+  locaisTemporarios.value = locaisTemporarios.value.filter(l => l !== texto)
+  const idx = form.local.indexOf(texto)
+  if (idx >= 0) form.local.splice(idx, 1)
 }
 
 async function removerLocalCustom(key) {
@@ -476,9 +594,17 @@ const materiaisOpcoes = [
 ]
 
 const aspectoChips = [
-  'exsudato sanguinolento', 'exsudato purolento',
+  'exsudato sanguinolento', 'exsudato purulento',
   'exsudato seroso', 'exsudato serossanguinolento',
 ]
+
+const leitoOpcoes = ['granulação', 'granulação pálido', 'epitelização', 'necrose', 'esfacelo', 'espaço morto']
+
+function toggleLeitoFerida(v) {
+  const i = form.leitoFerida.indexOf(v)
+  if (i === -1) form.leitoFerida.push(v)
+  else form.leitoFerida.splice(i, 1)
+}
 
 // ── Lifecycle ──
 onMounted(() => {
@@ -513,8 +639,6 @@ function setAspecto(value) {
 
 function localTexto() {
   const todos = [...form.local]
-  const livre = localLivre.value.trim()
-  if (livre) todos.push(livre)
   if (todos.length === 0) return ''
   if (todos.length === 1) return todos[0]
   return todos.slice(0, -1).join(', ') + ' e ' + todos[todos.length - 1]
@@ -550,7 +674,7 @@ function limparBloco() {
     form.horario = ''; form.nome = ''; form.leito = ''
   } else {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
-    form.local = []; localLivre.value = ''
+    form.local = []; locaisTemporarios.value = []
     form.materiais = []; materiaisTemporarios.value = []
     form.condicao = true; form.aspecto = ''
   }
@@ -585,7 +709,8 @@ function gerar() {
   const mats = materiaisTexto()
 
   const verbo = form.tipo === 'troca' ? 'troca de curativo' : 'curativo'
-  let texto = `${hora} – Realizado ${verbo}${localPart}`
+  const lesaoPart = form.tipoLesao ? ` em ${form.tipoLesao}` : ''
+  let texto = `${hora} – Realizado ${verbo}${lesaoPart}${localPart}`
 
   if (mats.length > 0) {
     texto += `, em uso de ${mats.join(' + ')}`
@@ -596,7 +721,31 @@ function gerar() {
     texto += ' Ocluído, limpo e seco externamente.'
   }
 
-  if (form.aspecto.trim()) {
+  // Bloco de avaliação COREN
+  if (!form.ehDreno) {
+    if (form.largura || form.comprimento) {
+      const partes = []
+      if (form.largura)      partes.push(`${form.largura} cm de largura`)
+      if (form.comprimento)  partes.push(`${form.comprimento} cm de comprimento`)
+      texto += ` Lesão com ${partes.join(' e ')}.`
+    }
+
+    if (form.leitoFerida.length) {
+      const leitos = form.leitoFerida.map(l => l === 'outro' && form.leitoOutro.trim() ? form.leitoOutro.trim() : l).filter(l => l !== 'outro')
+      if (leitos.length) texto += ` Leito com tecido de ${leitos.join(', ')}.`
+    }
+
+    const exsudatoParts = []
+    if (form.aspecto.trim())  exsudatoParts.push(form.aspecto.trim())
+    if (form.exsudatoQtd)     exsudatoParts.push(form.exsudatoQtd)
+    if (exsudatoParts.length) texto += ` ${exsudatoParts.join(', ')}.`
+
+    if (form.perilesao) {
+      const peri = form.perilesao === 'outro' ? form.perilesaoOutro.trim() : form.perilesao
+      if (peri) texto += ` Pele perilesão ${peri}.`
+    }
+    if (form.bordas)    texto += ` Bordas ${form.bordas}.`
+  } else if (form.aspecto.trim()) {
     texto += ` Ferida apresentando ${form.aspecto.trim()}.`
   }
 
@@ -637,8 +786,11 @@ function novaAnotacao() {
     tipo: '', ehDreno: false, dreno: '',
     local: [], materiais: [],
     condicao: true, aspecto: '',
+    tipoLesao: '', largura: '', comprimento: '',
+    leitoFerida: [], leitoOutro: '', exsudatoQtd: '',
+    perilesao: '', perilesaoOutro: '', bordas: '',
   })
-  localLivre.value = ''
+  locaisTemporarios.value = []
   materiaisTemporarios.value = []
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
@@ -705,6 +857,12 @@ function novaAnotacao() {
 
 .material-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .material-tip { display: inline-block; margin-top: 8px; color: var(--text-muted); font-size: 0.78rem; }
+
+.tamanho-row { display: flex; align-items: center; gap: 10px; }
+.input-cm { display: flex; align-items: center; gap: 6px; flex: 1; }
+.input-cm input { flex: 1; }
+.cm-label { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
+.cm-sep { font-size: 1.2rem; color: var(--text-dim); flex-shrink: 0; }
 
 .bloco-nav { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
 .bloco-nav .btn-primary { flex: 1; }

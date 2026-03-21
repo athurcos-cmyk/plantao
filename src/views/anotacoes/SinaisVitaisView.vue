@@ -118,9 +118,35 @@
           </div>
         </div>
 
-        <div class="campo" v-if="form.algias === 'refere'">
-          <label>Descreva a dor </label>
-          <input  data-testid="auto-input-sinaisvitaisview-12" type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia leve, dor em MMII">
+        <div v-if="form.algias === 'refere'">
+          <div class="campo">
+            <label>Localização da dor</label>
+            <input data-testid="auto-input-sinaisvitaisview-12" type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia, dor em MMII, dor abdominal">
+          </div>
+
+          <div class="campo">
+            <label>Intensidade <span class="sv-unit">(escala 0–10)</span></label>
+            <div class="escala-dor">
+              <button
+                v-for="n in 11" :key="n-1"
+                class="chip chip-escala"
+                :class="{ 'chip-on': form.dorEscala === (n-1), 'chip-escala-alto': (n-1) >= 7, 'chip-escala-medio': (n-1) >= 4 && (n-1) < 7 }"
+                @click="form.dorEscala = form.dorEscala === (n-1) ? null : (n-1)"
+              >{{ n-1 }}</button>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label>Conduta</label>
+            <div class="chips-wrap" style="margin-bottom:8px">
+              <button class="chip" :class="{ 'chip-on': form.dorConduta.includes('comunicado') }" @click="toggleConduta('comunicado')">Comunicado à enfermeira</button>
+              <button class="chip" :class="{ 'chip-on': form.dorConduta.includes('medicado') }" @click="toggleConduta('medicado')">Medicação administrada</button>
+              <button class="chip" :class="{ 'chip-on': form.dorConduta.includes('reavaliado') }" @click="toggleConduta('reavaliado')">Reavaliado</button>
+            </div>
+            <input v-if="form.dorConduta.includes('comunicado')" type="text" v-model="form.dorCondutaEnf" placeholder="Nome da enfermeira" style="margin-bottom:6px">
+            <input v-if="form.dorConduta.includes('medicado')" type="text" v-model="form.dorCondutaMed" placeholder="Ex: item 3 da prescrição médica, EV">
+            <input v-if="form.dorConduta.includes('reavaliado')" type="text" v-model="form.dorCondutaReav" placeholder="Ex: nível 2 após 20 min" style="margin-top:6px">
+          </div>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -200,20 +226,31 @@ const erro        = ref('')
 const salvando    = ref(false)
 
 const form = reactive({
-  horario:      '',
-  paSis:        '',
-  paDia:        '',
-  pam:          '',
-  fc:           '',
-  fr:           '',
-  temp:         '',
-  sat:          '',
-  dextro:       '',
-  algias:       '',
-  dorDesc:      '',
-  nomePaciente: '',
-  leitoPaciente: ''
+  horario:        '',
+  paSis:          '',
+  paDia:          '',
+  pam:            '',
+  fc:             '',
+  fr:             '',
+  temp:           '',
+  sat:            '',
+  dextro:         '',
+  algias:         '',
+  dorDesc:        '',
+  dorEscala:      null,
+  dorConduta:     [],
+  dorCondutaEnf:  '',
+  dorCondutaMed:  '',
+  dorCondutaReav: '',
+  nomePaciente:   '',
+  leitoPaciente:  ''
 })
+
+function toggleConduta(v) {
+  const i = form.dorConduta.indexOf(v)
+  if (i === -1) form.dorConduta.push(v)
+  else form.dorConduta.splice(i, 1)
+}
 
 // ── Rascunho ──────────────────────────────────────────────────────────────
 const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
@@ -236,8 +273,30 @@ function gerar() {
 
   // Algias
   let algiasText = ''
-  if (form.algias === 'nega')   algiasText = ', nega algias'
-  if (form.algias === 'refere') algiasText = `, refere dor: ${form.dorDesc.trim()}`
+  if (form.algias === 'nega') {
+    algiasText = ', nega algias'
+  } else if (form.algias === 'refere') {
+    const partes = []
+    if (form.dorDesc.trim()) partes.push(form.dorDesc.trim())
+    if (form.dorEscala !== null) partes.push(`nível ${form.dorEscala}/10 na escala de dor`)
+    let dorBase = partes.length ? `, refere dor: ${partes.join(', ')}` : ', refere dor'
+
+    const condutas = []
+    if (form.dorConduta.includes('comunicado') && form.dorCondutaEnf.trim())
+      condutas.push(`Comunicado à enfermeira ${form.dorCondutaEnf.trim()}`)
+    else if (form.dorConduta.includes('comunicado'))
+      condutas.push('Comunicado à enfermeira')
+    if (form.dorConduta.includes('medicado') && form.dorCondutaMed.trim())
+      condutas.push(`Administrado ${form.dorCondutaMed.trim()}, conforme prescrição médica`)
+    else if (form.dorConduta.includes('medicado'))
+      condutas.push('Administrado medicamento conforme prescrição médica')
+    if (form.dorConduta.includes('reavaliado') && form.dorCondutaReav.trim())
+      condutas.push(`Reavaliado – ${form.dorCondutaReav.trim()}`)
+    else if (form.dorConduta.includes('reavaliado'))
+      condutas.push('Reavaliado')
+
+    algiasText = dorBase + (condutas.length ? '. ' + condutas.join('. ') : '')
+  }
 
   // Sinais
   const sv = []
@@ -296,7 +355,8 @@ function novaAfericao() {
   Object.assign(form, {
     horario: '', paSis: '', paDia: '', pam: '',
     fc: '', fr: '', temp: '', sat: '', dextro: '',
-    algias: '', dorDesc: ''
+    algias: '', dorDesc: '', dorEscala: null,
+    dorConduta: [], dorCondutaEnf: '', dorCondutaMed: '', dorCondutaReav: ''
   })
   erro.value    = ''
   gerado.value  = false
@@ -341,6 +401,12 @@ function novaAfericao() {
   font-size: 0.9rem;
   margin: 8px 0 0;
 }
+
+.btn-icon {
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center;
+}
+.btn-icon:active { background: var(--bg-hover); }
 
 .btn-home-logo {
   display: flex;
@@ -405,6 +471,23 @@ function novaAfericao() {
   flex-shrink: 0; transition: all 0.15s;
 }
 .chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+
+.escala-dor {
+  display: flex;
+  gap: 5px;
+  flex-wrap: nowrap;
+}
+.chip-escala {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 2px;
+  font-size: 0.85rem;
+  text-align: center;
+  border-radius: 8px;
+}
+.chip-escala.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 700; }
+.chip-escala.chip-escala-medio:not(.chip-on) { border-color: #d97706; color: #d97706; }
+.chip-escala.chip-escala-alto:not(.chip-on)  { border-color: var(--red); color: var(--red); }
 
 /* Toast global — ver App.vue + style.css */
 </style>
