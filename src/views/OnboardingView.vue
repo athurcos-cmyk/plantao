@@ -70,12 +70,12 @@ function proxima() {
 
 function pular() {
   _marcarVisto()
-  router.push('/login')
+  router.push({ name: 'login' })
 }
 
 function concluir() {
   _marcarVisto()
-  router.push('/login')
+  router.push({ name: 'login' })
 }
 </script>
 
