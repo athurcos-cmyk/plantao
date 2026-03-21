@@ -6,6 +6,17 @@ import { ref as dbRef, get, set, update } from 'firebase/database'
 const SESSION_DURATION_MS = 20 * 60 * 60 * 1000 // 20 horas (cobre plantão de 12h + folga)
 const PIN_SALT_PREFIX = 'plantao_hc_2025_'
 
+// iOS Safari modo privado lança QuotaExceededError no localStorage
+// Detecta uma vez na inicialização e usa fallback em memória se necessário
+function _testLocalStorage() {
+  try {
+    localStorage.setItem('__test', '1')
+    localStorage.removeItem('__test')
+    return true
+  } catch { return false }
+}
+const _lsOk = _testLocalStorage()
+
 async function hashPin(pin, code) {
   // hash novo: salt = prefixo fixo + syncCode
   const salted = PIN_SALT_PREFIX + code.toUpperCase() + ':' + pin
@@ -20,9 +31,9 @@ async function hashPinLegacy(pin) {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const syncCode = ref(localStorage.getItem('sync_code') || '')
-  const userName = ref(localStorage.getItem('user_name') || '')
-  const loginTime = ref(parseInt(localStorage.getItem('login_time') || '0'))
+  const syncCode = ref(_lsOk ? (localStorage.getItem('sync_code') || '') : '')
+  const userName = ref(_lsOk ? (localStorage.getItem('user_name') || '') : '')
+  const loginTime = ref(_lsOk ? parseInt(localStorage.getItem('login_time') || '0') : 0)
 
   const isLoggedIn = computed(() => {
     if (!syncCode.value || !loginTime.value) return false
@@ -77,19 +88,26 @@ export const useAuthStore = defineStore('auth', () => {
     syncCode.value = code
     userName.value = name
     loginTime.value = now
-    localStorage.setItem('sync_code', code)
-    localStorage.setItem('user_name', name)
-    localStorage.setItem('login_time', now.toString())
+    if (_lsOk) {
+      localStorage.setItem('sync_code', code)
+      localStorage.setItem('user_name', name)
+      localStorage.setItem('login_time', now.toString())
+    }
   }
 
   function logout() {
     syncCode.value = ''
     userName.value = ''
     loginTime.value = 0
-    localStorage.removeItem('sync_code')
-    localStorage.removeItem('user_name')
-    localStorage.removeItem('login_time')
+    if (_lsOk) {
+      localStorage.removeItem('sync_code')
+      localStorage.removeItem('user_name')
+      localStorage.removeItem('login_time')
+    }
   }
 
-  return { syncCode, userName, isLoggedIn, checkCode, register, login, logout }
+  // Expõe se localStorage está disponível (para UI mostrar aviso se necessário)
+  const modoPrivado = !_lsOk
+
+  return { syncCode, userName, isLoggedIn, modoPrivado, checkCode, register, login, logout }
 })

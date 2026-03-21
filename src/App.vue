@@ -19,6 +19,16 @@
       <button class="install-fechar" @click="mostrarInstall = false">✕</button>
     </div>
   </Transition>
+  <Transition name="ios-bar">
+    <div v-if="mostrarBannerIOS" class="ios-bar">
+      <span class="ios-bar-icon">🍎</span>
+      <span class="ios-bar-texto">Para instalar o app, abra no <strong>Safari</strong></span>
+      <button class="ios-bar-btn" @click="copiarLinkIOS">
+        {{ linkCopiado ? 'Copiado ✓' : 'Copiar link' }}
+      </button>
+      <button class="install-fechar" @click="mostrarBannerIOS = false">✕</button>
+    </div>
+  </Transition>
   <Transition name="update-bar">
     <div v-if="temAtualizacao" class="update-bar">
       <span>🆕 Nova versão disponível</span>
@@ -119,6 +129,38 @@ window.addEventListener('beforeinstallprompt', (e) => {
   const jaInstalado = window.matchMedia('(display-mode: standalone)').matches
   if (!jaInstalado) mostrarInstall.value = true
 })
+
+// Banner iOS + Chrome: detecta iPhone/iPad no Chrome (não-Safari) fora do standalone
+// iOS não expõe beforeinstallprompt — usuário precisa instalar pelo Safari
+const mostrarBannerIOS = ref(false)
+const linkCopiado = ref(false)
+
+;(function detectarIOSChrome() {
+  const ua = navigator.userAgent
+  const isIOS = /iphone|ipad|ipod/i.test(ua)
+  const isSafari = /safari/i.test(ua) && !/chrome|crios|fxios|edgios/i.test(ua)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || navigator.standalone === true
+  if (isIOS && !isSafari && !isStandalone) {
+    mostrarBannerIOS.value = true
+  }
+})()
+
+async function copiarLinkIOS() {
+  try {
+    await navigator.clipboard.writeText(window.location.href)
+  } catch {
+    // fallback
+    const ta = document.createElement('textarea')
+    ta.value = window.location.href
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    document.body.removeChild(ta)
+  }
+  linkCopiado.value = true
+  setTimeout(() => { linkCopiado.value = false }, 2500)
+}
 
 async function instalarApp() {
   if (!_installPrompt) return
@@ -223,6 +265,41 @@ onMounted(() => {
 .install-bar-leave-active { transition: transform 0.3s ease; }
 .install-bar-enter-from,
 .install-bar-leave-to     { transform: translateY(100%); }
+
+.ios-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #2a1a3e;
+  border-top: 1px solid #9b59b6;
+  color: #e8d5f5;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 12px 16px;
+  z-index: 9997;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ios-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
+.ios-bar-texto { flex: 1; }
+.ios-bar-btn {
+  background: #9b59b6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ios-bar-enter-active,
+.ios-bar-leave-active { transition: transform 0.3s ease; }
+.ios-bar-enter-from,
+.ios-bar-leave-to     { transform: translateY(100%); }
 
 .update-bar {
   position: fixed;
