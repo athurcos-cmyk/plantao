@@ -381,8 +381,8 @@ async function adicionarTemplate() {
   gap: 8px;
   font-size: 0.8rem;
   color: var(--text-muted);
-  background: rgba(255,193,7,0.06);
-  border: 1px solid rgba(255,193,7,0.2);
+  background: var(--warning-muted);
+  border: 1px solid rgba(255, 193, 7, 0.2);
   border-radius: 10px;
   padding: 9px 14px;
   margin-bottom: 12px;

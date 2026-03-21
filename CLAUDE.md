@@ -1,5 +1,11 @@
 # Plantão — instruções do projeto
 
+## Design System
+Sempre ler DESIGN.md antes de qualquer decisão visual ou de UI.
+Todas as escolhas de fonte, cor, espaçamento e direção estética estão definidas lá.
+Não desviar sem aprovação explícita do usuário.
+Em modo QA, sinalizar qualquer código que não siga o DESIGN.md.
+
 ## Projeto
 App PWA de anotações de enfermagem para uso no celular durante plantão hospitalar.
 Gera textos formatados prontos para copiar no sistema do hospital.
@@ -68,3 +74,27 @@ Sessão 20h no localStorage. syncCode é a chave raiz no Firebase.
 @.claude/skills/economia-tokens.md
 @.claude/skills/criar-skill.md
 @.claude/skills/modularizacao.md
+
+## gstack
+Skills de workflow instaladas globalmente. Use `/browse` para navegação web (nunca `mcp__claude-in-chrome__*`).
+
+Skills disponíveis:
+- `/office-hours` — brainstorming de ideias
+- `/plan-ceo-review` — revisão estratégica
+- `/plan-eng-review` — revisão de arquitetura
+- `/plan-design-review` — revisão de design
+- `/design-consultation` — criação de design system
+- `/investigate` — debug de erros
+- `/review` — code review antes de merge
+- `/design-review` — auditoria visual
+- `/ship` — preparar PR / deploy
+- `/qa` — testes no browser (requer bun)
+- `/qa-only` — só testes
+- `/document-release` — docs pós-deploy
+- `/retro` — retrospectiva semanal
+- `/codex` — segunda opinião / review adversarial
+- `/careful` — modo cuidadoso para produção
+- `/freeze` — restringir edições a um módulo
+- `/guard` — modo máxima segurança
+- `/unfreeze` — remover restrições
+- `/gstack-upgrade` — atualizar gstack

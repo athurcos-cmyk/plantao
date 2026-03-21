@@ -530,7 +530,7 @@ async function entrar() {
   flex-direction: column;
   gap: 8px;
   padding: 12px 14px;
-  background: rgba(255, 193, 7, 0.07);
+  background: var(--warning-muted);
   border: 1px solid rgba(255, 193, 7, 0.25);
   border-radius: 12px;
   margin-bottom: 16px;
