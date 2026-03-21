@@ -2,7 +2,19 @@
  * api/chat.js
  * Serverless function — chama a API do Groq (Llama 3.3 70B).
  * A GROQ_API_KEY nunca é exposta no cliente.
+ * Verifica o syncCode no Firebase antes de consumir a API.
  */
+
+import admin from 'firebase-admin'
+
+let _adminInit = false
+function _initAdmin() {
+  if (_adminInit) return
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT
+  if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT não configurada')
+  admin.initializeApp({ credential: admin.credential.cert(JSON.parse(raw)), databaseURL: 'https://anotacao-hc-default-rtdb.firebaseio.com' })
+  _adminInit = true
+}
 
 const SYSTEM_PROMPT = `Você é Clara, assistente de enfermagem do app Plantão, criada para auxiliar enfermeiros durante o plantão hospitalar brasileiro.
 
@@ -50,6 +62,18 @@ export default async function handler(req, res) {
 
   if (!syncCode) {
     return res.status(400).json({ error: 'syncCode obrigatório' })
+  }
+
+  // Verifica se syncCode existe no Firebase — impede uso não autorizado da IA
+  try {
+    _initAdmin()
+    const snap = await admin.database().ref(`usuarios/${syncCode}`).get()
+    if (!snap.exists()) {
+      return res.status(403).json({ error: 'Não autorizado.' })
+    }
+  } catch (e) {
+    console.error('[CHAT] auth check failed:', e.message)
+    return res.status(500).json({ error: 'Erro interno.' })
   }
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {

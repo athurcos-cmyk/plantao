@@ -24,6 +24,11 @@ const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY || ''
 // ── syncCode do usuário logado (configurado ao fazer login)
 let _syncCode = null
 
+// true = FCM registrado com sucesso (push funciona com app fechado)
+// false = só fallback localStorage (push só funciona com app aberto)
+let _fcmAtivo = false
+export function fcmAtivo() { return _fcmAtivo }
+
 // ── localStorage fallback ────────────────────────────────────────────────────
 const STORAGE_KEY = 'plantao_notifs_v2'
 
@@ -76,10 +81,13 @@ async function _registrarTokenFCM(syncCode) {
     const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
     if (token) {
       await set(dbRef(db, `fcm_tokens/${syncCode}`), token)
+      _fcmAtivo = true
       console.log('[FCM] Token registrado no Firebase ✓')
     }
   } catch (e) {
-    // FCM não disponível (HTTP local, iOS, etc.) — fallback localStorage funciona
+    // FCM não disponível (HTTP local, iOS < 16.4, Chrome no iOS, etc.)
+    // fallback localStorage funciona quando app está aberto
+    _fcmAtivo = false
     console.warn('[FCM] Token não registrado:', e.message)
   }
 }

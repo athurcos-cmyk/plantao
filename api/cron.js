@@ -104,33 +104,25 @@ export default async function handler(req, res) {
       console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago), claiming...`)
       totalProcessados++
 
-      // Log do estado ANTES
-      const estadoAntes = {
-        timestamp: notif.timestamp,
-        body: notif.body,
-        tag: notif.tag,
-        sentAt: notif.sentAt,
-        processingAt: notif.processingAt,
-        processingBy: notif.processingBy,
-      }
-      console.log(`[CRON] ${syncCode}/${key}: estado antes=`, JSON.stringify(estadoAntes))
-
-      // Lock atômico simples para evitar problemas com .transaction() em Serverless functions do Vercel
-      // Verifica o current state que lemos no .get()
-      const locked = notif.processingAt > 0 && (Date.now() - notif.processingAt) < LOCK_TIMEOUT_MS
-      if (locked) {
-        console.log(`[CRON] ${syncCode}/${key}: skipping, already processing by ${notif.processingBy}`)
+      // Lock atômico via Firebase transaction() — garante que apenas uma instância processa
+      let claimed = false
+      try {
+        const result = await notifRef.transaction((current) => {
+          if (!current) return // nó deletado entre o .get() e agora
+          if (current.sentAt) return // já enviado
+          if (current.processingAt > 0 && (Date.now() - current.processingAt) < LOCK_TIMEOUT_MS) {
+            return // já está sendo processado por outra instância — abort
+          }
+          return { ...current, processingAt: Date.now(), processingBy: runId }
+        })
+        claimed = result.committed && result.snapshot.exists() && result.snapshot.val()?.processingBy === runId
+      } catch (e) {
+        console.log(`[CRON] ${syncCode}/${key}: transaction falhou - ${e.message}`)
         continue
       }
-      
-      // Assinala que ESTAMOS processando isso agora
-      try {
-        await notifRef.update({
-          processingAt: Date.now(),
-          processingBy: runId,
-        })
-      } catch (e) {
-        console.log(`[CRON] ${syncCode}/${key}: falha ao fazer claim - ${e.message}`)
+
+      if (!claimed) {
+        console.log(`[CRON] ${syncCode}/${key}: não foi possível fazer claim (outra instância)`)
         continue
       }
 

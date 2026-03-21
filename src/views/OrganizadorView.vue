@@ -37,6 +37,14 @@
         </button>
       </div>
 
+      <!-- Aviso FCM não disponível neste dispositivo -->
+      <transition name="fade">
+        <div v-if="somenteFallback && store.plantao" class="aviso-fcm">
+          <span>🔔</span>
+          <span>Notificações funcionam <strong>só com o app aberto</strong> neste dispositivo</span>
+        </div>
+      </transition>
+
       <!-- Active shift -->
       <div v-else>
 
@@ -249,16 +257,20 @@ import {
   solicitarPermissaoNotificacao,
   agendarTodasNotificacoes,
   configurarFCM,
+  fcmAtivo,
 } from '../composables/usePushNotificacoes.js'
 
 const router = useRouter()
 const store  = useOrganizadorStore()
+const somenteFallback = ref(false) // true = FCM não disponível neste dispositivo
 const auth   = useAuthStore()
 
 onMounted(async () => {
   store.iniciar()
   await solicitarPermissaoNotificacao(auth.syncCode)
   await configurarFCM(auth.syncCode)
+  // Após configurar FCM, checa se o token foi registrado com sucesso
+  somenteFallback.value = !fcmAtivo()
 })
 
 onUnmounted(() => {
@@ -362,6 +374,21 @@ async function adicionarTemplate() {
 </script>
 
 <style scoped>
+/* Aviso FCM fallback */
+.aviso-fcm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(255,193,7,0.06);
+  border: 1px solid rgba(255,193,7,0.2);
+  border-radius: 10px;
+  padding: 9px 14px;
+  margin-bottom: 12px;
+}
+.aviso-fcm strong { color: var(--text); }
+
 /* Header icon buttons */
 .btn-icon {
   background: none; border: none; color: var(--text-dim);
