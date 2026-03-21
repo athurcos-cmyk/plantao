@@ -1,7 +1,7 @@
 # Plano de Testes — Plantão App
 
 > Versão do app: 0.10.19
-> Última atualização: 2026-03-16
+> Última atualização: 2026-03-21
 
 ---
 
@@ -749,3 +749,24 @@
 - [x] Anotação sem horário no texto → ordenada ao final do dia (retorna -1)
 - [x] Empate no horário → fallback por `timestamp` desc (mais recente salvo primeiro)
 - [x] Verificado no preview: 16/03 18h00 aparece antes de 15/03 22h33
+
+---
+
+## 15. ONBOARDING E PC VIEW
+
+### 15.1 Navegação do onboarding (BUG-001)
+- [x] Botão "Criar conta gratuita" (último slide) navega para tela de login — sem tela azul/branca no iPhone
+- [x] Botão "Pular" navega para tela de login em todos os slides
+- [x] Ambos os botões funcionam via `router.push({ name: 'login' })` (rota nomeada, não path)
+
+### 15.2 PcView — touch target (FINDING-001)
+- [x] Botão "Continuar no PC mesmo assim" tem min-height ≥ 44px
+- [x] Botão responde ao toque normalmente em dispositivo mobile
+
+### 15.3 Update banner (FINDING-002)
+- [x] Banner "Nova versão disponível" não aparece na tela de login
+- [x] Banner não aparece no onboarding
+- [x] Banner aparece corretamente no dashboard quando `temAtualizacao === true`
+
+### 15.4 Design tokens no aviso de PIN (FINDING-005)
+- [x] Aviso "Evite PINs óbvios" usa `var(--warning)` — sem cor hardcoded
