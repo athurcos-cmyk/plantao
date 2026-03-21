@@ -1,5 +1,7 @@
 <template>
   <RouterView />
+  <BotaoChat v-if="auth.isLoggedIn" />
+  <ChatAssistente v-if="auth.isLoggedIn" />
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
   </Transition>
@@ -35,6 +37,8 @@ import { useOrganizadorStore } from './stores/organizador.js'
 import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
+import BotaoChat from './components/BotaoChat.vue'
+import ChatAssistente from './components/ChatAssistente.vue'
 
 const { toastMsg, showToast } = useToast()
 const { isOnline } = useOnlineStatus()
