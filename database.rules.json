@@ -105,6 +105,15 @@
           }
         }
       }
+    },
+    "feedback": {
+      "$code": {
+        ".read": false,
+        ".write": "root.child('usuarios').child($code).exists()",
+        "$id": {
+          ".validate": "!newData.exists() || (newData.hasChildren(['texto', 'timestamp']) && newData.child('texto').isString() && newData.child('timestamp').isNumber() && (!newData.child('versaoApp').exists() || newData.child('versaoApp').isString()))"
+        }
+      }
     }
   }
 }
