@@ -163,11 +163,11 @@ const {
   verificarPulso,
   dispensar: dispensarPulso,
   enviar: enviarPulso,
-  isPrimeiraCopia,
+  primeiraCopiaFeita,
 } = usePulso()
 
-// Avaliado na criação do componente — banner some após primeira cópia e retorno ao Dashboard
-const primeiraSessao = ref(isPrimeiraCopia())
+// Computed reativo — some imediatamente quando useCopia fizer a primeira cópia
+const primeiraSessao = computed(() => !primeiraCopiaFeita.value)
 
 function abrirFeedback() {
   if (!auth.syncCode) return

@@ -208,12 +208,6 @@
           </div>
           <div v-if="!form.semIntercorrencias" style="margin-top:10px">
             <textarea v-model="form.intercorrencia" rows="3" placeholder="Descreva a intercorrência..."></textarea>
-            <button
-              v-if="form.intercorrencia && form.intercorrencia.length >= 5"
-              class="btn-clara"
-              :disabled="claraCarregando"
-              @click="completarComClara(intercorrenciaRef)"
-            >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
           </div>
         </div>
 
@@ -259,14 +253,12 @@ import { usePacientesStore } from '../../stores/pacientes.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
-import { useClara } from '../../composables/useClara.js'
 
 const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
 const { showToast }  = useToast()
 const { copiado, copiar: _copiar } = useCopia()
-const { claraCarregando, completarComClara } = useClara()
 
 // ── Estado ──
 const passo       = ref(1)
@@ -473,8 +465,6 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
-// Proxy ref para Clara (form.intercorrencia)
-const intercorrenciaRef = { get value() { return form.intercorrencia }, set value(v) { form.intercorrencia = v } }
 
 // ── Salvar ──
 async function salvar() {

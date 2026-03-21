@@ -79,7 +79,7 @@
             v-if="notaTexto && notaTexto.length >= 5"
             class="btn-clara"
             :disabled="claraCarregando"
-            @click="completarComClara(notaTexto)"
+            @click="completarNotaComClara()"
           >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
           <span class="nc-hint">Enter adiciona · Shift+Enter quebra linha</span>
           <button
@@ -276,6 +276,9 @@ const { showToast }   = useToast()
 const { isOnline }    = useOnlineStatus()
 const { copiado, copiar: _copiar } = useCopia()
 const { claraCarregando, completarComClara } = useClara()
+// Wrapper necessário: no template Vue auto-unwrapa refs ao passar como argumento.
+// Chamando pelo script, notaTexto chega como Ref<string> (com .value) — o que useClara espera.
+function completarNotaComClara() { completarComClara(notaTexto) }
 
 // ── Estado ──
 const gerado            = ref(false)

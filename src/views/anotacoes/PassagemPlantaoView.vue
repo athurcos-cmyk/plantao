@@ -190,12 +190,6 @@
         <div class="campo">
           <label>Observações <span class="opc">(opcional)</span></label>
           <input type="text" v-model="form.obs" placeholder="Observações adicionais...">
-          <button
-            v-if="form.obs && form.obs.length >= 5"
-            class="btn-clara"
-            :disabled="claraCarregando"
-            @click="completarComClara(obsRef)"
-          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -241,7 +235,6 @@ import { useAuthStore } from '../../stores/auth.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
-import { useClara } from '../../composables/useClara.js'
 
 const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()
@@ -249,8 +242,6 @@ const pacientesStore = usePacientesStore()
 const authStore      = useAuthStore()
 const { showToast }  = useToast()
 const { copiado, copiar: _copiar } = useCopia()
-const { claraCarregando, completarComClara } = useClara()
-
 // ── Estado ──
 const passo       = ref(1)
 const gerado      = ref(false)
@@ -437,8 +428,6 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
-// Proxy ref para Clara (form.obs)
-const obsRef = { get value() { return form.obs }, set value(v) { form.obs = v } }
 
 // ── Salvar ──
 async function salvar() {

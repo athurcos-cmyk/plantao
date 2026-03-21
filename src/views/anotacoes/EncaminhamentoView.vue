@@ -423,12 +423,6 @@
         <div class="campo">
           <label>Observações <span class="opc">(opcional)</span></label>
           <textarea v-model="form.observacoes" rows="3" placeholder="Ex: paciente agitado durante o transporte"></textarea>
-          <button
-            v-if="form.observacoes && form.observacoes.length >= 5"
-            class="btn-clara"
-            :disabled="claraCarregando"
-            @click="completarComClara(observacoesRef)"
-          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -473,7 +467,6 @@ import { usePacientesStore } from '../../stores/pacientes.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
-import { useClara } from '../../composables/useClara.js'
 import { db } from '../../firebase.js'
 import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 import { useAuthStore } from '../../stores/auth.js'
@@ -484,8 +477,6 @@ const pacientesStore = usePacientesStore()
 const authStore      = useAuthStore()
 const { showToast }  = useToast()
 const { copiado, copiar: _copiar } = useCopia()
-const { claraCarregando, completarComClara } = useClara()
-
 // ── Estado ──
 const passo       = ref(1)
 const gerado      = ref(false)
@@ -954,8 +945,6 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
-// Proxy ref para Clara (form.observacoes)
-const observacoesRef = { get value() { return form.observacoes }, set value(v) { form.observacoes = v } }
 
 // ── Salvar ──
 async function salvar() {

@@ -203,12 +203,6 @@
               @click="setAspecto(a)">{{ a }}</button>
           </div>
           <input type="text" v-model="form.aspecto" placeholder="Ex: tecido de granulação, necrose...">
-          <button
-            v-if="form.aspecto && form.aspecto.length >= 5"
-            class="btn-clara"
-            :disabled="claraCarregando"
-            @click="completarComClara(aspectoRef)"
-          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -254,7 +248,6 @@ import { useAuthStore } from '../../stores/auth.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
-import { useClara } from '../../composables/useClara.js'
 import { db } from '../../firebase.js'
 import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 
@@ -264,8 +257,6 @@ const pacientesStore = usePacientesStore()
 const authStore      = useAuthStore()
 const { showToast }  = useToast()
 const { copiado, copiar: _copiar } = useCopia()
-const { claraCarregando, completarComClara } = useClara()
-
 // ── Estado ──
 const passo            = ref(1)
 const gerado           = ref(false)
@@ -633,8 +624,6 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
-// Proxy ref para Clara (form.aspecto)
-const aspectoRef = { get value() { return form.aspecto }, set value(v) { form.aspecto = v } }
 
 // ── Salvar ──
 async function salvar() {

@@ -24,6 +24,10 @@ const STORAGE_KEY = 'feedback_solicitado'
 const PRIMEIRA_COPIA_KEY = 'primeira_copia_feita'
 const SETE_DIAS_MS = 7 * 24 * 60 * 60 * 1000
 
+// Ref reativa em nível de módulo — compartilhada entre todas as instâncias.
+// Garante que o Dashboard reaja imediatamente quando useCopia marcar a 1ª cópia.
+const _primeiraCopiaFeita = ref(!!localStorage.getItem(PRIMEIRA_COPIA_KEY))
+
 // __APP_VERSION__ é injetado pelo vite.config.js (pkg.version)
 // eslint-disable-next-line no-undef
 const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1.0.0-alpha'
@@ -92,13 +96,14 @@ export function usePulso() {
    * Usado por Feature 2 para serializar confete → pulso.
    */
   function marcarPrimeiraCopia() {
-    if (!localStorage.getItem(PRIMEIRA_COPIA_KEY)) {
+    if (!_primeiraCopiaFeita.value) {
       localStorage.setItem(PRIMEIRA_COPIA_KEY, '1')
+      _primeiraCopiaFeita.value = true // atualiza ref reativa → Dashboard reage
     }
   }
 
   function isPrimeiraCopia() {
-    return !localStorage.getItem(PRIMEIRA_COPIA_KEY)
+    return !_primeiraCopiaFeita.value
   }
 
   return {
@@ -110,5 +115,6 @@ export function usePulso() {
     enviar,
     marcarPrimeiraCopia,
     isPrimeiraCopia,
+    primeiraCopiaFeita: _primeiraCopiaFeita, // ref reativa exposta
   }
 }
