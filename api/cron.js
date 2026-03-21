@@ -144,10 +144,10 @@ export default async function handler(req, res) {
           webpush: {
             notification: {
               title: '⏰ Plantão',
-              body: claimed.body || '',
+              body: notif.body || '',
               icon: '/icons/icon-192.png',
               badge: '/icons/icon-192.png',
-              tag: claimed.tag || 'plantao',
+              tag: notif.tag || 'plantao',
             },
             fcmOptions: { link: '/' },
           },
