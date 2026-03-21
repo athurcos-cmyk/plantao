@@ -20,7 +20,7 @@
           </div>
 
           <div class="chat-disclaimer">
-            ⚕️ Clara é suporte — decisões clínicas são do médico plantonista
+            🤖 Clara é uma inteligência artificial. Sempre verifique as informações com profissionais de saúde.
           </div>
 
           <!-- Mensagens -->
@@ -33,9 +33,11 @@
               <!-- Chips de sugestão -->
               <div class="chat-chips">
                 <button class="chat-chip" @click="sugerir('Me ajude a redigir uma anotação de queda de paciente')">📋 Anotação de queda</button>
+                <button class="chat-chip" @click="sugerir('Me ajude a estruturar a passagem de plantão')">🔄 Passagem de plantão</button>
+                <button class="chat-chip" @click="sugerir('Me ajude a redigir uma evolução de enfermagem')">📝 Evolução</button>
+                <button class="chat-chip" @click="sugerir('Como calcular o gotejamento de soro?')">💊 Calcular gotejamento</button>
                 <button class="chat-chip" @click="sugerir('Como descrever uma intercorrência no prontuário?')">⚠️ Intercorrência</button>
-                <button class="chat-chip" @click="sugerir('Como organizar o início do plantão?')">📝 Início do plantão</button>
-                <button class="chat-chip" @click="sugerir('Me ajude a redigir uma evolução de enfermagem')">📊 Evolução</button>
+                <button class="chat-chip" @click="sugerir('Paciente com sinais vitais alterados, como registrar?')">🩺 Sinais vitais</button>
               </div>
             </div>
 
