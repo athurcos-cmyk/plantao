@@ -75,12 +75,6 @@
           ></textarea>
         </div>
         <div class="nc-footer">
-          <button
-            v-if="notaTexto && notaTexto.length >= 5"
-            class="btn-clara"
-            :disabled="claraCarregando"
-            @click="completarNotaComClara()"
-          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
           <span class="nc-hint">Enter adiciona · Shift+Enter quebra linha</span>
           <button
             class="nc-btn-add"
@@ -266,7 +260,6 @@ import { useAuthStore } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useOnlineStatus } from '../../composables/useOnlineStatus.js'
 import { useCopia } from '../../composables/useCopia.js'
-import { useClara } from '../../composables/useClara.js'
 
 const router          = useRouter()
 const anotacoesStore  = useAnotacoesStore()
@@ -275,10 +268,6 @@ const authStore       = useAuthStore()
 const { showToast }   = useToast()
 const { isOnline }    = useOnlineStatus()
 const { copiado, copiar: _copiar } = useCopia()
-const { claraCarregando, completarComClara } = useClara()
-// Wrapper necessário: no template Vue auto-unwrapa refs ao passar como argumento.
-// Chamando pelo script, notaTexto chega como Ref<string> (com .value) — o que useClara espera.
-function completarNotaComClara() { completarComClara(notaTexto) }
 
 // ── Estado ──
 const gerado            = ref(false)

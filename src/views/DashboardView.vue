@@ -173,7 +173,7 @@ const helpItens = [
   { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do seu turno com horários e alertas. Anote o que precisa ser passado para o próximo plantão.' },
   { icone: '🕐', titulo: 'Histórico', desc: 'Acesse, busque, edite e compartilhe todas as anotações já geradas. Filtre por tipo ou por paciente.' },
   { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo. Use o mesmo código e PIN no celular, tablet ou computador.' },
-  { icone: '✨', titulo: 'Clara — Assistente IA', desc: 'Assistente de IA especialista em enfermagem. Acesse pelo botão ✨ no dashboard para tirar dúvidas, redigir observações e agilizar o plantão. As respostas são sugestões — sempre revise antes de usar.' },
+  { icone: '✨', titulo: 'Clara — Assistente IA', desc: 'Clara é uma IA especialista em enfermagem disponível no botão ✨ do dashboard. Use para tirar dúvidas sobre procedimentos, organização do plantão, cálculos de medicação, ou para pedir que ela redija uma anotação para você. Diga "redige a anotação de..." e ela entrega o texto pronto para copiar. As respostas são sugestões — sempre revise antes de usar.' },
   { icone: '💬', titulo: 'Feedback', desc: 'O botão 💬 no topo do dashboard abre um campo para você enviar uma mensagem para a equipe do Plantão. Após alguns dias de uso, o app pode perguntar automaticamente o que você achou — responda para nos ajudar a melhorar.' },
 ]
 
