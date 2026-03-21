@@ -550,11 +550,11 @@ async function entrar() {
 }
 
 .aviso-pin-perigo {
-  color: #e57373;
+  color: var(--warning);
 }
 
 .aviso-pin-perigo strong {
-  color: #ef9a9a;
+  color: var(--text);
 }
 
 /* ── Ajuda login ── */
