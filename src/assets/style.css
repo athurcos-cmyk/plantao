@@ -358,3 +358,25 @@ body {
   line-height: 1;
 }
 .btn-ajuda:active { background: var(--bg-hover); border-color: var(--blue); color: var(--blue); }
+
+
+/* ===== BOTÃO CLARA (IA inline) ===== */
+.btn-clara {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  opacity: 0.9;
+  transition: all 0.15s;
+}
+.btn-clara:hover { opacity: 1; background: rgba(30, 136, 229, 0.08); }
+.btn-clara:disabled { opacity: 0.45; cursor: not-allowed; }

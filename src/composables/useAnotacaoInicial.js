@@ -3,10 +3,12 @@ import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { gerarTexto } from '../utils/gerarTextoInicial.js'
 import { useToast } from './useToast.js'
+import { useCopia } from './useCopia.js'
 
 export function useAnotacaoInicial() {
   const router = useRouter()
   const store  = useAnotacoesStore()
+  const { copiar: _copiar } = useCopia()
 
   const { showToast } = useToast()
 
@@ -445,20 +447,9 @@ export function useAnotacaoInicial() {
   }
 
   async function copiar() {
-    try {
-      try {
-        await navigator.clipboard.writeText(textoGerado.value)
-      } catch {
-        const el = document.createElement('textarea')
-        el.value = textoGerado.value
-        el.style.position = 'fixed'; el.style.opacity = '0'
-        document.body.appendChild(el)
-        el.focus(); el.select()
-        document.execCommand('copy')
-        document.body.removeChild(el)
-      }
-      mostrarFeedback('✓ Copiado!')
-    } catch { mostrarFeedback('Erro ao copiar') }
+    const ok = await _copiar(textoGerado.value)
+    if (ok) mostrarFeedback('✓ Copiado!')
+    else mostrarFeedback('Erro ao copiar')
   }
 
   function compartilhar() {

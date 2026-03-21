@@ -75,6 +75,12 @@
           ></textarea>
         </div>
         <div class="nc-footer">
+          <button
+            v-if="notaTexto && notaTexto.length >= 5"
+            class="btn-clara"
+            :disabled="claraCarregando"
+            @click="completarComClara(notaTexto)"
+          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
           <span class="nc-hint">Enter adiciona · Shift+Enter quebra linha</span>
           <button
             class="nc-btn-add"
@@ -259,6 +265,8 @@ import { usePacientesStore } from '../../stores/pacientes.js'
 import { useAuthStore } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useOnlineStatus } from '../../composables/useOnlineStatus.js'
+import { useCopia } from '../../composables/useCopia.js'
+import { useClara } from '../../composables/useClara.js'
 
 const router          = useRouter()
 const anotacoesStore  = useAnotacoesStore()
@@ -266,13 +274,14 @@ const pacientesStore  = usePacientesStore()
 const authStore       = useAuthStore()
 const { showToast }   = useToast()
 const { isOnline }    = useOnlineStatus()
+const { copiado, copiar: _copiar } = useCopia()
+const { claraCarregando, completarComClara } = useClara()
 
 // ── Estado ──
 const gerado            = ref(false)
 const textoGerado       = ref('')
 const erro              = ref('')
 const salvando          = ref(false)
-const copiado           = ref(false)
 const carregandoModelos = ref(true)
 const salvandoModelo    = ref(false)
 const modalModelos      = ref(false)
@@ -681,20 +690,9 @@ function gerar() {
 
 // ── Copiar ──
 async function copiar() {
-  try {
-    try { await navigator.clipboard.writeText(textoGerado.value) }
-    catch {
-      const el = document.createElement('textarea')
-      el.value = textoGerado.value
-      el.style.position = 'fixed'; el.style.opacity = '0'
-      document.body.appendChild(el); el.focus(); el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    }
-    copiado.value = true
-    setTimeout(() => (copiado.value = false), 2000)
-    showToast('Texto copiado!')
-  } catch { showToast('Erro ao copiar') }
+  const ok = await _copiar(textoGerado.value)
+  if (ok) showToast('Texto copiado!')
+  else showToast('Erro ao copiar')
 }
 
 // ── Salvar ──

@@ -203,6 +203,12 @@
               @click="setAspecto(a)">{{ a }}</button>
           </div>
           <input type="text" v-model="form.aspecto" placeholder="Ex: tecido de granulação, necrose...">
+          <button
+            v-if="form.aspecto && form.aspecto.length >= 5"
+            class="btn-clara"
+            :disabled="claraCarregando"
+            @click="completarComClara(aspectoRef)"
+          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -247,6 +253,8 @@ import { usePacientesStore } from '../../stores/pacientes.js'
 import { useAuthStore } from '../../stores/auth.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
+import { useCopia } from '../../composables/useCopia.js'
+import { useClara } from '../../composables/useClara.js'
 import { db } from '../../firebase.js'
 import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 
@@ -255,6 +263,8 @@ const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
 const authStore      = useAuthStore()
 const { showToast }  = useToast()
+const { copiado, copiar: _copiar } = useCopia()
+const { claraCarregando, completarComClara } = useClara()
 
 // ── Estado ──
 const passo            = ref(1)
@@ -262,7 +272,6 @@ const gerado           = ref(false)
 const textoGerado      = ref('')
 const erro             = ref('')
 const salvando         = ref(false)
-const copiado          = ref(false)
 const localLivre    = ref('')
 const materiaisTemporarios = ref([])
 
@@ -619,23 +628,13 @@ function gerar() {
 
 // ── Copiar ──
 async function copiar() {
-  try {
-    try {
-      await navigator.clipboard.writeText(textoGerado.value)
-    } catch {
-      const el = document.createElement('textarea')
-      el.value = textoGerado.value
-      el.style.position = 'fixed'; el.style.opacity = '0'
-      document.body.appendChild(el)
-      el.focus(); el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    }
-    copiado.value = true
-    setTimeout(() => (copiado.value = false), 2000)
-    showToast('Texto copiado!')
-  } catch { showToast('Erro ao copiar') }
+  const ok = await _copiar(textoGerado.value)
+  if (ok) showToast('Texto copiado!')
+  else showToast('Erro ao copiar')
 }
+
+// Proxy ref para Clara (form.aspecto)
+const aspectoRef = { get value() { return form.aspecto }, set value(v) { form.aspecto = v } }
 
 // ── Salvar ──
 async function salvar() {

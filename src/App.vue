@@ -245,6 +245,17 @@ async function instalarApp() {
 
 // Verifica a sessão a cada minuto — se expirou, desloga e manda pro login
 onMounted(() => {
+  // Onboarding: redireciona para telas de boas-vindas na primeira abertura
+  // Só exibe uma vez — após isso, onboarding_visto=1 no localStorage bloqueia
+  try {
+    const jaViu = localStorage.getItem('onboarding_visto')
+    if (!jaViu && !auth.isLoggedIn) {
+      router.push({ name: 'onboarding' })
+    }
+  } catch {
+    // localStorage bloqueado (modo privado extremo) — ignorar, ir para login
+  }
+
   setInterval(() => {
     if (auth.syncCode && !auth.isLoggedIn) {
       auth.logout()

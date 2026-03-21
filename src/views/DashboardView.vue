@@ -11,6 +11,7 @@
         <span>Plantão</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn-feedback-topo" @click="abrirFeedback" title="Enviar feedback">💬</button>
         <button class="btn-ajuda" @click="helpAberto = true">? Ajuda</button>
         <button  data-testid="auto-btn-dashboardview-1" class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -24,6 +25,18 @@
       <div class="saudacao">
         <p class="saudacao-hora">{{ saudacaoTexto }}</p>
         <h2 v-if="auth.userName">{{ auth.userName }}</h2>
+      </div>
+
+      <!-- Banner: Primeiro Sucesso Guiado -->
+      <div v-if="primeiraSessao" class="banner-primeiro-sucesso">
+        <div class="bps-esquerda">
+          <span class="bps-icon">✍️</span>
+          <div class="bps-texto">
+            <strong>Pronto para começar?</strong>
+            <span>Crie sua primeira anotação e veja como é simples.</span>
+          </div>
+        </div>
+        <button class="bps-cta" @click="navegar(tipos[0])">Criar →</button>
       </div>
 
       <section class="sync-card">
@@ -88,6 +101,30 @@
         Ver histórico de anotações
       </button>
 
+      <!-- Pulso do App — Banner de Feedback -->
+      <div v-if="pulsoVisivel" class="pulso-card">
+        <div class="pulso-header">
+          <span class="pulso-titulo">💬 O que você acha do app?</span>
+          <button class="pulso-fechar" @click="dispensarPulso">✕</button>
+        </div>
+        <p class="pulso-sub">Sua opinião ajuda a melhorar o Plantão.</p>
+        <textarea
+          v-model="textoFeedback"
+          class="pulso-input"
+          placeholder="Escreva o que quiser — erros, sugestões, elogios..."
+          rows="3"
+          maxlength="500"
+        ></textarea>
+        <div class="pulso-acoes">
+          <button class="btn btn-ghost" @click="dispensarPulso">Agora não</button>
+          <button
+            class="btn btn-primary"
+            :disabled="!textoFeedback.trim() || pulsoEnviando"
+            @click="enviarPulso"
+          >{{ pulsoEnviando ? 'Enviando...' : 'Enviar' }}</button>
+        </div>
+      </div>
+
       <button  data-testid="auto-btn-dashboardview-4" class="btn btn-ghost" style="margin-top:10px" @click="sair">
         Sair da conta
       </button>
@@ -101,6 +138,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
+import { usePulso } from '../composables/usePulso.js'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { usePacientesStore } from '../stores/pacientes.js'
 import { useOrganizadorStore } from '../stores/organizador.js'
@@ -118,6 +156,24 @@ const orgStore = useOrganizadorStore()
 const { showToast } = useToast()
 const { isOnline } = useOnlineStatus()
 
+const {
+  visivel: pulsoVisivel,
+  textoFeedback,
+  enviando: pulsoEnviando,
+  verificarPulso,
+  dispensar: dispensarPulso,
+  enviar: enviarPulso,
+  isPrimeiraCopia,
+} = usePulso()
+
+// Avaliado na criação do componente — banner some após primeira cópia e retorno ao Dashboard
+const primeiraSessao = ref(isPrimeiraCopia())
+
+function abrirFeedback() {
+  if (!auth.syncCode) return
+  pulsoVisivel.value = true
+}
+
 const helpAberto = ref(false)
 
 const helpItens = [
@@ -133,6 +189,9 @@ const helpItens = [
   { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do seu turno com horários e alertas. Anote o que precisa ser passado para o próximo plantão.' },
   { icone: '🕐', titulo: 'Histórico', desc: 'Acesse, busque, edite e compartilhe todas as anotações já geradas. Filtre por tipo ou por paciente.' },
   { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo. Use o mesmo código e PIN no celular, tablet ou computador.' },
+  { icone: '✨', titulo: 'Clara — IA de Enfermagem', desc: 'Assistente de IA integrada nas anotações. Ao digitar pelo menos 5 caracteres em campos de texto livre (observações, intercorrências, fechamento…), o botão "✨ Clara" aparece. Toque para deixar a Clara completar ou sugerir o texto com linguagem técnica de enfermagem. As respostas são sugestões — sempre revise antes de copiar.' },
+  { icone: '🎉', titulo: 'Primeira cópia', desc: 'Na primeira vez que você copiar uma anotação no app, uma animação de confete celebra o momento. É a confirmação de que o Plantão está funcionando para você!' },
+  { icone: '💬', titulo: 'Feedback', desc: 'O botão 💬 no topo do dashboard abre um campo para você enviar uma mensagem para a equipe do Plantão. Após alguns dias de uso, o app pode perguntar automaticamente o que você achou — responda para nos ajudar a melhorar.' },
 ]
 
 const sincronizandoAgora = ref(false)
@@ -264,6 +323,8 @@ onMounted(() => {
   painelTimer = setInterval(atualizarPainelSync, 2500)
   window.addEventListener('online', atualizarPainelSync)
   window.addEventListener('focus', atualizarPainelSync)
+  // Pulso: verificar cadência com delay para não sobrepor carregamento
+  setTimeout(verificarPulso, 2000)
 })
 
 onUnmounted(() => {
@@ -488,5 +549,109 @@ function sair() {
 }
 .btn-org-sub {
   font-size: 0.78rem; color: var(--text-muted);
+}
+
+/* Feedback button in header */
+.btn-feedback-topo {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.btn-feedback-topo:hover { opacity: 1; }
+
+/* Primeiro Sucesso Banner */
+.banner-primeiro-sucesso {
+  background: var(--bg-card);
+  border: 1px solid var(--blue);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bps-esquerda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.bps-icon { font-size: 1.4rem; flex-shrink: 0; }
+.bps-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.bps-texto strong { font-size: 0.88rem; color: var(--text); }
+.bps-texto span { font-size: 0.78rem; color: var(--text-dim); }
+.bps-cta {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Pulso do App Card */
+.pulso-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 16px;
+}
+.pulso-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.pulso-titulo { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.pulso-fechar {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-family: inherit;
+}
+.pulso-fechar:hover { color: var(--text); }
+.pulso-sub { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 10px; }
+.pulso-input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px;
+  resize: none;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+.pulso-input:focus { outline: none; border-color: var(--blue); }
+.pulso-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 </style>

@@ -46,7 +46,7 @@
       </transition>
 
       <!-- Active shift -->
-      <div v-else>
+      <div v-if="store.plantao">
 
         <!-- Shift info bar -->
         <div class="plantao-bar">

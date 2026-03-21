@@ -6,6 +6,11 @@ const isDev    = () => location.hostname === 'localhost' || location.hostname ==
 
 const routes = [
   {
+    path: '/onboarding',
+    name: 'onboarding',
+    component: () => import('../views/OnboardingView.vue')
+  },
+  {
     path: '/',
     name: 'login',
     component: () => import('../views/LoginView.vue')

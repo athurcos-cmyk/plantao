@@ -432,6 +432,7 @@ import { useToast }          from '../../composables/useToast.js'
 import { useRascunho }       from '../../composables/useRascunho.js'
 import { useAuthStore }      from '../../stores/auth.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
+import { useCopia }          from '../../composables/useCopia.js'
 import { sugerirMedicamentos } from '../../data/medicamentos.js'
 import { db } from '../../firebase.js'
 import { ref as dbRef, get, set } from 'firebase/database'
@@ -440,6 +441,7 @@ const router   = useRouter()
 const store    = useAnotacoesStore()
 const auth     = useAuthStore()
 const { showToast } = useToast()
+const { copiar: _copiar } = useCopia()
 const pacientesStore = usePacientesStore()
 
 function selecionarPaciente(p) {
@@ -918,20 +920,9 @@ function gerar() {
 
 // ── Ações de resultado ──────────────────────────────────────────────────────
 async function copiar() {
-  try {
-    try {
-      await navigator.clipboard.writeText(textoGerado.value)
-    } catch {
-      const el = document.createElement('textarea')
-      el.value = textoGerado.value
-      el.style.position = 'fixed'; el.style.opacity = '0'
-      document.body.appendChild(el)
-      el.focus(); el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    }
-    showToast('Texto copiado!')
-  } catch { showToast('Erro ao copiar') }
+  const ok = await _copiar(textoGerado.value)
+  if (ok) showToast('Texto copiado!')
+  else showToast('Erro ao copiar')
 }
 
 async function salvar() {

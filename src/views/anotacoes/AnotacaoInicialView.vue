@@ -308,6 +308,7 @@
 
         <div class="campo">
           <textarea v-model="form.fechamento" rows="5"></textarea>
+          <button v-if="form.fechamento && form.fechamento.length >= 5" class="btn-clara" :disabled="claraCarregando" @click="completarComClara(fechamentoRef)">{{ claraCarregando ? '...' : '✨ Clara' }}</button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -398,6 +399,7 @@
 import { onMounted } from 'vue'
 import { useAnotacaoInicial } from '../../composables/useAnotacaoInicial.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
+import { useClara } from '../../composables/useClara.js'
 import ModalAVP from '../../components/modais/ModalAVP.vue'
 import ModalCVC from '../../components/modais/ModalCVC.vue'
 import ModalPICC from '../../components/modais/ModalPICC.vue'
@@ -440,6 +442,9 @@ const {
   gerar, salvar, copiar, compartilhar, novaAnotacao,
   router
 } = useAnotacaoInicial()
+
+const { claraCarregando, completarComClara } = useClara()
+const fechamentoRef = { get value() { return form.fechamento }, set value(v) { form.fechamento = v } }
 
 const pacientesStore = usePacientesStore()
 onMounted(() => pacientesStore.iniciar())

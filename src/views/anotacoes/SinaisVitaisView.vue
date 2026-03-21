@@ -121,6 +121,12 @@
         <div class="campo" v-if="form.algias === 'refere'">
           <label>Descreva a dor <span class="obrigatorio">*</span></label>
           <input  data-testid="auto-input-sinaisvitaisview-12" type="text" v-model="form.dorDesc" placeholder="Ex: cefaleia leve, dor em MMII">
+          <button
+            v-if="form.dorDesc && form.dorDesc.length >= 5"
+            class="btn-clara"
+            :disabled="claraCarregando"
+            @click="completarComClara(dorDescRef)"
+          >{{ claraCarregando ? '...' : '✨ Clara' }}</button>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -180,11 +186,15 @@ import { useAnotacoesStore } from '../../stores/anotacoes'
 import { useToast } from '../../composables/useToast.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
+import { useCopia } from '../../composables/useCopia.js'
+import { useClara } from '../../composables/useClara.js'
 
 const router  = useRouter()
 const store   = useAnotacoesStore()
 const { showToast } = useToast()
 const pacientesStore = usePacientesStore()
+const { copiar: _copiar } = useCopia()
+const { claraCarregando, completarComClara } = useClara()
 onMounted(() => pacientesStore.iniciar())
 
 function selecionarPaciente(p) {
@@ -266,21 +276,13 @@ function gerar() {
 }
 
 async function copiar() {
-  try {
-    try {
-      await navigator.clipboard.writeText(textoGerado.value)
-    } catch {
-      const el = document.createElement('textarea')
-      el.value = textoGerado.value
-      el.style.position = 'fixed'; el.style.opacity = '0'
-      document.body.appendChild(el)
-      el.focus(); el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-    }
-    mostrarFeedback('Texto copiado!')
-  } catch { mostrarFeedback('Erro ao copiar') }
+  const ok = await _copiar(textoGerado.value)
+  if (ok) mostrarFeedback('Texto copiado!')
+  else mostrarFeedback('Erro ao copiar')
 }
+
+// Proxy ref para Clara (form.dorDesc)
+const dorDescRef = { get value() { return form.dorDesc }, set value(v) { form.dorDesc = v } }
 
 async function salvar() {
   salvando.value = true
