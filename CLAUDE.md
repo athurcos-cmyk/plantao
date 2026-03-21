@@ -25,7 +25,7 @@ Vue 3 (script setup), Vite, Pinia, Firebase Realtime DB, vite-plugin-pwa, CSS pu
 
 ## Autenticação
 Sistema próprio com syncCode (mín. 6 chars) + PIN (6 dígitos, SHA-256). Sem Firebase Auth.
-Sessão 20h no localStorage. syncCode é a chave raiz no Firebase.
+Sessão 30 dias no localStorage. syncCode é a chave raiz no Firebase.
 
 ## Firebase — estrutura completa
 - `usuarios/{syncCode}/` — pin hash, nome, criadoEm

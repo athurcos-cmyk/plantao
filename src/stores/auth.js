@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { db } from '../firebase.js'
 import { ref as dbRef, get, set, update } from 'firebase/database'
 
-const SESSION_DURATION_MS = 20 * 60 * 60 * 1000 // 20 horas (cobre plantão de 12h + folga)
+const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000 // 30 dias
 const PIN_SALT_PREFIX = 'plantao_hc_2025_'
 
 // iOS Safari modo privado lança QuotaExceededError no localStorage
