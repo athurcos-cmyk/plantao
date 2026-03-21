@@ -137,33 +137,39 @@
         <div class="install-text">
           <div class="install-eyebrow">
             <span class="install-eyebrow-dot"></span>
-            O diferencial
+            Celular ou computador
           </div>
-          <h2 class="install-title">Sem App Store.<br>Sem Play Store.</h2>
+          <h2 class="install-title">Suas anotações<br>em qualquer dispositivo</h2>
           <p class="install-sub">
-            Abra o link no celular, toque em <strong>"Adicionar à tela inicial"</strong> e o app
-            aparece igual a um nativo — sem nenhuma loja de aplicativos.
+            Durante o plantão, use no <strong>celular</strong> — rápido, com uma mão, onde estiver.
+            Em casa ou no posto, acesse pelo <strong>computador</strong> e veja tudo sincronizado.
           </p>
-          <div class="install-steps">
-            <div class="install-step">
-              <span class="install-step-num">1</span>
-              <span>Abra o link no navegador do celular</span>
+          <div class="install-devices">
+            <div class="install-device">
+              <div class="device-icon">📱</div>
+              <div class="device-body">
+                <strong>Celular</strong>
+                <span>Instala na tela inicial. Funciona offline. Ideal para o plantão.</span>
+              </div>
             </div>
-            <div class="install-step">
-              <span class="install-step-num">2</span>
-              <span>Toque em <strong>"Adicionar à tela inicial"</strong></span>
-            </div>
-            <div class="install-step">
-              <span class="install-step-num">3</span>
-              <span>Pronto — ícone na tela inicial, abre offline</span>
+            <div class="device-sync">⇄</div>
+            <div class="install-device">
+              <div class="device-icon">💻</div>
+              <div class="device-body">
+                <strong>Computador</strong>
+                <span>Acesse pelo navegador. Mesmos dados, sincronizados.</span>
+              </div>
             </div>
           </div>
+          <p class="install-sync-note">
+            Use o mesmo <strong>syncCode</strong> em qualquer dispositivo para ter acesso às suas anotações.
+          </p>
         </div>
 
         <div class="install-card">
           <div class="install-card-header">
-            <span class="install-card-icon">📲</span>
-            <span class="install-card-label">Link do app</span>
+            <span class="install-card-icon">🔗</span>
+            <span class="install-card-label">Acesse agora</span>
           </div>
           <div class="install-url-box">
             <span class="install-url-text">{{ displayUrl }}</span>
@@ -171,13 +177,15 @@
               {{ urlCopiada ? '✓ Copiado' : 'Copiar' }}
             </button>
           </div>
-          <p class="install-card-hint">Cole no navegador do celular ou compartilhe pelo WhatsApp</p>
+          <p class="install-card-hint">
+            No celular: abra esse link no navegador e toque em <strong>"Adicionar à tela inicial"</strong> para instalar.
+          </p>
           <div class="install-card-divider"></div>
           <p class="install-pc-label">Está vendo isso no PC?</p>
           <button class="btn-pc" @click="acessarNoPc">
-            Acessar no PC mesmo assim →
+            Acessar pelo computador →
           </button>
-          <p class="install-pc-hint">O app é mobile-first, mas funciona no computador também.</p>
+          <p class="install-pc-hint">Funciona direto no navegador, sem instalar nada.</p>
         </div>
       </div>
     </section>
@@ -1098,33 +1106,56 @@ const testimonials = [
   max-width: 400px;
 }
 .install-sub strong { color: var(--text); }
-.install-steps {
+
+.install-devices {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.install-device {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.device-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.device-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
 }
-.install-step {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.device-body strong {
   font-size: 0.9rem;
-  color: var(--text-dim);
+  font-weight: 600;
+  color: var(--text);
 }
-.install-step strong { color: var(--text); }
-.install-step-num {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--blue-muted);
-  border: 1px solid rgba(30, 136, 229, 0.35);
+.device-body span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.device-sync {
   color: var(--blue);
-  font-size: 0.72rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-shrink: 0;
+  padding: 0 4px;
 }
+.install-sync-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+  padding: 10px 14px;
+  background: var(--blue-muted);
+  border: 1px solid rgba(30, 136, 229, 0.2);
+  border-radius: var(--radius);
+}
+.install-sync-note strong { color: var(--blue); }
 
 /* card direito */
 .install-card {
