@@ -1,5 +1,13 @@
 # Plantão — instruções do projeto
 
+## Início de sessão — leitura obrigatória
+Antes de qualquer tarefa, ler:
+1. **CHANGELOG.md** — estado atual do app, funcionalidades completas, histórico de sessões recentes
+2. **TODOS.md** — pendências abertas e itens já concluídos
+3. **Designs gstack** — ler o design doc mais recente em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\` (arquivo `*-design-*.md` com timestamp mais novo). Contém decisões de produto, premissas confirmadas e arquitetura das features em desenvolvimento.
+
+Esses arquivos são a memória do projeto. Sem lê-los, o contexto está incompleto.
+
 ## Design System
 Sempre ler DESIGN.md antes de qualquer decisão visual ou de UI.
 Todas as escolhas de fonte, cor, espaçamento e direção estética estão definidas lá.

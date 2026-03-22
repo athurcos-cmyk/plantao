@@ -16,6 +16,39 @@ Implementado em `LoginView.vue` com `v-if="auth.modoPrivado"` — chip discreto 
 
 ## Pendentes
 
+### [x] Histórico de cálculos na Calculadora (concluído 2026-03-21)
+**O quê:** Salvar os últimos 5 cálculos no `localStorage` para reutilizar durante o plantão.
+**Por quê:** Evita redigitar a mesma prescrição ao medicar múltiplos pacientes — comum em plantão.
+**Pros:** Baixa complexidade (só localStorage), zero Firebase, alto valor de uso repetitivo.
+**Cons:** Aumenta levemente a complexidade do `useCalculadora.js`; precisa decidir formato de exibição no bottom sheet.
+**Contexto:** Feature pendente do MVP da calculadora (FAB flutuante). A calculadora atual reseta ao fechar — o histórico seria uma camada adicional, não substituição do comportamento atual. Começar por: array de 5 objetos `{tipo, inputs, resultado, timestamp}` no localStorage, exibir em lista colapsável na parte de baixo do modal.
+**Depende de:** Calculadora MVP estar live (CalculadoraModal.vue + useCalculadora.js).
+**Prioridade:** P3
+
+---
+
+### [x] Calculadora de Diluição de Medicamentos em Pó (concluído 2026-03-21)
+**O quê:** Aba adicional "Diluição" na calculadora — dado um medicamento liofilizado em pó + diluente adicionado, calcula concentração resultante e volume a aspirar.
+**Por quê:** Muito comum em internação, UTI e pediatria. Ampicilina, Penicilina Cristalina, Cefazolina — todos vêm em pó e exigem reconstituição antes do cálculo de dose.
+**ATENÇÃO CLÍNICA — volume do pó liofilizado (NÃO é universal):**
+Apenas certos medicamentos têm deslocamento de pó significativo que altera o volume final. **A maioria não precisa** (ex: Meropenem, Ceftriaxona, Metronidazol → deslocamento desprezível).
+Medicamentos que **precisam** do ajuste:
+- Penicilina Cristalina 5.000.000 UI: pó ocupa ~2 mL → adicionar 8 mL diluente = 10 mL total
+- Penicilina Cristalina 10.000.000 UI: pó ocupa ~4 mL → adicionar 6 mL diluente = 10 mL total
+- Ampicilina e Cefazolina: verificar bula — alguns fabricantes têm deslocamento relevante
+**Decisão de UX:** O campo "Volume do pó (mL)" deve ser **opcional, colapsável e default 0**. UI deve ter uma nota: "Só preencha se a bula informar o volume de deslocamento (ex: Penicilina Cristalina)". Não exibir o campo com destaque — a maioria dos medicamentos não usa.
+**A calculadora deve:**
+  1. Campo opcional "Volume do pó (mL)" — default 0
+  2. Volume total = volume_diluente + volume_pó
+  3. Resultado: concentração (mg/mL ou UI/mL) + volume a aspirar para a dose prescrita
+**Cons:** Se o campo for mal compreendido, o usuário pode preencher volume de pó em medicamentos que não precisam → cálculo errado. Mitigação: texto de ajuda claro + field discreto (não em destaque).
+**Como implementar:** 4ª aba no mesmo CalculadoraModal.vue, composable useCalculadora.js já existente.
+**Nota no CHANGELOG:** Ao implementar, registrar o aviso clínico sobre volume do pó liofilizado explicitamente.
+**Depende de:** Calculadora MVP estar live.
+**Prioridade:** P2
+
+---
+
 ### [ ] Board colaborativo (deferido do CEO Review 2026-03-21)
 **O quê:** Avaliar funcionalidade colaborativa (múltiplos técnicos, mesmo plantão).
 **Por quê:** Poderia servir clínicas pequenas onde o time é unido e quer compartilhar anotações.

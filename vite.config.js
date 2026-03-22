@@ -4,6 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 import pkg from './package.json'
 
 export default defineConfig({
+  test: {
+    environment: 'node',
+    globals: true,
+  },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },

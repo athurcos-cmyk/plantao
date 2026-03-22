@@ -234,6 +234,21 @@
             </div>
           </div>
 
+          <!-- Local anatômico (IM, SC) -->
+          <div v-if="['IM', 'SC'].includes(modal.d.via)" class="campo">
+            <label>Local anatômico
+              <span style="font-size:0.75rem;font-weight:400;color:var(--text-muted)">(opcional)</span>
+            </label>
+            <div class="chips-wrap">
+              <button
+                v-for="loc in locaisAnatomicos[modal.d.via]" :key="loc"
+                class="chip" :class="{ ativo: modal.d.localAnatomico === loc }"
+                @click="modal.d.localAnatomico = modal.d.localAnatomico === loc ? '' : loc">
+                {{ loc }}
+              </button>
+            </div>
+          </div>
+
           <!-- Campo profissional (Recusa) -->
           <div v-if="modal.d.via === 'Recusa'" class="campo">
             <label>Comunicado a </label>
@@ -588,6 +603,10 @@ const salvando    = ref(false)
 // ── Constantes ──────────────────────────────────────────────────────────────
 const vias     = ['VO', 'EV', 'SC', 'IM', 'SNE', 'OFT', 'DERM', 'Sublingual', 'Recusa']
 const unidades = ['mg', 'mcg', 'g', 'UI', 'mEq', 'mmol', 'ml', 'Gts', '%', 'mg/kg', 'mcg/kg']
+const locaisAnatomicos = {
+  IM:  ['Dorso-glúteo D', 'Dorso-glúteo E', 'Vasto lateral D', 'Vasto lateral E', 'Ventro-glúteo D', 'Ventro-glúteo E', 'Deltoide D', 'Deltoide E'],
+  SC:  ['Abdômen', 'Coxa D', 'Coxa E', 'Braço D', 'Braço E', 'Glúteo D', 'Glúteo E']
+}
 
 // ── Form principal ──────────────────────────────────────────────────────────
 const form = reactive({
@@ -634,6 +653,8 @@ function medVazio() {
     duplaNome:    '',
     // Recusa
     recusaNome:    '',
+    // Local anatômico (IM, SC, EV)
+    localAnatomico: '',
     // Lote
     loteAtivo:     false,
     loteFrasco:    '',
@@ -671,6 +692,7 @@ function fecharModal() {
 
 function selecionarVia(v) {
   modal.d.via = v
+  modal.d.localAnatomico = ''
   if (v === 'OFT') modal.d.unidade = 'Gts'
 }
 
@@ -739,6 +761,9 @@ function resumirMed(med) {
       : 'EV'
   } else if (med.via === 'OFT' && med.oftOlho) {
     viaLabel = `OFT ${med.oftOlho}`
+  }
+  if (med.localAnatomico && ['IM', 'SC'].includes(med.via)) {
+    viaLabel += ` ${med.localAnatomico}`
   }
   return `${med.dose}${un} · ${viaLabel}`
 }
@@ -811,7 +836,11 @@ function gerarParteMed(med) {
     ? `o ${med.loteFrasco}° Frasco de `
     : ''
 
-  return `${prefixoFrasco}${med.nome.toLowerCase()} ${doseStr}${viaTexto}`
+  const localStr = med.localAnatomico && ['IM', 'SC'].includes(med.via)
+    ? ` no ${med.localAnatomico.charAt(0).toLowerCase() + med.localAnatomico.slice(1)}`
+    : ''
+
+  return `${prefixoFrasco}${med.nome.toLowerCase()} ${doseStr}${viaTexto}${localStr}`
 }
 
 function gerarLinhaDupla(med) {

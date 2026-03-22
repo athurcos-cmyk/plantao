@@ -2,6 +2,7 @@
   <RouterView />
   <BotaoChat v-if="auth.isLoggedIn" />
   <ChatAssistente v-if="auth.isLoggedIn" />
+  <CalculadoraModal v-if="auth.isLoggedIn" />
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
   </Transition>
@@ -97,6 +98,7 @@ import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
 import BotaoChat from './components/BotaoChat.vue'
 import ChatAssistente from './components/ChatAssistente.vue'
+import CalculadoraModal from './components/CalculadoraModal.vue'
 
 const { toastMsg, showToast } = useToast()
 const { isOnline } = useOnlineStatus()

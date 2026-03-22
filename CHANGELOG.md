@@ -18,7 +18,7 @@
 **Anotações**
 - Avaliação inicial (dispositivos, posição, neuro, resp, eliminações)
 - Sinais vitais (PA, FC, FR, SpO2, Tax, HGT, DOR com escala 0-10 colorida + conduta)
-- Medicação (múltiplos meds, autocomplete, dupla checagem, vias: VO/EV/SC/IM/SNE/OFT/DERM/Sublingual/Recusa — dose opcional para DERM)
+- Medicação (múltiplos meds, autocomplete, dupla checagem, vias: VO/EV/SC/IM/SNE/OFT/DERM/Sublingual/Recusa — dose opcional para DERM; local anatômico para IM e SC)
 - Encaminhamento (IDA/RETORNO, destinos personalizados)
 - Banho (aspersão/leito/fralda — higienes: Capilar, Facial, Corporal, Íntima, Oral)
 - Curativo (avaliação COREN colapsável: tipo lesão, tamanho, leito+Outro, exsudato, perilesão+Outro, bordas; locais e materiais persistidos no Firebase ou temporários)
@@ -49,6 +49,14 @@
 - Banner de atualização disponível ("Atualizar")
 - Funciona 100% offline (service worker Workbox)
 - Sincronização automática quando volta online
+
+**Calculadora de Medicação (FAB flutuante)**
+- Dosagem: regra de três (prescrição / disponível × volume)
+- Gotejamento: 4 fórmulas automáticas (macro/micro × horas/minutos)
+- Diluição: reconstituição de pó com campo de volume do pó liofilizado (ex: Penicilina Cristalina)
+- Conversões: tabela de referência estática
+- Histórico dos últimos 5 cálculos em localStorage
+- 34 testes Vitest com cobertura de segurança (entradas negativas, parseNum pt-BR)
 
 **Assistente Clara (IA)**
 - Powered by Groq — Llama 3.3 70B (gratuito)
@@ -94,6 +102,29 @@ feedback/{syncCode}/                             feedbacks dos usuários
 ---
 
 ## Histórico de sessões
+
+### Mar 2026 — Calculadora de Medicação (FAB flutuante)
+- **CalculadoraModal.vue**: bottom sheet com 4 abas — Dosagem, Gotejamento, Diluição, Conversões
+- **Dosagem**: regra de três (dose prescrita / disponível × volume = ml a aspirar)
+- **Gotejamento**: 4 fórmulas automáticas conforme equipo (macro/micro) e unidade de tempo (horas/minutos) com gotas/min e ml/h simultâneos para microgotas
+- **Diluição**: reconstituição de medicamento em pó com campo "Volume do pó liofilizado" colapsável e dica "só preencha se a bula informar" — correto para Penicilina Cristalina (pó desloca 2-4ml), transparente para Meropenem e outros sem deslocamento relevante
+- **Conversões**: tabela de referência estática (massa, gotejamento, medidas caseiras)
+- **Histórico**: últimos 5 cálculos salvos no localStorage, visíveis na parte inferior do modal, com botão limpar
+- **FAB verde** em `bottom: 152px right: 18px` — empilhado acima de Clara (90px) sem sobreposição
+- **useCalculadora.js**: composable singleton com scroll lock + onUnmounted cleanup, reset ao fechar, limpeza de campos ao trocar unidade
+- **useCalculadora.test.js**: 24 testes Vitest — parseNum, fmt, dosagem (4 casos), gotejamento (5 casos), diluição (4 casos), reset
+- **Inputs**: `type="text" inputmode="decimal"` com `replace(',', '.')` — aceita vírgula pt-BR no iOS
+- **Segurança matemática (review pós-implementação)**: 4 bugs críticos corrigidos via `/review`:
+  - Dosagem: entradas negativas agora retornam `--` (era possível exibir "−2,4 ml")
+  - Gotejamento: tempo negativo agora retorna `--` (era possível exibir "−42 gotas/min")
+  - Diluição: diluente negativo retorna `--`; volumePo negativo é tratado como 0
+  - `parseNum`: `"5.000,00"` agora parseia como 5000 (ponto como milhar quando há vírgula decimal)
+- **Testes ampliados**: 34 testes Vitest — inclui cobertura de todos os casos de entrada inválida
+
+### Mar 2026 — Medicação: local anatômico + dupla checagem
+- **AnotacaoMedicacaoView**: adicionado campo "Local anatômico" (chips opcionais) para vias IM, SC e EV — locais IM: Glúteo D/E, Deltoide D/E, Vasto lat. D/E; locais SC: Abdômen D/E, Braço D/E, Coxa D/E; locais EV: Braço D/E, Antebraço D/E, Mão D/E
+- **AnotacaoMedicacaoView**: local anatômico incluso no texto gerado ("IM no glúteo D") e no resumo do card de medicamento
+- **Dupla checagem**: já implementada por medicamento com campo de cargo (Téc./Enf.) + nome com autocomplete — verificado e funcional
 
 ### Mar 2026 — Conformidade COREN-SP 2022 + melhorias UX
 - **CurativoView**: seção "Avaliação da lesão" colapsável (▼/▲) com campos COREN: tipo de lesão, tamanho em cm, leito da ferida (chips + "Outro" livre), exsudato (quantidade + aspecto), pele perilesão (chips + "outro" livre), bordas
