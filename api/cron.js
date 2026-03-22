@@ -159,10 +159,16 @@ export default async function handler(req, res) {
           .catch(async (err) => {
             console.error(`[CRON] ${syncCode}/${key}: send error - ${err.message}`)
             erros.push({ syncCode, key, error: err.message })
-            await notifRef.update({
-              processingAt: null,
-              processingBy: null,
-            }).catch(() => {})
+            // Token inválido/expirado — remove do Firebase para não tentar de novo
+            const tokenInvalido = err.message?.includes('registration-token-not-registered')
+              || err.message?.includes('invalid-registration-token')
+              || err.message?.includes('Requested entity was not found')
+            if (tokenInvalido) {
+              console.log(`[CRON] ${syncCode}: token inválido, removendo do Firebase`)
+              await db.ref(`fcm_tokens/${syncCode}`).remove().catch(() => {})
+            } else {
+              await notifRef.update({ processingAt: null, processingBy: null }).catch(() => {})
+            }
           })
       )
     }
