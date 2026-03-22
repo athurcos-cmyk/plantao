@@ -1,8 +1,5 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
-
-const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-const isDev    = () => location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
 const routes = [
   {
@@ -19,11 +16,6 @@ const routes = [
     path: '/',
     name: 'login',
     component: () => import('../views/LoginView.vue')
-  },
-  {
-    path: '/pc',
-    name: 'pc',
-    component: () => import('../views/PcView.vue')
   },
   {
     path: '/dashboard',
@@ -106,7 +98,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
   scrollBehavior: () => ({ top: 0 })
 })
@@ -115,12 +107,6 @@ const router = createRouter({
 let _authReadyPromise = null
 
 router.beforeEach(async (to) => {
-  // PC → bloqueia (exceto localhost ou se o usuário escolheu continuar)
-  const pcAllowed = sessionStorage.getItem('pc_allowed') === '1'
-  if (to.name !== 'pc' && to.name !== 'landing' && !isMobile() && !isDev() && !pcAllowed) {
-    return { name: 'pc' }
-  }
-
   const auth = useAuthStore()
 
   // Esperar Firebase Auth restaurar sessão antes de decidir

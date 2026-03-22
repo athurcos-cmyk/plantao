@@ -180,11 +180,8 @@
             No celular: abra esse link no navegador e toque em <strong>"Adicionar à tela inicial"</strong> para instalar.
           </p>
           <div class="install-card-divider"></div>
-          <p class="install-pc-label">Está vendo isso no PC?</p>
-          <button class="btn-pc" @click="acessarNoPc">
-            Acessar pelo computador →
-          </button>
-          <p class="install-pc-hint">Funciona direto no navegador, sem instalar nada.</p>
+          <p class="install-pc-label">No computador?</p>
+          <p class="install-pc-hint">Funciona direto no navegador, sem instalar nada. Faça login e use normalmente.</p>
         </div>
       </div>
     </section>
@@ -338,8 +335,8 @@
 <script setup>
 import { ref } from 'vue'
 
-const appUrl = window.location.origin + window.location.pathname + '#/'
-const displayUrl = window.location.origin + window.location.pathname
+const appUrl = window.location.origin + '/'
+const displayUrl = window.location.origin
 
 const urlCopiada = ref(false)
 function copiarUrl() {
@@ -356,7 +353,6 @@ function copiarUrl() {
 }
 
 function acessarNoPc() {
-  sessionStorage.setItem('pc_allowed', '1')
   window.location.href = appUrl
 }
 
