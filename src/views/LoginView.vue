@@ -54,7 +54,7 @@
 
         <button
           class="btn btn-primary btn-block"
-          :disabled="!emailValido || senha.length < 6 || carregando"
+          :disabled="!emailValido || senha.length < 8 || carregando"
           @click="entrar"
         >
           {{ carregando ? 'Entrando...' : 'Entrar' }}
@@ -126,7 +126,7 @@
 
         <button
           class="btn btn-primary btn-block"
-          :disabled="codigo.length < 4 || senha.length < 6 || carregando"
+          :disabled="codigo.length < 4 || senha.length < 8 || carregando"
           @click="entrarComCodigo"
         >
           {{ carregando ? 'Entrando...' : 'Entrar' }}
@@ -163,7 +163,7 @@
 
         <button
           class="btn btn-primary btn-block"
-          :disabled="!emailValido || senha.length < 6 || senha !== senhaConfirm || carregando"
+          :disabled="!emailValido || senha.length < 8 || senha !== senhaConfirm || carregando"
           @click="criarConta"
         >
           {{ carregando ? 'Criando conta...' : 'Criar conta' }}
