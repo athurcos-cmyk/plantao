@@ -9,7 +9,6 @@ import admin from 'firebase-admin'
 let initialized = false
 
 const MAX_ATRASO_ENVIO_MS = 12 * 60 * 60 * 1000
-const LOCK_TIMEOUT_MS = 2 * 60 * 1000
 
 function initAdmin() {
   if (initialized) return
@@ -38,8 +37,7 @@ export default async function handler(req, res) {
 
   const db = admin.database()
   const agora = Date.now()
-  const runId = `${agora}-${Math.random().toString(36).slice(2, 8)}`
-  console.log('[CRON] start at', agora, new Date(agora).toISOString(), 'runId=', runId)
+  console.log('[CRON] start at', agora, new Date(agora).toISOString())
 
   const snap = await db.ref('notificacoes_agendadas').get()
   if (!snap.exists()) {
@@ -115,30 +113,8 @@ export default async function handler(req, res) {
         continue
       }
 
-      console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago), claiming...`)
+      console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago)`)
       totalProcessados++
-
-      // Lock atômico via Firebase transaction() — garante que apenas uma instância processa
-      let claimed = false
-      try {
-        const result = await notifRef.transaction((current) => {
-          if (!current) return // nó deletado entre o .get() e agora
-          if (current.sentAt) return // já enviado
-          if (current.processingAt > 0 && (Date.now() - current.processingAt) < LOCK_TIMEOUT_MS) {
-            return // já está sendo processado por outra instância — abort
-          }
-          return { ...current, processingAt: Date.now(), processingBy: runId }
-        })
-        claimed = result.committed && result.snapshot.exists() && result.snapshot.val()?.processingBy === runId
-      } catch (e) {
-        console.log(`[CRON] ${syncCode}/${key}: transaction falhou - ${e.message}`)
-        continue
-      }
-
-      if (!claimed) {
-        console.log(`[CRON] ${syncCode}/${key}: não foi possível fazer claim (outra instância)`)
-        continue
-      }
 
       console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}" to ${tokens.length} device(s)`)
       totalEnviados++
