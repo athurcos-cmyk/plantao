@@ -42,7 +42,7 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 ## Firebase — estrutura completa
 - `owners/{syncCode}/{uid}` — mapeamento de propriedade (regras de segurança)
 - `uid_map/{uid}` — syncCode do usuário (restauração de sessão)
-- `usuarios/{syncCode}/` — nome, email, criadoEm (sem PIN)
+- `usuarios/{syncCode}/` — nome, email, criadoEm, email_boas_vindas_enviado, email_dia3_enviado
 - `anotacoes/{syncCode}/{pushKey}/` — tipo, texto, nome, leito, timestamp
 - `anotacoes_hc/{syncCode}/{pushKey}/` — anotações HC
 - `pacientes/{syncCode}/{pushKey}/` — nome, leito, criadoEm, pendencias/
@@ -56,15 +56,19 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 - `notificacoes_agendadas/{syncCode}/agendadas/` — notificações pendentes
 
 ## Serverless (api/)
-- `api/cron.js` — lê Firebase, envia FCM via firebase-admin. CRON_SECRET obrigatório (fail-closed). Chamado pelo cron-job.org (URL: https://plantao.net/api/cron) a cada minuto.
+- `api/cron.js` — FCM via firebase-admin + Day 3 email via Resend. CRON_SECRET obrigatório (fail-closed). Chamado pelo cron-job.org (URL: https://plantao.net/api/cron) a cada minuto.
 - `api/chat.js` — proxy para Groq API (Llama 3.3 70B). Protege GROQ_API_KEY. Verifica Firebase Auth idToken + owners. Rate limit 20 msg/min por uid.
 - `api/resolve-code.js` — recebe syncCode, retorna email via admin SDK. Rate limit 10 req/min por IP.
+- `api/welcome.js` — email de boas-vindas (Resend). Fire-and-forget pós-cadastro. Deduplicação via flag `email_boas_vindas_enviado`. Requer syncCode no payload.
+- `api/feedback.js` — email de agradecimento ao usuário + notificação interna para Arthur (Resend). Auth idToken obrigatório. Rate limit 5/min por uid.
+- `api/goodbye.js` — email de despedida ao deletar conta (Resend). Auth idToken obrigatório. Busca nome/email server-side. Timeout 5s, falha silenciosa.
 
 ## Variáveis de ambiente — NUNCA no .env, sempre no Vercel
 - `VITE_FCM_VAPID_KEY` — chave pública VAPID (compilada no bundle)
 - `FIREBASE_SERVICE_ACCOUNT` — JSON service account (server-side)
 - `CRON_SECRET` — Bearer token /api/cron (valor: plantao2026)
 - `GROQ_API_KEY` — chave Groq para Clara
+- `RESEND_API_KEY` — chave Resend para emails transacionais (welcome, feedback, day 3, goodbye)
 
 ## Padrão do texto gerado
 ```

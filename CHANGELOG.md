@@ -71,8 +71,16 @@
 - API key segura no Vercel, nunca exposta no cliente
 
 **Feedback**
-- Usuários podem enviar feedback pelo app
-- Regra Firebase corretamente configurada para gravação
+- Usuários podem enviar feedback pelo app (usePulso.js — Pulso do App)
+- Salvo em `feedback/{syncCode}/` no Firebase
+- Email de agradecimento automático ao usuário + notificação interna para Arthur via Resend
+
+**Emails transacionais (Resend)**
+- Welcome: voz pessoal do Arthur, com deduplicação server-side
+- Feedback ack: confirmação de recebimento ao usuário
+- Admin notify: Arthur recebe cada feedback por email
+- Day 3 tips: email com dicas 3 dias após o cadastro
+- Goodbye: email de despedida ao deletar conta
 
 ---
 
@@ -81,7 +89,7 @@
 ```
 owners/{syncCode}/{uid}                          mapeamento uid → syncCode (segurança)
 uid_map/{uid}                                    syncCode do usuário (restauração de sessão)
-usuarios/{syncCode}/                             nome, email, criadoEm (sem PIN — Firebase Auth)
+usuarios/{syncCode}/                             nome, email, criadoEm, email_boas_vindas_enviado, email_dia3_enviado
 anotacoes/{syncCode}/                            anotações gerais
 anotacoes_hc/{syncCode}/                         anotações HC
 pacientes/{syncCode}/                            pacientes e pendências
@@ -105,11 +113,24 @@ feedback/{syncCode}/                             feedbacks dos usuários
 - **Firebase Realtime DB** — dados do app (plano Spark gratuito)
 - **cron-job.org** — chama /api/cron a cada minuto (gratuito, sem limitação Hobby)
 - **Groq** — Llama 3.3 70B, gratuito, 14.400 req/dia
+- **Resend** — emails transacionais (welcome, feedback, day 3, goodbye) via contato@plantao.net
 - **Domínio** — plantao.net (Cloudflare), email contato@plantao.net → plantao.contato.net@gmail.com
 
 ---
 
 ## Histórico de sessões
+
+### Mar 2026 — Sistema de emails transacionais com voz do fundador
+- **api/welcome.js**: reescrito com tom pessoal do Arthur ("Aqui é o Arthur, fundador do Plantão") + deduplicação server-side via flag `email_boas_vindas_enviado` no Firebase + syncCode no payload. Dica: copiar texto formatado pronto para o prontuário.
+- **api/feedback.js** (NOVO): endpoint autenticado (idToken obrigatório) que ao receber feedback via usePulso.js: (1) envia email de agradecimento ao usuário, (2) notifica Arthur em contato@plantao.net com o texto e a versão do app. Rate limit 5 req/min por uid.
+- **api/goodbye.js** (NOVO): endpoint autenticado que envia email de despedida quando usuário deleta a conta. Busca nome/email server-side via Firebase Admin (não confia no body). Timeout 5s, falha silenciosa — nunca bloqueia o delete.
+- **api/cron.js**: adicionada lógica de Day 3 email — envia dicas para usuários criados há exatamente 3 dias (janela 1h). Flag `email_dia3_enviado` setada antes do envio para idempotência. Destaca notificações (Organizador + Pendências), calculadora e Meus Pacientes.
+- **src/composables/usePulso.js**: após salvar feedback no Firebase, dispara fetch para api/feedback com idToken + auth.userEmail (fire-and-forget, guarded por auth.userEmail).
+- **src/views/ConfiguracoesView.vue**: chama api/goodbye.js com `Promise.race([fetch, delay(5000)])` antes de deleteUser — sempre prossegue independente do resultado.
+- **src/stores/auth.js**: passa `syncCode` no payload do welcome (necessário para deduplicação server-side).
+- **Todos os emails**: remetente `Arthur do Plantão <contato@plantao.net>` via Resend — sem referência ao Firebase interno.
+- **Firebase Console**: domínio plantao.net em verificação DNS para emails de reset (48h). Não afeta os emails via Resend.
+- **Firebase Dynamic Links**: aviso de descontinuação NÃO afeta o Plantão — app usa email/senha e Google OAuth, não email link auth.
 
 ### Mar 2026 — Segurança backend + Landing page + Email de contato
 - **api/cron.js**: `CRON_SECRET` agora obrigatório (fail-closed) — antes passava qualquer request se a variável não existisse

@@ -85,6 +85,38 @@ Hero focado na dor. Stats com tempo economizado. Features reescritas com benefí
 
 ---
 
+### [x] Sistema de emails transacionais com voz do fundador
+**Concluído:** 2026-03-22
+5 emails implementados via Resend (contato@plantao.net):
+- **Welcome** (api/welcome.js): tom pessoal do Arthur, deduplicação via `email_boas_vindas_enviado`, dica sobre copiar texto pronto.
+- **Feedback ack** (api/feedback.js): agradecimento ao usuário + notificação interna para Arthur. Auth idToken obrigatório, rate limit 5/min.
+- **Day 3 tips** (api/cron.js): email com dicas 3 dias após cadastro (janela 1h, flag `email_dia3_enviado`).
+- **Goodbye** (api/goodbye.js): despedida ao deletar conta. Busca dados server-side, timeout 5s, nunca bloqueia delete.
+**Pendente de configuração manual:** criar conta Resend → verificar plantao.net → adicionar `RESEND_API_KEY` no Vercel. Sem isso, os emails ficam desativados silenciosamente.
+
+---
+
+### [ ] Configurar Resend em produção
+**O quê:** Criar conta no Resend, verificar domínio plantao.net e adicionar `RESEND_API_KEY` no Vercel.
+**Por quê:** Sem a chave, todos os 5 emails retornam `{ ok: false, reason: 'not_configured' }` silenciosamente — o cadastro funciona normalmente, mas nenhum email é enviado.
+**Como:**
+1. resend.com → Sign Up → Domains → Add Domain → `plantao.net`
+2. Adicionar registros DNS no Cloudflare (automático ou manual)
+3. API Keys → Create → copiar chave `re_...`
+4. Vercel → Settings → Environment Variables → `RESEND_API_KEY` → Redeploy
+**Prioridade:** P1 — bloqueia todos os emails
+
+---
+
+### [ ] Verificação domínio Firebase para email de reset
+**O quê:** Aguardar propagação dos registros DNS (TXT + CNAME) para o Firebase Auth usar plantao.net como remetente no email de reset de senha.
+**Por quê:** Atualmente o reset sai de `noreply@anotacao-hc.firebaseapp.com` — confuso para o usuário.
+**Status:** Registros DNS adicionados no Cloudflare. Aguardando até 48h para verificação.
+**Após verificar:** No Firebase Console → Authentication → Templates → mudar nome do remetente para "Plantão" e reply-to para contato@plantao.net.
+**Prioridade:** P2 — cosmético, não bloqueia funcionalidade
+
+---
+
 ### [ ] Board colaborativo (deferido do CEO Review 2026-03-21)
 **O quê:** Avaliar funcionalidade colaborativa (múltiplos técnicos, mesmo plantão).
 **Por quê:** Poderia servir clínicas pequenas onde o time é unido e quer compartilhar anotações.
