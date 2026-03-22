@@ -54,9 +54,14 @@ export const useAuthStore = defineStore('auth', () => {
   const modoPrivado = !_lsOk
 
   // ─── Listener de estado do Firebase Auth ───
-  // Chamado uma vez no App.vue para restaurar sessão automaticamente
+  // Chamado no router guard e no App.vue — guard garante registro único
+  let _listenerRegistrado = false
+  let _readyPromise = null
   function initAuthListener() {
-    return new Promise((resolve) => {
+    if (_readyPromise) return _readyPromise
+    _readyPromise = new Promise((resolve) => {
+      if (_listenerRegistrado) { resolve(); return }
+      _listenerRegistrado = true
       onAuthStateChanged(firebaseAuth, async (user) => {
         if (user) {
           uid.value = user.uid
@@ -97,6 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
         resolve()
       })
     })
+    return _readyPromise
   }
 
   // ─── Registro com email/senha ───

@@ -5,7 +5,7 @@ import { getMessaging, isSupported } from 'firebase/messaging'
 
 const firebaseConfig = {
   apiKey:        'AIzaSyCHW_CTip-v1oOsbYvMJ79Ql1JvbUY7NC4',
-  authDomain:    'anotacao-hc.firebaseapp.com',
+  authDomain:    'plantao.net',
   databaseURL:   'https://anotacao-hc-default-rtdb.firebaseio.com',
   projectId:     'anotacao-hc',
   storageBucket: 'anotacao-hc.firebasestorage.app',
