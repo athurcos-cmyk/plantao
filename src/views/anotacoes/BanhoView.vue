@@ -107,15 +107,15 @@
           <div class="campo">
             <label>Opções</label>
             <div class="radio-group vertical">
-              <label class="checkbox-label">
+              <label class="checkbox-label" :class="{ checked: form.comAuxilio }">
                 <input type="checkbox" v-model="form.comAuxilio">
                 <span>Com auxílio</span>
               </label>
-              <label class="checkbox-label">
+              <label class="checkbox-label" :class="{ checked: form.protecaoCateter }">
                 <input type="checkbox" v-model="form.protecaoCateter">
                 <span>Proteção de cateter</span>
               </label>
-              <label class="checkbox-label">
+              <label class="checkbox-label" :class="{ checked: form.trocaRoupa }">
                 <input type="checkbox" v-model="form.trocaRoupa">
                 <span>Troca de roupa de cama</span>
               </label>
@@ -137,7 +137,7 @@
           <div class="campo">
             <label>Higiene realizada</label>
             <div class="radio-group vertical">
-              <label v-for="h in higieneOpcoes" :key="h" class="checkbox-label">
+              <label v-for="h in higieneOpcoes" :key="h" class="checkbox-label" :class="{ checked: form.higiene.includes(h) }">
                 <input type="checkbox" :value="h" v-model="form.higiene">
                 <span>{{ h }}</span>
               </label>
@@ -147,11 +147,11 @@
           <div class="campo">
             <label>Opções</label>
             <div class="radio-group vertical">
-              <label class="checkbox-label">
+              <label class="checkbox-label" :class="{ checked: form.trocaRoupa }">
                 <input type="checkbox" v-model="form.trocaRoupa">
                 <span>Troca de roupa de cama</span>
               </label>
-              <label class="checkbox-label">
+              <label class="checkbox-label" :class="{ checked: form.trocaFralda }">
                 <input type="checkbox" v-model="form.trocaFralda">
                 <span>Troca de fralda</span>
               </label>
@@ -201,7 +201,7 @@
         <div v-if="form.tipo" class="campo">
           <label>Intercorrências</label>
           <div class="radio-group vertical">
-            <label class="checkbox-label">
+            <label class="checkbox-label" :class="{ checked: form.semIntercorrencias }">
               <input type="checkbox" v-model="form.semIntercorrencias">
               <span>Sem intercorrências</span>
             </label>
@@ -569,7 +569,8 @@ function novaAnotacao() {
 .erro-msg { color: var(--danger); font-size: 0.82rem; margin-top: 6px; }
 
 /* Remove a borda colorida no estado marcado (global usa var(--blue)) */
-.checkbox-label:has(input:checked) {
+.checkbox-label:has(input:checked),
+.checkbox-label.checked {
   border-color: var(--border);
 }
 </style>

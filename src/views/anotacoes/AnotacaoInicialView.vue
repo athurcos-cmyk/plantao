@@ -167,7 +167,7 @@
 
         <div class="campo">
           <label>Estado mental</label>
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.mentalAlterado }">
             <input  data-testid="auto-input-anotacaoinicialview-8" type="checkbox" v-model="form.mentalAlterado">
             <span>Estado mental alterado</span>
           </label>
@@ -322,7 +322,7 @@
         <div class="campo">
           <label>Diurese </label>
           <div class="radio-group vertical">
-            <label class="checkbox-label" v-for="op in diureseOpcoes" :key="op.v">
+            <label class="checkbox-label" v-for="op in diureseOpcoes" :key="op.v" :class="{ checked: form.diurese.includes(op.v) }">
               <input  data-testid="auto-input-anotacaoinicialview-22" type="checkbox" :value="op.v" v-model="form.diurese" @change="onDiureseChange">
               <span>{{ op.l }}</span>
             </label>

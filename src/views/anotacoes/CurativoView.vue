@@ -88,7 +88,7 @@
 
         <!-- Dreno (só para curativo/troca) -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.ehDreno }">
             <input type="checkbox" v-model="form.ehDreno">
             <span>Curativo de dreno</span>
           </label>
@@ -191,7 +191,7 @@
         <!-- Condição (não para placa) -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
           <label>Condição</label>
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.condicao }">
             <input type="checkbox" v-model="form.condicao">
             <span>Ocluído, limpo e seco externamente</span>
           </label>
@@ -905,7 +905,8 @@ function novaAnotacao() {
 .nav-row { display: flex; gap: 10px; margin-top: 8px; }
 .erro-msg { color: var(--danger); font-size: 0.82rem; margin-top: 6px; }
 
-.checkbox-label:has(input:checked) {
+.checkbox-label:has(input:checked),
+.checkbox-label.checked {
   border-color: var(--border);
 }
 

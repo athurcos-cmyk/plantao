@@ -56,13 +56,13 @@
         <!-- Cuidados -->
         <div class="campo">
           <label>Identificação do paciente</label>
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.conferencia === 'com' }">
             <input  data-testid="auto-input-anotacaomedicacaoview-2" type="radio"
               :checked="form.conferencia === 'com'"
               @click="form.conferencia = form.conferencia === 'com' ? '' : 'com'">
             <span>Conferência de identificação com paciente</span>
           </label>
-          <label class="checkbox-label" style="margin-top:8px">
+          <label class="checkbox-label" style="margin-top:8px" :class="{ checked: form.conferencia === 'do' }">
             <input  data-testid="auto-input-anotacaomedicacaoview-3" type="radio"
               :checked="form.conferencia === 'do'"
               @click="form.conferencia = form.conferencia === 'do' ? '' : 'do'">
@@ -72,7 +72,7 @@
 
         <!-- Orientação -->
         <div class="campo">
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.orienta }">
             <input  data-testid="auto-input-anotacaomedicacaoview-4" type="checkbox" v-model="form.orienta">
             <span>Oriento paciente sobre a medicação</span>
           </label>
@@ -81,14 +81,14 @@
         <!-- Conforme -->
         <div class="campo">
           <label>Conforme</label>
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.conformeTipo === 'prescricao' }">
             <input  data-testid="auto-input-anotacaomedicacaoview-5" type="radio"
               :checked="form.conformeTipo === 'prescricao'"
               @click="form.conformeTipo = form.conformeTipo === 'prescricao' ? '' : 'prescricao'">
             <span>Conforme prescrição médica</span>
           </label>
           <div style="margin-top:8px">
-            <label class="checkbox-label">
+            <label class="checkbox-label" :class="{ checked: form.conformeTipo === 'orientacao' }">
               <input  data-testid="auto-input-anotacaomedicacaoview-6" type="radio"
                 :checked="form.conformeTipo === 'orientacao'"
                 @click="form.conformeTipo = form.conformeTipo === 'orientacao' ? '' : 'orientacao'">
@@ -294,7 +294,7 @@
 
           <!-- EV: com ou sem diluição -->
           <div v-if="modal.d.via === 'EV'" class="campo">
-            <label class="checkbox-label">
+            <label class="checkbox-label" :class="{ checked: modal.d.evDiluicao }">
               <input  data-testid="auto-input-anotacaomedicacaoview-13" type="checkbox" v-model="modal.d.evDiluicao">
               <span>Com diluição</span>
             </label>
@@ -335,7 +335,7 @@
           <template v-if="modal.d.via === 'EV'">
 
             <div class="campo">
-              <label class="checkbox-label">
+              <label class="checkbox-label" :class="{ checked: modal.d.evBic }">
                 <input  data-testid="auto-input-anotacaomedicacaoview-15" type="checkbox" v-model="modal.d.evBic">
                 <span>BIC (Bomba de Infusão Contínua)</span>
               </label>
@@ -372,7 +372,7 @@
 
           <!-- Dupla checagem -->
           <div v-if="modal.d.via !== 'Recusa'" class="campo">
-            <label class="checkbox-label">
+            <label class="checkbox-label" :class="{ checked: modal.d.dupla }">
               <input  data-testid="auto-input-anotacaomedicacaoview-18" type="checkbox" v-model="modal.d.dupla">
               <span>Dupla checagem</span>
             </label>
@@ -404,7 +404,7 @@
 
           <!-- Lote / Validade -->
           <div v-if="modal.d.via !== 'Recusa'" class="campo">
-            <label class="checkbox-label">
+            <label class="checkbox-label" :class="{ checked: modal.d.loteAtivo }">
               <input type="checkbox" v-model="modal.d.loteAtivo">
               <span>Informar lote / validade</span>
             </label>
