@@ -26,12 +26,12 @@
             Para técnicos e enfermeiros
           </div>
           <h1 class="hero-title">
-            Chega de anotar<br>
-            no papel e digitar<br>
-            <span class="hero-accent">tudo de novo</span>
+            Organize seu plantão.<br>
+            Não esqueça nada.<br>
+            <span class="hero-accent">Atenda melhor.</span>
           </h1>
           <p class="hero-sub">
-            Preencha no celular durante o plantão. O texto sai pronto — é só copiar e colar no sistema do hospital. Funciona offline.
+            Anotações, lembretes de medicação, calculadora de dose, organização de pacientes — tudo no celular, funciona offline.
           </p>
           <div class="hero-actions">
             <a class="btn-hero" href="#" @click.prevent="acessarNoPc">
@@ -42,15 +42,15 @@
           <div class="hero-trust">
             <div class="trust-item">
               <span class="trust-icon">✓</span>
+              <span>Notificações de pendências</span>
+            </div>
+            <div class="trust-item">
+              <span class="trust-icon">✓</span>
+              <span>Calculadora de medicação</span>
+            </div>
+            <div class="trust-item">
+              <span class="trust-icon">✓</span>
               <span>100% offline</span>
-            </div>
-            <div class="trust-item">
-              <span class="trust-icon">✓</span>
-              <span>Android & iPhone</span>
-            </div>
-            <div class="trust-item">
-              <span class="trust-icon">✓</span>
-              <span>Dados seguros</span>
             </div>
           </div>
         </div>
@@ -109,13 +109,13 @@
     <section class="stats-section">
       <div class="stats-inner">
         <div class="stat-item">
-          <span class="stat-num">~30min</span>
-          <span class="stat-label">Economizados por plantão</span>
+          <span class="stat-num">0</span>
+          <span class="stat-label">Pendências esquecidas</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
-          <span class="stat-num">8</span>
-          <span class="stat-label">Tipos de anotação</span>
+          <span class="stat-num">8+</span>
+          <span class="stat-label">Ferramentas no app</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
@@ -190,7 +190,7 @@
     <section class="section">
       <div class="section-inner">
         <div class="section-eyebrow">Por que usar</div>
-        <h2 class="section-title">Resolve o que mais irrita no plantão</h2>
+        <h2 class="section-title">Mais que anotações — é o plantão inteiro organizado</h2>
         <div class="cards-grid">
           <div class="feat-card" v-for="f in feats" :key="f.title">
             <div class="feat-icon">{{ f.icon }}</div>
@@ -255,8 +255,8 @@
       <div class="section-inner two-col">
         <div class="two-col-text">
           <div class="section-eyebrow">Completo</div>
-          <h2 class="section-title no-margin-bottom">8 tipos de anotação + calculadora</h2>
-          <p class="two-col-sub">Cada anotação gera o texto no formato correto do prontuário. Calculadora de dosagem, gotejamento e diluição direto no app.</p>
+          <h2 class="section-title no-margin-bottom">Tudo que você usa no plantão, em um lugar só</h2>
+          <p class="two-col-sub">Anotações com texto pronto, lembretes por paciente, calculadora de medicação, IA para dúvidas clínicas e organizador de plantão.</p>
           <a class="btn-outline" href="#" @click.prevent="acessarNoPc">Explorar o app →</a>
         </div>
         <div class="features-list">
@@ -307,8 +307,8 @@
       <div class="cta-glow"></div>
       <div class="section-inner cta-inner">
         <div class="section-eyebrow eyebrow-light">Comece agora</div>
-        <h2 class="cta-title">Seu próximo plantão<br>pode ser diferente</h2>
-        <p class="cta-sub">Sem papel, sem redigitar, sem esquecer medicação. Grátis. Conta em 10 segundos.</p>
+        <h2 class="cta-title">Entra no seu próximo plantão<br>com tudo organizado</h2>
+        <p class="cta-sub">Lembretes, calculadora, anotações prontas. Grátis. Conta em 10 segundos.</p>
         <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Começar agora →</a>
         <p class="cta-hint">Android e iPhone. Funciona offline.</p>
       </div>
@@ -357,19 +357,19 @@ function acessarNoPc() {
 }
 
 const feats = [
-  { icon: '⚡', title: 'Para de digitar duas vezes', desc: 'Preenche no celular, texto sai formatado. Copia e cola no sistema do hospital. Zero retrabalho.' },
-  { icon: '📡', title: 'Sem sinal? Sem problema', desc: 'Funciona 100% offline. Anota mesmo no subsolo do hospital. Sincroniza quando a internet voltar.' },
-  { icon: '🔔', title: 'Nunca mais esquece medicação', desc: 'Coloca lembrete por paciente. Recebe notificação 30 min antes e no horário — mesmo com tela bloqueada.' },
-  { icon: '📲', title: 'Instala em 1 toque', desc: 'Sem baixar na loja. Abre o link, toca "Instalar" e fica na tela do celular igual app nativo.' },
-  { icon: '🧮', title: 'Calculadora de medicação', desc: 'Gotejamento, diluição, dosagem — sempre à mão. Botão flutuante em todas as telas.' },
-  { icon: '🤖', title: 'IA que entende enfermagem', desc: 'Clara ajuda a redigir anotações e tirar dúvidas clínicas. Como ter uma colega experiente no bolso.' },
-  { icon: '🔒', title: 'Seus dados, só seus', desc: 'Login com Google ou email. Dados isolados e criptografados. Sem anúncios. Sem terceiros.' },
+  { icon: '🔔', title: 'Nunca mais esquece nada', desc: 'Coloca lembrete por paciente. Chega notificação no horário certo — mesmo com o celular na bolsa e tela bloqueada.' },
+  { icon: '🧮', title: 'Calculadora de medicação', desc: 'Gotejamento, diluição, dosagem — tudo na palma da mão. Botão flutuante em qualquer tela, sem sair do que você tava fazendo.' },
+  { icon: '🗂️', title: 'Organize o plantão inteiro', desc: 'Cadastra os pacientes, anota as pendências, organiza o template do plantão. Tudo no lugar, tudo acessível em segundos.' },
+  { icon: '⚡', title: 'Texto pronto para copiar', desc: '8 tipos de anotação. Preenche, copia e cola no sistema do hospital. Sem redigitar, sem erro de formato.' },
+  { icon: '🤖', title: 'IA especialista em enfermagem', desc: 'Clara tira dúvidas clínicas, calcula doses e ajuda a redigir anotações. Como ter uma colega experiente no bolso.' },
+  { icon: '📡', title: 'Funciona sem internet', desc: 'Offline completo. Subsolo, área sem sinal, onde for — o app funciona. Sincroniza quando a rede voltar.' },
+  { icon: '📲', title: 'Instala como app nativo', desc: 'Sem loja de apps. Abre o link, toca "Instalar", fica na tela inicial. Igual a um app da loja, sem baixar nada.' },
 ]
 
 const steps = [
-  { title: 'Abre o link e instala', desc: 'Abre no celular, toca "Adicionar à tela inicial". Pronto, instalado em 10 segundos.' },
-  { title: 'Entra com Google ou email', desc: 'Cria conta em um toque com Google. Ou cadastra com email. Seu código de acesso rápido é gerado na hora.' },
-  { title: 'Preenche e copia', desc: 'Escolhe o tipo de anotação, preenche os campos, copia o texto formatado e cola no sistema.' },
+  { title: 'Instala em 10 segundos', desc: 'Abre o link no celular, toca "Adicionar à tela inicial". Fica na tela inicial igual app nativo.' },
+  { title: 'Cadastra seus pacientes', desc: 'Coloca o nome, leito e as pendências de cada paciente. O app lembra tudo por você.' },
+  { title: 'Usa durante o plantão', desc: 'Anota, configura lembretes, calcula dose. No fim, o texto tá pronto para copiar no sistema.' },
 ]
 
 const features = [
@@ -390,7 +390,6 @@ const faq = [
   { q: 'É realmente gratuito?', a: 'Sim, completamente grátis. Sem período de teste, sem cartão de crédito, sem funcionalidade bloqueada.' },
   { q: 'Meus dados ficam seguros?', a: 'Sim. Login com Google ou email, dados criptografados e isolados por usuário. Ninguém mais tem acesso às suas anotações.' },
   { q: 'Consigo usar no computador do hospital também?', a: 'Sim. Faça login com a mesma conta em qualquer dispositivo. Suas anotações ficam sincronizadas.' },
-  { q: 'O texto sai no formato do prontuário?', a: 'Sim. O texto é gerado no formato padrão das anotações de enfermagem, com horário e travessão. É só copiar e colar.' },
 ]
 
 const testimonials = [
