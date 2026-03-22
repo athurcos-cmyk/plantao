@@ -77,44 +77,53 @@ export const useAuthStore = defineStore('auth', () => {
           const cachedCode = _lsOk ? localStorage.getItem('sync_code') : null
           if (cachedCode) {
             syncCode.value = cachedCode
-            authReady.value = true
-            resolve()
+            if (!authReady.value) { authReady.value = true; resolve() }
           }
 
           // Verificar/atualizar syncCode no Firebase DB (background para usuários com cache,
           // bloqueante para usuários sem cache — ex: primeiro login em dispositivo novo)
-          const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
-          if (mapSnap.exists()) {
-            const code = mapSnap.val()
-            syncCode.value = code
-            if (_lsOk) {
-              localStorage.setItem('sync_code', code)
-              localStorage.setItem('user_name', userName.value)
-            }
+          try {
+            const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
+            if (mapSnap.exists()) {
+              const code = mapSnap.val()
+              syncCode.value = code
+              if (_lsOk) {
+                localStorage.setItem('sync_code', code)
+                localStorage.setItem('user_name', userName.value)
+              }
 
-            // Buscar nome do perfil do Firebase se não tiver no Auth nem no cache
-            if (!userName.value) {
-              const userSnap = await get(dbRef(db, `usuarios/${code}/nome`))
-              if (userSnap.exists()) {
-                userName.value = userSnap.val()
-                if (_lsOk) localStorage.setItem('user_name', userName.value)
+              // Buscar nome do perfil do Firebase se não tiver no Auth nem no cache
+              if (!userName.value) {
+                const userSnap = await get(dbRef(db, `usuarios/${code}/nome`))
+                if (userSnap.exists()) {
+                  userName.value = userSnap.val()
+                  if (_lsOk) localStorage.setItem('user_name', userName.value)
+                }
               }
             }
+          } catch (e) {
+            // DB lookup falhou (offline ou rede lenta) — mantém cache do localStorage
+            console.warn('[Auth] uid_map lookup failed:', e.message)
           }
         } else {
-          uid.value = ''
-          userEmail.value = ''
-          syncCode.value = ''
-          userName.value = ''
-          if (_lsOk) {
-            localStorage.removeItem('sync_code')
-            localStorage.removeItem('user_name')
-            localStorage.removeItem('login_time')
+          // Só limpa estado se NÃO tiver dados em cache.
+          // Evita flicker: onAuthStateChanged pode disparar null temporário
+          // durante refresh de token, antes de disparar com o user válido.
+          const hasCachedSession = _lsOk && localStorage.getItem('sync_code')
+          if (!hasCachedSession) {
+            uid.value = ''
+            userEmail.value = ''
+            syncCode.value = ''
+            userName.value = ''
+            if (_lsOk) {
+              localStorage.removeItem('sync_code')
+              localStorage.removeItem('user_name')
+              localStorage.removeItem('login_time')
+            }
           }
         }
         // Resolve para usuários sem cache (com cache já resolveu acima)
-        if (!authReady.value) authReady.value = true
-        resolve()
+        if (!authReady.value) { authReady.value = true; resolve() }
       })
     })
     return _readyPromise
@@ -302,7 +311,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   // ─── Logout ───
   async function logout() {
-    await signOut(firebaseAuth)
+    // Limpar localStorage ANTES do signOut para que o guard no onAuthStateChanged
+    // reconheça que é um logout real (sem cache) e limpe o estado corretamente.
     syncCode.value = ''
     userName.value = ''
     userEmail.value = ''
@@ -312,6 +322,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem('user_name')
       localStorage.removeItem('login_time')
     }
+    await signOut(firebaseAuth)
   }
 
   // ─── Traduzir erros do Firebase Auth ───
