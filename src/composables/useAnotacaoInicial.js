@@ -1,13 +1,18 @@
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
+import { useAuthStore } from '../stores/auth.js'
 import { gerarTexto } from '../utils/gerarTextoInicial.js'
+import { CAMPOS, defaultCamposAtivos } from '../config/camposAnotacaoInicial.js'
 import { useToast } from './useToast.js'
 import { useCopia } from './useCopia.js'
+import { db } from '../firebase.js'
+import { ref as dbRef, set, get } from 'firebase/database'
 
 export function useAnotacaoInicial() {
   const router = useRouter()
   const store  = useAnotacoesStore()
+  const auth   = useAuthStore()
   const { copiar: _copiar } = useCopia()
 
   const { showToast } = useToast()
@@ -19,6 +24,38 @@ export function useAnotacaoInicial() {
   const salvando    = ref(false)
   const dragIdx     = ref(null)
   const dragOverIdx = ref(null)
+
+  // ── Configuração de campos visíveis ───────────────────────────────────────
+  const mostrarConfigModal = ref(false)
+
+  const _configCacheKey = () => `config_anotacao_inicial_${auth.syncCode}`
+  const _firebaseConfigPath = () => `configuracoes/${auth.syncCode}/anotacao_inicial`
+
+  function _lerConfigCache() {
+    try { return JSON.parse(localStorage.getItem(_configCacheKey()) || 'null') } catch { return null }
+  }
+
+  const camposAtivos = reactive(_lerConfigCache() || defaultCamposAtivos())
+
+  // Carrega do Firebase na primeira vez (sem listener contínuo — config não muda com frequência)
+  get(dbRef(db, _firebaseConfigPath())).then(snap => {
+    if (snap.exists()) {
+      const remoto = snap.val()
+      CAMPOS.forEach(c => {
+        if (remoto[c.key] !== undefined) camposAtivos[c.key] = remoto[c.key]
+      })
+      try { localStorage.setItem(_configCacheKey(), JSON.stringify({ ...camposAtivos })) } catch {}
+    }
+  }).catch(() => {})
+
+  async function salvarCamposAtivos(novosAtivos) {
+    CAMPOS.forEach(c => { camposAtivos[c.key] = novosAtivos[c.key] })
+    try { localStorage.setItem(_configCacheKey(), JSON.stringify({ ...camposAtivos })) } catch {}
+    try {
+      await set(dbRef(db, _firebaseConfigPath()), { ...camposAtivos })
+    } catch {}
+    mostrarConfigModal.value = false
+  }
 
   // Scroll para o topo ao trocar de bloco
   watch(passo, () => { nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' })) })
@@ -401,7 +438,7 @@ export function useAnotacaoInicial() {
   function gerar() {
     erro.value = ''
     if (!form.fechamento) atualizarFechamento()
-    textoGerado.value = gerarTexto(form)
+    textoGerado.value = gerarTexto(form, camposAtivos)
     gerado.value = true
   }
 
@@ -471,6 +508,10 @@ export function useAnotacaoInicial() {
     temRascunho,
     restaurarRascunho,
     descartarRascunho,
+    // config de campos
+    camposAtivos,
+    mostrarConfigModal,
+    salvarCamposAtivos,
     // reactive
     form,
     modal,
