@@ -1,8 +1,8 @@
 <template>
   <RouterView />
-  <BotaoChat v-if="auth.isLoggedIn" />
-  <ChatAssistente v-if="auth.isLoggedIn" />
-  <CalculadoraModal v-if="auth.isLoggedIn" />
+  <BotaoChat v-if="mostrarFab" />
+  <ChatAssistente v-if="mostrarFab" />
+  <CalculadoraModal v-if="mostrarFab" />
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
   </Transition>
@@ -88,7 +88,7 @@
 
 <script setup>
 import { watch, computed, onMounted, ref } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth.js'
 import { useAnotacoesStore } from './stores/anotacoes.js'
 import { usePacientesStore } from './stores/pacientes.js'
@@ -96,6 +96,7 @@ import { useOrganizadorStore } from './stores/organizador.js'
 import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
+import { configurarFCM, solicitarPermissaoNotificacao } from './composables/usePushNotificacoes.js'
 import BotaoChat from './components/BotaoChat.vue'
 import ChatAssistente from './components/ChatAssistente.vue'
 import CalculadoraModal from './components/CalculadoraModal.vue'
@@ -108,6 +109,9 @@ const anotacoes  = useAnotacoesStore()
 const pacientes  = usePacientesStore()
 const organizador = useOrganizadorStore()
 const router     = useRouter()
+const route      = useRoute()
+const rotasSemFab = ['landing', 'onboarding', 'login', 'pc']
+const mostrarFab  = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
 
@@ -145,6 +149,8 @@ watch(
     if (logado) {
       anotacoes.iniciar()
       if (isOnline.value) sincronizarTudo(false)
+      configurarFCM(auth.syncCode)
+      solicitarPermissaoNotificacao(auth.syncCode)
     } else {
       anotacoes.parar()
     }

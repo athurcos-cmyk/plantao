@@ -153,10 +153,10 @@
             </div>
 
             <div class="calc-formula-info">
-              <span v-if="gotej.equipo === 'macro' && gotej.unidTempo === 'horas'">Fórmula: (V × 20) ÷ (T × 60)</span>
-              <span v-if="gotej.equipo === 'macro' && gotej.unidTempo === 'minutos'">Fórmula: (V × 20) ÷ T</span>
-              <span v-if="gotej.equipo === 'micro' && gotej.unidTempo === 'horas'">Fórmula: V ÷ T  (= ml/h)</span>
-              <span v-if="gotej.equipo === 'micro' && gotej.unidTempo === 'minutos'">Fórmula: (V × 60) ÷ T</span>
+              <span v-if="gotej.equipo === 'macro' && gotej.unidTempo === 'horas'">Fórmula: Vt ÷ (T × 3)</span>
+              <span v-if="gotej.equipo === 'macro' && gotej.unidTempo === 'minutos'">Fórmula: (Vt × 20) ÷ T</span>
+              <span v-if="gotej.equipo === 'micro' && gotej.unidTempo === 'horas'">Fórmula: Vt ÷ T  (= ml/h)</span>
+              <span v-if="gotej.equipo === 'micro' && gotej.unidTempo === 'minutos'">Fórmula: (Vt × 60) ÷ T</span>
             </div>
 
             <button
