@@ -302,6 +302,22 @@ async function confirmarDelete() {
     const user = firebaseAuth.currentUser
     const uid = user.uid
 
+    // 0. Email de despedida (timeout 5s — nunca bloqueia o delete)
+    try {
+      const idToken = await user.getIdToken()
+      await Promise.race([
+        fetch('/api/goodbye', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({}),
+        }),
+        new Promise(resolve => setTimeout(resolve, 5000)),
+      ])
+    } catch (_) { /* falha silenciosa — o delete sempre prossegue */ }
+
     // 1. Deletar dados do Firebase Realtime DB
     const paths = [
       `usuarios/${syncCode}`,

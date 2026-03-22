@@ -1,9 +1,26 @@
 /**
  * api/welcome.js
  * Envia email de boas-vindas após cadastro.
- * Chamado pelo client logo após registro bem-sucedido.
- * Requer RESEND_API_KEY no Vercel.
+ * Chamado pelo client logo após registro bem-sucedido (fire-and-forget).
+ * Requer RESEND_API_KEY e FIREBASE_SERVICE_ACCOUNT no Vercel.
+ *
+ * Deduplicação: checa usuarios/{syncCode}/email_boas_vindas_enviado antes de enviar.
+ * Evita duplo envio quando o usuário registra via email e depois vincula Google (ou vice-versa).
  */
+
+import admin from 'firebase-admin'
+
+let _adminInit = false
+function _initAdmin() {
+  if (_adminInit) return
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT
+  if (!raw) throw new Error('FIREBASE_SERVICE_ACCOUNT não configurada')
+  admin.initializeApp({
+    credential: admin.credential.cert(JSON.parse(raw)),
+    databaseURL: 'https://anotacao-hc-default-rtdb.firebaseio.com',
+  })
+  _adminInit = true
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,13 +29,27 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
-    // Sem chave configurada — ignora silenciosamente (não bloqueia o cadastro)
     return res.status(200).json({ ok: false, reason: 'not_configured' })
   }
 
-  const { nome, email } = req.body || {}
+  const { nome, email, syncCode } = req.body || {}
   if (!email || typeof email !== 'string' || !email.includes('@')) {
     return res.status(400).json({ error: 'Email inválido.' })
+  }
+
+  // Deduplicação server-side
+  if (syncCode) {
+    try {
+      _initAdmin()
+      const db = admin.database()
+      const flagSnap = await db.ref(`usuarios/${syncCode}/email_boas_vindas_enviado`).get()
+      if (flagSnap.exists() && flagSnap.val() === true) {
+        return res.status(200).json({ ok: false, reason: 'already_sent' })
+      }
+    } catch (e) {
+      // Se não conseguir checar, envia mesmo assim (melhor duplicar do que não enviar)
+      console.warn('[WELCOME] flag check failed:', e.message)
+    }
   }
 
   const primeiroNome = (nome || 'enfermeiro(a)').split(' ')[0]
@@ -40,52 +71,44 @@ export default async function handler(req, res) {
           <!-- Header -->
           <tr>
             <td style="padding:32px 32px 24px;text-align:center;border-bottom:1px solid #1e3050;">
-              <div style="display:inline-flex;align-items:center;gap:8px;">
-                <span style="font-size:1.4rem;font-weight:800;color:#EAEEF3;letter-spacing:-0.02em;">Plantão</span>
-              </div>
+              <span style="font-size:1.4rem;font-weight:800;color:#EAEEF3;letter-spacing:-0.02em;">Plantão</span>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
             <td style="padding:32px;">
-              <p style="margin:0 0 16px;font-size:1.1rem;font-weight:700;color:#EAEEF3;">
-                Olá, ${primeiroNome}! 👋
-              </p>
-              <p style="margin:0 0 16px;font-size:0.95rem;color:#8899AA;line-height:1.6;">
-                Seja bem-vindo(a) ao <strong style="color:#EAEEF3;">Plantão</strong> — o app feito por técnico de enfermagem, para enfermagem.
-              </p>
-              <p style="margin:0 0 24px;font-size:0.95rem;color:#8899AA;line-height:1.6;">
-                Com o app você vai poder:
+              <p style="margin:0 0 20px;font-size:1.05rem;font-weight:700;color:#EAEEF3;">
+                Oi, ${primeiroNome}! 👋
               </p>
 
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <p style="margin:0 0 16px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
+                Aqui é o Arthur, fundador do Plantão.
+              </p>
+
+              <p style="margin:0 0 16px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
+                Sou técnico de enfermagem e criei esse app porque sentia falta de uma ferramenta que entendesse de verdade a rotina do plantão. Não uma planilha genérica — algo feito pra quem trabalha à beira do leito, com tempo curto e muito pra lembrar.
+              </p>
+
+              <p style="margin:0 0 24px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
+                Fico muito feliz que você esteja aqui. ❤️
+              </p>
+
+              <!-- Separador -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-top:1px solid #1e3050;padding-top:20px;">
                 <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #1e3050;">
-                    <span style="font-size:1rem;margin-right:10px;">🔔</span>
-                    <span style="font-size:0.9rem;color:#EAEEF3;">Nunca mais esquecer medicação — notificação no horário certo</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #1e3050;">
-                    <span style="font-size:1rem;margin-right:10px;">🧮</span>
-                    <span style="font-size:0.9rem;color:#EAEEF3;">Calculadora de gotejamento, diluição e dosagem na palma da mão</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:10px 0;border-bottom:1px solid #1e3050;">
-                    <span style="font-size:1rem;margin-right:10px;">📋</span>
-                    <span style="font-size:0.9rem;color:#EAEEF3;">Anotações com texto pronto para copiar no prontuário</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:10px 0;">
-                    <span style="font-size:1rem;margin-right:10px;">🤖</span>
-                    <span style="font-size:0.9rem;color:#EAEEF3;">Clara — IA especialista em enfermagem para dúvidas do plantão</span>
+                  <td>
+                    <p style="margin:0 0 12px;font-size:0.85rem;font-weight:700;color:#EAEEF3;text-transform:uppercase;letter-spacing:0.05em;">
+                      Uma dica pra começar
+                    </p>
+                    <p style="margin:0;font-size:0.92rem;color:#8899AA;line-height:1.6;">
+                      Configure uma notificação no <strong style="color:#EAEEF3;">Organizador</strong> pra nunca mais esquecer uma medicação. Vai no menu principal → Organizador → e adiciona o horário. O app te avisa mesmo com a tela fechada. 🔔
+                    </p>
                   </td>
                 </tr>
               </table>
 
+              <!-- CTA -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
                 <tr>
                   <td align="center">
@@ -97,9 +120,13 @@ export default async function handler(req, res) {
                 </tr>
               </table>
 
-              <p style="margin:0;font-size:0.82rem;color:#556677;line-height:1.5;text-align:center;">
-                Qualquer dúvida, é só responder este email.<br>
-                <a href="mailto:contato@plantao.net" style="color:#1E88E5;text-decoration:none;">contato@plantao.net</a>
+              <p style="margin:0;font-size:0.88rem;color:#8899AA;line-height:1.6;">
+                Se tiver qualquer dúvida ou ideia de melhoria, é só responder esse email — eu leio tudo pessoalmente. 🙏
+              </p>
+
+              <p style="margin:16px 0 0;font-size:0.88rem;color:#8899AA;">
+                Arthur<br>
+                <span style="color:#556677;font-size:0.82rem;">Fundador do Plantão</span>
               </p>
             </td>
           </tr>
@@ -129,9 +156,9 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Plantão <contato@plantao.net>',
+        from: 'Arthur do Plantão <contato@plantao.net>',
         to: [email],
-        subject: `Bem-vindo ao Plantão, ${primeiroNome}! 👋`,
+        subject: `Oi, ${primeiroNome}! Bem-vindo ao Plantão 👋`,
         html,
       }),
     })
@@ -140,6 +167,16 @@ export default async function handler(req, res) {
       const err = await response.text()
       console.error('[WELCOME] Resend error:', err)
       return res.status(200).json({ ok: false, reason: 'send_failed' })
+    }
+
+    // Marcar como enviado para deduplicação
+    if (syncCode) {
+      try {
+        const db = admin.database()
+        await db.ref(`usuarios/${syncCode}/email_boas_vindas_enviado`).set(true)
+      } catch (e) {
+        console.warn('[WELCOME] flag set failed:', e.message)
+      }
     }
 
     return res.status(200).json({ ok: true })

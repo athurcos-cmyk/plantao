@@ -135,7 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
       fetch('/api/welcome', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: nome || '', email }),
+        body: JSON.stringify({ nome: nome || '', email, syncCode: code }),
       }).catch(() => {})
 
       return true
@@ -241,7 +241,7 @@ export const useAuthStore = defineStore('auth', () => {
     fetch('/api/welcome', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome: user.displayName || '', email: user.email || '' }),
+      body: JSON.stringify({ nome: user.displayName || '', email: user.email || '', syncCode: code }),
     }).catch(() => {})
     return code
   }

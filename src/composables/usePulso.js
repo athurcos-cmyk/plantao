@@ -18,6 +18,7 @@
  */
 import { ref } from 'vue'
 import { getDatabase, ref as dbRef, push, set } from 'firebase/database'
+import { auth as firebaseAuth } from '../firebase.js'
 import { useAuthStore } from '../stores/auth.js'
 
 const STORAGE_KEY = 'feedback_solicitado'
@@ -81,6 +82,26 @@ export function usePulso() {
         timestamp: Date.now(),
         versaoApp: APP_VERSION,
       })
+
+      // Enviar email de ack + notificação para Arthur (fire-and-forget)
+      // Guard: só envia se tiver email e usuário logado
+      if (auth.userEmail && firebaseAuth.currentUser) {
+        firebaseAuth.currentUser.getIdToken()
+          .then(idToken => fetch('/api/feedback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({
+              syncCode: auth.syncCode,
+              email: auth.userEmail,
+              texto: textoFeedback.value.trim(),
+              versaoApp: typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev',
+            }),
+          }))
+          .catch(() => {}) // falha silenciosa
+      }
     } catch (err) {
       // Falha silenciosa — feedback perdido não é crítico
       console.warn('[Pulso] Falha ao salvar feedback:', err)

@@ -166,5 +166,143 @@ export default async function handler(req, res) {
 
   await Promise.all(envios)
   console.log(`[CRON] done. processados=${totalProcessados}, enviados=${totalEnviados}, errors=${erros.length}`)
+
+  // ─── Email Dia 3 ───────────────────────────────────────────────────────────
+  // Envia um email de dicas para usuários criados há exatamente 3 dias (janela 1h).
+  // A janela de 1h garante cobertura mesmo com variações de timing do cron.
+  // Flag email_dia3_enviado é setada ANTES do envio para evitar duplicatas.
+  // Falha silenciosa — não afeta o fluxo principal de FCM.
+  const RESEND_KEY = process.env.RESEND_API_KEY
+  if (RESEND_KEY) {
+    try {
+      const DIA3_MS = 3 * 24 * 60 * 60 * 1000
+      const JANELA_MS = 60 * 60 * 1000 // 1h de tolerância
+      const now = Date.now()
+      const limiteSuperior = now - DIA3_MS        // 3 dias atrás
+      const limiteInferior = now - DIA3_MS - JANELA_MS  // 3 dias e 1h atrás
+
+      const usuariosSnap = await db.ref('usuarios').get()
+      if (usuariosSnap.exists()) {
+        const usuarios = usuariosSnap.val() || {}
+        const enviosDia3 = []
+
+        for (const [syncCode, usuario] of Object.entries(usuarios)) {
+          const criadoEm = usuario?.criadoEm
+          const emailUsr = usuario?.email
+          const jaEnviado = usuario?.email_dia3_enviado
+
+          // Condição: criado na janela de 3d±1h, sem email enviado ainda, com email válido
+          if (!criadoEm || jaEnviado || !emailUsr || !emailUsr.includes('@')) continue
+          if (criadoEm > limiteSuperior || criadoEm <= limiteInferior) continue
+
+          const nomeUsuario = (usuario.nome || '').split(' ')[0] || 'enfermeiro(a)'
+          console.log(`[CRON/DIA3] ${syncCode}: enviando email dia 3 para ${emailUsr}`)
+
+          // Setar flag PRIMEIRO (idempotência)
+          await db.ref(`usuarios/${syncCode}/email_dia3_enviado`).set(true)
+
+          enviosDia3.push(
+            fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${RESEND_KEY}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                from: 'Arthur do Plantão <contato@plantao.net>',
+                to: [emailUsr],
+                subject: `${nomeUsuario}, você descobriu tudo no Plantão? 👀`,
+                html: _htmlDia3(nomeUsuario),
+              }),
+            }).catch(e => console.error(`[CRON/DIA3] ${syncCode}: resend error`, e.message))
+          )
+        }
+
+        if (enviosDia3.length > 0) {
+          await Promise.allSettled(enviosDia3)
+          console.log(`[CRON/DIA3] ${enviosDia3.length} email(s) enviado(s)`)
+        }
+      }
+    } catch (e) {
+      console.error('[CRON/DIA3] error (non-fatal):', e.message)
+    }
+  }
+
   return res.json({ sent: totalEnviados, processados: totalProcessados, erros, agora })
+}
+
+function _htmlDia3(nomeUsuario) {
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#0A1628;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0A1628;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#111d32;border-radius:16px;border:1px solid #1e3050;overflow:hidden;">
+        <tr>
+          <td style="padding:32px 32px 24px;text-align:center;border-bottom:1px solid #1e3050;">
+            <span style="font-size:1.4rem;font-weight:800;color:#EAEEF3;letter-spacing:-0.02em;">Plantão</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px;">
+            <p style="margin:0 0 16px;font-size:1.05rem;font-weight:700;color:#EAEEF3;">
+              Oi, ${nomeUsuario}! Já faz 3 dias. 👀
+            </p>
+            <p style="margin:0 0 16px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
+              Você já descobriu tudo que dá pra fazer no app? Vou te mostrar 3 coisas que fazem diferença no plantão:
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e3050;">
+                  <span style="font-size:1rem;margin-right:10px;">🔔</span>
+                  <span style="font-size:0.9rem;color:#EAEEF3;font-weight:600;">Notificações no horário certo</span><br>
+                  <span style="font-size:0.85rem;color:#8899AA;margin-left:26px;display:block;">Organizador → adicione o horário da medicação. O app avisa mesmo com a tela fechada.</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #1e3050;">
+                  <span style="font-size:1rem;margin-right:10px;">🧮</span>
+                  <span style="font-size:0.9rem;color:#EAEEF3;font-weight:600;">Calculadora de medicação</span><br>
+                  <span style="font-size:0.85rem;color:#8899AA;margin-left:26px;display:block;">Dosagem, gotejamento e diluição — sem papel, sem erro. Salva os últimos cálculos.</span>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;">
+                  <span style="font-size:1rem;margin-right:10px;">🛏️</span>
+                  <span style="font-size:0.9rem;color:#EAEEF3;font-weight:600;">Meus Pacientes</span><br>
+                  <span style="font-size:0.85rem;color:#8899AA;margin-left:26px;display:block;">Cadastre os pacientes do turno, adicione pendências e marque conforme resolve.</span>
+                </td>
+              </tr>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+              <tr>
+                <td align="center">
+                  <a href="https://plantao.net" style="display:inline-block;background:#1E88E5;color:#ffffff;text-decoration:none;font-weight:700;font-size:0.95rem;padding:14px 32px;border-radius:9999px;">
+                    Abrir o Plantão →
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:0;font-size:0.88rem;color:#8899AA;line-height:1.6;">
+              Qualquer dúvida, é só responder esse email. 🙏
+            </p>
+            <p style="margin:16px 0 0;font-size:0.88rem;color:#8899AA;">
+              Arthur<br>
+              <span style="color:#556677;font-size:0.82rem;">Fundador do Plantão</span>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 32px;border-top:1px solid #1e3050;text-align:center;">
+            <p style="margin:0;font-size:0.78rem;color:#556677;">
+              Plantão — app de enfermagem · <a href="https://plantao.net" style="color:#556677;">plantao.net</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
 }
