@@ -11,7 +11,7 @@
           </svg>
           <span class="nav-logo">Plantão</span>
         </div>
-        <a class="nav-cta" :href="appUrl">Abrir o app →</a>
+        <a class="nav-cta" href="#" @click.prevent="acessarNoPc">Abrir o app →</a>
       </div>
     </nav>
 
@@ -35,7 +35,7 @@
             Funciona offline. Instala no celular sem loja de apps.
           </p>
           <div class="hero-actions">
-            <a class="btn-hero" :href="appUrl">
+            <a class="btn-hero" href="#" @click.prevent="acessarNoPc">
               Usar agora — é grátis
             </a>
             <p class="hero-hint">Sem e-mail. Sem cartão. Instala em 1 minuto.</p>
@@ -230,7 +230,7 @@
           <div class="section-eyebrow">Completo</div>
           <h2 class="section-title no-margin-bottom">8 tipos de anotação + calculadora</h2>
           <p class="two-col-sub">Cada anotação gera o texto no formato correto do prontuário. Calculadora de dosagem, gotejamento e diluição direto no app.</p>
-          <a class="btn-outline" :href="appUrl">Explorar o app →</a>
+          <a class="btn-outline" href="#" @click.prevent="acessarNoPc">Explorar o app →</a>
         </div>
         <div class="features-list">
           <div class="feature-item" v-for="f in features" :key="f">
@@ -268,7 +268,7 @@
         <div class="section-eyebrow eyebrow-light">Comece agora</div>
         <h2 class="cta-title">Tudo pronto para o seu<br>próximo plantão</h2>
         <p class="cta-sub">100% gratuito. Sem cadastro de e-mail. Instala em menos de 1 minuto.</p>
-        <a class="btn-hero btn-hero-lg" :href="appUrl">Abrir o Plantão →</a>
+        <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Abrir o Plantão →</a>
         <p class="cta-hint">Compatible com Android e iPhone</p>
       </div>
     </section>
