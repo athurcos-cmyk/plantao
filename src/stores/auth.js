@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   signOut,
@@ -153,40 +154,60 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // ─── Login com Google ───
+  // Tenta popup primeiro (funciona na maioria dos casos).
+  // Se popup for bloqueado, cai em redirect.
   async function loginGoogle() {
     authError.value = ''
     try {
-      await signInWithRedirect(firebaseAuth, googleProvider)
-      // Redirect: resultado processado em handleRedirectResult
+      const result = await signInWithPopup(firebaseAuth, googleProvider)
+      // Popup deu certo — vincular conta se for primeiro acesso
+      if (result && result.user) {
+        await _vincularGoogleSeNovo(result.user)
+      }
       return true
     } catch (e) {
+      // Popup bloqueado ou indisponível → tenta redirect
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user'
+          || e.code === 'auth/cancelled-popup-request') {
+        try {
+          await signInWithRedirect(firebaseAuth, googleProvider)
+          return true
+        } catch (e2) {
+          authError.value = _traduzirErro(e2.code)
+          return false
+        }
+      }
+      console.error('[Auth] Google login error:', e.code, e.message)
       authError.value = _traduzirErro(e.code)
       return false
     }
   }
 
-  // Processa resultado do redirect do Google
+  // Processa resultado do redirect do Google (chamado no reload após redirect)
   async function handleRedirectResult() {
     try {
       const result = await getRedirectResult(firebaseAuth)
       if (result && result.user) {
-        const user = result.user
-        // Verificar se já tem syncCode
-        const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
-        if (!mapSnap.exists()) {
-          // Primeira vez com Google: criar conta
-          const code = await _gerarSyncCodeUnico()
-          await set(dbRef(db, `owners/${code}/${user.uid}`), true)
-          await set(dbRef(db, `uid_map/${user.uid}`), code)
-          await set(dbRef(db, `usuarios/${code}`), {
-            nome: user.displayName || '',
-            email: user.email || '',
-            criadoEm: Date.now(),
-          })
-        }
+        await _vincularGoogleSeNovo(result.user)
       }
     } catch (e) {
-      console.warn('[Auth] Redirect result error:', e.message)
+      console.warn('[Auth] Redirect result error:', e.code, e.message)
+      authError.value = _traduzirErro(e.code)
+    }
+  }
+
+  // Cria syncCode e mapeamentos se for primeiro login Google
+  async function _vincularGoogleSeNovo(user) {
+    const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
+    if (!mapSnap.exists()) {
+      const code = await _gerarSyncCodeUnico()
+      await set(dbRef(db, `owners/${code}/${user.uid}`), true)
+      await set(dbRef(db, `uid_map/${user.uid}`), code)
+      await set(dbRef(db, `usuarios/${code}`), {
+        nome: user.displayName || '',
+        email: user.email || '',
+        criadoEm: Date.now(),
+      })
     }
   }
 
