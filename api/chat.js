@@ -78,24 +78,19 @@ export default async function handler(req, res) {
   // Verifica Firebase Auth token — impede uso não autorizado da IA
   try {
     _initAdmin()
-    if (authHeader.startsWith('Bearer ')) {
-      const idToken = authHeader.replace('Bearer ', '')
-      const decoded = await admin.auth().verifyIdToken(idToken)
-      // Verifica se o uid é dono do syncCode
-      const ownerSnap = await admin.database().ref(`owners/${syncCode}/${decoded.uid}`).get()
-      if (!ownerSnap.exists() || ownerSnap.val() !== true) {
-        return res.status(403).json({ error: 'Não autorizado.' })
-      }
-    } else {
-      // Fallback legado: verifica se syncCode existe (período de transição)
-      const snap = await admin.database().ref(`usuarios/${syncCode}`).get()
-      if (!snap.exists()) {
-        return res.status(403).json({ error: 'Não autorizado.' })
-      }
+    if (!authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Token de autenticação obrigatório.' })
+    }
+    const idToken = authHeader.replace('Bearer ', '')
+    const decoded = await admin.auth().verifyIdToken(idToken)
+    // Verifica se o uid é dono do syncCode
+    const ownerSnap = await admin.database().ref(`owners/${syncCode}/${decoded.uid}`).get()
+    if (!ownerSnap.exists() || ownerSnap.val() !== true) {
+      return res.status(403).json({ error: 'Não autorizado.' })
     }
   } catch (e) {
     console.error('[CHAT] auth check failed:', e.message)
-    return res.status(500).json({ error: 'Erro interno.' })
+    return res.status(401).json({ error: 'Autenticação inválida.' })
   }
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
