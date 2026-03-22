@@ -72,13 +72,14 @@ export function usePulso() {
 
   async function enviar() {
     if (!textoFeedback.value.trim() || !auth.syncCode) return
+    const textoCapturado = textoFeedback.value.trim() // captura antes do finally limpar
     enviando.value = true
     try {
       const db = getDatabase()
       const feedbackRef = dbRef(db, `feedback/${auth.syncCode}`)
       const novoRef = push(feedbackRef)
       await set(novoRef, {
-        texto: textoFeedback.value.trim(),
+        texto: textoCapturado,
         timestamp: Date.now(),
         versaoApp: APP_VERSION,
       })
@@ -96,7 +97,7 @@ export function usePulso() {
             body: JSON.stringify({
               syncCode: auth.syncCode,
               email: auth.userEmail,
-              texto: textoFeedback.value.trim(),
+              texto: textoCapturado, // usa valor capturado, não o ref já limpo
               versaoApp: typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'dev',
             }),
           }))
