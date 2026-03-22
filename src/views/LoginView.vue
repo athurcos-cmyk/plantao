@@ -275,10 +275,7 @@ async function entrar() {
   carregando.value = true
   auth.authError = ''
   const ok = await auth.login(email.value, senha.value)
-  if (ok) {
-    // onAuthStateChanged vai popular os dados; esperar um tick
-    setTimeout(() => router.push({ name: 'dashboard' }), 300)
-  }
+  if (ok) router.push({ name: 'dashboard' })
   carregando.value = false
 }
 
@@ -328,9 +325,7 @@ async function entrarComCodigo() {
 
     // 2. Login com email + senha
     const ok = await auth.login(data.email, senha.value)
-    if (ok) {
-      setTimeout(() => router.push({ name: 'dashboard' }), 300)
-    }
+    if (ok) router.push({ name: 'dashboard' })
   } catch {
     auth.authError = 'Sem conexão com o servidor.'
   } finally {

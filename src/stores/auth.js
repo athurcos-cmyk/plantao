@@ -54,7 +54,11 @@ export const useAuthStore = defineStore('auth', () => {
   const modoPrivado = !_lsOk
 
   // ─── Listener de estado do Firebase Auth ───
-  // Chamado no router guard e no App.vue — guard garante registro único
+  // Chamado no router guard e no App.vue — guard garante registro único.
+  // Otimização de velocidade:
+  //   Usuário voltando ao app → usa sync_code do localStorage imediatamente
+  //   (authReady=true na hora) e verifica no Firebase DB em background.
+  //   Usuário novo (sem cache) → aguarda DB lookup normalmente.
   let _listenerRegistrado = false
   let _readyPromise = null
   function initAuthListener() {
@@ -66,9 +70,19 @@ export const useAuthStore = defineStore('auth', () => {
         if (user) {
           uid.value = user.uid
           userEmail.value = user.email || ''
-          userName.value = user.displayName || ''
+          userName.value = user.displayName || (_lsOk ? localStorage.getItem('user_name') || '' : '')
 
-          // Buscar syncCode vinculado a este uid
+          // Retorno rápido: se localStorage já tem o syncCode, marca pronto imediatamente.
+          // A verificação no Firebase DB segue em background — sem bloquear a UI.
+          const cachedCode = _lsOk ? localStorage.getItem('sync_code') : null
+          if (cachedCode) {
+            syncCode.value = cachedCode
+            authReady.value = true
+            resolve()
+          }
+
+          // Verificar/atualizar syncCode no Firebase DB (background para usuários com cache,
+          // bloqueante para usuários sem cache — ex: primeiro login em dispositivo novo)
           const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
           if (mapSnap.exists()) {
             const code = mapSnap.val()
@@ -78,7 +92,7 @@ export const useAuthStore = defineStore('auth', () => {
               localStorage.setItem('user_name', userName.value)
             }
 
-            // Buscar nome do perfil do Firebase se não tiver no Auth
+            // Buscar nome do perfil do Firebase se não tiver no Auth nem no cache
             if (!userName.value) {
               const userSnap = await get(dbRef(db, `usuarios/${code}/nome`))
               if (userSnap.exists()) {
@@ -98,7 +112,8 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.removeItem('login_time')
           }
         }
-        authReady.value = true
+        // Resolve para usuários sem cache (com cache já resolveu acima)
+        if (!authReady.value) authReady.value = true
         resolve()
       })
     })
@@ -112,20 +127,20 @@ export const useAuthStore = defineStore('auth', () => {
       const cred = await createUserWithEmailAndPassword(firebaseAuth, email, senha)
       const user = cred.user
 
-      // Atualizar displayName no Firebase Auth
-      if (nome) await updateProfile(user, { displayName: nome })
-
       // Gerar syncCode único
-      const code = await _gerarSyncCodeUnico()
+      const code = _gerarSyncCodeUnico()
 
-      // Criar mapeamentos
-      await set(dbRef(db, `owners/${code}/${user.uid}`), true)
-      await set(dbRef(db, `uid_map/${user.uid}`), code)
-      await set(dbRef(db, `usuarios/${code}`), {
-        nome: nome || '',
-        email: email,
-        criadoEm: Date.now(),
-      })
+      // Criar mapeamentos + atualizar displayName em paralelo (salva ~400-600ms)
+      await Promise.all([
+        nome ? updateProfile(user, { displayName: nome }) : Promise.resolve(),
+        set(dbRef(db, `owners/${code}/${user.uid}`), true),
+        set(dbRef(db, `uid_map/${user.uid}`), code),
+        set(dbRef(db, `usuarios/${code}`), {
+          nome: nome || '',
+          email: email,
+          criadoEm: Date.now(),
+        }),
+      ])
 
       // Estado local
       uid.value = user.uid
@@ -152,11 +167,32 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // ─── Login com email/senha ───
+  // Seta uid + syncCode imediatamente ao retornar (sem depender de onAuthStateChanged).
+  // Assim isLoggedIn = true quando login() retorna true → redirect sem setTimeout.
   async function login(email, senha) {
     authError.value = ''
     try {
-      await signInWithEmailAndPassword(firebaseAuth, email, senha)
-      // onAuthStateChanged vai preencher o estado
+      const cred = await signInWithEmailAndPassword(firebaseAuth, email, senha)
+      const user = cred.user
+      uid.value = user.uid
+      userEmail.value = user.email || ''
+      userName.value = user.displayName || (_lsOk ? localStorage.getItem('user_name') || '' : '')
+
+      // Buscar syncCode (usa cache do localStorage para retornos rápidos)
+      const cachedCode = _lsOk ? localStorage.getItem('sync_code') : null
+      if (cachedCode) {
+        syncCode.value = cachedCode
+      } else {
+        const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
+        if (mapSnap.exists()) {
+          const code = mapSnap.val()
+          syncCode.value = code
+          if (_lsOk) {
+            localStorage.setItem('sync_code', code)
+            localStorage.setItem('user_name', userName.value)
+          }
+        }
+      }
       return true
     } catch (e) {
       authError.value = _traduzirErro(e.code)
