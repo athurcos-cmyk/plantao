@@ -16,6 +16,23 @@ function _initAdmin() {
   _adminInit = true
 }
 
+// Rate limiting em memória por uid (20 req/min)
+const _rateMap = new Map()
+const RATE_WINDOW_MS = 60_000
+const RATE_MAX = 20
+
+function _checkRate(uid) {
+  const now = Date.now()
+  const entry = _rateMap.get(uid)
+  if (!entry || now - entry.start > RATE_WINDOW_MS) {
+    _rateMap.set(uid, { start: now, count: 1 })
+    return true
+  }
+  entry.count++
+  if (entry.count > RATE_MAX) return false
+  return true
+}
+
 const SYSTEM_PROMPT = `Você é Clara, assistente de enfermagem do app Plantão, criada para auxiliar enfermeiros e técnicos durante o plantão hospitalar brasileiro.
 
 ESCOPO — o que você faz:
@@ -65,7 +82,8 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    return res.status(500).json({ error: 'GROQ_API_KEY não configurada' })
+    console.error('[CHAT] GROQ_API_KEY not configured')
+    return res.status(500).json({ error: 'Erro interno do servidor.' })
   }
 
   const { messages, syncCode } = req.body || {}
@@ -87,6 +105,10 @@ export default async function handler(req, res) {
     const ownerSnap = await admin.database().ref(`owners/${syncCode}/${decoded.uid}`).get()
     if (!ownerSnap.exists() || ownerSnap.val() !== true) {
       return res.status(403).json({ error: 'Não autorizado.' })
+    }
+    // Rate limit por uid autenticado
+    if (!_checkRate(decoded.uid)) {
+      return res.status(429).json({ error: 'Muitas mensagens. Aguarde um momento.' })
     }
   } catch (e) {
     console.error('[CHAT] auth check failed:', e.message)

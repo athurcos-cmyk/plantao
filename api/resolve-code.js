@@ -1,7 +1,7 @@
 /**
  * api/resolve-code.js
- * Recebe syncCode → retorna o email vinculado.
- * Não expõe outros dados do usuário.
+ * Recebe syncCode → retorna o email vinculado (parcialmente mascarado).
+ * Rate limiting em memória por IP (10 req/min).
  */
 
 import admin from 'firebase-admin'
@@ -15,9 +15,41 @@ function _initAdmin() {
   _adminInit = true
 }
 
+// Rate limiting simples em memória (reseta a cada cold start, suficiente para serverless)
+const _rateMap = new Map()
+const RATE_WINDOW_MS = 60_000  // 1 minuto
+const RATE_MAX = 10            // 10 tentativas por minuto por IP
+
+function _checkRate(ip) {
+  const now = Date.now()
+  const entry = _rateMap.get(ip)
+  if (!entry || now - entry.start > RATE_WINDOW_MS) {
+    _rateMap.set(ip, { start: now, count: 1 })
+    return true
+  }
+  entry.count++
+  if (entry.count > RATE_MAX) return false
+  return true
+}
+
+// Mascara email: a****@gmail.com
+function _maskEmail(email) {
+  if (!email || typeof email !== 'string') return '***@***.com'
+  const [local, domain] = email.split('@')
+  if (!domain) return '***@***.com'
+  const visible = local.slice(0, 1)
+  return `${visible}****@${domain}`
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  // Rate limiting por IP
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown'
+  if (!_checkRate(ip)) {
+    return res.status(429).json({ error: 'Muitas tentativas. Aguarde um momento.' })
   }
 
   const { syncCode } = req.body || {}
@@ -29,10 +61,13 @@ export default async function handler(req, res) {
     _initAdmin()
     const snap = await admin.database().ref(`usuarios/${syncCode.toUpperCase()}/email`).get()
     if (!snap.exists()) {
-      // Resposta genérica para não revelar se o código existe ou não
-      return res.status(404).json({ error: 'Código não encontrado.' })
+      return res.status(404).json({ error: 'Código não encontrado ou sem email vinculado.' })
     }
-    return res.json({ email: snap.val() })
+    const email = snap.val()
+    return res.json({
+      email,                   // usado internamente pelo login
+      emailMasked: _maskEmail(email),  // exibido na UI
+    })
   } catch (e) {
     console.error('[RESOLVE-CODE] error:', e.message)
     return res.status(500).json({ error: 'Erro interno.' })
