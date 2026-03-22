@@ -204,8 +204,39 @@
       </div>
     </section>
 
-    <!-- ── COMO FUNCIONA ── -->
+    <!-- ── FORMAS DE ENTRAR ── -->
     <section class="section section-alt">
+      <div class="section-inner">
+        <div class="section-eyebrow">Acesso</div>
+        <h2 class="section-title">Três formas de entrar</h2>
+        <div class="login-options">
+          <div class="login-opt">
+            <div class="login-opt-icon">🔵</div>
+            <div class="login-opt-body">
+              <h3 class="login-opt-title">Google</h3>
+              <p class="login-opt-desc">Um toque e pronto. Usa a conta Google que você já tem. Mais rápido para o dia a dia.</p>
+            </div>
+          </div>
+          <div class="login-opt">
+            <div class="login-opt-icon">✉️</div>
+            <div class="login-opt-body">
+              <h3 class="login-opt-title">Email e senha</h3>
+              <p class="login-opt-desc">Cria uma conta com seu email. Bom para quem prefere manter separado do Google.</p>
+            </div>
+          </div>
+          <div class="login-opt">
+            <div class="login-opt-icon">🔑</div>
+            <div class="login-opt-body">
+              <h3 class="login-opt-title">Código de acesso</h3>
+              <p class="login-opt-desc">Cada conta tem um código único de 6 letras. Ideal para entrar rápido no computador do posto, sem digitar o email.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── COMO FUNCIONA ── -->
+    <section class="section">
       <div class="section-inner">
         <div class="section-eyebrow">Simples assim</div>
         <h2 class="section-title">Começa a usar em 3 passos</h2>
@@ -1348,6 +1379,43 @@ const testimonials = [
     gap: 40px;
   }
   .install-sub { max-width: 100%; }
+}
+
+/* ── FORMAS DE ENTRAR ── */
+.login-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.login-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+.login-opt-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+  margin-top: 2px;
+}
+.login-opt-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+.login-opt-desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* ── FAQ ── */

@@ -206,14 +206,17 @@ export const useAuthStore = defineStore('auth', () => {
   async function _vincularGoogleSeNovo(user) {
     const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
     if (!mapSnap.exists()) {
-      const code = await _gerarSyncCodeUnico()
-      await set(dbRef(db, `owners/${code}/${user.uid}`), true)
-      await set(dbRef(db, `uid_map/${user.uid}`), code)
-      await set(dbRef(db, `usuarios/${code}`), {
-        nome: user.displayName || '',
-        email: user.email || '',
-        criadoEm: Date.now(),
-      })
+      const code = _gerarSyncCodeUnico()
+      // Escritas em paralelo — mais rápido que sequencial
+      await Promise.all([
+        set(dbRef(db, `owners/${code}/${user.uid}`), true),
+        set(dbRef(db, `uid_map/${user.uid}`), code),
+        set(dbRef(db, `usuarios/${code}`), {
+          nome: user.displayName || '',
+          email: user.email || '',
+          criadoEm: Date.now(),
+        }),
+      ])
     }
   }
 

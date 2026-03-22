@@ -60,6 +60,20 @@
         </button>
       </section>
 
+      <!-- Vincular Google (para quem criou com email) -->
+      <section v-if="!temGoogle" class="config-section">
+        <h2 class="config-section-titulo">Vincular conta Google</h2>
+        <p class="config-sub">Vincule sua conta Google para poder entrar com um toque, sem digitar email e senha.</p>
+        <button
+          class="btn btn-secondary btn-block"
+          :disabled="vinculandoGoogle"
+          @click="vincularGoogle"
+        >
+          <span v-if="vinculandoGoogle">Vinculando...</span>
+          <span v-else>🔗 Vincular com Google</span>
+        </button>
+      </section>
+
       <!-- Alterar nome -->
       <section class="config-section">
         <h2 class="config-section-titulo">Alterar nome</h2>
@@ -117,8 +131,10 @@ import {
   updateProfile,
   EmailAuthProvider,
   linkWithCredential,
+  linkWithPopup,
   deleteUser,
 } from 'firebase/auth'
+import { googleProvider } from '../firebase.js'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -127,8 +143,12 @@ const copiou = ref(false)
 const erro = ref('')
 const sucesso = ref('')
 
-// Senha para Google users
+// Providers vinculados
 const temSenha = ref(true)
+const temGoogle = ref(false)
+const vinculandoGoogle = ref(false)
+
+// Senha para Google users
 const novaSenha = ref('')
 const novaSenhaConfirm = ref('')
 const salvandoSenha = ref(false)
@@ -143,11 +163,11 @@ const deletando = ref(false)
 onMounted(() => {
   novoNome.value = auth.userName || ''
 
-  // Detectar se o user tem provider email/password
   const user = firebaseAuth.currentUser
   if (user) {
     const providers = user.providerData.map(p => p.providerId)
     temSenha.value = providers.includes('password')
+    temGoogle.value = providers.includes('google.com')
   }
 })
 
@@ -194,6 +214,31 @@ async function criarSenha() {
     }
   } finally {
     salvandoSenha.value = false
+  }
+}
+
+async function vincularGoogle() {
+  if (vinculandoGoogle.value) return
+  erro.value = ''
+  sucesso.value = ''
+  vinculandoGoogle.value = true
+  try {
+    const user = firebaseAuth.currentUser
+    await linkWithPopup(user, googleProvider)
+    temGoogle.value = true
+    sucesso.value = 'Conta Google vinculada! Agora você pode entrar com Google também.'
+  } catch (e) {
+    if (e.code === 'auth/credential-already-in-use') {
+      erro.value = 'Esta conta Google já está vinculada a outro usuário.'
+    } else if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
+      // cancelou, não exibe erro
+    } else if (e.code === 'auth/requires-recent-login') {
+      erro.value = 'Faça login novamente antes de vincular.'
+    } else {
+      erro.value = 'Erro ao vincular conta Google. Tente novamente.'
+    }
+  } finally {
+    vinculandoGoogle.value = false
   }
 }
 
