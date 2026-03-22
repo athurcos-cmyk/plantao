@@ -16,7 +16,7 @@
 - Sem Firebase Auth — syncCode é a chave raiz no Firebase
 
 **Anotações**
-- Avaliação inicial (dispositivos, posição, neuro, resp, eliminações)
+- Avaliação inicial (dispositivos, posição, neuro, resp, eliminações, campos configuráveis via modal ⚙️, opção "Outro" livre em todos os grupos, localização poltrona)
 - Sinais vitais (PA, FC, FR, SpO2, Tax, HGT, DOR com escala 0-10 colorida + conduta)
 - Medicação (múltiplos meds, autocomplete, dupla checagem, vias: VO/EV/SC/IM/SNE/OFT/DERM/Sublingual/Recusa — dose opcional para DERM; local anatômico para IM e SC)
 - Encaminhamento (IDA/RETORNO, destinos personalizados)
@@ -35,8 +35,9 @@
 
 **Notificações (FCM completo)**
 - Funciona com app aberto, em segundo plano e completamente fechado
+- **Multi-dispositivo**: cada dispositivo salva seu próprio token FCM, cron envia para todos
 - Arquitetura: localStorage + setInterval (fallback) + Firebase + cron-job.org + FCM
-- cron-job.org chama /api/cron a cada minuto → Firebase Admin → FCM → dispositivo
+- cron-job.org chama /api/cron a cada minuto → Firebase Admin → FCM → todos os dispositivos
 - Aviso 30min antes + notificação no horário exato
 
 **Organizador**
@@ -85,7 +86,7 @@ livres/{syncCode}/                               anotações livres
 curativo/{syncCode}/                             curativos
 curativo/{syncCode}/locais/                      locais customizados
 curativo/{syncCode}/materiais/                   materiais customizados
-fcm_tokens/{syncCode}/                           token FCM do dispositivo
+fcm_tokens/{syncCode}/{deviceId}/                 token FCM por dispositivo (multi-device)
 notificacoes_agendadas/{syncCode}/               notificações pendentes de envio
 feedback/{syncCode}/                             feedbacks dos usuários
 ```
@@ -102,6 +103,18 @@ feedback/{syncCode}/                             feedbacks dos usuários
 ---
 
 ## Histórico de sessões
+
+### Mar 2026 — Anotação Inicial customizável + FCM multi-dispositivo
+- **AnotacaoInicialView**: modal de personalização (⚙️) para ligar/desligar 9 campos individuais no texto gerado
+- **AnotacaoInicialView**: opção "Outro" (texto livre) em todos os grupos de radio/chips — posição da cama, rodas, grades, decúbito, colaboração, deambulação, respiração
+- **AnotacaoInicialView**: localização "Poltrona" — quando paciente não está no leito, esconde campos de cama/rodas/grades/decúbito e gera texto "com paciente em poltrona"
+- **gerarTextoInicial.js**: aceita `camposAtivos` para controle field-level; guard para todos off
+- **camposAnotacaoInicial.js**: config central dos 9 campos customizáveis
+- **ConfigAnotacaoInicialModal.vue**: bottom sheet com checkboxes para cada campo
+- **gerarTextoInicial.test.js**: 12 testes Vitest cobrindo on/off, poltrona, backward compat
+- **FCM multi-dispositivo**: cada dispositivo gera `plantao_device_id` no localStorage e salva token em `fcm_tokens/{syncCode}/{deviceId}` — celular e PC recebem notificações simultaneamente
+- **FCM cron simplificado**: removido lock por `transaction()` que impedia envio (Firebase Admin SDK retorna null no callback sem cache local no serverless)
+- **FCM mutex melhorado**: segunda chamada de `configurarFCM` agora aguarda o registro em andamento em vez de ignorar — corrige aviso falso "só com app aberto" no OrganizadorView
 
 ### Mar 2026 — Calculadora de Medicação (FAB flutuante)
 - **CalculadoraModal.vue**: bottom sheet com 4 abas — Dosagem, Gotejamento, Diluição, Conversões

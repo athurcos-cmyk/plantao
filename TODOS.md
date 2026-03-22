@@ -14,6 +14,18 @@ Implementado em `LoginView.vue` com `v-if="auth.modoPrivado"` — chip discreto 
 
 ---
 
+### [x] Anotação Inicial: campos configuráveis + Outro + Poltrona
+**Concluído:** 2026-03-22
+Modal ⚙️ para ligar/desligar 9 campos no texto gerado. Opção "Outro" (texto livre) em todos os grupos de radio. Localização "Poltrona" quando paciente não está no leito. Config salva em localStorage + Firebase.
+
+---
+
+### [x] FCM multi-dispositivo
+**Concluído:** 2026-03-22
+Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`. Cron envia para todos os dispositivos. Removido lock por transaction que impedia envio. Mutex agora aguarda registro em andamento em vez de ignorar.
+
+---
+
 ## Pendentes
 
 ### [x] Histórico de cálculos na Calculadora (concluído 2026-03-21)

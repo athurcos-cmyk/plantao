@@ -46,7 +46,7 @@ Sessão 30 dias no localStorage. syncCode é a chave raiz no Firebase.
 - `curativo/{syncCode}/` — curativos
 - `curativo/{syncCode}/locais/` — locais customizados do curativo
 - `curativo/{syncCode}/materiais/` — materiais customizados do curativo
-- `fcm_tokens/{syncCode}/` — token FCM do dispositivo
+- `fcm_tokens/{syncCode}/{deviceId}/` — token FCM por dispositivo (multi-device)
 - `notificacoes_agendadas/{syncCode}/agendadas/` — notificações pendentes
 
 ## Serverless (api/)
@@ -65,8 +65,9 @@ Sessão 30 dias no localStorage. syncCode é a chave raiz no Firebase.
 ```
 
 ## Notificações FCM
+- Multi-dispositivo: cada device tem `plantao_device_id` no localStorage → `fcm_tokens/{syncCode}/{deviceId}`
 - Com app aberto: setInterval 20s + registration.showNotification()
-- Com app fechado: cron-job.org → /api/cron → FCM → dispositivo
+- Com app fechado: cron-job.org → /api/cron → FCM → todos os dispositivos do usuário
 - NUNCA usar new Notification() — Android ignora em background
 - NUNCA cachear rotas Firebase no service worker
 
