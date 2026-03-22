@@ -94,7 +94,12 @@ async function _registrarTokenFCM(syncCode) {
     console.log('[FCM] SW pronto, chamando getToken...')
     const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
     if (token) {
-      await set(dbRef(db, `fcm_tokens/${syncCode}`), token)
+      // Gera um ID estável para este dispositivo/browser
+      const tokenId = token.slice(0, 16).replace(/[.#$/[\]]/g, '_')
+      await set(dbRef(db, `fcm_tokens/${syncCode}/${tokenId}`), {
+        token,
+        updatedAt: Date.now(),
+      })
       _fcmAtivo = true
       console.log('[FCM] Token registrado no Firebase ✓', token.slice(0, 20) + '...')
     } else {

@@ -66,8 +66,22 @@ export default async function handler(req, res) {
       console.log(`[CRON] ${syncCode}: no FCM token`)
       continue
     }
-    const token = tokenSnap.val()
-    console.log(`[CRON] ${syncCode}: token ok (${token.slice(0, 20)}...)`)
+    const tokenData = tokenSnap.val()
+    // Suporte multi-dispositivo: pode ser string (legado) ou objeto { id: { token, updatedAt } }
+    const tokens = []
+    if (typeof tokenData === 'string') {
+      tokens.push({ id: 'legacy', token: tokenData })
+    } else {
+      for (const [id, val] of Object.entries(tokenData)) {
+        if (typeof val === 'string') tokens.push({ id, token: val })
+        else if (val?.token) tokens.push({ id, token: val.token })
+      }
+    }
+    if (tokens.length === 0) {
+      console.log(`[CRON] ${syncCode}: no valid tokens`)
+      continue
+    }
+    console.log(`[CRON] ${syncCode}: ${tokens.length} token(s)`)
 
     for (const [key, _notif] of Object.entries(entry.agendadas)) {
       const notifRef = db.ref(`notificacoes_agendadas/${syncCode}/agendadas/${key}`)
@@ -126,50 +140,50 @@ export default async function handler(req, res) {
         continue
       }
 
-      console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}"`)
+      console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}" to ${tokens.length} device(s)`)
       totalEnviados++
 
-      envios.push(
-        admin.messaging().send({
-          token,
-          notification: { title: '⏰ Plantão', body: notif.body || '' },
-          webpush: {
-            notification: {
-              title: '⏰ Plantão',
-              body: notif.body || '',
-              icon: '/icons/icon-192.png',
-              badge: '/icons/icon-192.png',
-              tag: notif.tag || 'plantao',
+      for (const { id: tokenId, token } of tokens) {
+        envios.push(
+          admin.messaging().send({
+            token,
+            notification: { title: '⏰ Plantão', body: notif.body || '' },
+            webpush: {
+              notification: {
+                title: '⏰ Plantão',
+                body: notif.body || '',
+                icon: '/icons/icon-192.png',
+                badge: '/icons/icon-192.png',
+                tag: notif.tag || 'plantao',
+              },
+              fcmOptions: { link: '/' },
             },
-            fcmOptions: { link: '/' },
-          },
+          })
+            .then(async (msgId) => {
+              console.log(`[CRON] ${syncCode}/${key}@${tokenId}: sent ok, msgId=${msgId}`)
+            })
+            .catch(async (err) => {
+              console.error(`[CRON] ${syncCode}/${key}@${tokenId}: send error - ${err.message}`)
+              erros.push({ syncCode, key, tokenId, error: err.message })
+              const tokenInvalido = err.message?.includes('registration-token-not-registered')
+                || err.message?.includes('invalid-registration-token')
+                || err.message?.includes('Requested entity was not found')
+              if (tokenInvalido) {
+                console.log(`[CRON] ${syncCode}@${tokenId}: token inválido, removendo`)
+                await db.ref(`fcm_tokens/${syncCode}/${tokenId}`).remove().catch(() => {})
+              }
+            })
+        )
+      }
+      // Remove notificação após enviar para todos os dispositivos
+      envios.push(
+        Promise.resolve().then(async () => {
+          try {
+            await notifRef.remove()
+          } catch (_) {
+            await notifRef.update({ sentAt: Date.now(), processingAt: null, processingBy: null })
+          }
         })
-          .then(async (msgId) => {
-            console.log(`[CRON] ${syncCode}/${key}: sent ok, msgId=${msgId}`)
-            try {
-              await notifRef.remove()
-            } catch (_) {
-              await notifRef.update({
-                sentAt: Date.now(),
-                processingAt: null,
-                processingBy: null,
-              })
-            }
-          })
-          .catch(async (err) => {
-            console.error(`[CRON] ${syncCode}/${key}: send error - ${err.message}`)
-            erros.push({ syncCode, key, error: err.message })
-            // Token inválido/expirado — remove do Firebase para não tentar de novo
-            const tokenInvalido = err.message?.includes('registration-token-not-registered')
-              || err.message?.includes('invalid-registration-token')
-              || err.message?.includes('Requested entity was not found')
-            if (tokenInvalido) {
-              console.log(`[CRON] ${syncCode}: token inválido, removendo do Firebase`)
-              await db.ref(`fcm_tokens/${syncCode}`).remove().catch(() => {})
-            } else {
-              await notifRef.update({ processingAt: null, processingBy: null }).catch(() => {})
-            }
-          })
       )
     }
   }
