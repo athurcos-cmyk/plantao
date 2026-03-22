@@ -61,6 +61,30 @@ Medicamentos que **precisam** do ajuste:
 
 ---
 
+### [x] Firebase Auth completo
+**Concluído:** 2026-03-22
+Migração de syncCode+PIN para Firebase Auth (email/senha + Google). LoginView com 4 telas, ConfiguracoesView, api/resolve-code.js, regras Firebase com isolamento por uid, router guard com authReady.
+
+---
+
+### [x] Domínio plantao.net
+**Concluído:** 2026-03-22
+Registrado no Cloudflare. Conectado ao Vercel. Email contato@plantao.net com routing para plantao.contato.net@gmail.com. Domínio adicionado no Firebase Auth e Google OAuth.
+
+---
+
+### [x] Segurança backend (pós-auth)
+**Concluído:** 2026-03-22
+CRON_SECRET obrigatório (fail-closed). Rate limiting em resolve-code (10/min por IP) e chat (20/min por uid). Email mascarado no resolve-code. Erro genérico sem expor variáveis internas.
+
+---
+
+### [x] Landing page reescrita
+**Concluído:** 2026-03-22
+Hero focado na dor. Stats com tempo economizado. Features reescritas com benefício. Depoimentos específicos. Seção FAQ. CTA reformulado. Email contato@plantao.net no footer.
+
+---
+
 ### [ ] Board colaborativo (deferido do CEO Review 2026-03-21)
 **O quê:** Avaliar funcionalidade colaborativa (múltiplos técnicos, mesmo plantão).
 **Por quê:** Poderia servir clínicas pequenas onde o time é unido e quer compartilhar anotações.
@@ -81,18 +105,9 @@ Medicamentos que **precisam** do ajuste:
 
 ---
 
-### [ ] Proteção para crypto.subtle em HTTP
-**O quê:** Envolver `hashPin()` e `hashPinLegacy()` em `try/catch` com mensagem de erro clara.
-**Por quê:** `crypto.subtle` é `undefined` em contextos não-HTTPS (ex: acesso por IP local para testes). Atualmente o erro é silencioso — login/registro simplesmente quebra sem feedback.
-**Como:**
-```js
-async function hashPin(pin, code) {
-  if (!crypto?.subtle) throw new Error('Contexto inseguro — use HTTPS')
-  // ... resto do código
-}
-```
-**Dependências:** Nenhuma.
-**Contexto:** Gap pré-existente identificado durante plan-eng-review (2026-03-21). Em produção (Vercel HTTPS) nunca ocorre, mas afeta testes locais via IP.
+### [x] Proteção para crypto.subtle em HTTP
+**Concluído (indireto):** 2026-03-22
+Com a migração para Firebase Auth, `hashPin()` e `hashPinLegacy()` foram removidos por completo. Firebase Auth gerencia autenticação nativamente via HTTPS. Não há mais uso de `crypto.subtle` no fluxo de login.
 
 ---
 

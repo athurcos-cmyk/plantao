@@ -20,7 +20,7 @@ Gera textos formatados prontos para copiar no sistema do hospital.
 Funciona offline, sincroniza via Firebase, instalável sem loja de apps.
 
 ## Stack
-Vue 3 (script setup), Vite, Pinia, Firebase Realtime DB, vite-plugin-pwa, CSS puro.
+Vue 3 (script setup), Vite, Pinia, Firebase Auth + Firebase Realtime DB, vite-plugin-pwa, CSS puro.
 
 ## Regras de código — SEMPRE seguir
 - `reactive()` para forms, `ref()` para estado simples
@@ -32,11 +32,17 @@ Vue 3 (script setup), Vite, Pinia, Firebase Realtime DB, vite-plugin-pwa, CSS pu
 - Chips: `<button class="chip" :class="{'chip-on': cond}">` com toggle
 
 ## Autenticação
-Sistema próprio com syncCode (mín. 6 chars) + PIN (6 dígitos, SHA-256). Sem Firebase Auth.
-Sessão 30 dias no localStorage. syncCode é a chave raiz no Firebase.
+Firebase Auth — email/senha + Google (signInWithPopup, fallback signInWithRedirect).
+syncCode gerado automaticamente no cadastro (6 chars alfanuméricos, crypto.getRandomValues).
+Mapeamento uid → syncCode via `uid_map/{uid}`. Isolamento por `owners/{code}/{uid}`.
+Login rápido por código: `/api/resolve-code` (serverless) retorna email → signInWithEmailAndPassword.
+Sessão gerida pelo Firebase Auth (persistência nativa, sem localStorage manual).
+Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 
 ## Firebase — estrutura completa
-- `usuarios/{syncCode}/` — pin hash, nome, criadoEm
+- `owners/{syncCode}/{uid}` — mapeamento de propriedade (regras de segurança)
+- `uid_map/{uid}` — syncCode do usuário (restauração de sessão)
+- `usuarios/{syncCode}/` — nome, email, criadoEm (sem PIN)
 - `anotacoes/{syncCode}/{pushKey}/` — tipo, texto, nome, leito, timestamp
 - `anotacoes_hc/{syncCode}/{pushKey}/` — anotações HC
 - `pacientes/{syncCode}/{pushKey}/` — nome, leito, criadoEm, pendencias/
@@ -50,8 +56,9 @@ Sessão 30 dias no localStorage. syncCode é a chave raiz no Firebase.
 - `notificacoes_agendadas/{syncCode}/agendadas/` — notificações pendentes
 
 ## Serverless (api/)
-- `api/cron.js` — lê Firebase, envia FCM via firebase-admin. Chamado pelo cron-job.org a cada minuto.
-- `api/chat.js` — proxy para Groq API (Llama 3.3 70B). Protege GROQ_API_KEY.
+- `api/cron.js` — lê Firebase, envia FCM via firebase-admin. CRON_SECRET obrigatório (fail-closed). Chamado pelo cron-job.org (URL: https://plantao.net/api/cron) a cada minuto.
+- `api/chat.js` — proxy para Groq API (Llama 3.3 70B). Protege GROQ_API_KEY. Verifica Firebase Auth idToken + owners. Rate limit 20 msg/min por uid.
+- `api/resolve-code.js` — recebe syncCode, retorna email via admin SDK. Rate limit 10 req/min por IP.
 
 ## Variáveis de ambiente — NUNCA no .env, sempre no Vercel
 - `VITE_FCM_VAPID_KEY` — chave pública VAPID (compilada no bundle)

@@ -11,9 +11,12 @@
 ### Funcionalidades completas
 
 **Autenticação**
-- Sistema próprio com syncCode (mín. 6 caracteres) + PIN (6 dígitos, SHA-256)
-- Sessão de 30 dias no localStorage
-- Sem Firebase Auth — syncCode é a chave raiz no Firebase
+- Firebase Auth completo — email/senha + Google (popup com fallback redirect)
+- syncCode gerado automaticamente no primeiro acesso, vinculado ao uid via `uid_map/{uid}`
+- Isolamento por usuário via `owners/{code}/{uid}` nas regras do Firebase
+- Login rápido com código: syncCode + senha via `/api/resolve-code` (serverless)
+- Sessão gerida pelo Firebase Auth (persistência nativa)
+- Configurações: alterar nome, criar senha (usuários Google), logout, excluir conta
 
 **Anotações**
 - Avaliação inicial (dispositivos, posição, neuro, resp, eliminações, campos configuráveis via modal ⚙️, opção "Outro" livre em todos os grupos, localização poltrona)
@@ -76,7 +79,9 @@
 ## Firebase — estrutura atual
 
 ```
-usuarios/{syncCode}/                             pin hash, nome, criadoEm
+owners/{syncCode}/{uid}                          mapeamento uid → syncCode (segurança)
+uid_map/{uid}                                    syncCode do usuário (restauração de sessão)
+usuarios/{syncCode}/                             nome, email, criadoEm (sem PIN — Firebase Auth)
 anotacoes/{syncCode}/                            anotações gerais
 anotacoes_hc/{syncCode}/                         anotações HC
 pacientes/{syncCode}/                            pacientes e pendências
@@ -86,7 +91,7 @@ livres/{syncCode}/                               anotações livres
 curativo/{syncCode}/                             curativos
 curativo/{syncCode}/locais/                      locais customizados
 curativo/{syncCode}/materiais/                   materiais customizados
-fcm_tokens/{syncCode}/{deviceId}/                 token FCM por dispositivo (multi-device)
+fcm_tokens/{syncCode}/{deviceId}/                token FCM por dispositivo (multi-device)
 notificacoes_agendadas/{syncCode}/               notificações pendentes de envio
 feedback/{syncCode}/                             feedbacks dos usuários
 ```
@@ -96,13 +101,35 @@ feedback/{syncCode}/                             feedbacks dos usuários
 ## Infraestrutura
 
 - **Vercel** (Hobby) — deploy automático via GitHub (main)
+- **Firebase Auth** — autenticação email/senha + Google (gratuito, Spark)
+- **Firebase Realtime DB** — dados do app (plano Spark gratuito)
 - **cron-job.org** — chama /api/cron a cada minuto (gratuito, sem limitação Hobby)
-- **Firebase** — Realtime Database (plano Spark gratuito)
 - **Groq** — Llama 3.3 70B, gratuito, 14.400 req/dia
+- **Domínio** — plantao.net (Cloudflare), email contato@plantao.net → plantao.contato.net@gmail.com
 
 ---
 
 ## Histórico de sessões
+
+### Mar 2026 — Segurança backend + Landing page + Email de contato
+- **api/cron.js**: `CRON_SECRET` agora obrigatório (fail-closed) — antes passava qualquer request se a variável não existisse
+- **api/resolve-code.js**: rate limiting 10 req/min por IP + email mascarado na resposta (`a****@gmail.com`) para evitar enumeração
+- **api/chat.js**: rate limiting 20 msg/min por uid + erro genérico sem expor nome de variável interna
+- **Landing page**: hero focado na dor ("Chega de anotar no papel e digitar tudo de novo"), stats com tempo economizado (~30min/plantão), features reescritas com benefício, depoimentos com situações reais, seção FAQ com 6 perguntas comuns, CTA final reescrito
+- **Footer landing**: email `contato@plantao.net` clicável
+
+### Mar 2026 — Firebase Auth + domínio plantao.net
+- **Migração completa** de syncCode+PIN para Firebase Auth (email/senha + Google)
+- **LoginView**: telas de login, cadastro, login por código (syncCode+senha via API), recuperar senha
+- **ConfiguracoesView**: nome, email, syncCode, criar senha (Google users via linkWithCredential), logout, excluir conta (apaga 14 paths Firebase + Firebase Auth)
+- **api/resolve-code.js**: serverless — recebe syncCode, retorna email via admin SDK (sem expor email no cliente)
+- **api/chat.js**: autenticação migrada para Firebase Auth idToken + verificação owners table
+- **database.rules.json**: isolamento total por uid via `owners/{code}/{uid}`, `uid_map` read-only por uid dono
+- **Router guard**: aguarda `authReady` antes de qualquer redirect
+- **DashboardView**: botão ⚙️ no header → ConfiguracoesView
+- **Domínio**: plantao.net registrado no Cloudflare, conectado ao Vercel, email contato@plantao.net
+- **Landing/Onboarding**: copy atualizado para Firebase Auth (sem referências a syncCode+PIN)
+- **Google OAuth**: consent screen atualizado com nome "Plantão" e domínio plantao.net
 
 ### Mar 2026 — Anotação Inicial customizável + FCM multi-dispositivo
 - **AnotacaoInicialView**: modal de personalização (⚙️) para ligar/desligar 9 campos individuais no texto gerado
