@@ -25,6 +25,25 @@ export function useAnotacaoInicial() {
   const dragIdx     = ref(null)
   const dragOverIdx = ref(null)
 
+  // ── Campos "Outro" ────────────────────────────────────────────────────────
+  const outroAtivo = reactive({})
+  const outroTexto = reactive({})
+
+  function selecionarOutro(campo) {
+    outroAtivo[campo] = true
+    form[campo] = outroTexto[campo] || ''
+  }
+  function atualizarOutro(campo, texto) {
+    outroTexto[campo] = texto
+    form[campo] = texto
+  }
+  function desativarOutro(campo) {
+    outroAtivo[campo] = false
+  }
+  function _resetOutros(...campos) {
+    campos.forEach(c => { outroAtivo[c] = false; outroTexto[c] = '' })
+  }
+
   // ── Configuração de campos visíveis ───────────────────────────────────────
   const mostrarConfigModal = ref(false)
 
@@ -114,7 +133,7 @@ export function useAnotacaoInicial() {
 
   const form = reactive({
     // Bloco 1
-    horario: '', sexo: 'F',
+    horario: '', sexo: 'F', localizacao: 'leito',
     posicaoCama: '', rodas: '', grades: '', decubito: '',
     // Bloco 2
     mentalAlterado: false, mentalDesc: '',
@@ -243,11 +262,13 @@ export function useAnotacaoInicial() {
   function limparBloco() {
     erro.value = ''
     if (passo.value === 1) {
-      Object.assign(form, { horario:'', sexo:'F', posicaoCama:'', rodas:'', grades:'', decubito:'' })
+      Object.assign(form, { horario:'', sexo:'F', localizacao:'leito', posicaoCama:'', rodas:'', grades:'', decubito:'' })
+      _resetOutros('posicaoCama', 'rodas', 'grades', 'decubito')
     } else if (passo.value === 2) {
       Object.assign(form, { mentalAlterado:false, mentalDesc:'', colaboracao:'',
         deambulacao:'', deambulaAuxilio:'', respPadrao:'', respiracao:'',
         oxigenioLitros:'', acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'' })
+      _resetOutros('colaboracao', 'deambulacao', 'respiracao')
     } else if (passo.value === 4) {
       Object.assign(form, { evacuacaoOpcao:'', evacuacaoData:'', diurese:[],
         svdDebito:'', svdAspecto:'', diureseObs:'', queixas:'', obsApresenta:'' })
@@ -428,10 +449,14 @@ export function useAnotacaoInicial() {
 
   // ── Fechamento automático ─────────────────────────────────────────────────
   function atualizarFechamento() {
-    const p = form.posicaoCama || '___'
-    const r = form.rodas       || '___'
-    const g = form.grades      || '___'
-    form.fechamento = `Mantenho cama ${p}, rodas ${r}, grades ${g}, campainha próxima e oriento a chamar sempre que necessário.`
+    if (form.localizacao === 'poltrona') {
+      form.fechamento = 'Mantenho campainha próxima e oriento a chamar sempre que necessário.'
+    } else {
+      const p = form.posicaoCama || '___'
+      const r = form.rodas       || '___'
+      const g = form.grades      || '___'
+      form.fechamento = `Mantenho cama ${p}, rodas ${r}, grades ${g}, campainha próxima e oriento a chamar sempre que necessário.`
+    }
   }
 
   // ── Geração de texto ──────────────────────────────────────────────────────
@@ -474,7 +499,7 @@ export function useAnotacaoInicial() {
 
   function novaAnotacao() {
     Object.assign(form, {
-      horario:'', sexo:'F', posicaoCama:'', rodas:'', grades:'', decubito:'',
+      horario:'', sexo:'F', localizacao:'leito', posicaoCama:'', rodas:'', grades:'', decubito:'',
       mentalAlterado:false, mentalDesc:'', colaboracao:'', deambulacao:'',
       deambulaAuxilio:'', respPadrao:'', respiracao:'', oxigenioLitros:'',
       acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'',
@@ -483,6 +508,7 @@ export function useAnotacaoInicial() {
       queixas:'', obsApresenta:'', fechamento:'',
       nomePaciente:'', leitoPaciente:''
     })
+    _resetOutros('posicaoCama', 'rodas', 'grades', 'decubito', 'colaboracao', 'deambulacao', 'respiracao')
     passo.value = 1
     gerado.value = false
     textoGerado.value = ''
@@ -512,6 +538,12 @@ export function useAnotacaoInicial() {
     camposAtivos,
     mostrarConfigModal,
     salvarCamposAtivos,
+    // campos Outro
+    outroAtivo,
+    outroTexto,
+    selecionarOutro,
+    atualizarOutro,
+    desativarOutro,
     // reactive
     form,
     modal,

@@ -5,7 +5,11 @@ export function gerarTexto(form, camposAtivos = {}) {
   const h = form.horario.replace(':', 'h')
 
   if (ativo('posicaoCama')) {
-    parts.push(`${h} – Recebo plantão com paciente em seu leito com cama ${form.posicaoCama}, rodas ${form.rodas}, grades ${form.grades} e decúbito ${form.decubito}.`)
+    if (form.localizacao === 'poltrona') {
+      parts.push(`${h} – Recebo plantão com paciente em poltrona.`)
+    } else {
+      parts.push(`${h} – Recebo plantão com paciente em seu leito com cama ${form.posicaoCama}, rodas ${form.rodas}, grades ${form.grades} e decúbito ${form.decubito}.`)
+    }
   }
 
   if (ativo('estadoMental') && form.mentalAlterado && form.mentalDesc)

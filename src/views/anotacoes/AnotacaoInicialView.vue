@@ -79,44 +79,80 @@
         </div>
 
         <div class="campo">
-          <label>Posição da cama </label>
+          <label>Localização </label>
           <div class="radio-group">
-            <label class="radio-btn" v-for="op in ['baixa','média','alta']" :key="op">
-              <input  data-testid="auto-input-anotacaoinicialview-4" type="radio" v-model="form.posicaoCama" :value="op">
-              <span>{{ cap(op) }}</span>
+            <label class="radio-btn">
+              <input type="radio" v-model="form.localizacao" value="leito">
+              <span>Leito</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" v-model="form.localizacao" value="poltrona">
+              <span>Poltrona</span>
             </label>
           </div>
         </div>
 
-        <div class="campo">
-          <label>Rodas </label>
-          <div class="radio-group">
-            <label class="radio-btn" v-for="op in ['travadas','soltas']" :key="op">
-              <input  data-testid="auto-input-anotacaoinicialview-5" type="radio" v-model="form.rodas" :value="op">
-              <span>{{ cap(op) }}</span>
-            </label>
+        <template v-if="form.localizacao === 'leito'">
+          <div class="campo">
+            <label>Posição da cama </label>
+            <div class="radio-group">
+              <label class="radio-btn" v-for="op in ['baixa','média','alta']" :key="op">
+                <input type="radio" v-model="form.posicaoCama" :value="op" @change="desativarOutro('posicaoCama')">
+                <span>{{ cap(op) }}</span>
+              </label>
+              <label class="radio-btn">
+                <input type="radio" :checked="outroAtivo.posicaoCama" @click.prevent="outroAtivo.posicaoCama ? desativarOutro('posicaoCama') : selecionarOutro('posicaoCama')">
+                <span>Outro</span>
+              </label>
+            </div>
+            <input v-if="outroAtivo.posicaoCama" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.posicaoCama || ''" @input="atualizarOutro('posicaoCama', $event.target.value)" placeholder="Descreva a posição...">
           </div>
-        </div>
 
-        <div class="campo">
-          <label>Grades </label>
-          <div class="radio-group vertical">
-            <label class="radio-btn" v-for="op in ['totalmente elevadas','parcialmente elevadas','abaixadas']" :key="op">
-              <input  data-testid="auto-input-anotacaoinicialview-6" type="radio" v-model="form.grades" :value="op">
-              <span>{{ cap(op) }}</span>
-            </label>
+          <div class="campo">
+            <label>Rodas </label>
+            <div class="radio-group">
+              <label class="radio-btn" v-for="op in ['travadas','soltas']" :key="op">
+                <input type="radio" v-model="form.rodas" :value="op" @change="desativarOutro('rodas')">
+                <span>{{ cap(op) }}</span>
+              </label>
+              <label class="radio-btn">
+                <input type="radio" :checked="outroAtivo.rodas" @click.prevent="outroAtivo.rodas ? desativarOutro('rodas') : selecionarOutro('rodas')">
+                <span>Outro</span>
+              </label>
+            </div>
+            <input v-if="outroAtivo.rodas" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.rodas || ''" @input="atualizarOutro('rodas', $event.target.value)" placeholder="Descreva...">
           </div>
-        </div>
 
-        <div class="campo">
-          <label>Decúbito </label>
-          <div class="radio-group vertical">
-            <label class="radio-btn" v-for="op in ['parcialmente elevado','dorsal','lateral direito','lateral esquerdo','Fowler']" :key="op">
-              <input  data-testid="auto-input-anotacaoinicialview-7" type="radio" v-model="form.decubito" :value="op">
-              <span>{{ cap(op) }}</span>
-            </label>
+          <div class="campo">
+            <label>Grades </label>
+            <div class="radio-group vertical">
+              <label class="radio-btn" v-for="op in ['totalmente elevadas','parcialmente elevadas','abaixadas']" :key="op">
+                <input type="radio" v-model="form.grades" :value="op" @change="desativarOutro('grades')">
+                <span>{{ cap(op) }}</span>
+              </label>
+              <label class="radio-btn">
+                <input type="radio" :checked="outroAtivo.grades" @click.prevent="outroAtivo.grades ? desativarOutro('grades') : selecionarOutro('grades')">
+                <span>Outro</span>
+              </label>
+            </div>
+            <input v-if="outroAtivo.grades" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.grades || ''" @input="atualizarOutro('grades', $event.target.value)" placeholder="Descreva a posição das grades...">
           </div>
-        </div>
+
+          <div class="campo">
+            <label>Decúbito </label>
+            <div class="radio-group vertical">
+              <label class="radio-btn" v-for="op in ['parcialmente elevado','dorsal','lateral direito','lateral esquerdo','Fowler']" :key="op">
+                <input type="radio" v-model="form.decubito" :value="op" @change="desativarOutro('decubito')">
+                <span>{{ cap(op) }}</span>
+              </label>
+              <label class="radio-btn">
+                <input type="radio" :checked="outroAtivo.decubito" @click.prevent="outroAtivo.decubito ? desativarOutro('decubito') : selecionarOutro('decubito')">
+                <span>Outro</span>
+              </label>
+            </div>
+            <input v-if="outroAtivo.decubito" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.decubito || ''" @input="atualizarOutro('decubito', $event.target.value)" placeholder="Descreva o decúbito...">
+          </div>
+        </template>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
@@ -144,30 +180,40 @@
           <label>Colaboração </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in colaboracaoOpcoes" :key="op.value">
-              <input  data-testid="auto-input-anotacaoinicialview-10" type="radio" v-model="form.colaboracao" :value="op.value">
+              <input type="radio" v-model="form.colaboracao" :value="op.value" @change="desativarOutro('colaboracao')">
               <span>{{ op.label }}</span>
             </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.colaboracao" @click.prevent="outroAtivo.colaboracao ? desativarOutro('colaboracao') : selecionarOutro('colaboracao')">
+              <span>Outro</span>
+            </label>
           </div>
+          <input v-if="outroAtivo.colaboracao" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.colaboracao || ''" @input="atualizarOutro('colaboracao', $event.target.value)" placeholder="Descreva o estado...">
         </div>
 
         <div class="campo">
           <label>Deambulação</label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in deambulacaoOpcoes" :key="op.value">
-              <input  data-testid="auto-input-anotacaoinicialview-11" type="radio" :checked="form.deambulacao === op.value" @click="form.deambulacao = form.deambulacao === op.value ? '' : op.value">
+              <input type="radio" :checked="form.deambulacao === op.value && !outroAtivo.deambulacao" @click="form.deambulacao = form.deambulacao === op.value && !outroAtivo.deambulacao ? '' : op.value; desativarOutro('deambulacao')">
               <span>{{ op.label }}</span>
             </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.deambulacao" @click.prevent="outroAtivo.deambulacao ? desativarOutro('deambulacao') : selecionarOutro('deambulacao')">
+              <span>Outro</span>
+            </label>
           </div>
-          <div v-if="form.deambulacao === 'deambula com auxílio'" style="margin-top:8px">
-            <input  data-testid="auto-input-anotacaoinicialview-12" class="campo-inline" type="text" v-model="form.deambulaAuxilio" placeholder="Ex: bengala, andador, cadeira de rodas">
+          <div v-if="form.deambulacao === 'deambula com auxílio' && !outroAtivo.deambulacao" style="margin-top:8px">
+            <input class="campo-inline" type="text" v-model="form.deambulaAuxilio" placeholder="Ex: bengala, andador, cadeira de rodas">
           </div>
+          <input v-if="outroAtivo.deambulacao" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.deambulacao || ''" @input="atualizarOutro('deambulacao', $event.target.value)" placeholder="Descreva a mobilidade...">
         </div>
 
-        <div class="campo" v-if="form.respiracao !== 'ventilação mecânica'">
+        <div class="campo" v-if="form.respiracao !== 'ventilação mecânica' && !outroAtivo.respiracao">
           <label>Padrão respiratório</label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in respPadraoOpcoes" :key="op.value">
-              <input  data-testid="auto-input-anotacaoinicialview-13" type="radio" v-model="form.respPadrao" :value="op.value">
+              <input type="radio" v-model="form.respPadrao" :value="op.value">
               <span>{{ op.label }}</span>
             </label>
           </div>
@@ -177,16 +223,21 @@
           <label>Respiração </label>
           <div class="radio-group vertical">
             <label class="radio-btn" v-for="op in ['em ar ambiente','cateter nasal de O₂','máscara de O₂','ventilação mecânica']" :key="op">
-              <input  data-testid="auto-input-anotacaoinicialview-14" type="radio" v-model="form.respiracao" :value="op" @change="onRespChange">
+              <input type="radio" v-model="form.respiracao" :value="op" @change="onRespChange(); desativarOutro('respiracao')">
               <span>{{ cap(op) }}</span>
             </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.respiracao" @click.prevent="outroAtivo.respiracao ? desativarOutro('respiracao') : selecionarOutro('respiracao')">
+              <span>Outro</span>
+            </label>
           </div>
-          <div v-if="form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂'" style="margin-top:8px">
+          <div v-if="(form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂') && !outroAtivo.respiracao" style="margin-top:8px">
             <div class="input-suffix-wrap">
-              <input  data-testid="auto-input-anotacaoinicialview-15" type="number" v-model="form.oxigenioLitros" placeholder="2" min="1">
+              <input type="number" v-model="form.oxigenioLitros" placeholder="2" min="1">
               <span class="input-suffix">L/min</span>
             </div>
           </div>
+          <input v-if="outroAtivo.respiracao" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.respiracao || ''" @input="atualizarOutro('respiracao', $event.target.value)" placeholder="Descreva a respiração...">
         </div>
 
         <div class="campo">
@@ -443,6 +494,7 @@ const {
   dragIdx, dragOverIdx,
   temRascunho, restaurarRascunho, descartarRascunho,
   camposAtivos, mostrarConfigModal, salvarCamposAtivos,
+  outroAtivo, outroTexto, selecionarOutro, atualizarOutro, desativarOutro,
   form, modal,
   locaisCentral, tiposDisp, pulseiraOpcoes, diureseOpcoes, evacuacaoOpcoes,
   colaboracaoOpcoes, deambulacaoOpcoes, respPadraoOpcoes,
