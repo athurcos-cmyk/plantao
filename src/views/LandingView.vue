@@ -228,8 +228,8 @@
       <div class="section-inner two-col">
         <div class="two-col-text">
           <div class="section-eyebrow">Completo</div>
-          <h2 class="section-title no-margin-bottom">8 tipos de anotação incluídos</h2>
-          <p class="two-col-sub">Cada anotação gera o texto no formato correto do prontuário. Sem deixar nada de fora.</p>
+          <h2 class="section-title no-margin-bottom">8 tipos de anotação + calculadora</h2>
+          <p class="two-col-sub">Cada anotação gera o texto no formato correto do prontuário. Calculadora de dosagem, gotejamento e diluição direto no app.</p>
           <a class="btn-outline" :href="appUrl">Explorar o app →</a>
         </div>
         <div class="features-list">
@@ -320,6 +320,7 @@ const feats = [
   { icon: '📡', title: 'Funciona sem internet', desc: 'Offline-first completo. Registre as anotações mesmo sem sinal. Sincroniza automaticamente quando a conexão voltar.' },
   { icon: '📲', title: 'Instala como app nativo', desc: 'Sem baixar pela loja. Abre o link no celular, toca em "Instalar" e fica na tela inicial igual a um app nativo.' },
   { icon: '🔔', title: 'Notificações de pendências', desc: 'Agende lembretes por paciente. Recebe notificação 30 minutos antes e no horário exato — mesmo com o app fechado.' },
+  { icon: '🧮', title: 'Calculadora de medicação', desc: 'Dosagem (regra de três), gotejamento (macro/micro), diluição de pó liofilizado e conversões. FAB flutuante em todas as telas.' },
   { icon: '🤖', title: 'Assistente IA Clara', desc: 'IA especialista em enfermagem para ajudar a redigir anotações no formato correto e tirar dúvidas do plantão.' },
   { icon: '🔒', title: 'Dados protegidos', desc: 'Acesso por syncCode + PIN. Dados isolados por usuário. Sem anúncios. Sem terceiros com acesso às suas informações.' },
 ]
@@ -332,13 +333,14 @@ const steps = [
 
 const features = [
   'Avaliação inicial de enfermagem',
-  'Sinais vitais (PA, FC, FR, SpO₂, Tax, HGT, DOR)',
-  'Administração de medicamentos com dupla checagem',
+  'Sinais vitais com escala de dor 0–10',
+  'Administração de medicamentos com dupla checagem e local anatômico',
   'Banho (aspersão e leito)',
-  'Curativo',
+  'Curativo com avaliação COREN (lesão, exsudato, perilesão, bordas)',
   'Encaminhamento (IDA/RETORNO)',
   'Passagem de plantão',
   'Intercorrência / Anotação livre',
+  'Calculadora de medicação (dosagem, gotejamento, diluição)',
 ]
 
 const testimonials = [
