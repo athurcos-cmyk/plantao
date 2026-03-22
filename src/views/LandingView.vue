@@ -38,7 +38,7 @@
             <a class="btn-hero" href="#" @click.prevent="acessarNoPc">
               Usar agora — é grátis
             </a>
-            <p class="hero-hint">Sem e-mail. Sem cartão. Instala em 1 minuto.</p>
+            <p class="hero-hint">Conta gratuita. Login com Google ou email. Instala em 1 minuto.</p>
           </div>
           <div class="hero-trust">
             <div class="trust-item">
@@ -162,7 +162,7 @@
             </div>
           </div>
           <p class="install-sync-note">
-            Use o mesmo <strong>syncCode</strong> em qualquer dispositivo para ter acesso às suas anotações.
+            Faça login com o mesmo <strong>email</strong> ou <strong>código de acesso</strong> em qualquer dispositivo para ter suas anotações sincronizadas.
           </p>
         </div>
 
@@ -267,7 +267,7 @@
       <div class="section-inner cta-inner">
         <div class="section-eyebrow eyebrow-light">Comece agora</div>
         <h2 class="cta-title">Tudo pronto para o seu<br>próximo plantão</h2>
-        <p class="cta-sub">100% gratuito. Sem cadastro de e-mail. Instala em menos de 1 minuto.</p>
+        <p class="cta-sub">100% gratuito. Conta em segundos com Google ou email. Instala em menos de 1 minuto.</p>
         <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Abrir o Plantão →</a>
         <p class="cta-hint">Compatible com Android e iPhone</p>
       </div>
@@ -322,12 +322,12 @@ const feats = [
   { icon: '🔔', title: 'Notificações de pendências', desc: 'Agende lembretes por paciente. Recebe notificação 30 minutos antes e no horário exato — mesmo com o app fechado.' },
   { icon: '🧮', title: 'Calculadora de medicação', desc: 'Dosagem (regra de três), gotejamento (macro/micro), diluição de pó liofilizado e conversões. FAB flutuante em todas as telas.' },
   { icon: '🤖', title: 'Assistente IA Clara', desc: 'IA especialista em enfermagem para ajudar a redigir anotações no formato correto e tirar dúvidas do plantão.' },
-  { icon: '🔒', title: 'Dados protegidos', desc: 'Acesso por syncCode + PIN. Dados isolados por usuário. Sem anúncios. Sem terceiros com acesso às suas informações.' },
+  { icon: '🔒', title: 'Dados protegidos', desc: 'Login seguro com email ou Google. Dados isolados por usuário com Firebase Auth. Sem anúncios. Sem terceiros com acesso às suas informações.' },
 ]
 
 const steps = [
   { title: 'Abra no celular e instale', desc: 'Acesse o link pelo celular. O navegador sugere "Adicionar à tela inicial". Um toque — instalado.' },
-  { title: 'Crie seu perfil', desc: 'Escolha um syncCode e um PIN de 6 dígitos. Sem e-mail, sem senha complicada.' },
+  { title: 'Crie sua conta', desc: 'Cadastre com email e senha, ou entre com Google em um toque. Seu código de acesso rápido é gerado automaticamente.' },
   { title: 'Anote, preencha e copie', desc: 'Selecione o tipo de anotação, preencha os campos e copie o texto pronto com um toque.' },
 ]
 

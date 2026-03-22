@@ -12,17 +12,17 @@ export const ONBOARDING_TELAS = [
   {
     icone: '✍️',
     titulo: 'Escreva. Copie. Pronto.',
-    descricao: 'Digite a anotação, toque em Copiar e cole direto no prontuário. Simples assim.',
+    descricao: 'Preencha os campos, toque em Copiar e cole direto no prontuário. Simples assim.',
   },
   {
-    icone: '📱',
-    titulo: 'Funciona no seu celular pessoal',
-    descricao: 'Sem depender do sistema do hospital. Funciona em qualquer celular, mesmo sem instalar.',
+    icone: '🔒',
+    titulo: 'Seguro e sincronizado',
+    descricao: 'Entre com Google ou email. Seus dados ficam protegidos e acessíveis em qualquer dispositivo.',
   },
   {
     icone: '✅',
     titulo: 'Crie sua conta gratuita',
-    descricao: 'Comece agora e veja como é fácil.',
+    descricao: 'Comece agora — é rápido e grátis.',
     cta: true,
   },
 ]
