@@ -698,6 +698,22 @@ function tipoLabel(tipo) {
   line-height: 1.4;
 }
 
+/* ── Chips ───────────────────────────────────────────────────────────────── */
+.chip {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.88rem;
+  padding: 7px 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.chip:active { opacity: 0.8; }
+.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+
 /* ── Transição ───────────────────────────────────────────────────────────── */
 .calc-slide-enter-active,
 .calc-slide-leave-active { transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
