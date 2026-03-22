@@ -200,6 +200,14 @@
         <!-- ── Avaliação COREN (só curativo/troca sem dreno) ── -->
         <template v-if="form.tipo && form.tipo !== 'placa' && !form.ehDreno">
 
+          <!-- Toggle de expansão -->
+          <button class="btn-expandir" @click="avaliacaoExpandida = !avaliacaoExpandida">
+            <span>Avaliação da lesão</span>
+            <span class="expandir-icone">{{ avaliacaoExpandida ? '▲' : '▼' }}</span>
+          </button>
+
+          <template v-if="avaliacaoExpandida">
+
           <!-- Tipo de lesão -->
           <div class="campo">
             <label>Tipo de lesão <span class="opc">(opcional)</span></label>
@@ -284,6 +292,7 @@
           </div>
 
         </template>
+        </template>
 
         <!-- Aspecto (só dreno — caso específico) -->
         <div v-if="form.tipo && form.tipo !== 'placa' && form.ehDreno" class="campo">
@@ -354,7 +363,6 @@ const gerado           = ref(false)
 const textoGerado      = ref('')
 const erro             = ref('')
 const salvando         = ref(false)
-const localLivre    = ref('')
 const materiaisTemporarios = ref([])
 
 // ── Formulário ──
@@ -588,8 +596,8 @@ const locaisChips = ['MSD', 'MID', 'MSE', 'MIE', 'MMII', 'MMSS', 'região abdomi
 
 const materiaisOpcoes = [
   'SF 0,9%', 'Gaze', 'Rayon', 'AGE', 'Atadura',
-  'Hidrogel', 'Adaptic', 'Clorexidina aquosa',
-  'Papaína gel 2%', 'Placa de alginato de cálcio',
+  'Hidrogel', 'Adaptic',
+  'Placa de alginato de cálcio',
   'Placa de alginato de cálcio com prata',
 ]
 
@@ -599,6 +607,8 @@ const aspectoChips = [
 ]
 
 const leitoOpcoes = ['granulação', 'granulação pálido', 'epitelização', 'necrose', 'esfacelo', 'espaço morto']
+
+const avaliacaoExpandida = ref(false)
 
 function toggleLeitoFerida(v) {
   const i = form.leitoFerida.indexOf(v)
@@ -898,4 +908,15 @@ function novaAnotacao() {
 .checkbox-label:has(input:checked) {
   border-color: var(--border);
 }
+
+.btn-expandir {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 12px 16px; margin: 8px 0;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text-dim);
+  font-family: inherit; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; text-align: left;
+}
+.btn-expandir:active { background: var(--bg-hover); }
+.expandir-icone { font-size: 0.8rem; color: var(--text-muted); }
 </style>
