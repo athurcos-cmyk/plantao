@@ -71,52 +71,50 @@ setInterval(async () => {
 }, 20 * 1000)
 
 // ── FCM helpers ──────────────────────────────────────────────────────────────
-let _registrando = false // mutex — evita getToken() concorrente
+let _registrandoPromise = null // promise do registro em andamento
 
 async function _registrarTokenFCM(syncCode) {
   if (!VAPID_KEY) {
     console.error('[FCM] VITE_FCM_VAPID_KEY não configurada. Push desativado.')
     return
   }
-  if (_registrando) {
-    console.log('[FCM] Registro já em andamento, ignorando chamada duplicada')
-    return
+  if (_registrandoPromise) {
+    console.log('[FCM] Registro já em andamento, aguardando...')
+    return _registrandoPromise
   }
-  _registrando = true
-  try {
-    // Aguarda messaging inicializar (isSupported é assíncrono — pode estar null ao montar)
-    const msg = await messagingReady
-    if (!msg) {
-      console.warn('[FCM] Messaging não suportado neste navegador/contexto')
-      return
-    }
-    const swReg = await navigator.serviceWorker.ready
-    console.log('[FCM] SW pronto, chamando getToken...')
-    const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
-    if (token) {
-      // ID único e estável por dispositivo — persiste no localStorage
-      let deviceId = localStorage.getItem('plantao_device_id')
-      if (!deviceId) {
-        deviceId = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
-        localStorage.setItem('plantao_device_id', deviceId)
+  _registrandoPromise = (async () => {
+    try {
+      const msg = await messagingReady
+      if (!msg) {
+        console.warn('[FCM] Messaging não suportado neste navegador/contexto')
+        return
       }
-      await set(dbRef(db, `fcm_tokens/${syncCode}/${deviceId}`), {
-        token,
-        updatedAt: Date.now(),
-      })
-      _fcmAtivo = true
-      console.log('[FCM] Token registrado no Firebase ✓', token.slice(0, 20) + '...')
-    } else {
-      console.warn('[FCM] getToken retornou null — push subscription pode ter falhado')
+      const swReg = await navigator.serviceWorker.ready
+      console.log('[FCM] SW pronto, chamando getToken...')
+      const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
+      if (token) {
+        let deviceId = localStorage.getItem('plantao_device_id')
+        if (!deviceId) {
+          deviceId = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+          localStorage.setItem('plantao_device_id', deviceId)
+        }
+        await set(dbRef(db, `fcm_tokens/${syncCode}/${deviceId}`), {
+          token,
+          updatedAt: Date.now(),
+        })
+        _fcmAtivo = true
+        console.log('[FCM] Token registrado no Firebase ✓', token.slice(0, 20) + '...')
+      } else {
+        console.warn('[FCM] getToken retornou null — push subscription pode ter falhado')
+      }
+    } catch (e) {
+      _fcmAtivo = false
+      console.warn('[FCM] Token não registrado:', e.message)
+    } finally {
+      _registrandoPromise = null
     }
-  } catch (e) {
-    // FCM não disponível (HTTP local, iOS < 16.4, Chrome no iOS, etc.)
-    // fallback localStorage funciona quando app está aberto
-    _fcmAtivo = false
-    console.warn('[FCM] Token não registrado:', e.message)
-  } finally {
-    _registrando = false
-  }
+  })()
+  return _registrandoPromise
 }
 
 async function _salvarNoFirebase(syncCode, timestamp, body, tag) {
