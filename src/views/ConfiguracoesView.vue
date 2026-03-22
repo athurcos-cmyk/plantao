@@ -45,7 +45,7 @@
         <p class="config-sub">Você entrou com Google. Crie uma senha para usar o login com código.</p>
 
         <div class="campo">
-          <input v-model="novaSenha" type="password" placeholder="Nova senha (mín. 6 caracteres)" autocomplete="new-password" />
+          <input v-model="novaSenha" type="password" placeholder="Nova senha (mín. 8 caracteres)" autocomplete="new-password" />
         </div>
         <div class="campo">
           <input v-model="novaSenhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="new-password" />
@@ -53,7 +53,7 @@
 
         <button
           class="btn btn-primary btn-block"
-          :disabled="novaSenha.length < 6 || novaSenha !== novaSenhaConfirm || salvandoSenha"
+          :disabled="novaSenha.length < 8 || novaSenha !== novaSenhaConfirm || salvandoSenha"
           @click="criarSenha"
         >
           {{ salvandoSenha ? 'Salvando...' : 'Criar senha' }}

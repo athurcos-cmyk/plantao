@@ -130,6 +130,14 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('sync_code', code)
         localStorage.setItem('user_name', nome || '')
       }
+
+      // Email de boas-vindas (fire-and-forget — não bloqueia o cadastro)
+      fetch('/api/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nome || '', email }),
+      }).catch(() => {})
+
       return true
     } catch (e) {
       authError.value = _traduzirErro(e.code)
@@ -217,6 +225,13 @@ export const useAuthStore = defineStore('auth', () => {
           criadoEm: Date.now(),
         }),
       ])
+
+      // Email de boas-vindas (fire-and-forget)
+      fetch('/api/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: user.displayName || '', email: user.email || '' }),
+      }).catch(() => {})
     }
   }
 
@@ -251,7 +266,7 @@ export const useAuthStore = defineStore('auth', () => {
     const erros = {
       'auth/email-already-in-use': 'Este email já está cadastrado.',
       'auth/invalid-email': 'Email inválido.',
-      'auth/weak-password': 'Senha muito fraca — mínimo 6 caracteres.',
+      'auth/weak-password': 'Senha muito fraca — mínimo 8 caracteres.',
       'auth/user-not-found': 'Email não encontrado.',
       'auth/wrong-password': 'Senha incorreta.',
       'auth/invalid-credential': 'Email ou senha incorretos.',

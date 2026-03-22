@@ -154,7 +154,7 @@
         </div>
 
         <div class="campo">
-          <input v-model="senha" type="password" placeholder="Senha (mín. 6 caracteres)" autocomplete="new-password" />
+          <input v-model="senha" type="password" placeholder="Senha (mín. 8 caracteres)" autocomplete="new-password" />
         </div>
 
         <div class="campo">
