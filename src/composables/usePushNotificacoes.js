@@ -94,9 +94,13 @@ async function _registrarTokenFCM(syncCode) {
     console.log('[FCM] SW pronto, chamando getToken...')
     const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
     if (token) {
-      // Gera um ID estável para este dispositivo/browser
-      const tokenId = token.slice(0, 16).replace(/[.#$/[\]]/g, '_')
-      await set(dbRef(db, `fcm_tokens/${syncCode}/${tokenId}`), {
+      // ID único e estável por dispositivo — persiste no localStorage
+      let deviceId = localStorage.getItem('plantao_device_id')
+      if (!deviceId) {
+        deviceId = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+        localStorage.setItem('plantao_device_id', deviceId)
+      }
+      await set(dbRef(db, `fcm_tokens/${syncCode}/${deviceId}`), {
         token,
         updatedAt: Date.now(),
       })
