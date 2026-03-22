@@ -102,7 +102,7 @@ export default async function handler(req, res) {
                       Uma dica pra começar
                     </p>
                     <p style="margin:0;font-size:0.92rem;color:#8899AA;line-height:1.6;">
-                      Configure uma notificação no <strong style="color:#EAEEF3;">Organizador</strong> pra nunca mais esquecer uma medicação. Vai no menu principal → Organizador → e adiciona o horário. O app te avisa mesmo com a tela fechada. 🔔
+                      Abra qualquer anotação, preencha os campos e toque em <strong style="color:#EAEEF3;">Copiar</strong>. O texto já sai formatado, pronto pra colar direto no sistema do hospital. Sem redigitar, sem erro de digitação. 📋
                     </p>
                   </td>
                 </tr>

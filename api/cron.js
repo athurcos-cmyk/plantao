@@ -257,7 +257,7 @@ function _htmlDia3(nomeUsuario) {
                 <td style="padding:12px 0;border-bottom:1px solid #1e3050;">
                   <span style="font-size:1rem;margin-right:10px;">🔔</span>
                   <span style="font-size:0.9rem;color:#EAEEF3;font-weight:600;">Notificações no horário certo</span><br>
-                  <span style="font-size:0.85rem;color:#8899AA;margin-left:26px;display:block;">Organizador → adicione o horário da medicação. O app avisa mesmo com a tela fechada.</span>
+                  <span style="font-size:0.85rem;color:#8899AA;margin-left:26px;display:block;">Funciona em dois lugares: no <strong style="color:#EAEEF3;">Organizador</strong> (tarefas do turno) e nas <strong style="color:#EAEEF3;">Pendências do Paciente</strong> (medicações, procedimentos). O app avisa mesmo com a tela fechada.</span>
                 </td>
               </tr>
               <tr>
