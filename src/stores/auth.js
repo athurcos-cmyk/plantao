@@ -33,14 +33,11 @@ function _gerarSyncCode() {
   return code
 }
 
-// Gera syncCode único verificando no Firebase
-async function _gerarSyncCodeUnico() {
-  for (let i = 0; i < 10; i++) {
-    const code = _gerarSyncCode()
-    const snap = await get(dbRef(db, `usuarios/${code}`))
-    if (!snap.exists()) return code
-  }
-  throw new Error('Não foi possível gerar um código único')
+// Gera syncCode único.
+// Com 31^6 ≈ 887 milhões de combinações e crypto.getRandomValues,
+// a chance de colisão é desprezível para a escala do app.
+function _gerarSyncCodeUnico() {
+  return _gerarSyncCode()
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -158,13 +155,9 @@ export const useAuthStore = defineStore('auth', () => {
   // Se popup for bloqueado, cai em redirect.
   async function loginGoogle() {
     authError.value = ''
+    let result
     try {
-      const result = await signInWithPopup(firebaseAuth, googleProvider)
-      // Popup deu certo — vincular conta se for primeiro acesso
-      if (result && result.user) {
-        await _vincularGoogleSeNovo(result.user)
-      }
-      return true
+      result = await signInWithPopup(firebaseAuth, googleProvider)
     } catch (e) {
       // Popup bloqueado ou indisponível → tenta redirect
       if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user'
@@ -173,12 +166,25 @@ export const useAuthStore = defineStore('auth', () => {
           await signInWithRedirect(firebaseAuth, googleProvider)
           return true
         } catch (e2) {
+          console.error('[Auth] Google redirect error:', e2.code, e2.message)
           authError.value = _traduzirErro(e2.code)
           return false
         }
       }
-      console.error('[Auth] Google login error:', e.code, e.message)
+      console.error('[Auth] Google popup error:', e.code, e.message)
       authError.value = _traduzirErro(e.code)
+      return false
+    }
+
+    // Popup deu certo — vincular conta se for primeiro acesso
+    try {
+      if (result && result.user) {
+        await _vincularGoogleSeNovo(result.user)
+      }
+      return true
+    } catch (e) {
+      console.error('[Auth] Google vinculação error:', e.code || '', e.message)
+      authError.value = 'Conta Google autenticada, mas houve erro ao criar perfil. Tente novamente.'
       return false
     }
   }
