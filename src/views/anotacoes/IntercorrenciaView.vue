@@ -18,7 +18,7 @@
     </header>
 
     <!-- ═══ FORMULÁRIO ═══ -->
-    <main v-if="!gerado" class="container" style="padding-top:20px;padding-bottom:56px">
+    <main v-if="!gerado" class="container" style="padding-top:20px;padding-bottom:160px">
 
       <div class="page-header">
         <span class="page-icon">📝</span>

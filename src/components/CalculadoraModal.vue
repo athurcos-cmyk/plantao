@@ -342,7 +342,7 @@ function tipoLabel(tipo) {
 /* ── FAB ─────────────────────────────────────────────────────────────────── */
 .btn-calc {
   position: fixed;
-  bottom: 152px;
+  bottom: 88px;
   right: 18px;
   z-index: 900;
   width: 52px;
