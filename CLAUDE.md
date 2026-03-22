@@ -36,6 +36,8 @@ Sessão 30 dias no localStorage. syncCode é a chave raiz no Firebase.
 - `encaminhamento/{syncCode}/` — encaminhamentos
 - `livres/{syncCode}/` — anotações livres
 - `curativo/{syncCode}/` — curativos
+- `curativo/{syncCode}/locais/` — locais customizados do curativo
+- `curativo/{syncCode}/materiais/` — materiais customizados do curativo
 - `fcm_tokens/{syncCode}/` — token FCM do dispositivo
 - `notificacoes_agendadas/{syncCode}/agendadas/` — notificações pendentes
 

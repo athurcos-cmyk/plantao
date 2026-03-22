@@ -17,11 +17,11 @@
 
 **Anotações**
 - Avaliação inicial (dispositivos, posição, neuro, resp, eliminações)
-- Sinais vitais (PA, FC, FR, SpO2, Tax, HGT, DOR)
+- Sinais vitais (PA, FC, FR, SpO2, Tax, HGT, DOR com escala 0-10 colorida + conduta)
 - Medicação (múltiplos meds, autocomplete, dupla checagem, vias: VO/EV/SC/IM/SNE/OFT/DERM/Sublingual/Recusa — dose opcional para DERM)
 - Encaminhamento (IDA/RETORNO, destinos personalizados)
-- Banho (aspersão e leito)
-- Curativo
+- Banho (aspersão/leito/fralda — higienes: Capilar, Facial, Corporal, Íntima, Oral)
+- Curativo (avaliação COREN colapsável: tipo lesão, tamanho, leito+Outro, exsudato, perilesão+Outro, bordas; locais e materiais persistidos no Firebase ou temporários)
 - Passagem de plantão
 - Intercorrência / Livre
 
@@ -75,6 +75,8 @@ organizador/{syncCode}/                          template, plantão
 encaminhamento/{syncCode}/                       encaminhamentos
 livres/{syncCode}/                               anotações livres
 curativo/{syncCode}/                             curativos
+curativo/{syncCode}/locais/                      locais customizados
+curativo/{syncCode}/materiais/                   materiais customizados
 fcm_tokens/{syncCode}/                           token FCM do dispositivo
 notificacoes_agendadas/{syncCode}/               notificações pendentes de envio
 feedback/{syncCode}/                             feedbacks dos usuários
@@ -93,7 +95,16 @@ feedback/{syncCode}/                             feedbacks dos usuários
 
 ## Histórico de sessões
 
-### Mar 2026 — UX: formulários mais flexíveis + correções Firebase
+### Mar 2026 — Conformidade COREN-SP 2022 + melhorias UX
+- **CurativoView**: seção "Avaliação da lesão" colapsável (▼/▲) com campos COREN: tipo de lesão, tamanho em cm, leito da ferida (chips + "Outro" livre), exsudato (quantidade + aspecto), pele perilesão (chips + "outro" livre), bordas
+- **CurativoView**: locais agora funcionam igual a materiais — botão "Salvar no banco de dados" ou "Só nesta anotação"
+- **CurativoView**: Firebase subcoleções `curativo/{syncCode}/locais/` e `curativo/{syncCode}/materiais/`
+- **CurativoView**: removidos Papaína gel 2% e Clorexidina aquosa dos materiais padrão; corrigido "purolento" → "purulento"
+- **SinaisVitaisView**: escala de dor 0-10 com chips coloridos (0–3 neutro, 4–6 laranja, 7–10 vermelho) + conduta (comunicou enfermeira, medicou, reavaliou)
+- **SinaisVitaisView**: CSS `btn-icon` scoped adicionado (botão voltar estava sem estilo)
+- Leitura completa do COREN-SP 2022 (págs. 33–59) para alinhamento dos campos obrigatórios
+
+### Mar 2026 — UX: Clara + landing + UX geral
 - **Removido** banner "Pronto para começar?" do dashboard — UX desnecessária
 - **Removidos** confetes ao copiar primeira anotação
 - **Removida** obrigatoriedade de todos os campos exceto nome do paciente (em todas as 8 views de anotação + modais)
