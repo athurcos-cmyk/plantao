@@ -119,6 +119,10 @@
         </div>
       </div>
 
+      <button class="btn-atualizar" @click="() => location.reload()">
+        🔄 Verificar atualizações
+      </button>
+
       <button class="btn btn-ghost" style="margin-top:10px" @click="router.push({ name: 'configuracoes' })">
         ⚙️ Configurações
       </button>
@@ -534,6 +538,17 @@ function navegar(tipo) {
 .btn-org-sub {
   font-size: 0.78rem; color: var(--text-muted);
 }
+
+/* Verificar atualizações */
+.btn-atualizar {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; margin-top: 12px; padding: 10px;
+  background: none; border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text-muted);
+  font-family: inherit; font-size: 0.82rem;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-atualizar:active { background: var(--bg-hover); color: var(--text); }
 
 /* Feedback button in header */
 .btn-feedback-topo {
