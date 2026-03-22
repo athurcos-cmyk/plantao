@@ -105,7 +105,10 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 })
 })
 
-router.beforeEach((to) => {
+// Promise que resolve quando initAuthListener() completar
+let _authReadyPromise = null
+
+router.beforeEach(async (to) => {
   // PC → bloqueia (exceto localhost ou se o usuário escolheu continuar)
   const pcAllowed = sessionStorage.getItem('pc_allowed') === '1'
   if (to.name !== 'pc' && to.name !== 'landing' && !isMobile() && !isDev() && !pcAllowed) {
@@ -113,6 +116,13 @@ router.beforeEach((to) => {
   }
 
   const auth = useAuthStore()
+
+  // Esperar Firebase Auth restaurar sessão antes de decidir
+  if (!auth.authReady) {
+    if (!_authReadyPromise) _authReadyPromise = auth.initAuthListener()
+    await _authReadyPromise
+  }
+
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return { name: 'login' }
   }

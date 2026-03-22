@@ -80,11 +80,6 @@
           <button class="link-btn" @click="tela = 'recuperar'">Esqueci a senha</button>
         </div>
 
-        <div class="links-login" style="margin-top:4px">
-          <button class="link-btn link-migrar" @click="tela = 'migrar'">
-            Já tenho um código antigo
-          </button>
-        </div>
       </div>
 
       <!-- ══ Tela de Cadastro ══ -->
@@ -133,62 +128,6 @@
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
           </svg>
           Cadastrar com Google
-        </button>
-      </div>
-
-      <!-- ══ Tela de Migração (código antigo) ══ -->
-      <div v-else-if="tela === 'migrar'">
-        <button class="btn-voltar" @click="tela = 'login'">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          Voltar
-        </button>
-
-        <div class="card-header">
-          <h2>Migrar conta antiga</h2>
-          <p>Vincule seu código existente a um email para maior segurança</p>
-        </div>
-
-        <div class="destaque-info">
-          <span>🔄</span>
-          <div>
-            <strong>Seus dados serão mantidos</strong>
-            <p>Pacientes, anotações e histórico continuam intactos. Só o login muda.</p>
-          </div>
-        </div>
-
-        <div class="campo">
-          <input
-            v-model="codigoMigrar"
-            type="text"
-            class="input-grande"
-            placeholder="Seu código (ex: ANA123)"
-            maxlength="6"
-            @input="codigoMigrar = codigoMigrar.toUpperCase()"
-          />
-        </div>
-
-        <div class="campo">
-          <input v-model="nome" type="text" placeholder="Seu nome" />
-        </div>
-
-        <div class="campo">
-          <input v-model="email" type="email" placeholder="Novo email" autocomplete="email" />
-        </div>
-
-        <div class="campo">
-          <input v-model="senha" type="password" placeholder="Nova senha (mín. 6 caracteres)" autocomplete="new-password" />
-        </div>
-
-        <div class="campo">
-          <input v-model="senhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="new-password" @keyup.enter="migrar" />
-        </div>
-
-        <button
-          class="btn btn-primary btn-block"
-          :disabled="codigoMigrar.length !== 6 || !emailValido || senha.length < 6 || senha !== senhaConfirm || carregando"
-          @click="migrar"
-        >
-          {{ carregando ? 'Migrando...' : 'Migrar e criar login' }}
         </button>
       </div>
 
@@ -260,13 +199,12 @@ onMounted(async () => {
   if (auth.isLoggedIn) router.replace({ name: 'dashboard' })
 })
 
-const tela = ref('login') // 'login' | 'cadastro' | 'migrar' | 'recuperar'
+const tela = ref('login') // 'login' | 'cadastro' | 'recuperar'
 
 const email = ref('')
 const senha = ref('')
 const senhaConfirm = ref('')
 const nome = ref('')
-const codigoMigrar = ref('')
 const carregando = ref(false)
 const recuperacaoEnviada = ref(false)
 const helpAberto = ref(false)
@@ -277,7 +215,6 @@ const helpItens = [
   { icone: '✉️', titulo: 'Email e senha', desc: 'Crie sua conta com email e senha. Mais seguro e com recuperação de senha por email.' },
   { icone: '🔑', titulo: 'Login com Google', desc: 'Faça login com sua conta Google — rápido e sem precisar criar senha.' },
   { icone: '📱', titulo: 'Múltiplos dispositivos', desc: 'Acesse pelo celular, tablet ou computador com o mesmo email. Todos os dados ficam sincronizados.' },
-  { icone: '🔄', titulo: 'Conta antiga?', desc: 'Se você já usava o app com um código (ex: ANA123), toque em "Já tenho um código antigo" para migrar.' },
   { icone: '🔒', titulo: 'Segurança', desc: 'Seus dados são protegidos por autenticação Firebase. Só você pode acessar suas anotações.' },
 ]
 
@@ -311,28 +248,6 @@ async function entrarGoogle() {
   carregando.value = true
   auth.authError = ''
   await auth.loginGoogle()
-  carregando.value = false
-}
-
-async function migrar() {
-  if (carregando.value) return
-  if (senha.value !== senhaConfirm.value) {
-    auth.authError = 'As senhas não conferem.'
-    return
-  }
-  carregando.value = true
-  auth.authError = ''
-
-  // Verificar se o código existe
-  const result = await auth.checkCode(codigoMigrar.value)
-  if (!result.exists) {
-    auth.authError = 'Código não encontrado. Verifique e tente novamente.'
-    carregando.value = false
-    return
-  }
-
-  const ok = await auth.migrarConta(codigoMigrar.value, email.value, senha.value, nome.value)
-  if (ok) router.push({ name: 'dashboard' })
   carregando.value = false
 }
 

@@ -190,46 +190,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // ─── Migração: vincular conta antiga (syncCode+PIN) a email ───
-  async function migrarConta(syncCodeAntigo, email, senha, nome) {
-    authError.value = ''
-    try {
-      // Criar conta Firebase Auth
-      const cred = await createUserWithEmailAndPassword(firebaseAuth, email, senha)
-      const user = cred.user
-      if (nome) await updateProfile(user, { displayName: nome })
-
-      // Vincular ao syncCode existente
-      await set(dbRef(db, `owners/${syncCodeAntigo}/${user.uid}`), true)
-      await set(dbRef(db, `uid_map/${user.uid}`), syncCodeAntigo)
-
-      // Atualizar email no perfil
-      await set(dbRef(db, `usuarios/${syncCodeAntigo}/email`), email)
-
-      uid.value = user.uid
-      userEmail.value = email
-      userName.value = nome || ''
-      syncCode.value = syncCodeAntigo
-      if (_lsOk) {
-        localStorage.setItem('sync_code', syncCodeAntigo)
-        localStorage.setItem('user_name', nome || '')
-      }
-      return true
-    } catch (e) {
-      authError.value = _traduzirErro(e.code)
-      return false
-    }
-  }
-
-  // ─── Verificar se syncCode existe (para migração) ───
-  async function checkCode(code) {
-    const snap = await get(dbRef(db, `usuarios/${code}`))
-    if (snap.exists()) {
-      return { exists: true, data: snap.val() }
-    }
-    return { exists: false }
-  }
-
   // ─── Recuperar senha ───
   async function recuperarSenha(email) {
     authError.value = ''
@@ -287,8 +247,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     loginGoogle,
     handleRedirectResult,
-    migrarConta,
-    checkCode,
     recuperarSenha,
     logout,
   }
