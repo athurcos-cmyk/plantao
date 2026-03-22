@@ -24,164 +24,211 @@
     <!-- Card principal -->
     <div class="login-card">
 
-      <!-- Passo 1: Código -->
-      <div v-if="passo === 1">
+      <!-- ══ Tela de Login (padrão) ══ -->
+      <div v-if="tela === 'login'">
         <div class="card-header">
-          <span class="card-step">1 de {{ totalPassos }}</span>
-          <h2>Seu código pessoal</h2>
-          <p>Exatamente 6 letras/números. Ex: <strong>ANA123</strong>, <strong>JOAO42</strong></p>
+          <h2>Entrar</h2>
+          <p>Use seu email e senha para acessar</p>
         </div>
-
-        <!-- Instruções rápidas (antes de digitar) -->
-        <transition name="fade">
-          <div v-if="!modo" class="instrucoes-rapidas">
-            <div class="instrucao-item">
-              <span>🔄</span>
-              <span><strong>Já tem conta?</strong> Digite seu código abaixo</span>
-            </div>
-            <div class="instrucao-item">
-              <span>✨</span>
-              <span><strong>Primeira vez?</strong> Escolha um código de exatamente 6 letras/números</span>
-            </div>
-          </div>
-        </transition>
 
         <div class="campo">
           <input
-            data-testid="input-codigo"
-            v-model="codigo"
-            type="text"
-            class="input-grande"
-            placeholder="Ex: ANA123"
-            maxlength="6"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-            @input="codigo = codigo.toUpperCase(); verificarCodigo()"
-            @keyup.enter="codigo.length === 6 && modo && avancarPasso()"
+            v-model="email"
+            type="email"
+            placeholder="Email"
+            autocomplete="email"
+            @keyup.enter="$refs.senhaInput?.focus()"
           />
-          <p class="campo-hint">Exatamente 6 letras ou números · maiúsculas automáticas</p>
-          <transition name="fade">
-            <p v-if="statusMsg" class="status-msg" :class="statusClass">{{ statusMsg }}</p>
-          </transition>
-        </div>
-
-        <transition name="fade">
-          <div v-if="modo === 'cadastro'" class="destaque-novo" data-testid="msg-cadastro">
-            <span class="destaque-icon">✨</span>
-            <div>
-              <strong>Código disponível — primeira vez aqui!</strong>
-              <p>Você vai criar seu acesso agora. Anote o código em lugar seguro.</p>
-            </div>
-          </div>
-          <div v-else-if="modo === 'login'" class="destaque-volta" data-testid="msg-login">
-            <span class="destaque-icon">👋</span>
-            <div>
-              <strong>Bem-vindo de volta!</strong>
-              <p>Código encontrado. Vamos ao PIN.</p>
-            </div>
-          </div>
-        </transition>
-
-        <button
-          data-testid="btn-continuar-passo1"
-          class="btn btn-primary btn-block"
-          :disabled="!modo || carregando || codigo.length < 6"
-          @click="avancarPasso"
-        >
-          Continuar
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-
-        <!-- Ajuda código esquecido (passo 1) -->
-        <div class="ajuda-login" style="margin-top:14px">
-          <button  data-testid="auto-btn-loginview-1" class="ajuda-toggle" @click="mostrarAjudaCodigo = !mostrarAjudaCodigo">
-            {{ mostrarAjudaCodigo ? '▲' : '▼' }} Não lembra seu código?
-          </button>
-          <transition name="fade">
-            <div v-if="mostrarAjudaCodigo" class="ajuda-conteudo">
-              <p>📋 <strong>Esqueceu o código?</strong> Sem ele não é possível recuperar o acesso. Sempre anote seu código após criar sua conta.</p>
-            </div>
-          </transition>
-        </div>
-      </div>
-
-      <!-- Passo 2: PIN -->
-      <div v-else-if="passo === 2">
-        <button class="btn-voltar" data-testid="btn-voltar-passo2" @click="voltarPasso">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          Voltar
-        </button>
-
-        <div class="card-header">
-          <span class="card-step" data-testid="step-indicador">2 de {{ totalPassos }}</span>
-          <h2 data-testid="titulo-passo2">{{ modo === 'cadastro' ? 'Crie seu PIN' : 'Digite seu PIN' }}</h2>
-          <p v-if="modo === 'cadastro'">6 dígitos numéricos — como um cartão de banco.</p>
-          <p v-else>Bem-vindo de volta, <strong>{{ codigo }}</strong>.</p>
-        </div>
-
-        <!-- Aviso forte de cadastro -->
-        <div v-if="modo === 'cadastro'" class="aviso-pin">
-          <div class="aviso-pin-linha">
-            <span>📌</span>
-            <span><strong>Anote seu PIN agora</strong> — ele será pedido a cada acesso e não pode ser recuperado sem o administrador.</span>
-          </div>
-          <div class="aviso-pin-linha aviso-pin-perigo">
-            <span>⚠️</span>
-            <span>Evite PINs óbvios: <strong>123456, 000000, 111111</strong> ou data de nascimento.</span>
-          </div>
         </div>
 
         <div class="campo">
-          <div class="pin-wrap">
-            <input
-              data-testid="input-pin"
-              v-model="pin"
-              type="password"
-              inputmode="numeric"
-              maxlength="6"
-              placeholder="••••••"
-              class="input-pin"
-              @keyup.enter="entrar()"
-            />
-          </div>
-        </div>
-
-        <!-- Nome (só cadastro) -->
-        <div v-if="modo === 'cadastro'" class="campo" style="margin-top:12px">
           <input
-            data-testid="input-nome"
-            v-model="nome"
-            type="text"
-            placeholder="Seu nome (opcional)"
+            ref="senhaInput"
+            v-model="senha"
+            type="password"
+            placeholder="Senha"
+            autocomplete="current-password"
             @keyup.enter="entrar"
           />
         </div>
 
         <button
-          data-testid="btn-continuar-passo2"
           class="btn btn-primary btn-block"
-          :disabled="pin.length !== 6 || carregando"
-          @click="entrar()"
+          :disabled="!emailValido || senha.length < 6 || carregando"
+          @click="entrar"
         >
-          {{ modo === 'login' ? (carregando ? 'Entrando...' : 'Entrar') : (carregando ? 'Criando conta...' : 'Criar conta e entrar') }}
+          {{ carregando ? 'Entrando...' : 'Entrar' }}
         </button>
 
-        <!-- Ajuda PIN esquecido (só no login) -->
-        <div v-if="modo === 'login'" class="ajuda-login">
-          <button  data-testid="auto-btn-loginview-2" class="ajuda-toggle" @click="mostrarAjuda = !mostrarAjuda">
-            {{ mostrarAjuda ? '▲' : '▼' }} Esqueceu o PIN?
+        <div class="separador">
+          <span>ou</span>
+        </div>
+
+        <button class="btn-google" @click="entrarGoogle" :disabled="carregando">
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Entrar com Google
+        </button>
+
+        <div class="links-login">
+          <button class="link-btn" @click="tela = 'cadastro'">Criar conta</button>
+          <span class="link-sep">·</span>
+          <button class="link-btn" @click="tela = 'recuperar'">Esqueci a senha</button>
+        </div>
+
+        <div class="links-login" style="margin-top:4px">
+          <button class="link-btn link-migrar" @click="tela = 'migrar'">
+            Já tenho um código antigo
           </button>
-          <transition name="fade">
-            <div v-if="mostrarAjuda" class="ajuda-conteudo">
-              <p>🔑 <strong>Esqueceu o PIN?</strong> O administrador pode redefinir seu acesso — suas anotações não serão perdidas.</p>
-            </div>
-          </transition>
         </div>
       </div>
 
+      <!-- ══ Tela de Cadastro ══ -->
+      <div v-else-if="tela === 'cadastro'">
+        <button class="btn-voltar" @click="tela = 'login'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
 
-      <p v-if="erroMsg" class="erro-msg" style="margin-top:12px">{{ erroMsg }}</p>
+        <div class="card-header">
+          <h2>Criar conta</h2>
+          <p>Seu código de sincronização será gerado automaticamente</p>
+        </div>
+
+        <div class="campo">
+          <input v-model="nome" type="text" placeholder="Seu nome" autocomplete="name" />
+        </div>
+
+        <div class="campo">
+          <input v-model="email" type="email" placeholder="Email" autocomplete="email" />
+        </div>
+
+        <div class="campo">
+          <input v-model="senha" type="password" placeholder="Senha (mín. 6 caracteres)" autocomplete="new-password" />
+        </div>
+
+        <div class="campo">
+          <input v-model="senhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="new-password" @keyup.enter="criarConta" />
+        </div>
+
+        <button
+          class="btn btn-primary btn-block"
+          :disabled="!emailValido || senha.length < 6 || senha !== senhaConfirm || carregando"
+          @click="criarConta"
+        >
+          {{ carregando ? 'Criando conta...' : 'Criar conta' }}
+        </button>
+
+        <div class="separador"><span>ou</span></div>
+
+        <button class="btn-google" @click="entrarGoogle" :disabled="carregando">
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          Cadastrar com Google
+        </button>
+      </div>
+
+      <!-- ══ Tela de Migração (código antigo) ══ -->
+      <div v-else-if="tela === 'migrar'">
+        <button class="btn-voltar" @click="tela = 'login'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
+
+        <div class="card-header">
+          <h2>Migrar conta antiga</h2>
+          <p>Vincule seu código existente a um email para maior segurança</p>
+        </div>
+
+        <div class="destaque-info">
+          <span>🔄</span>
+          <div>
+            <strong>Seus dados serão mantidos</strong>
+            <p>Pacientes, anotações e histórico continuam intactos. Só o login muda.</p>
+          </div>
+        </div>
+
+        <div class="campo">
+          <input
+            v-model="codigoMigrar"
+            type="text"
+            class="input-grande"
+            placeholder="Seu código (ex: ANA123)"
+            maxlength="6"
+            @input="codigoMigrar = codigoMigrar.toUpperCase()"
+          />
+        </div>
+
+        <div class="campo">
+          <input v-model="nome" type="text" placeholder="Seu nome" />
+        </div>
+
+        <div class="campo">
+          <input v-model="email" type="email" placeholder="Novo email" autocomplete="email" />
+        </div>
+
+        <div class="campo">
+          <input v-model="senha" type="password" placeholder="Nova senha (mín. 6 caracteres)" autocomplete="new-password" />
+        </div>
+
+        <div class="campo">
+          <input v-model="senhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="new-password" @keyup.enter="migrar" />
+        </div>
+
+        <button
+          class="btn btn-primary btn-block"
+          :disabled="codigoMigrar.length !== 6 || !emailValido || senha.length < 6 || senha !== senhaConfirm || carregando"
+          @click="migrar"
+        >
+          {{ carregando ? 'Migrando...' : 'Migrar e criar login' }}
+        </button>
+      </div>
+
+      <!-- ══ Tela de Recuperar Senha ══ -->
+      <div v-else-if="tela === 'recuperar'">
+        <button class="btn-voltar" @click="tela = 'login'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
+
+        <div class="card-header">
+          <h2>Recuperar senha</h2>
+          <p>Digite seu email para receber o link de redefinição</p>
+        </div>
+
+        <div class="campo">
+          <input v-model="email" type="email" placeholder="Email" autocomplete="email" @keyup.enter="recuperar" />
+        </div>
+
+        <button
+          class="btn btn-primary btn-block"
+          :disabled="!emailValido || carregando"
+          @click="recuperar"
+        >
+          {{ carregando ? 'Enviando...' : 'Enviar link' }}
+        </button>
+
+        <transition name="fade">
+          <div v-if="recuperacaoEnviada" class="destaque-sucesso">
+            <span>✉️</span>
+            <div>
+              <strong>Email enviado!</strong>
+              <p>Verifique sua caixa de entrada e spam.</p>
+            </div>
+          </div>
+        </transition>
+      </div>
+
+      <!-- Erro global -->
+      <p v-if="auth.authError" class="erro-msg" style="margin-top:12px">{{ auth.authError }}</p>
     </div>
 
     <!-- Aviso modo privado -->
@@ -207,102 +254,95 @@ import HelpModal from '../components/HelpModal.vue'
 const router = useRouter()
 const auth   = useAuthStore()
 
-// Se já está logado (sessão válida no localStorage), vai direto pro dashboard
-onMounted(() => {
+onMounted(async () => {
+  // Processar resultado do Google Redirect
+  await auth.handleRedirectResult()
   if (auth.isLoggedIn) router.replace({ name: 'dashboard' })
 })
 
-const codigo    = ref('')
-const pin       = ref('')
-const nome      = ref('')
-const modo      = ref(null)       // 'login' | 'cadastro' | null
-const passo     = ref(1)
-const statusMsg = ref('')
-const statusClass = ref('')
-const erroMsg   = ref('')
-const carregando   = ref(false)
-const mostrarAjuda       = ref(false)
-const mostrarAjudaCodigo = ref(false)
-const helpAberto         = ref(false)
+const tela = ref('login') // 'login' | 'cadastro' | 'migrar' | 'recuperar'
+
+const email = ref('')
+const senha = ref('')
+const senhaConfirm = ref('')
+const nome = ref('')
+const codigoMigrar = ref('')
+const carregando = ref(false)
+const recuperacaoEnviada = ref(false)
+const helpAberto = ref(false)
+
+const emailValido = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value))
 
 const helpItens = [
-  { icone: '🔑', titulo: 'Código de acesso', desc: 'Escolha um código de exatamente 6 letras ou números. Ele identifica sua conta — use o mesmo em todos os seus dispositivos para sincronizar os dados.' },
-  { icone: '🔒', titulo: 'PIN de segurança', desc: 'Senha numérica de 6 dígitos para proteger sua conta. Não há recuperação de PIN — se esquecer, precisará criar uma nova conta com outro código.' },
-  { icone: '📱', titulo: 'Múltiplos dispositivos', desc: 'Acesse pelo celular, tablet ou computador usando o mesmo código e PIN. Todos os dados ficam sincronizados automaticamente.' },
-  { icone: '⚠️', titulo: 'Segurança do código', desc: 'Quem souber seu código e PIN terá acesso aos seus dados. Use um código difícil de adivinhar e não compartilhe seu PIN.' },
-  { icone: '🔄', titulo: 'Sincronização', desc: 'Pacientes, anotações, histórico e organizador ficam salvos na nuvem e acessíveis de qualquer lugar com internet.' },
+  { icone: '✉️', titulo: 'Email e senha', desc: 'Crie sua conta com email e senha. Mais seguro e com recuperação de senha por email.' },
+  { icone: '🔑', titulo: 'Login com Google', desc: 'Faça login com sua conta Google — rápido e sem precisar criar senha.' },
+  { icone: '📱', titulo: 'Múltiplos dispositivos', desc: 'Acesse pelo celular, tablet ou computador com o mesmo email. Todos os dados ficam sincronizados.' },
+  { icone: '🔄', titulo: 'Conta antiga?', desc: 'Se você já usava o app com um código (ex: ANA123), toque em "Já tenho um código antigo" para migrar.' },
+  { icone: '🔒', titulo: 'Segurança', desc: 'Seus dados são protegidos por autenticação Firebase. Só você pode acessar suas anotações.' },
 ]
-
-const totalPassos = computed(() => 2)
-
-let debounceTimer = null
-
-function avancarPasso() {
-  erroMsg.value = ''
-  passo.value++
-}
-
-function voltarPasso() {
-  erroMsg.value = ''
-  passo.value--
-}
-
-async function verificarCodigo() {
-  erroMsg.value = ''
-  if (codigo.value.length < 6) {
-    modo.value = null
-    statusMsg.value = ''
-    return
-  }
-
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(async () => {
-    statusMsg.value = 'Verificando...'
-    statusClass.value = 'status-wait'
-    try {
-      const result = await auth.checkCode(codigo.value)
-      if (result.exists) {
-        modo.value = 'login'
-        statusMsg.value = ''
-        statusClass.value = 'status-ok'
-      } else {
-        modo.value = 'cadastro'
-        statusMsg.value = ''
-        statusClass.value = 'status-new'
-      }
-    } catch {
-      modo.value = null
-      statusMsg.value = 'Erro ao verificar. Verifique sua conexão.'
-      statusClass.value = 'status-err'
-    }
-  }, 500)
-}
 
 async function entrar() {
   if (carregando.value) return
-  erroMsg.value = ''
   carregando.value = true
-
-  try {
-    let ok = false
-    if (modo.value === 'login') {
-      ok = await auth.login(codigo.value, pin.value)
-      if (!ok) erroMsg.value = 'PIN incorreto. Tente novamente.'
-    } else {
-      ok = await auth.register(codigo.value, pin.value, nome.value)
-    }
-    if (ok) router.push({ name: 'dashboard' })
-  } catch (e) {
-    if (e?.code === 'PERMISSION_DENIED' || e?.message?.includes('PERMISSION_DENIED')) {
-      erroMsg.value = 'Sem permissão no banco de dados.'
-    } else if (e?.message?.includes('Contexto inseguro')) {
-      erroMsg.value = 'Acesse o app via HTTPS para usar o PIN.'
-    } else {
-      erroMsg.value = 'Erro de conexão. Tente novamente.'
-    }
-  } finally {
-    carregando.value = false
+  auth.authError = ''
+  const ok = await auth.login(email.value, senha.value)
+  if (ok) {
+    // onAuthStateChanged vai popular os dados; esperar um tick
+    setTimeout(() => router.push({ name: 'dashboard' }), 300)
   }
+  carregando.value = false
+}
+
+async function criarConta() {
+  if (carregando.value) return
+  if (senha.value !== senhaConfirm.value) {
+    auth.authError = 'As senhas não conferem.'
+    return
+  }
+  carregando.value = true
+  auth.authError = ''
+  const ok = await auth.register(email.value, senha.value, nome.value)
+  if (ok) router.push({ name: 'dashboard' })
+  carregando.value = false
+}
+
+async function entrarGoogle() {
+  if (carregando.value) return
+  carregando.value = true
+  auth.authError = ''
+  await auth.loginGoogle()
+  carregando.value = false
+}
+
+async function migrar() {
+  if (carregando.value) return
+  if (senha.value !== senhaConfirm.value) {
+    auth.authError = 'As senhas não conferem.'
+    return
+  }
+  carregando.value = true
+  auth.authError = ''
+
+  // Verificar se o código existe
+  const result = await auth.checkCode(codigoMigrar.value)
+  if (!result.exists) {
+    auth.authError = 'Código não encontrado. Verifique e tente novamente.'
+    carregando.value = false
+    return
+  }
+
+  const ok = await auth.migrarConta(codigoMigrar.value, email.value, senha.value, nome.value)
+  if (ok) router.push({ name: 'dashboard' })
+  carregando.value = false
+}
+
+async function recuperar() {
+  if (carregando.value) return
+  carregando.value = true
+  auth.authError = ''
+  const ok = await auth.recuperarSenha(email.value)
+  if (ok) recuperacaoEnviada.value = true
+  carregando.value = false
 }
 </script>
 
@@ -359,15 +399,6 @@ async function entrar() {
   padding: 28px 24px;
 }
 
-/* ── Card header ── */
-.card-step {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--blue);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
 .card-header {
   margin-bottom: 20px;
   display: flex;
@@ -388,88 +419,44 @@ async function entrar() {
   margin: 0;
 }
 
-.card-header p strong {
-  color: var(--text);
+/* ── Campos ── */
+.campo {
+  margin-bottom: 12px;
 }
 
-/* ── Input grande ── */
+.campo input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.campo input:focus {
+  border-color: var(--blue);
+}
+
+.campo input::placeholder {
+  color: var(--text-dim);
+}
+
 .input-grande {
-  font-size: 1.4rem;
+  font-size: 1.4rem !important;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
 }
 
-.input-pin {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  text-align: center;
-  width: 100%;
-}
-
-.pin-wrap {
-  display: flex;
-  justify-content: center;
-}
-
-/* ── Status ── */
-.status-msg {
-  font-size: 0.83rem;
-  margin-top: 6px;
-  text-align: center;
-}
-.status-ok   { color: var(--success); }
-.status-new  { color: var(--blue); }
-.status-err  { color: var(--danger); }
-.status-wait { color: var(--text-muted); }
-
-/* ── Destaques ── */
-.destaque-novo,
-.destaque-volta {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
-
-.destaque-novo {
-  background: rgba(41, 98, 255, 0.08);
-  border: 1px solid rgba(41, 98, 255, 0.2);
-}
-
-.destaque-volta {
-  background: rgba(67, 160, 71, 0.08);
-  border: 1px solid rgba(67, 160, 71, 0.2);
-}
-
-.destaque-icon {
-  font-size: 1.2rem;
-  line-height: 1.4;
-}
-
-.destaque-novo strong,
-.destaque-volta strong {
-  font-size: 0.9rem;
-  display: block;
-  color: var(--text);
-  margin-bottom: 2px;
-}
-
-.destaque-novo p,
-.destaque-volta p {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin: 0;
-}
-
 /* ── Botões ── */
 .btn-block {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -487,116 +474,113 @@ async function entrar() {
   cursor: pointer;
   padding: 0;
   margin-bottom: 16px;
+  font-family: inherit;
 }
+.btn-voltar:hover { color: var(--text); }
 
-.btn-voltar:hover {
-  color: var(--text);
-}
-
-/* ── Instruções rápidas (passo 1 antes de digitar) ── */
-.instrucoes-rapidas {
+.btn-google {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.03);
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
-}
-
-.instrucao-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.instrucao-item strong {
+  border-radius: 10px;
   color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
 }
+.btn-google:hover { background: var(--bg-hover); }
+.btn-google:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ── Hint do campo ── */
-.campo-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin: 4px 0 0;
-  text-align: center;
-}
-
-/* ── Aviso PIN (cadastro) ── */
-.aviso-pin {
+/* ── Separador ── */
+.separador {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+.separador::before,
+.separador::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.separador span {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* ── Links ── */
+.links-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 14px;
-  background: var(--warning-muted);
-  border: 1px solid rgba(255, 193, 7, 0.25);
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
-
-.aviso-pin-linha {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 0.83rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-.aviso-pin-linha strong {
-  color: var(--text);
-}
-
-.aviso-pin-perigo {
-  color: var(--warning);
-}
-
-.aviso-pin-perigo strong {
-  color: var(--text);
-}
-
-/* ── Ajuda login ── */
-.ajuda-login {
   margin-top: 16px;
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
 }
-
-.ajuda-toggle {
+.link-btn {
   background: none;
   border: none;
-  color: var(--text-muted);
-  font-size: 0.82rem;
+  color: var(--blue);
+  font-size: 0.85rem;
   cursor: pointer;
   padding: 0;
-  width: 100%;
-  text-align: center;
+  font-family: inherit;
 }
+.link-btn:hover { text-decoration: underline; }
+.link-sep { color: var(--text-dim); font-size: 0.8rem; }
+.link-migrar { color: var(--text-muted); font-size: 0.8rem; }
 
-.ajuda-toggle:hover {
-  color: var(--text);
-}
-
-.ajuda-conteudo {
-  margin-top: 12px;
+/* ── Destaques ── */
+.destaque-info {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  background: rgba(41, 98, 255, 0.08);
+  border: 1px solid rgba(41, 98, 255, 0.2);
 }
-
-.ajuda-conteudo p {
+.destaque-info strong {
+  font-size: 0.9rem;
+  display: block;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.destaque-info p {
   font-size: 0.82rem;
   color: var(--text-muted);
   margin: 0;
-  line-height: 1.5;
 }
 
-.ajuda-conteudo p strong {
+.destaque-sucesso {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-top: 16px;
+  background: rgba(67, 160, 71, 0.08);
+  border: 1px solid rgba(67, 160, 71, 0.2);
+}
+.destaque-sucesso strong {
+  font-size: 0.9rem;
+  display: block;
   color: var(--text);
+  margin-bottom: 2px;
+}
+.destaque-sucesso p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 /* ── Transition ── */
@@ -618,11 +602,9 @@ async function entrar() {
   max-width: 380px;
   width: 100%;
 }
-.aviso-privado strong {
-  color: var(--text);
-}
+.aviso-privado strong { color: var(--text); }
 
-/* ── Como funciona button ── */
+/* ── Como funciona ── */
 .btn-como-funciona {
   background: none; border: none; color: var(--text-muted);
   font-size: 0.82rem; cursor: pointer; padding: 4px 8px;
@@ -630,4 +612,11 @@ async function entrar() {
 }
 .btn-como-funciona:hover { color: var(--text); }
 .btn-como-funciona:active { background: var(--bg-hover); }
+
+/* ── Erro ── */
+.erro-msg {
+  color: var(--danger);
+  font-size: 0.85rem;
+  text-align: center;
+}
 </style>

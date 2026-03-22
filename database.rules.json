@@ -1,24 +1,44 @@
 {
   "rules": {
+    "owners": {
+      "$code": {
+        ".read": "auth != null && data.child(auth.uid).exists()",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && !data.exists()"
+        }
+      }
+    },
+    "uid_map": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && !data.exists()"
+      }
+    },
     "usuarios": {
       "$code": {
-        ".read": true,
-        ".write": "(!data.exists() && newData.hasChildren(['pin', 'criadoEm'])) || data.exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "pin": {
-          ".validate": "newData.isString() && newData.val().matches(/^[a-f0-9]{64}$/)"
+          ".read": false
         },
         "nome": {
           ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 80)"
         },
+        "email": {
+          ".validate": "!newData.exists() || newData.isString()"
+        },
         "criadoEm": {
           ".validate": "newData.isNumber()"
+        },
+        "plano": {
+          ".write": false
         }
       }
     },
     "anotacoes": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         ".indexOn": ["timestamp"],
         "$id": {
           ".validate": "!newData.exists() || (newData.hasChildren(['tipo', 'texto', 'timestamp']) && newData.child('tipo').isString() && newData.child('texto').isString() && newData.child('timestamp').isNumber() && (!newData.child('nome').exists() || newData.child('nome').isString()) && (!newData.child('leito').exists() || newData.child('leito').isString()))"
@@ -27,14 +47,14 @@
     },
     "anotacoes_hc": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()"
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true"
       }
     },
     "pacientes": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "$id": {
           ".validate": "!newData.exists() || (newData.hasChildren(['nome', 'criadoEm']) && newData.child('nome').isString() && newData.child('criadoEm').isNumber() && (!newData.child('leito').exists() || newData.child('leito').isString()))",
           "pendencias": {
@@ -47,14 +67,14 @@
     },
     "organizador": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()"
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true"
       }
     },
     "encaminhamento": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "destinos": {
           "$id": {
             ".validate": "!newData.exists() || (newData.hasChildren(['texto', 'criadoEm']) && newData.child('texto').isString() && newData.child('criadoEm').isNumber())"
@@ -64,8 +84,8 @@
     },
     "livres": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "modelos": {
           "$id": {
             ".validate": "!newData.exists() || (newData.child('texto').isString() && (!newData.child('titulo').exists() || newData.child('titulo').isString()) && (!newData.child('criadoEm').exists() || newData.child('criadoEm').isNumber()))"
@@ -75,8 +95,8 @@
     },
     "curativo": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "locais": {
           "$id": {
             ".validate": "!newData.exists() || (newData.hasChildren(['texto', 'criadoEm']) && newData.child('texto').isString() && newData.child('criadoEm').isNumber())"
@@ -91,14 +111,14 @@
     },
     "fcm_tokens": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()"
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true"
       }
     },
     "notificacoes_agendadas": {
       "$code": {
-        ".read": "root.child('usuarios').child($code).exists()",
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "agendadas": {
           "$id": {
             ".validate": "!newData.exists() || (newData.hasChildren(['timestamp', 'body']) && newData.child('timestamp').isNumber() && newData.child('body').isString() && (!newData.child('tag').exists() || newData.child('tag').isString()) && (!newData.child('sentAt').exists() || newData.child('sentAt').isNumber()))"
@@ -106,10 +126,16 @@
         }
       }
     },
+    "configuracoes": {
+      "$code": {
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true"
+      }
+    },
     "feedback": {
       "$code": {
         ".read": false,
-        ".write": "root.child('usuarios').child($code).exists()",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
         "$id": {
           ".validate": "!newData.exists() || (newData.hasChildren(['texto', 'timestamp']) && newData.child('texto').isString() && newData.child('timestamp').isNumber() && (!newData.child('versaoApp').exists() || newData.child('versaoApp').isString()))"
         }

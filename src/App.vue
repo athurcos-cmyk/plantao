@@ -251,25 +251,19 @@ async function instalarApp() {
   _installPrompt = null
 }
 
-// Verifica a sessão a cada minuto — se expirou, desloga e manda pro login
-onMounted(() => {
+// Inicializa listener de autenticação do Firebase
+onMounted(async () => {
+  await auth.initAuthListener()
+
   // Onboarding: redireciona para telas de boas-vindas na primeira abertura
-  // Só exibe uma vez — após isso, onboarding_visto=1 no localStorage bloqueia
   try {
     const jaViu = localStorage.getItem('onboarding_visto')
     if (!jaViu && !auth.isLoggedIn) {
       router.push({ name: 'onboarding' })
     }
   } catch {
-    // localStorage bloqueado (modo privado extremo) — ignorar, ir para login
+    // localStorage bloqueado (modo privado extremo) — ignorar
   }
-
-  setInterval(() => {
-    if (auth.syncCode && !auth.isLoggedIn) {
-      auth.logout()
-      router.push({ name: 'login' })
-    }
-  }, 60 * 1000)
 
   // Retry contínuo de sync enquanto houver pendências e internet.
   setInterval(() => {

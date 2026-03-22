@@ -69,17 +69,29 @@ export default async function handler(req, res) {
   }
 
   const { messages, syncCode } = req.body || {}
+  const authHeader = req.headers.authorization || ''
 
   if (!syncCode) {
     return res.status(400).json({ error: 'syncCode obrigatório' })
   }
 
-  // Verifica se syncCode existe no Firebase — impede uso não autorizado da IA
+  // Verifica Firebase Auth token — impede uso não autorizado da IA
   try {
     _initAdmin()
-    const snap = await admin.database().ref(`usuarios/${syncCode}`).get()
-    if (!snap.exists()) {
-      return res.status(403).json({ error: 'Não autorizado.' })
+    if (authHeader.startsWith('Bearer ')) {
+      const idToken = authHeader.replace('Bearer ', '')
+      const decoded = await admin.auth().verifyIdToken(idToken)
+      // Verifica se o uid é dono do syncCode
+      const ownerSnap = await admin.database().ref(`owners/${syncCode}/${decoded.uid}`).get()
+      if (!ownerSnap.exists() || ownerSnap.val() !== true) {
+        return res.status(403).json({ error: 'Não autorizado.' })
+      }
+    } else {
+      // Fallback legado: verifica se syncCode existe (período de transição)
+      const snap = await admin.database().ref(`usuarios/${syncCode}`).get()
+      if (!snap.exists()) {
+        return res.status(403).json({ error: 'Não autorizado.' })
+      }
     }
   } catch (e) {
     console.error('[CHAT] auth check failed:', e.message)

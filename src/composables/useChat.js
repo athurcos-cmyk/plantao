@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useOnlineStatus } from './useOnlineStatus.js'
 import { useAuthStore } from '../stores/auth.js'
+import { auth as firebaseAuth } from '../firebase.js'
 
 const aberto = ref(false)
 const mensagens = ref([])
@@ -45,9 +46,20 @@ export function useChat() {
         .filter(m => m.role === 'user' || m.role === 'assistant')
         .map(m => ({ role: m.role, content: m.content }))
 
+      // Pega token Firebase Auth para autenticar no servidor
+      let authToken = ''
+      try {
+        if (firebaseAuth.currentUser) {
+          authToken = await firebaseAuth.currentUser.getIdToken()
+        }
+      } catch { /* fallback sem token */ }
+
+      const headers = { 'Content-Type': 'application/json' }
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`
+
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           messages: historico,
           syncCode: auth.syncCode,

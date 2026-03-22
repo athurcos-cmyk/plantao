@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
+import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getMessaging, isSupported } from 'firebase/messaging'
 
 const firebaseConfig = {
@@ -14,6 +15,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 export const db = getDatabase(app)
+export const auth = getAuth(app)
+export const googleProvider = new GoogleAuthProvider()
 
 // FCM Messaging — só disponível em HTTPS com service worker
 // Exporta a promise para permitir await antes de usar o objeto messaging
