@@ -244,15 +244,25 @@ export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
  */
 export async function agendarTodasNotificacoes(tarefas) {
   if (!notificacoesHabilitadas() || !tarefas?.length) return
-  for (const t of tarefas) {
-    if (t.feito || !t.horario) continue
+
+  const ativas = tarefas.filter(t => !t.feito && t.horario)
+  if (!ativas.length) return
+
+  // Atualiza localStorage de uma vez (síncrono, sem round-trips)
+  let lista = _getAgendadas()
+  const tagsAtualizar = new Set(ativas.map(t => `tarefa-${t._key}`))
+  lista = lista.filter(n => !tagsAtualizar.has(n.tag))
+  for (const t of ativas) {
     const timestamp = _proximoTimestamp(t.horario)
-    const tag = `tarefa-${t._key}`
-    const lista = _getAgendadas().filter(n => n.tag !== tag)
-    lista.push({ body: t.texto, timestamp, tag })
-    _salvar(lista)
-    await _salvarNoFirebase(_syncCode, timestamp, t.texto, tag)
+    lista.push({ body: t.texto, timestamp, tag: `tarefa-${t._key}` })
   }
+  _salvar(lista)
+
+  // Salva no Firebase em paralelo (era sequencial, agora Promise.all)
+  await Promise.all(ativas.map(t => {
+    const timestamp = _proximoTimestamp(t.horario)
+    return _salvarNoFirebase(_syncCode, timestamp, t.texto, `tarefa-${t._key}`)
+  }))
 }
 
 /**

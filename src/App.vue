@@ -1,5 +1,9 @@
 <template>
-  <RouterView />
+  <RouterView v-slot="{ Component }">
+    <Transition name="page-fade" mode="out-in">
+      <component :is="Component" :key="$route.name" />
+    </Transition>
+  </RouterView>
   <BotaoChat v-if="mostrarFab" />
   <ChatAssistente v-if="mostrarFab" />
   <CalculadoraModal v-if="mostrarFab" />
@@ -567,4 +571,10 @@ onMounted(async () => {
 .update-bar-leave-active { transition: transform 0.3s ease; }
 .update-bar-enter-from,
 .update-bar-leave-to     { transform: translateY(-100%); }
+
+/* ── Page transition ── */
+.page-fade-enter-active { transition: opacity 0.15s ease; }
+.page-fade-leave-active { transition: opacity 0.1s ease; }
+.page-fade-enter-from,
+.page-fade-leave-to     { opacity: 0; }
 </style>
