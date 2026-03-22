@@ -14,6 +14,7 @@
         <label
           class="checkbox-label pulseira-label"
           v-for="op in pulseiraOpcoes" :key="op.v"
+          :class="{ checked: d.tipos.includes(op.v) }"
           :style="d.tipos.includes(op.v) ? { borderColor: op.cor, backgroundColor: op.cor + '20' } : {}"
         >
           <input  data-testid="auto-input-modalpulseira-2" type="checkbox" :value="op.v" v-model="d.tipos">

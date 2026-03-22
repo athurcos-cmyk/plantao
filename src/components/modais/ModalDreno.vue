@@ -20,7 +20,7 @@
       <input  data-testid="auto-input-modaldreno-4" type="text" v-model="d.drenoAspecto" placeholder="Ex: sanguinolento, seroso, bilioso">
     </div>
     <div class="campo">
-      <label class="checkbox-label" style="margin-bottom:0">
+      <label class="checkbox-label" :class="{ checked: d.seloAgua }" style="margin-bottom:0">
         <input  data-testid="auto-input-modaldreno-5" type="checkbox" v-model="d.seloAgua">
         <span>Possui selo d'água</span>
       </label>

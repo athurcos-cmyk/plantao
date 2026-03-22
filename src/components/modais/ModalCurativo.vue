@@ -3,7 +3,7 @@
     <div class="campo">
       <label>Locais </label>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
-        <label class="checkbox-label" v-for="op in ['MSD','MSE','MID','MIE']" :key="op" style="flex:1;min-width:70px">
+        <label class="checkbox-label" v-for="op in ['MSD','MSE','MID','MIE']" :key="op" :class="{ checked: d.locais.includes(op) }" style="flex:1;min-width:70px">
           <input  data-testid="auto-input-modalcurativo-1" type="checkbox" :value="op" v-model="d.locais">
           <span>{{ op }}</span>
         </label>
@@ -19,7 +19,7 @@
         </label>
       </div>
     </div>
-    <label class="checkbox-label" style="margin-bottom:0">
+    <label class="checkbox-label" :class="{ checked: d.enfaixamento }" style="margin-bottom:0">
       <input  data-testid="auto-input-modalcurativo-4" type="checkbox" v-model="d.enfaixamento">
       <span>Com enfaixamento</span>
     </label>

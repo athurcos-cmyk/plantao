@@ -19,11 +19,11 @@
     <div class="campo">
       <label>Status</label>
       <div class="radio-group vertical">
-        <label class="checkbox-label"><input  data-testid="auto-input-modalpicc-3" type="checkbox" v-model="d.salinizado"><span>Salinizado</span></label>
-        <label class="checkbox-label"><input  data-testid="auto-input-modalpicc-4" type="checkbox" v-model="d.heparinizado"><span>Heparinizado</span></label>
-        <label class="checkbox-label"><input  data-testid="auto-input-modalpicc-5" type="checkbox" v-model="d.ocluido"><span>Ocluído</span></label>
-        <label class="checkbox-label"><input  data-testid="auto-input-modalpicc-6" type="checkbox" v-model="d.datado"><span>Datado</span></label>
-        <label class="checkbox-label"><input  data-testid="auto-input-modalpicc-7" type="checkbox" v-model="d.emInfusao"><span>Em infusão</span></label>
+        <label class="checkbox-label" :class="{ checked: d.salinizado }"><input  data-testid="auto-input-modalpicc-3" type="checkbox" v-model="d.salinizado"><span>Salinizado</span></label>
+        <label class="checkbox-label" :class="{ checked: d.heparinizado }"><input  data-testid="auto-input-modalpicc-4" type="checkbox" v-model="d.heparinizado"><span>Heparinizado</span></label>
+        <label class="checkbox-label" :class="{ checked: d.ocluido }"><input  data-testid="auto-input-modalpicc-5" type="checkbox" v-model="d.ocluido"><span>Ocluído</span></label>
+        <label class="checkbox-label" :class="{ checked: d.datado }"><input  data-testid="auto-input-modalpicc-6" type="checkbox" v-model="d.datado"><span>Datado</span></label>
+        <label class="checkbox-label" :class="{ checked: d.emInfusao }"><input  data-testid="auto-input-modalpicc-7" type="checkbox" v-model="d.emInfusao"><span>Em infusão</span></label>
       </div>
     </div>
     <div v-if="d.datado" class="campo">
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="campo">
-        <label class="checkbox-label" style="margin-bottom:0">
+        <label class="checkbox-label" :class="{ checked: d.bic }" style="margin-bottom:0">
           <input  data-testid="auto-input-modalpicc-11" type="checkbox" v-model="d.bic">
           <span>Bomba de infusão (BIC)</span>
         </label>

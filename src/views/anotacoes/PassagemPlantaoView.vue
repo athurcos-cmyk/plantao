@@ -91,7 +91,7 @@
 
         <!-- Queixas -->
         <div class="campo">
-          <label class="checkbox-label">
+          <label class="checkbox-label" :class="{ checked: form.queixas }">
             <input type="checkbox" v-model="form.queixas">
             <span>Paciente com queixas</span>
           </label>
@@ -149,7 +149,7 @@
           <label>Informações adicionais</label>
 
           <!-- Dieta enteral -->
-          <label class="checkbox-label" style="margin-bottom:8px">
+          <label class="checkbox-label" :class="{ checked: form.dietaEnteral }" style="margin-bottom:8px">
             <input type="checkbox" v-model="form.dietaEnteral">
             <span>Dieta enteral</span>
           </label>
@@ -159,7 +159,7 @@
           </div>
 
           <!-- Infusão venosa -->
-          <label class="checkbox-label" style="margin-bottom:8px">
+          <label class="checkbox-label" :class="{ checked: form.infusao }" style="margin-bottom:8px">
             <input type="checkbox" v-model="form.infusao" @change="onToggleInfusao">
             <span>Infusão venosa</span>
           </label>
@@ -176,7 +176,7 @@
           </div>
 
           <!-- Débito urinário -->
-          <label class="checkbox-label" style="margin-bottom:8px">
+          <label class="checkbox-label" :class="{ checked: form.svd }" style="margin-bottom:8px">
             <input type="checkbox" v-model="form.svd">
             <span>Débito urinário</span>
           </label>
