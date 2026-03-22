@@ -299,7 +299,10 @@ async function entrarGoogle() {
   if (carregando.value) return
   carregando.value = true
   auth.authError = ''
-  await auth.loginGoogle()
+  const ok = await auth.loginGoogle()
+  if (ok) {
+    router.push({ name: 'dashboard' })
+  }
   carregando.value = false
 }
 

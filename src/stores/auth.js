@@ -184,10 +184,19 @@ export const useAuthStore = defineStore('auth', () => {
       return false
     }
 
-    // Popup deu certo — vincular conta se for primeiro acesso
+    // Popup deu certo — vincular conta se for primeiro acesso e setar estado imediatamente
     try {
       if (result && result.user) {
-        await _vincularGoogleSeNovo(result.user)
+        const code = await _vincularGoogleSeNovo(result.user)
+        // Seta estado sem esperar onAuthStateChanged → redirect imediato
+        uid.value = result.user.uid
+        userEmail.value = result.user.email || ''
+        userName.value = result.user.displayName || ''
+        syncCode.value = code
+        if (_lsOk) {
+          localStorage.setItem('sync_code', code)
+          localStorage.setItem('user_name', userName.value)
+        }
       }
       return true
     } catch (e) {
@@ -210,29 +219,31 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // Cria syncCode e mapeamentos se for primeiro login Google
+  // Cria syncCode e mapeamentos se for primeiro login Google.
+  // Retorna o syncCode (existente ou recém-criado).
   async function _vincularGoogleSeNovo(user) {
     const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
-    if (!mapSnap.exists()) {
-      const code = _gerarSyncCodeUnico()
-      // Escritas em paralelo — mais rápido que sequencial
-      await Promise.all([
-        set(dbRef(db, `owners/${code}/${user.uid}`), true),
-        set(dbRef(db, `uid_map/${user.uid}`), code),
-        set(dbRef(db, `usuarios/${code}`), {
-          nome: user.displayName || '',
-          email: user.email || '',
-          criadoEm: Date.now(),
-        }),
-      ])
-
-      // Email de boas-vindas (fire-and-forget)
-      fetch('/api/welcome', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: user.displayName || '', email: user.email || '' }),
-      }).catch(() => {})
+    if (mapSnap.exists()) {
+      return mapSnap.val() // usuário existente
     }
+    // Novo usuário — criar registros em paralelo
+    const code = _gerarSyncCodeUnico()
+    await Promise.all([
+      set(dbRef(db, `owners/${code}/${user.uid}`), true),
+      set(dbRef(db, `uid_map/${user.uid}`), code),
+      set(dbRef(db, `usuarios/${code}`), {
+        nome: user.displayName || '',
+        email: user.email || '',
+        criadoEm: Date.now(),
+      }),
+    ])
+    // Email de boas-vindas (fire-and-forget)
+    fetch('/api/welcome', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: user.displayName || '', email: user.email || '' }),
+    }).catch(() => {})
+    return code
   }
 
   // ─── Recuperar senha ───
