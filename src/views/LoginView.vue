@@ -80,6 +80,57 @@
           <button class="link-btn" @click="tela = 'recuperar'">Esqueci a senha</button>
         </div>
 
+        <div class="links-login" style="margin-top:4px">
+          <button class="link-btn link-codigo" @click="tela = 'codigo'">
+            Entrar com código
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ══ Tela de Login com Código ══ -->
+      <div v-else-if="tela === 'codigo'">
+        <button class="btn-voltar" @click="tela = 'login'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          Voltar
+        </button>
+
+        <div class="card-header">
+          <h2>Entrar com código</h2>
+          <p>Use seu código de acesso rápido e senha</p>
+        </div>
+
+        <div class="campo">
+          <input
+            v-model="codigo"
+            type="text"
+            class="input-codigo"
+            placeholder="Seu código (ex: ANA123)"
+            maxlength="6"
+            autocomplete="off"
+            @input="codigo = codigo.toUpperCase()"
+            @keyup.enter="$refs.senhaCodigoInput?.focus()"
+          />
+        </div>
+
+        <div class="campo">
+          <input
+            ref="senhaCodigoInput"
+            v-model="senha"
+            type="password"
+            placeholder="Senha"
+            autocomplete="current-password"
+            @keyup.enter="entrarComCodigo"
+          />
+        </div>
+
+        <button
+          class="btn btn-primary btn-block"
+          :disabled="codigo.length < 4 || senha.length < 6 || carregando"
+          @click="entrarComCodigo"
+        >
+          {{ carregando ? 'Entrando...' : 'Entrar' }}
+        </button>
       </div>
 
       <!-- ══ Tela de Cadastro ══ -->
@@ -199,12 +250,13 @@ onMounted(async () => {
   if (auth.isLoggedIn) router.replace({ name: 'dashboard' })
 })
 
-const tela = ref('login') // 'login' | 'cadastro' | 'recuperar'
+const tela = ref('login') // 'login' | 'cadastro' | 'codigo' | 'recuperar'
 
 const email = ref('')
 const senha = ref('')
 const senhaConfirm = ref('')
 const nome = ref('')
+const codigo = ref('')
 const carregando = ref(false)
 const recuperacaoEnviada = ref(false)
 const helpAberto = ref(false)
@@ -249,6 +301,38 @@ async function entrarGoogle() {
   auth.authError = ''
   await auth.loginGoogle()
   carregando.value = false
+}
+
+async function entrarComCodigo() {
+  if (carregando.value) return
+  carregando.value = true
+  auth.authError = ''
+
+  try {
+    // 1. Resolver código → email via API serverless
+    const res = await fetch('/api/resolve-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ syncCode: codigo.value }),
+    })
+
+    const data = await res.json()
+    if (!res.ok || !data.email) {
+      auth.authError = data.error || 'Código não encontrado.'
+      carregando.value = false
+      return
+    }
+
+    // 2. Login com email + senha
+    const ok = await auth.login(data.email, senha.value)
+    if (ok) {
+      setTimeout(() => router.push({ name: 'dashboard' }), 300)
+    }
+  } catch {
+    auth.authError = 'Sem conexão com o servidor.'
+  } finally {
+    carregando.value = false
+  }
 }
 
 async function recuperar() {
@@ -451,7 +535,15 @@ async function recuperar() {
 }
 .link-btn:hover { text-decoration: underline; }
 .link-sep { color: var(--text-dim); font-size: 0.8rem; }
-.link-migrar { color: var(--text-muted); font-size: 0.8rem; }
+.link-codigo { color: var(--text-muted); font-size: 0.8rem; }
+
+.input-codigo {
+  font-size: 1.4rem !important;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
 
 /* ── Destaques ── */
 .destaque-info {

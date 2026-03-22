@@ -97,6 +97,12 @@ const routes = [
     component: () => import('../views/OrganizadorView.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/configuracoes',
+    name: 'configuracoes',
+    component: () => import('../views/ConfiguracoesView.vue'),
+    meta: { requiresAuth: true }
+  },
 ]
 
 const router = createRouter({
