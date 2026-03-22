@@ -21,6 +21,7 @@
       <div class="pag-titulo-row">
         <h2 class="pag-titulo">Meus Pacientes</h2>
         <span class="pag-subtitulo">{{ store.pacientes.length }} registrado{{ store.pacientes.length !== 1 ? 's' : '' }}</span>
+        <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">🗑️ Limpar plantão</button>
       </div>
 
       <!-- Empty state -->
@@ -162,6 +163,20 @@
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar Meus Pacientes" :itens="helpItens" />
 
+    <!-- Modal confirmar exclusão de todos -->
+    <div v-if="excluindoTodos" class="modal-overlay" @click.self="excluindoTodos = false">
+      <div class="modal-box">
+        <h3 class="modal-titulo">Limpar plantão?</h3>
+        <p style="color:var(--text-dim);margin-top:8px;font-size:0.9rem">
+          Todos os <strong style="color:var(--text)">{{ store.pacientes.length }} pacientes</strong> e suas pendências serão removidos permanentemente.
+        </p>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="btn btn-secondary" style="flex:1" @click="excluindoTodos = false">Cancelar</button>
+          <button class="btn btn-danger" style="flex:1" @click="executarExcluirTodos">Excluir todos</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal confirmar exclusão -->
     <div v-if="excluindo" class="modal-overlay" @click.self="excluindo = null">
       <div class="modal-box">
@@ -297,6 +312,7 @@ function urgenciaPend(pend) {
   return 'pend-horario-ok'
 }
 const excluindo = ref(null)
+const excluindoTodos = ref(false)
 const helpAberto = ref(false)
 
 const helpItens = [
@@ -359,6 +375,16 @@ async function salvarModal() {
 
 function pedirExcluir(pac) {
   excluindo.value = pac
+}
+
+async function executarExcluirTodos() {
+  excluindoTodos.value = false
+  for (const pac of [...store.pacientes]) {
+    for (const pend of (pac.pendencias || [])) {
+      await _cancelarDuas(pend._key)
+    }
+    await store.excluir(pac._key)
+  }
 }
 
 async function executarExcluir() {
@@ -427,10 +453,18 @@ async function excluirPend(pac, pend) {
 }
 
 .pag-titulo-row {
-  display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
 }
 .pag-titulo { font-size: 1.3rem; font-weight: 700; color: var(--text); }
 .pag-subtitulo { font-size: 0.8rem; color: var(--text-muted); }
+.btn-limpar-todos {
+  margin-left: auto;
+  background: none; border: 1px solid var(--danger, #e53e3e);
+  color: var(--danger, #e53e3e); border-radius: 8px;
+  padding: 4px 10px; font-size: 0.75rem; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+}
+.btn-limpar-todos:active { opacity: 0.7; }
 
 /* Empty state */
 .empty-pac {
