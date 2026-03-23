@@ -87,7 +87,7 @@ export default async function handler(req, res) {
               </p>
 
               <p style="margin:0 0 16px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
-                Sou técnico de enfermagem e criei esse app porque sentia falta de uma ferramenta que entendesse de verdade a rotina do plantão. Não uma planilha genérica — algo feito pra quem trabalha à beira do leito, com tempo curto e muito pra lembrar.
+                Criei esse app porque sentia falta de uma ferramenta que entendesse de verdade a rotina do plantão. Não uma planilha genérica — algo feito pra quem trabalha à beira do leito, com tempo curto e muito pra lembrar.
               </p>
 
               <p style="margin:0 0 24px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
