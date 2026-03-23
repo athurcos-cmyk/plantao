@@ -123,6 +123,7 @@ export default async function handler(req, res) {
         envios.push(
           admin.messaging().send({
             token,
+            notification: { title: '⏰ Plantão', body: notif.body || '' },
             webpush: {
               notification: {
                 title: '⏰ Plantão',

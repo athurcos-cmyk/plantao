@@ -11,7 +11,7 @@ self.addEventListener('push', (event) => {
   // FCM envia notification sob .notification, agendador local envia flat
   const title  = payload.notification?.title  || payload.title  || '⏰ Plantão'
   const body   = payload.notification?.body   || payload.body   || ''
-  const tag    = payload.data?.tag            || payload.notification?.tag || payload.tag || 'plantao'
+  const tag    = payload.data?.tag            || payload.tag    || 'plantao'
   const url    = payload.data?.url            || payload.url    || '/'
 
   event.waitUntil(
