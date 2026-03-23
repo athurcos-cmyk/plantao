@@ -19,12 +19,15 @@
 
     <div class="hist-topo">
       <h2 class="hist-titulo">Histórico</h2>
-      <div class="sync-pill" @click="mostrarCodigo = !mostrarCodigo" style="cursor:pointer">
-        <span class="sync-pill-label">código</span>
+      <div class="sync-pill" @click="mostrarCodigo = !mostrarCodigo" style="cursor:pointer" title="Seu código para entrar em outro celular">
+        <span class="sync-pill-label">{{ mostrarCodigo ? 'código de acesso' : 'ver meu código' }}</span>
         <span class="sync-pill-code">{{ mostrarCodigo ? auth.syncCode : syncCodeMasked }}</span>
         <svg v-if="!mostrarCodigo" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-        </div>
+      </div>
+      <transition name="fade">
+        <p v-if="mostrarCodigo" class="sync-pill-hint">Use este código para entrar em outro celular ou tablet</p>
+      </transition>
     </div>
 
     <div class="filtros-wrap">
@@ -327,6 +330,10 @@ function mostrarFeedback(msg) {
 .sync-pill-code {
   font-family: monospace; font-size: 0.95rem;
   color: var(--blue); font-weight: 700; letter-spacing: 0.1em;
+}
+.sync-pill-hint {
+  font-size: 0.75rem; color: var(--text-muted);
+  text-align: right; margin: 4px 0 0;
 }
 
 .filtros-wrap {
