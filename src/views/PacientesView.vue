@@ -21,7 +21,10 @@
       <div class="pag-titulo-row">
         <h2 class="pag-titulo">Meus Pacientes</h2>
         <span class="pag-subtitulo">{{ store.pacientes.length }} registrado{{ store.pacientes.length !== 1 ? 's' : '' }}</span>
-        <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">🗑️ Limpar plantão</button>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+          <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">🗑️ Limpar</button>
+          <button class="btn-add-pac" @click="abrirAdd">+ Paciente</button>
+        </div>
       </div>
 
       <!-- Aviso de funcionamento das notificações -->
@@ -569,13 +572,18 @@ async function excluirPend(pac, pend) {
 .pag-titulo { font-size: 1.3rem; font-weight: 700; color: var(--text); }
 .pag-subtitulo { font-size: 0.8rem; color: var(--text-muted); }
 .btn-limpar-todos {
-  margin-left: auto;
   background: none; border: 1px solid var(--danger, #e53e3e);
   color: var(--danger, #e53e3e); border-radius: 8px;
   padding: 4px 10px; font-size: 0.75rem; cursor: pointer;
   font-family: inherit; white-space: nowrap;
 }
 .btn-limpar-todos:active { opacity: 0.7; }
+.btn-add-pac {
+  background: var(--blue); color: #fff; border: none;
+  border-radius: 8px; padding: 5px 12px; font-size: 0.8rem;
+  font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.btn-add-pac:active { opacity: 0.85; }
 
 /* Empty state */
 .empty-pac {

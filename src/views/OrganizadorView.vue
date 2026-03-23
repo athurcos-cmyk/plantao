@@ -79,37 +79,6 @@
             <!-- Text -->
             <span class="tarefa-texto" :class="{ feito: tarefa.feito }">{{ tarefa.texto }}</span>
 
-            <!-- Time badge -->
-            <span
-              v-if="tarefa.horario && !editandoHorario[tarefa._key]"
-              class="horario-badge"
-              :class="urgenciaClass(tarefa)"
-            >{{ tarefa.horario }}</span>
-
-            <!-- Inline time input -->
-            <input
-              v-if="editandoHorario[tarefa._key]"
-              type="time"
-              class="time-input-sm"
-              :value="tarefa.horario"
-              @change="e => { store.definirHorario(tarefa._key, e.target.value); editandoHorario[tarefa._key] = false }"
-              @blur="editandoHorario[tarefa._key] = false"
-              autofocus
-            >
-
-            <!-- Clock icon button -->
-            <button
-              v-if="!editandoHorario[tarefa._key]"
-              class="btn-icon-xs"
-              :style="{ color: tarefa.horario ? 'var(--blue)' : 'var(--text-muted)' }"
-              @click="editandoHorario[tarefa._key] = !editandoHorario[tarefa._key]"
-              title="Definir horário"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
-            </button>
-
             <!-- Delete (only avulsa tasks) -->
             <button
               v-if="tarefa.avulsa"
@@ -133,10 +102,7 @@
               v-model="novaTarefa.texto"
               @keyup.enter="adicionarAvulsa"
             >
-            <template v-if="novaTarefa.texto.trim()">
-              <input type="time" class="time-input-sm" v-model="novaTarefa.horario">
-              <button class="add-btn-sm" @click="adicionarAvulsa">Ok</button>
-            </template>
+            <button v-if="novaTarefa.texto.trim()" class="add-btn-sm" @click="adicionarAvulsa">Ok</button>
           </div>
         </div>
 
@@ -253,8 +219,7 @@ onMounted(() => {
 })
 
 // Reactive state
-const editandoHorario  = reactive({})
-const novaTarefa       = reactive({ texto: '', horario: '' })
+const novaTarefa       = reactive({ texto: '' })
 const novaProxima      = ref('')
 const confirmarNovo    = ref(false)
 const modalTemplate    = ref(false)
@@ -264,7 +229,6 @@ const helpAberto       = ref(false)
 const helpItens = [
   { icone: '▶️', titulo: 'Iniciar plantão', desc: 'Carrega as tarefas padrão do seu perfil. Configure as tarefas padrão pelo ícone ⚙️ no canto superior direito.' },
   { icone: '✅', titulo: 'Marcar tarefa', desc: 'Toque no círculo ao lado da tarefa para marcá-la como concluída. A barra de progresso e o contador atualizam automaticamente.' },
-  { icone: '⏰', titulo: 'Horário limite', desc: 'Toque no ícone de relógio em qualquer tarefa para definir um horário. O badge fica laranja quando faltam ≤ 30 min e vermelho quando vencido. O app envia uma notificação no horário (requer app aberto).' },
   { icone: '➕', titulo: 'Tarefa extra', desc: 'Use o campo "＋ Tarefa extra..." no final da lista para adicionar tarefas específicas do dia. Apenas essas tarefas extras podem ser excluídas.' },
   { icone: '📤', titulo: 'Próximo plantão', desc: 'Anote recados importantes para o próximo turno na seção "Passar pro próximo plantão". Ficam separados das tarefas.' },
   { icone: '⚙️', titulo: 'Tarefas padrão', desc: 'Toque no ícone ⚙️ para adicionar, remover ou restaurar as tarefas que carregam em todo novo plantão. Cada conta tem seu próprio template.' },
@@ -275,16 +239,6 @@ const helpItens = [
 const concluidas = computed(() => store.plantao?.tarefas.filter(t => t.feito).length ?? 0)
 const total      = computed(() => store.plantao?.tarefas.length ?? 0)
 const progressoPct = computed(() => total.value ? Math.round(concluidas.value / total.value * 100) : 0)
-
-function urgenciaClass(tarefa) {
-  if (!tarefa.horario || tarefa.feito) return ''
-  const [h, m] = tarefa.horario.split(':').map(Number)
-  const alvo = new Date(); alvo.setHours(h, m, 0, 0)
-  const diff = (alvo - new Date()) / 60000
-  if (diff < 0) return 'urgente-vencida'
-  if (diff <= 30) return 'urgente-proxima'
-  return 'urgente-ok'
-}
 
 function formatarInicio(ts) {
   const d = new Date(ts)
@@ -298,10 +252,8 @@ function formatarInicio(ts) {
 async function adicionarAvulsa() {
   const texto = novaTarefa.texto.trim()
   if (!texto) return
-  const horario = novaTarefa.horario || ''
-  novaTarefa.texto  = ''
-  novaTarefa.horario = ''
-  await store.adicionarTarefaAvulsa(texto, horario)
+  novaTarefa.texto = ''
+  await store.adicionarTarefaAvulsa(texto, '')
 }
 
 async function adicionarProxima() {
@@ -415,20 +367,6 @@ async function adicionarTemplate() {
   text-decoration: line-through; color: var(--text-muted);
 }
 
-.horario-badge {
-  font-size: 0.72rem; font-weight: 700;
-  padding: 2px 7px; border-radius: 8px; flex-shrink: 0;
-}
-.urgente-ok {
-  background: rgba(30, 136, 229, 0.1); color: var(--blue);
-}
-.urgente-proxima {
-  background: rgba(255, 152, 0, 0.15); color: #f57c00;
-}
-.urgente-vencida {
-  background: rgba(229, 57, 53, 0.12); color: var(--danger);
-}
-
 .btn-icon-xs {
   width: 26px; height: 26px; flex-shrink: 0;
   border: none; background: none; cursor: pointer;
@@ -447,13 +385,6 @@ async function adicionarTemplate() {
   padding: 2px 0;
 }
 .add-input::placeholder { color: var(--text-muted); }
-
-.time-input-sm {
-  font-size: 0.78rem; border: 1px solid var(--border);
-  border-radius: 6px; padding: 3px 6px;
-  background: var(--bg-input); color: var(--text);
-  font-family: inherit; outline: none;
-}
 
 .add-btn-sm {
   background: var(--blue); color: #fff;
