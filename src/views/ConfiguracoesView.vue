@@ -42,7 +42,7 @@
       <!-- Senha (para quem logou com Google) -->
       <section v-if="!temSenha" class="config-section">
         <h2 class="config-section-titulo">Criar senha</h2>
-        <p class="config-sub">Você entrou com Google. Crie uma senha para usar o login com código.</p>
+        <p class="config-sub">Você entrou com Google. Nos computadores do hospital o login com Google pode não funcionar — com uma senha cadastrada você entra com seu e-mail e senha em qualquer lugar.</p>
 
         <div class="campo">
           <input v-model="novaSenha" type="password" placeholder="Nova senha (mín. 8 caracteres)" autocomplete="new-password" />
