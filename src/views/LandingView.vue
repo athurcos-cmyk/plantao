@@ -23,7 +23,7 @@
         <div class="hero-text">
           <div class="hero-badge">
             <span class="badge-dot"></span>
-            Para técnicos e enfermeiros
+            Para a equipe de enfermagem
           </div>
           <h1 class="hero-title">
             Organize seu plantão.<br>
@@ -272,7 +272,7 @@
     <section class="section section-alt">
       <div class="section-inner">
         <div class="section-eyebrow">Quem já usa</div>
-        <h2 class="section-title">Criado por técnico de enfermagem, para enfermagem</h2>
+        <h2 class="section-title">Criado por quem vive o plantão, para quem vive o plantão</h2>
         <div class="testimonials">
           <div class="testimonial" v-for="t in testimonials" :key="t.name">
             <p class="testimonial-text">"{{ t.text }}"</p>
