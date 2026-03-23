@@ -24,22 +24,40 @@
         <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">🗑️ Limpar plantão</button>
       </div>
 
-      <!-- Dica de notificação em background -->
+      <!-- Aviso de funcionamento das notificações -->
       <div v-if="temPendComHorario() && !dicaNotifFechada" class="dica-notif">
         <div class="dica-notif-header">
-          <span class="dica-notif-icon">💡</span>
-          <strong>Dica: notificações com app fechado</strong>
+          <span class="dica-notif-icon">🔔</span>
+          <strong>Como funcionam as notificações</strong>
           <button class="dica-notif-fechar" @click="fecharDicaNotif">&times;</button>
         </div>
         <p class="dica-notif-texto">
-          Para receber notificações com o app fechado ou minimizado, configure no seu celular:
+          As notificações chegam com o app <strong>aberto</strong> ou <strong>em segundo plano</strong> (minimizado).
+          Com o app totalmente fechado, pode não funcionar dependendo do dispositivo.
         </p>
-        <ol class="dica-notif-passos">
-          <li><strong>Configurações</strong> → Bateria → Otimização de bateria</li>
-          <li>Encontre o <strong>Chrome</strong> (ou seu navegador)</li>
-          <li>Selecione <strong>"Sem restrição"</strong> ou <strong>"Não otimizar"</strong></li>
-        </ol>
-        <p class="dica-notif-sub">Sem isso, o Android impede que notificações cheguem com o app em segundo plano.</p>
+
+        <!-- Android -->
+        <div class="dica-plataforma">
+          <span class="dica-plataforma-tag android">🤖 Android</span>
+          <p class="dica-plataforma-texto">Para garantir o recebimento em segundo plano, desative a otimização de bateria do Chrome:</p>
+          <ol class="dica-notif-passos">
+            <li><strong>Configurações</strong> → Bateria → Otimização de bateria</li>
+            <li>Encontre o <strong>Chrome</strong> (ou seu navegador)</li>
+            <li>Selecione <strong>"Sem restrição"</strong> ou <strong>"Não otimizar"</strong></li>
+          </ol>
+        </div>
+
+        <!-- iOS -->
+        <div class="dica-plataforma">
+          <span class="dica-plataforma-tag ios">🍎 iPhone (iOS)</span>
+          <p class="dica-plataforma-texto">No iPhone, notificações web só funcionam com o app instalado na tela inicial:</p>
+          <ol class="dica-notif-passos">
+            <li>No Safari: toque em <strong>Compartilhar</strong> → <strong>"Adicionar à Tela de Início"</strong></li>
+            <li>Abra o app pela tela inicial (ícone do Plantão)</li>
+            <li>Permita notificações quando solicitado</li>
+          </ol>
+          <p class="dica-notif-sub">Requer iOS 16.4 ou superior.</p>
+        </div>
       </div>
 
       <!-- Empty state -->
@@ -505,10 +523,31 @@ async function excluirPend(pac, pend) {
 }
 .dica-notif-passos li { margin-bottom: 4px; }
 .dica-notif-sub {
-  margin: 0;
+  margin: 4px 0 0;
   font-size: 0.78rem;
   color: var(--text-muted);
   font-style: italic;
+}
+.dica-plataforma {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.dica-plataforma-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+.dica-plataforma-tag.android { background: rgba(61,220,132,0.12); color: #3ddc84; }
+.dica-plataforma-tag.ios     { background: rgba(120,160,255,0.12); color: #78a0ff; }
+.dica-plataforma-texto {
+  margin: 0 0 6px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
 }
 
 .btn-icon {
