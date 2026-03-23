@@ -27,6 +27,13 @@
         </div>
       </div>
 
+      <!-- Botão para reabrir a dica (aparece quando fechada) -->
+      <button
+        v-if="temPendComHorario() && dicaNotifFechada"
+        class="btn-dica-reabrir"
+        @click="reabrirDicaNotif"
+      >🔔 Como funcionam as notificações?</button>
+
       <!-- Aviso de funcionamento das notificações -->
       <div v-if="temPendComHorario() && !dicaNotifFechada" class="dica-notif">
         <div class="dica-notif-header">
@@ -361,6 +368,11 @@ function fecharDicaNotif() {
   localStorage.setItem('plantao_dica_notif_fechada', '1')
 }
 
+function reabrirDicaNotif() {
+  dicaNotifFechada.value = false
+  localStorage.removeItem('plantao_dica_notif_fechada')
+}
+
 // Tem pendência com horário ativo?
 function temPendComHorario() {
   return store.pacientes.some(p => p.pendencias.some(pd => pd.horario && !pd.feito))
@@ -551,6 +563,25 @@ async function excluirPend(pac, pend) {
   margin: 0 0 6px;
   color: var(--text-dim);
   font-size: 0.85rem;
+}
+.btn-dica-reabrir {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-dica-reabrir:active {
+  border-color: var(--blue);
+  color: var(--blue);
 }
 
 .btn-icon {
