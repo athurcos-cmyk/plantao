@@ -245,6 +245,14 @@
       </div>
     </transition>
 
+    <!-- Aviso iOS: ícone pode sumir após atualização do iOS -->
+    <transition name="fade">
+      <div v-if="isIosNaoBrowser" class="aviso-ios">
+        <span>🍎</span>
+        <span>No iPhone, o ícone pode sumir após atualizar o iOS. Se acontecer, abra o Safari, acesse <strong>plantao.net</strong> e adicione à tela inicial novamente. Seus dados ficam salvos.</span>
+      </div>
+    </transition>
+
     <div class="login-footer-btns">
       <button class="btn-como-funciona" @click="helpAberto = true">❓ Como funciona?</button>
       <button class="btn-como-funciona" @click="() => location.reload()">🔄 Verificar atualizações</button>
@@ -262,6 +270,10 @@ import HelpModal from '../components/HelpModal.vue'
 
 const router = useRouter()
 const auth   = useAuthStore()
+
+// Aviso iOS: mostra só em iPhone/iPad fora do modo standalone (não instalado)
+const isIosNaoBrowser = /iphone|ipad|ipod/i.test(navigator.userAgent) &&
+  !window.navigator.standalone
 
 onMounted(async () => {
   // Processar resultado do Google Redirect
@@ -652,6 +664,22 @@ async function recuperar() {
   width: 100%;
 }
 .aviso-privado strong { color: var(--text); }
+
+/* ── Aviso iOS ── */
+.aviso-ios {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px;
+  max-width: 380px;
+  width: 100%;
+}
+.aviso-ios strong { color: var(--text); }
 
 /* ── Footer buttons ── */
 .login-footer-btns {
