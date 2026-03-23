@@ -62,6 +62,7 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 - `api/welcome.js` — email de boas-vindas (Resend). Fire-and-forget pós-cadastro. Deduplicação via flag `email_boas_vindas_enviado`. Requer syncCode no payload.
 - `api/feedback.js` — email de agradecimento ao usuário + notificação interna para Arthur (Resend). Auth idToken obrigatório. Rate limit 5/min por uid.
 - `api/goodbye.js` — email de despedida ao deletar conta (Resend). Auth idToken obrigatório. Busca nome/email server-side. Timeout 5s, falha silenciosa.
+- `api/delete-account.js` — deleta todos os dados do usuário via firebase-admin (bypassa regras de segurança). Verifica idToken, busca syncCode via uid_map, remove 15 paths incluindo owners e uid_map. Chamado pela ConfiguracoesView antes de deleteUser().
 
 ## Variáveis de ambiente — NUNCA no .env, sempre no Vercel
 - `VITE_FCM_VAPID_KEY` — chave pública VAPID (compilada no bundle)

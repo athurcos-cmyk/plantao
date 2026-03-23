@@ -2,6 +2,29 @@
 
 ## Concluídos
 
+### [x] Migração OneSignal → FCM nativo (v1.0)
+**Concluído:** 2026-03-23
+
+Migração completa da infraestrutura de push notifications de OneSignal para Firebase Cloud Messaging nativo:
+- `usePushNotificacoes.js` reescrito com `getMessaging`, `getToken` (VAPID), `onMessage` para foreground
+- `public/firebase-messaging-sw.js` — novo service worker com Firebase compat SDK para background delivery
+- `api/cron.js` — novo payload `webpush.notification` via `admin.messaging().send()`, auto-remove tokens inválidos
+- `OneSignalSDKWorker.js` deletado, CDN removido do `index.html`
+- `VITE_FCM_VAPID_KEY` adicionada ao Vercel
+
+---
+
+### [x] Exclusão de conta robusta + proteção anti-re-cadastro Google (v1.0)
+**Concluído:** 2026-03-23
+
+- `api/delete-account.js` (NOVO): endpoint serverless com firebase-admin que deleta todos os 15 paths de dados incluindo `owners/{code}` (que tinha regra restrita e não era deletável pelo cliente)
+- `ConfiguracoesView.vue`: usa `/api/delete-account` com Bearer token em vez de `remove()` direto
+- `auth.js` → `_vincularGoogleSeNovo`: verifica existência de `owners/{code}/{uid}` antes de reutilizar `uid_map` — evita re-vincular syncCode de conta deletada
+- Após exclusão: `localStorage.clear()` + `window.location.replace('/')` (era `router.push`)
+- Logout automático multi-dispositivo via guard `eraLogado` no `onAuthStateChanged`
+
+---
+
 ### [x] Blindagem do sistema de notificações
 **Concluído:** 2026-03-22
 

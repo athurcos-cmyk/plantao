@@ -6,7 +6,7 @@
 
 ---
 
-## Estado atual — Março 2026
+## Estado atual — Março 2026 (v1.0)
 
 ### Funcionalidades completas
 
@@ -17,6 +17,8 @@
 - Login rápido com código: syncCode + senha via `/api/resolve-code` (serverless)
 - Sessão gerida pelo Firebase Auth (persistência nativa)
 - Configurações: alterar nome, criar senha (usuários Google), logout, excluir conta
+- Logout automático multi-dispositivo: se conta excluída em outro dispositivo, sessão ativa detecta via onAuthStateChanged e recarrega a página
+- Exclusão de conta via `/api/delete-account` (firebase-admin) — garante remoção de todos os nós incluindo `owners` (que tem regra restrita no cliente)
 
 **Anotações**
 - Avaliação inicial (dispositivos, posição, neuro, resp, eliminações, campos configuráveis via modal ⚙️, opção "Outro" livre em todos os grupos, localização poltrona)
@@ -45,6 +47,8 @@
 - **Token FCM**: refresh automático a cada 12h + retry em 30s se falhar
 - **Tag única**: cada notificação tem tag própria — evita substituição silenciosa pelo browser
 - **onMessage**: handler obrigatório para receber FCM com app em foreground
+- **Service Worker FCM**: `firebase-messaging-sw.js` usa Firebase compat SDK para entrega em background
+- **Aviso contextual no app**: PacientesView exibe instruções específicas para Android e iPhone sobre como manter o app em segundo plano
 
 **Organizador**
 - Template de plantão
@@ -122,6 +126,37 @@ feedback/{syncCode}/                             feedbacks dos usuários
 ---
 
 ## Histórico de sessões
+
+### Mar 2026 — v1.0: FCM nativo + exclusão de conta robusta + UX de notificações
+
+**Migração OneSignal → FCM nativo:**
+- `usePushNotificacoes.js` reescrito do zero: `getMessaging(app)`, `getToken()` com VAPID key, `onMessage()` para foreground
+- `public/firebase-messaging-sw.js` (NOVO): Service Worker com Firebase compat SDK para entrega em background
+- `api/cron.js` reescrito para usar `admin.messaging().send()` com payload `webpush.notification` (sem `data` nem `notification` top-level)
+- Token multi-dispositivo: `fcm_tokens/{syncCode}/{deviceId}`, refresh automático a cada 12h
+- `OneSignalSDKWorker.js` deletado; script CDN removido do `index.html`
+- `vite.config.js`: `globIgnores: ['firebase-messaging-sw.js']` + `importScripts` no workbox
+
+**Exclusão de conta robusta (`api/delete-account.js` — NOVO):**
+- Endpoint serverless autenticado (Bearer idToken) via firebase-admin
+- Deleta todos os 15 paths de dados incluindo `owners/{code}` — que tem regra de escrita restrita no Firebase e não podia ser deletado pelo cliente
+- `ConfiguracoesView.vue`: chama `/api/delete-account` com Bearer token, faz `localStorage.clear()`, `deleteUser()` e `window.location.replace('/')`
+
+**Fix: re-cadastro Google com conta deletada:**
+- `_vincularGoogleSeNovo` em `auth.js` agora verifica `owners/{code}/{uid}` depois de encontrar `uid_map` — detecta dados órfãos de conta excluída e trata como novo usuário
+
+**Fix: logout automático multi-dispositivo:**
+- `onAuthStateChanged` null handler em `auth.js` usa guard `eraLogado` — distingue login inicial (null esperado) de sessão encerrada por exclusão remota
+- Se `eraLogado === true` e uid.value estava setado, limpa estado e chama `window.location.replace('/')`
+
+**UX — PacientesView:**
+- Aviso de notificações com instruções específicas para Android (otimização de bateria) e iPhone (manter em segundo plano)
+- Botão `+ Paciente` sempre visível na linha do título (não dependia só do FAB)
+
+**UX — OrganizadorView:**
+- Removido ícone de relógio e input de horário das tarefas (notificações via app de pacientes, não aqui)
+
+---
 
 ### Mar 2026 — Blindagem do sistema de notificações
 **Problema:** notificações não funcionavam com app fechado e atrasavam com app aberto. Bugs acumulados de sessões anteriores tornavam o sistema não confiável.
