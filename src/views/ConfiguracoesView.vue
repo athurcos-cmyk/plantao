@@ -132,7 +132,6 @@ import {
   EmailAuthProvider,
   linkWithCredential,
   linkWithPopup,
-  deleteUser,
 } from 'firebase/auth'
 import { googleProvider } from '../firebase.js'
 
@@ -326,10 +325,8 @@ async function confirmarDelete() {
     // 2. Limpar localStorage (FCM token, syncCode, cache)
     try { localStorage.clear() } catch {}
 
-    // 3. Deletar conta do Firebase Auth
-    await deleteUser(user)
-
-    // 4. Recarregar a página completamente — limpa todo estado Vue/Pinia/listeners/FCM
+    // 3. Recarregar a página completamente — limpa todo estado Vue/Pinia/listeners/FCM
+    // (conta Auth já foi deletada pelo servidor via admin.auth().deleteUser)
     window.location.replace('/')
   } catch (e) {
     if (e.code === 'auth/requires-recent-login') {

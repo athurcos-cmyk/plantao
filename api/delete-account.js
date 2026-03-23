@@ -1,7 +1,7 @@
 /**
  * api/delete-account.js
- * Deleta todos os dados do usuário usando firebase-admin (bypassa regras de segurança).
- * Chamado pelo cliente ANTES de deletar a conta do Firebase Auth.
+ * Deleta todos os dados do usuário E a conta do Firebase Auth via firebase-admin.
+ * firebase-admin bypassa regras de segurança do RTDB e não exige reautenticação recente.
  *
  * Auth: Bearer idToken do Firebase Auth (obrigatório)
  */
@@ -86,6 +86,18 @@ export default async function handler(req, res) {
       })
     )
   )
+
+  // Deletar conta do Firebase Auth — admin SDK não exige reautenticação recente
+  try {
+    await admin.auth().deleteUser(uid)
+    console.log(`[DELETE-ACCOUNT] uid=${uid}: conta Auth deletada`)
+  } catch (e) {
+    // Se conta Auth já foi deletada por outro meio, não é erro crítico
+    if (e.code !== 'auth/user-not-found') {
+      console.error(`[DELETE-ACCOUNT] erro ao deletar Auth uid=${uid}:`, e.message)
+      erros.push(`auth/${uid}`)
+    }
+  }
 
   console.log(`[DELETE-ACCOUNT] uid=${uid} syncCode=${syncCode}: concluído. Erros: ${erros.length}`)
   return res.json({ deleted: true, syncCode, erros })
