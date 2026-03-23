@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, push, onValue, off, set, update, remove } from 'firebase/database'
+import { ref as dbRef, push, onValue, set, update, remove } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
 const TAREFAS_PADRAO = [
@@ -130,13 +130,8 @@ export const useOrganizadorStore = defineStore('organizador', () => {
   }
 
   function parar() {
-    const code = _code()
-    if (code) {
-      if (unsubTemplate) off(dbRef(db, `organizador/${code}/template`))
-      if (unsubPlantao)  off(dbRef(db, `organizador/${code}/plantao`))
-    }
-    unsubTemplate = null
-    unsubPlantao  = null
+    if (unsubTemplate) { unsubTemplate(); unsubTemplate = null }
+    if (unsubPlantao)  { unsubPlantao();  unsubPlantao  = null }
     template.value = []
     plantao.value  = null
   }

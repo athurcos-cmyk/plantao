@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, push, onValue, off, remove, update } from 'firebase/database'
+import { ref as dbRef, push, onValue, remove, update } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
 const _cacheKey = code => `cache_pacientes_${code}`
@@ -64,10 +64,11 @@ export const usePacientesStore = defineStore('pacientes', () => {
 
   function parar() {
     if (unsubscribe) {
-      off(dbRef(db, `pacientes/${useAuthStore().syncCode}`))
+      unsubscribe()
       unsubscribe = null
     }
     pacientes.value = []
+    pendentesCount.value = 0
   }
 
   async function adicionar({ nome, leito }) {

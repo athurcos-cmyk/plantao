@@ -21,6 +21,7 @@ export function useChat() {
   function limparConversa() {
     mensagens.value = []
     erro.value = ''
+    novaResposta.value = false
   }
 
   async function enviarMensagem(texto) {
