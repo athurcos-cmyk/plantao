@@ -365,6 +365,7 @@ const feats = [
   { icon: '🤖', title: 'IA especialista em enfermagem', desc: 'Clara tira dúvidas clínicas, calcula doses e ajuda a redigir anotações. Como ter uma colega experiente no bolso.' },
   { icon: '📡', title: 'Funciona sem internet', desc: 'Offline completo. Subsolo, área sem sinal, onde for — o app funciona. Sincroniza quando a rede voltar.' },
   { icon: '📲', title: 'Instala como app nativo', desc: 'Sem loja de apps. Abre o link, toca "Instalar", fica na tela inicial. Igual a um app da loja, sem baixar nada.' },
+  { icon: '✏️', title: 'Crie seu próprio modelo', desc: 'Não gostou de nenhuma anotação? Em Notas Livres você escreve do jeito que usa no dia a dia — salva o modelo e reutiliza em todo plantão.' },
 ]
 
 const steps = [

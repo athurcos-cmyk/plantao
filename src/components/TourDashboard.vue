@@ -46,7 +46,7 @@ const passos = [
   {
     icone: '👋',
     titulo: 'Bem-vindo ao Plantão!',
-    desc: 'Vamos te mostrar como funciona em 4 passos rápidos. É simples!'
+    desc: 'Vamos te mostrar como funciona em poucos passos rápidos. É simples!'
   },
   {
     icone: '📋',
@@ -62,6 +62,11 @@ const passos = [
     icone: '🔔',
     titulo: 'Pacientes e lembretes',
     desc: 'Cadastre seus pacientes e crie lembretes para não esquecer nenhuma pendência durante o plantão. O app avisa no horário certo, mesmo com a tela fechada.'
+  },
+  {
+    icone: '✏️',
+    titulo: 'Crie seu próprio modelo',
+    desc: 'Não gostou de nenhuma anotação? Em Notas Livres você cria o seu modelo do zero — escreve o texto do jeito que usa no dia a dia e salva para reutilizar em todo plantão.'
   },
   {
     icone: '✅',
