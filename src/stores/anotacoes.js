@@ -248,10 +248,11 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
   async function deletar(key) {
     const auth = useAuthStore()
     const code = auth.syncCode
-    await remove(dbRef(db, `anotacoes/${code}/${key}`))
+    // Otimista: atualiza local antes — funciona offline
     remotoMap.delete(key)
     _removerLocal(key)
     _agendarSalvarCache(code)
+    try { await remove(dbRef(db, `anotacoes/${code}/${key}`)) } catch {}
   }
 
   async function atualizar(key, dados) {
@@ -265,13 +266,28 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
   async function limparTudo() {
     const auth = useAuthStore()
     const code = auth.syncCode
-    await remove(dbRef(db, `anotacoes/${code}`))
+    // Otimista: limpa local antes — funciona offline
     remotoMap.clear()
     anotacoes.value = []
     _salvarPendentes(code, [])
     pendentes.value = 0
     _salvarCache(code, [])
+    try { await remove(dbRef(db, `anotacoes/${code}`)) } catch {}
   }
 
-  return { anotacoes, pendentes, iniciar, parar, salvar, sincronizarPendentes, deletar, atualizar, limparTudo }
+  async function limparPorKeys(keys) {
+    const auth = useAuthStore()
+    const code = auth.syncCode
+    // Otimista: remove local primeiro — funciona offline
+    for (const key of keys) {
+      remotoMap.delete(key)
+      _removerLocal(key)
+    }
+    _agendarSalvarCache(code)
+    try {
+      await Promise.all(keys.map(key => remove(dbRef(db, `anotacoes/${code}/${key}`))))
+    } catch {}
+  }
+
+  return { anotacoes, pendentes, iniciar, parar, salvar, sincronizarPendentes, deletar, atualizar, limparTudo, limparPorKeys }
 })

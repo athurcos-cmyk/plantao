@@ -33,13 +33,13 @@
     <div class="filtros-wrap">
       <div class="busca-row">
         <input data-testid="auto-input-historicoview-1" v-model="filtro.busca" class="filtro-input" type="text" placeholder="Buscar por nome ou leito...">
-        <button v-if="store.anotacoes.length > 0" data-testid="auto-btn-historicoview-12" class="btn-limpar-tudo" @click="confirmandoLimpar = true" title="Apagar todo o histórico">
+        <button v-if="store.anotacoes.length > 0" data-testid="auto-btn-historicoview-12" class="btn-limpar-tudo" @click="confirmandoLimpar = true" :title="pacienteAtivo ? 'Apagar anotações de ' + pacienteAtivo.nome : 'Apagar todo o histórico'">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="3 6 5 6 21 6"/>
             <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
             <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
           </svg>
-          Limpar tudo
+          {{ pacienteAtivo ? 'Limpar ' + pacienteAtivo.nome : 'Limpar tudo' }}
         </button>
       </div>
       <div class="chips-scroll">
@@ -122,11 +122,11 @@
 
     <div v-if="confirmandoLimpar" class="modal-overlay" @click.self="confirmandoLimpar = false">
       <div class="modal-confirm">
-        <p>Apagar todo o histórico?</p>
-        <p class="confirm-sub">{{ store.anotacoes.length }} anotaç{{ store.anotacoes.length !== 1 ? 'ões' : 'ão' }} serão excluídas permanentemente.</p>
+        <p>{{ pacienteAtivo ? 'Apagar anotações de ' + pacienteAtivo.nome + '?' : 'Apagar todo o histórico?' }}</p>
+        <p class="confirm-sub">{{ anotacoesFiltradas.length }} anotaç{{ anotacoesFiltradas.length !== 1 ? 'ões' : 'ão' }} serão excluídas permanentemente.</p>
         <div style="display:flex;gap:10px;margin-top:16px">
           <button data-testid="auto-btn-historicoview-13" class="btn btn-secondary" style="flex:1" @click="confirmandoLimpar = false">Cancelar</button>
-          <button data-testid="auto-btn-historicoview-14" class="btn btn-danger" style="flex:1" @click="executarLimparTudo">Apagar tudo</button>
+          <button data-testid="auto-btn-historicoview-14" class="btn btn-danger" style="flex:1" @click="executarLimparTudo">{{ pacienteAtivo ? 'Apagar' : 'Apagar tudo' }}</button>
         </div>
       </div>
     </div>
@@ -156,6 +156,7 @@ import HelpModal from '../components/HelpModal.vue'
 
 const router = useRouter()
 const store  = useAnotacoesStore()
+const { limparPorKeys } = store
 const auth   = useAuthStore()
 const pacientesStore = usePacientesStore()
 
@@ -228,6 +229,10 @@ const anotacoesOrdenadas = computed(() =>
   })
 )
 
+const pacienteAtivo = computed(() =>
+  pacientesStore.pacientes.find(p => p.nome === filtro.busca) || null
+)
+
 const anotacoesFiltradas = computed(() => {
   let lista = anotacoesOrdenadas.value
   if (filtro.tipo !== 'todos') lista = lista.filter(a => a.tipo === filtro.tipo)
@@ -277,8 +282,16 @@ async function salvarEdicao(key) {
 }
 
 async function executarLimparTudo() {
-  try   { await store.limparTudo(); mostrarFeedback('Histórico apagado') }
-  catch { mostrarFeedback('Erro ao apagar') }
+  try {
+    if (pacienteAtivo.value) {
+      const keys = anotacoesFiltradas.value.map(a => a._key)
+      await limparPorKeys(keys)
+      mostrarFeedback('Anotações de ' + pacienteAtivo.value.nome + ' apagadas')
+    } else {
+      await store.limparTudo()
+      mostrarFeedback('Histórico apagado')
+    }
+  } catch { mostrarFeedback('Erro ao apagar') }
   finally { confirmandoLimpar.value = false }
 }
 
