@@ -2,6 +2,30 @@
 
 ## Concluídos
 
+### [x] Blindagem do sistema de notificações
+**Concluído:** 2026-03-22
+
+**O que estava quebrado e o que foi feito:**
+
+| Bug | Causa raiz | Correção |
+|-----|-----------|----------|
+| Notificações substituídas silenciosamente | `push-handlers.js` não extraía `notification?.tag` — tudo virava tag `'plantao'` | Adicionado `payload.notification?.tag` na cadeia de extração |
+| FCM engolido com app aberto | Sem `onMessage` handler — SDK consumia silenciosamente | Handler `onMessage` via `messagingReady` adicionado |
+| Notificação atrasava com app aberto | `setInterval` 20s impreciso, throttled em bg tabs | `setTimeout` preciso por notificação via Map `_timers` |
+| Token FCM expirava silenciosamente | Sem refresh — cron enviava para token morto | Refresh automático a cada 12h + retry 30s |
+| Listeners Firebase vazavam no logout | `off(newRef)` em vez de `unsubscribe()` | `pacientes.js` e `organizador.js` chamam `unsubscribe()` corretamente |
+| `pacientes.parar()` nunca chamado | `App.vue` só chamava `anotacoes.parar()` | Adicionado `pacientes.parar()` + `organizador.parar()` + `limparConversa()` |
+| Tag não propagava pelo cron | `cron.js` só enviava em `webpush.notification.tag` | Adicionado `data: { tag }` no payload FCM (redundância) |
+
+**Arquitetura final — 3 camadas:**
+1. `setTimeout` preciso por notificação (app aberto, funciona offline)
+2. FCM via cron (app fechado/minimizado, requer internet)
+3. `setInterval` 60s safety net (recaptura timers perdidos)
+
+**Arquivos alterados:** `usePushNotificacoes.js` (reescrita), `push-handlers.js`, `api/cron.js`, `pacientes.js`, `organizador.js`, `App.vue`, `useChat.js`
+
+---
+
 ### [x] Aviso de modo privado na LoginView
 **Concluído:** 2026-03-21
 Implementado em `LoginView.vue` com `v-if="auth.modoPrivado"` — chip discreto informando que a sessão não será salva ao fechar o app em modo privado do iOS Safari.

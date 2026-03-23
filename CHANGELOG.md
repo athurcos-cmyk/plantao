@@ -36,12 +36,15 @@
 - Cadastro com nome e leito
 - Pendências com horário e notificação agendada
 
-**Notificações (FCM completo)**
-- Funciona com app aberto, em segundo plano e completamente fechado
+**Notificações (3 camadas de confiabilidade)**
+- Funciona com app aberto, em segundo plano e completamente fechado (requer internet quando fechado)
+- **Camada 1**: setTimeout preciso por notificação — dispara no horário exato com app aberto (funciona offline)
+- **Camada 2**: FCM via cron — cron-job.org → /api/cron → Firebase Admin → FCM → Service Worker (app fechado/minimizado)
+- **Camada 3**: setInterval 60s — safety net que recaptura timers perdidos pelo browser
 - **Multi-dispositivo**: cada dispositivo salva seu próprio token FCM, cron envia para todos
-- Arquitetura: localStorage + setInterval (fallback) + Firebase + cron-job.org + FCM
-- cron-job.org chama /api/cron a cada minuto → Firebase Admin → FCM → todos os dispositivos
-- Aviso 30min antes + notificação no horário exato
+- **Token FCM**: refresh automático a cada 12h + retry em 30s se falhar
+- **Tag única**: cada notificação tem tag própria — evita substituição silenciosa pelo browser
+- **onMessage**: handler obrigatório para receber FCM com app em foreground
 
 **Organizador**
 - Template de plantão
@@ -119,6 +122,31 @@ feedback/{syncCode}/                             feedbacks dos usuários
 ---
 
 ## Histórico de sessões
+
+### Mar 2026 — Blindagem do sistema de notificações
+**Problema:** notificações não funcionavam com app fechado e atrasavam com app aberto. Bugs acumulados de sessões anteriores tornavam o sistema não confiável.
+
+**Root causes encontrados:**
+1. **Tag duplicada no push** — `push-handlers.js` não extraía `payload.notification?.tag`, então TODAS as notificações recebiam tag fallback `'plantao'` → browser substituía uma pela outra silenciosamente
+2. **FCM engolido em foreground** — sem handler `onMessage`, o Firebase SDK consumia mensagens FCM silenciosamente quando app estava aberto
+3. **Polling impreciso** — `setInterval` de 20s como único mecanismo local → impreciso e throttled pelo browser em background tabs
+4. **Token FCM expirava** — sem refresh automático, cron enviava para tokens mortos sem feedback
+5. **Listener leak no logout** — `pacientes.js` e `organizador.js` usavam `off(newRef)` em vez de chamar `unsubscribe()` retornada por `onValue()`. `App.vue` só chamava `anotacoes.parar()` — os outros stores nunca eram limpos
+6. **Tag não propagava no cron** — `api/cron.js` só enviava tag em `webpush.notification.tag`, mas `push-handlers.js` checava `payload.data?.tag` primeiro
+
+**Correções (3 commits):**
+- `2741096` — **Listener leak**: `pacientes.js` e `organizador.js` agora chamam `unsubscribe()` corretamente; `App.vue` chama `parar()` de TODOS os stores no logout + limpa chat
+- `28a6838` — **Reescrita usePushNotificacoes.js**: setTimeout preciso por notificação, onMessage handler, token refresh 12h, safety net 60s, re-init ao voltar à aba
+- `e2da47f` — **Tag única**: `push-handlers.js` checa `notification?.tag`; `cron.js` envia tag em `data.tag` (redundância)
+
+**Cobertura de cenários:**
+| Cenário | Funciona? | Mecanismo |
+|---------|-----------|-----------|
+| App aberto + internet | ✅ | setTimeout local + onMessage FCM |
+| App aberto + offline | ✅ | setTimeout local (100% offline) |
+| App minimizado + internet | ✅ | FCM via Service Worker |
+| App fechado + internet | ✅ | FCM via Service Worker |
+| App fechado + offline | ❌ | Limitação do browser — PWA não tem acesso a alarmes do OS |
 
 ### Mar 2026 — Sistema de emails transacionais com voz do fundador
 - **api/welcome.js**: reescrito com tom pessoal do Arthur ("Aqui é o Arthur, fundador do Plantão") + deduplicação server-side via flag `email_boas_vindas_enviado` no Firebase + syncCode no payload. Dica: copiar texto formatado pronto para o prontuário.

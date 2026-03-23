@@ -75,12 +75,36 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 14h00 – [texto da anotação], sem intercorrências.
 ```
 
-## Notificações FCM
-- Multi-dispositivo: cada device tem `plantao_device_id` no localStorage → `fcm_tokens/{syncCode}/{deviceId}`
-- Com app aberto: setInterval 20s + registration.showNotification()
-- Com app fechado: cron-job.org → /api/cron → FCM → todos os dispositivos do usuário
-- NUNCA usar new Notification() — Android ignora em background
+## Notificações — arquitetura de 3 camadas
+Sistema de notificações com 3 camadas de confiabilidade:
+
+**Camada 1 — setTimeout preciso (app aberto)**
+- `usePushNotificacoes.js` cria um `setTimeout` por notificação com timestamp exato
+- Map `_timers` guarda tag → timeoutId para cancelamento individual
+- Re-inicializa timers ao voltar à aba (`visibilitychange`) — browser pode matar timers em background tabs
+
+**Camada 2 — FCM via cron (app fechado/minimizado)**
+- cron-job.org → `/api/cron` a cada minuto → Firebase Admin → FCM → Service Worker
+- Payload inclui tag em DOIS lugares: `data.tag` + `webpush.notification.tag` (redundância)
+- `push-handlers.js` extrai tag de: `data?.tag` → `notification?.tag` → fallback `'plantao'`
+- Tag única por notificação evita que browser substitua uma pela outra
+- `onMessage` handler OBRIGATÓRIO para foreground — sem ele, FCM é engolido pelo SDK
+
+**Camada 3 — setInterval 60s (safety net)**
+- Roda a cada 60s verificando localStorage por notificações perdidas
+- Re-cria timers que o browser tenha cancelado
+
+**Token FCM**
+- Refresh automático a cada 12h (tokens FCM expiram)
+- Retry em 30s se registro falhar
+- Re-registro ao voltar à aba se token não estiver ativo
+- Multi-dispositivo: `plantao_device_id` no localStorage → `fcm_tokens/{syncCode}/{deviceId}`
+
+**Regras**
+- NUNCA usar `new Notification()` — Android ignora em background
 - NUNCA cachear rotas Firebase no service worker
+- SEMPRE usar `registration.showNotification()` via Service Worker
+- Listener Firebase: chamar a função `unsubscribe()` retornada por `onValue()`, NUNCA `off(newRef)`
 
 ## Assistente Clara
 - Groq Llama 3.3 70B via api/chat.js
