@@ -64,9 +64,17 @@
         <template v-if="!resultado.erro">
           <p class="resultado-linha">✅ Push enviados: <strong>{{ resultado.push }}</strong></p>
           <p class="resultado-linha">✅ Emails enviados: <strong>{{ resultado.email }}</strong></p>
-          <p v-if="resultado.erros?.length" class="resultado-linha resultado-aviso">
-            ⚠️ {{ resultado.erros.length }} erro(s) parciais
-          </p>
+          <template v-if="resultado.erros?.length">
+            <p class="resultado-linha resultado-aviso">⚠️ {{ resultado.erros.length }} erro(s) parcial(is):</p>
+            <ul class="erros-lista">
+              <li v-for="(e, i) in resultado.erros" :key="i" class="erro-item">
+                <span class="erro-tipo">{{ e.tipo }}</span>
+                <span v-if="e.email" class="erro-detalhe">{{ e.email }}</span>
+                <span v-else-if="e.key" class="erro-detalhe">device: {{ e.key }}</span>
+                <span class="erro-msg">{{ e.error }}</span>
+              </li>
+            </ul>
+          </template>
         </template>
         <p v-else class="resultado-linha">❌ {{ resultado.erro }}</p>
       </div>
@@ -298,5 +306,42 @@ async function enviar() {
 
 .resultado-aviso {
   color: #FFC107;
+}
+
+.erros-lista {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.erro-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 0.82rem;
+  background: rgba(229, 57, 53, 0.08);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.erro-tipo {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: #E53935;
+  letter-spacing: 0.04em;
+}
+
+.erro-detalhe {
+  color: #EAEEF3;
+}
+
+.erro-msg {
+  color: #8899AA;
+  word-break: break-all;
 }
 </style>
