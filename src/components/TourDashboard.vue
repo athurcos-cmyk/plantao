@@ -86,6 +86,11 @@ function pular() {
   try { localStorage.setItem('tour_dashboard_visto', '1') } catch {}
 }
 
+function abrirTour() {
+  passo.value = 0
+  aberto.value = true
+}
+
 onMounted(() => {
   try {
     if (!localStorage.getItem('tour_dashboard_visto')) {
@@ -93,6 +98,8 @@ onMounted(() => {
     }
   } catch {}
 })
+
+defineExpose({ abrirTour })
 </script>
 
 <style scoped>
