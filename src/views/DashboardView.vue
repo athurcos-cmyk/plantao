@@ -64,36 +64,38 @@
         </button>
       </div>
 
-      <button class="btn-pacientes" @click="router.push({ name: 'pacientes' })">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-          <path d="M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-        Meus Pacientes do plantão
-      </button>
+      <div class="acoes-row">
+        <button data-testid="auto-btn-dashboardview-3" class="btn-historico" @click="router.push({ name: 'historico' })">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Histórico de anotações
+        </button>
 
-      <button class="btn-organizador" @click="router.push({ name: 'organizador' })">
-        <div class="btn-org-inner">
-          <span class="btn-org-icon">📋</span>
-          <div class="btn-org-info">
-            <span class="btn-org-titulo">Organizador do Plantão</span>
-            <span class="btn-org-sub" v-if="!orgStore.plantao">Nenhum plantão ativo</span>
-            <span class="btn-org-sub" v-else>
-              {{ orgStore.plantao.tarefas.filter(t => t.feito).length }}/{{ orgStore.plantao.tarefas.length }} tarefas
-              · {{ orgStore.plantao.tarefas.filter(t => !t.feito).length }} pendente{{ orgStore.plantao.tarefas.filter(t => !t.feito).length !== 1 ? 's' : '' }}
-            </span>
+        <button class="btn-pacientes" @click="router.push({ name: 'pacientes' })">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          Meus Pacientes do plantão
+        </button>
+
+        <button class="btn-organizador" @click="router.push({ name: 'organizador' })">
+          <div class="btn-org-inner">
+            <span class="btn-org-icon">📋</span>
+            <div class="btn-org-info">
+              <span class="btn-org-titulo">Organizador do Plantão</span>
+              <span class="btn-org-sub" v-if="!orgStore.plantao">Nenhum plantão ativo</span>
+              <span class="btn-org-sub" v-else>
+                {{ orgStore.plantao.tarefas.filter(t => t.feito).length }}/{{ orgStore.plantao.tarefas.length }} tarefas
+                · {{ orgStore.plantao.tarefas.filter(t => !t.feito).length }} pendente{{ orgStore.plantao.tarefas.filter(t => !t.feito).length !== 1 ? 's' : '' }}
+              </span>
+            </div>
           </div>
-        </div>
-      </button>
-
-      <button  data-testid="auto-btn-dashboardview-3" class="btn-historico" @click="router.push({ name: 'historico' })">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-        </svg>
-        Ver histórico de anotações
-      </button>
+        </button>
+      </div>
 
       <!-- Pulso do App — Banner de Feedback -->
       <div v-if="pulsoVisivel" class="pulso-card">
@@ -652,5 +654,90 @@ function navegar(tipo) {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+/* acoes-row: empilhado no mobile, 3 colunas no desktop */
+.acoes-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.acoes-row .btn-historico,
+.acoes-row .btn-pacientes,
+.acoes-row .btn-organizador {
+  margin-top: 0;
+  width: 100%;
+}
+
+/* ── Desktop layout ──────────────────────────────────────────── */
+@media (min-width: 768px) {
+  /* Header mais largo */
+  .app-header {
+    max-width: 100%;
+    padding: 0 32px;
+  }
+
+  /* Container central mais largo */
+  .container {
+    max-width: 960px !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+
+  /* Saudação */
+  .saudacao {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .saudacao-hora { font-size: 1rem; }
+  .saudacao h2 { font-size: 1.6rem; margin-top: 0; }
+
+  /* 4 colunas nos cards de anotação */
+  .tipos-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .tipo-card {
+    padding: 20px 16px;
+  }
+
+  /* 3 colunas nas ações */
+  .acoes-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  /* Histórico em destaque no desktop */
+  .acoes-row .btn-historico {
+    background: rgba(30, 136, 229, 0.08);
+    border-color: var(--blue);
+    color: var(--blue);
+    font-size: 1rem;
+    padding: 18px 14px;
+  }
+  .acoes-row .btn-historico:hover {
+    background: rgba(30, 136, 229, 0.15);
+  }
+
+  /* Pacientes e Organizador com altura mínima igual */
+  .acoes-row .btn-pacientes,
+  .acoes-row .btn-organizador {
+    padding: 18px 14px;
+  }
+
+  /* Sync card mais compacto */
+  .sync-card {
+    padding: 14px 16px;
+  }
+
+  /* Botões de fundo menos proeminentes */
+  .btn-atualizar {
+    max-width: 280px;
+  }
 }
 </style>
