@@ -149,6 +149,23 @@
           </div>
         </div>
 
+        <!-- Comunicado (independente da dor) -->
+        <div class="campo">
+          <label>Comunicado</label>
+          <div class="chips-wrap">
+            <button class="chip" :class="{ 'chip-on': form.comunicado }" @click="form.comunicado = !form.comunicado">
+              Comunicado à enfermeira
+            </button>
+          </div>
+          <input
+            v-if="form.comunicado"
+            type="text"
+            v-model="form.comunicadoNome"
+            placeholder="Nome da enfermeira (opcional)"
+            style="margin-top:8px"
+          >
+        </div>
+
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
         <button  data-testid="auto-btn-sinaisvitaisview-3" class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">Gerar texto</button>
@@ -242,6 +259,8 @@ const form = reactive({
   dorCondutaEnf:  '',
   dorCondutaMed:  '',
   dorCondutaReav: '',
+  comunicado:     false,
+  comunicadoNome: '',
   nomePaciente:   '',
   leitoPaciente:  ''
 })
@@ -314,9 +333,17 @@ function gerar() {
     ? `${h} – Realizado aferição de sinais vitais${algiasText}.`
     : `${h} – Realizado aferição parcial de sinais vitais${algiasText}.`
 
+  // Comunicado (independente de dor)
+  let comunicadoLine = ''
+  if (form.comunicado) {
+    comunicadoLine = form.comunicadoNome.trim()
+      ? `\nComunicado à enfermeira ${form.comunicadoNome.trim()} sobre os sinais vitais.`
+      : '\nComunicado à enfermeira sobre os sinais vitais.'
+  }
+
   textoGerado.value = sv.length > 0
-    ? abertura + '\n' + sv.join('\n')
-    : abertura
+    ? abertura + '\n' + sv.join('\n') + comunicadoLine
+    : abertura + comunicadoLine
 
   gerado.value = true
 }
@@ -356,7 +383,8 @@ function novaAfericao() {
     horario: '', paSis: '', paDia: '', pam: '',
     fc: '', fr: '', temp: '', sat: '', dextro: '',
     algias: '', dorDesc: '', dorEscala: null,
-    dorConduta: [], dorCondutaEnf: '', dorCondutaMed: '', dorCondutaReav: ''
+    dorConduta: [], dorCondutaEnf: '', dorCondutaMed: '', dorCondutaReav: '',
+    comunicado: false, comunicadoNome: ''
   })
   erro.value    = ''
   gerado.value  = false
