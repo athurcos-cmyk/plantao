@@ -318,8 +318,10 @@ async function confirmarDelete() {
       ])
     } catch (_) { /* falha silenciosa — o delete sempre prossegue */ }
 
-    // 1. Deletar dados do Firebase Realtime DB
-    const paths = [
+    // 1. Deletar dados do Firebase — ORDEM IMPORTA:
+    //    deletar dados primeiro (enquanto owners ainda existe para passar nas regras),
+    //    depois owners e uid_map (que têm regras mais restritivas).
+    const dataPaths = [
       `usuarios/${syncCode}`,
       `anotacoes/${syncCode}`,
       `anotacoes_hc/${syncCode}`,
@@ -333,11 +335,14 @@ async function confirmarDelete() {
       `notificacoes_agendadas/${syncCode}`,
       `configuracoes/${syncCode}`,
       `feedback/${syncCode}`,
-      `owners/${syncCode}`,
-      `uid_map/${uid}`,
     ]
+    await Promise.all(dataPaths.map(p => remove(dbRef(db, p)).catch(() => {})))
 
-    await Promise.all(paths.map(p => remove(dbRef(db, p)).catch(() => {})))
+    // Owners e uid_map por último (sem eles as regras de outros nós falhariam)
+    await Promise.all([
+      remove(dbRef(db, `owners/${syncCode}`)).catch(() => {}),
+      remove(dbRef(db, `uid_map/${uid}`)).catch(() => {}),
+    ])
 
     // 2. Limpar localStorage
     try { localStorage.clear() } catch {}

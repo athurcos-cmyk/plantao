@@ -4,14 +4,14 @@
       "$code": {
         ".read": "auth != null && data.child(auth.uid).exists()",
         "$uid": {
-          ".write": "auth != null && auth.uid === $uid && !data.exists()"
+          ".write": "auth != null && auth.uid === $uid && (!data.exists() || !newData.exists())"
         }
       }
     },
     "uid_map": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid && !data.exists()"
+        ".write": "auth != null && auth.uid === $uid && (!data.exists() || !newData.exists())"
       }
     },
     "usuarios": {

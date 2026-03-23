@@ -4,21 +4,22 @@
  * Notificações confiáveis com 3 camadas:
  *
  * 1. setTimeout preciso — dispara no horário exato quando app está aberto
- * 2. Web Push direto — funciona com app FECHADO (sem FCM, sem intermediário Google)
- *    - PushManager.subscribe() → subscription salva no Firebase
- *    - Cron envia via web-push direto pro browser
+ * 2. OneSignal Web Push — funciona com app FECHADO (sem VAPID manual, sem FCM)
+ *    - OneSignal gerencia o service worker e as subscriptions
+ *    - Cron envia via REST API do OneSignal usando syncCode como external_user_id
  * 3. setInterval 60s — safety net caso setTimeout seja cancelado pelo browser
  */
 
 import { ref as dbRef, set, remove, get } from 'firebase/database'
 import { db } from '../firebase.js'
 
-// ── Config ──────────────────────────────────────────────────────────────────────
-// VAPID public key gerada com: npx web-push generate-vapid-keys
-const VAPID_PUBLIC_KEY = 'BF8WQFGzmFAjVJtHyuoUpCOiZcLk3rrSOoC78FCwddzw8r3YE6VG229BxRSJAX7k9fNpe-_ItR30Nag0D9WPZgk'
+// ── Config OneSignal ────────────────────────────────────────────────────────────
+const ONESIGNAL_APP_ID = import.meta.env.VITE_ONESIGNAL_APP_ID || ''
 
 let _syncCode = null
 let _pushAtivo = false
+let _osInitialized = false
+
 export function pushAtivo() { return _pushAtivo }
 // Compatibilidade — views usam fcmAtivo()
 export function fcmAtivo() { return _pushAtivo }
@@ -37,7 +38,7 @@ function _salvar(lista) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
 }
 
-// ── Mostrar notificação ─────────────────────────────────────────────────────────
+// ── Mostrar notificação (app aberto) ───────────────────────────────────────────
 async function _mostrarNotificacao(body, tag) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   const opts = { body, icon: '/icons/icon-192.png', tag, renotify: true }
@@ -64,7 +65,6 @@ function _agendarTimer(tag, timestamp, body) {
     return
   }
 
-  // setTimeout max seguro é ~24.8 dias (2^31 ms)
   const id = setTimeout(() => {
     _timers.delete(tag)
     _mostrarNotificacao(body, tag)
@@ -81,7 +81,7 @@ function _cancelarTimer(tag) {
   }
 }
 
-// ── Inicializa timers do localStorage (na carga e ao voltar para aba) ────────
+// ── Inicializa timers do localStorage ─────────────────────────────────────────
 function _inicializarTimers() {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   const agora = Date.now()
@@ -99,21 +99,15 @@ function _inicializarTimers() {
   _salvar(restantes)
 }
 
-// Inicializar na carga do módulo
 _inicializarTimers()
 
-// Re-inicializar quando usuário volta à aba
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
     _inicializarTimers()
-    // Re-registrar push se necessário
-    if (_syncCode && !_pushAtivo) {
-      _registrarPushSubscription(_syncCode)
-    }
   }
 })
 
-// Safety net: re-verifica a cada 60s (pega qualquer timer perdido)
+// Safety net: verifica a cada 60s
 setInterval(() => {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   const agora = Date.now()
@@ -124,81 +118,64 @@ setInterval(() => {
     if (item.timestamp <= agora) {
       _mostrarNotificacao(item.body, item.tag)
     } else {
-      if (!_timers.has(item.tag)) {
-        _agendarTimer(item.tag, item.timestamp, item.body)
-      }
+      if (!_timers.has(item.tag)) _agendarTimer(item.tag, item.timestamp, item.body)
       restantes.push(item)
     }
   }
   _salvar(restantes)
 }, 60_000)
 
-// ── Web Push: registro de subscription ───────────────────────────────────────────
-let _registrandoPromise = null
+// ── OneSignal: helpers ─────────────────────────────────────────────────────────
 
-function _urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4)
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
-  const rawData = atob(base64)
-  const outputArray = new Uint8Array(rawData.length)
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i)
-  }
-  return outputArray
+// Executa uma função no contexto do OneSignal SDK (após init)
+function _runOneSignal(fn) {
+  return new Promise((resolve, reject) => {
+    if (!ONESIGNAL_APP_ID) {
+      reject(new Error('VITE_ONESIGNAL_APP_ID não configurado'))
+      return
+    }
+    window.OneSignalDeferred = window.OneSignalDeferred || []
+    window.OneSignalDeferred.push(async (OneSignal) => {
+      try { resolve(await fn(OneSignal)) }
+      catch (e) { reject(e) }
+    })
+  })
 }
 
-async function _registrarPushSubscription(syncCode) {
-  if (_registrandoPromise) return _registrandoPromise
+// Inicializa OneSignal SDK (chamado uma vez)
+function _initOneSignal() {
+  if (_osInitialized || !ONESIGNAL_APP_ID) return
+  _osInitialized = true
 
-  _registrandoPromise = (async () => {
-    try {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.warn('[PUSH] PushManager não suportado neste navegador')
-        return
-      }
+  window.OneSignalDeferred = window.OneSignalDeferred || []
+  window.OneSignalDeferred.push(async (OneSignal) => {
+    await OneSignal.init({
+      appId: ONESIGNAL_APP_ID,
+      serviceWorkerPath: '/OneSignalSDKWorker.js',
+      serviceWorkerParam: { scope: '/' },
+      notifyButton: { enable: false },
+      allowLocalhostAsSecureOrigin: true,
+    })
+    console.log('[PUSH] OneSignal init OK')
+  })
+}
 
-      const swReg = await navigator.serviceWorker.ready
-
-      // Verifica se já tem subscription ativa
-      let subscription = await swReg.pushManager.getSubscription()
-
-      if (!subscription) {
-        // Cria nova subscription com VAPID key
-        subscription = await swReg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: _urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-        })
-        console.log('[PUSH] Nova subscription criada')
-      }
-
-      // Salva subscription no Firebase (multi-dispositivo)
-      let deviceId = localStorage.getItem('plantao_device_id')
-      if (!deviceId) {
-        deviceId = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
-        localStorage.setItem('plantao_device_id', deviceId)
-      }
-
-      await set(dbRef(db, `push_subscriptions/${syncCode}/${deviceId}`), {
-        subscription: JSON.stringify(subscription),
-        updatedAt: Date.now(),
-      })
-
-      _pushAtivo = true
-      console.log('[PUSH] Subscription registrada ✓')
-
-    } catch (e) {
-      _pushAtivo = false
-      console.warn('[PUSH] Subscription não registrada:', e.message)
-      // Retry em 30s se falhou
-      setTimeout(() => {
-        _registrandoPromise = null
-        if (_syncCode) _registrarPushSubscription(syncCode)
-      }, 30_000)
-    } finally {
-      _registrandoPromise = null
-    }
-  })()
-  return _registrandoPromise
+// Registra o syncCode como external_user_id no OneSignal
+async function _registrarOneSignal(syncCode) {
+  if (!ONESIGNAL_APP_ID) {
+    console.warn('[PUSH] VITE_ONESIGNAL_APP_ID não configurado')
+    return
+  }
+  try {
+    await _runOneSignal(async (OneSignal) => {
+      await OneSignal.login(syncCode)
+    })
+    _pushAtivo = true
+    console.log('[PUSH] OneSignal login OK ✓ syncCode:', syncCode)
+  } catch (e) {
+    _pushAtivo = false
+    console.warn('[PUSH] OneSignal login falhou:', e.message)
+  }
 }
 
 // ── Firebase helpers ────────────────────────────────────────────────────────────
@@ -219,7 +196,7 @@ async function _removerDoFirebase(syncCode, tag) {
   try {
     await remove(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas/${_tagKey(tag)}`))
 
-    // Compatibilidade: remove registros legados com mesma tag
+    // Remove registros legados com mesma tag
     const snap = await get(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas`))
     if (!snap.exists()) return
     const ops = []
@@ -242,23 +219,39 @@ async function _removerTodosFirebase(syncCode) {
  */
 export async function configurarFCM(syncCode) {
   _syncCode = syncCode
+  _initOneSignal()
   if (syncCode && notificacoesHabilitadas()) {
-    await _registrarPushSubscription(syncCode)
+    await _registrarOneSignal(syncCode)
   }
 }
 
 /**
- * Solicita permissão de notificação e registra push subscription.
+ * Solicita permissão de notificação e registra no OneSignal.
  */
 export async function solicitarPermissaoNotificacao(syncCode) {
   if (!('Notification' in window)) return false
+
   if (Notification.permission === 'granted') {
-    if (syncCode) await _registrarPushSubscription(syncCode)
+    if (syncCode) await _registrarOneSignal(syncCode)
     return true
   }
   if (Notification.permission === 'denied') return false
+
+  // Solicita via OneSignal (gerencia SW e subscription automaticamente)
+  if (ONESIGNAL_APP_ID) {
+    try {
+      await _runOneSignal(async (OneSignal) => {
+        await OneSignal.Notifications.requestPermission()
+      })
+      const granted = Notification.permission === 'granted'
+      if (granted && syncCode) await _registrarOneSignal(syncCode)
+      return granted
+    } catch (_) {}
+  }
+
+  // Fallback nativo
   const perm = await Notification.requestPermission()
-  if (perm === 'granted' && syncCode) await _registrarPushSubscription(syncCode)
+  if (perm === 'granted' && syncCode) await _registrarOneSignal(syncCode)
   return perm === 'granted'
 }
 
@@ -275,17 +268,12 @@ function _proximoTimestamp(horario) {
   const agora = new Date()
   const alvo = new Date(agora)
   alvo.setHours(h, m, 0, 0)
-
-  if (alvo.getTime() <= agora.getTime()) {
-    alvo.setDate(alvo.getDate() + 1)
-  }
-
+  if (alvo.getTime() <= agora.getTime()) alvo.setDate(alvo.getDate() + 1)
   return alvo.getTime()
 }
 
 /**
  * Agenda uma notificação para HH:MM.
- * Salva em localStorage + timer preciso + Firebase (cron envia push).
  */
 export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
   if (!notificacoesHabilitadas() || !horario) return
@@ -293,15 +281,11 @@ export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
   const timestamp = _proximoTimestamp(horario)
   const tagFinal  = tag || `auto-${horario.replace(':', '')}`
 
-  // localStorage (persistência entre reloads)
   const lista = _getAgendadas().filter(n => n.tag !== tagFinal)
   lista.push({ body: texto, timestamp, tag: tagFinal })
   _salvar(lista)
 
-  // Timer preciso (app aberto — dispara no horário exato)
   _agendarTimer(tagFinal, timestamp, texto)
-
-  // Firebase (quando app fechado — cron envia push)
   await _salvarNoFirebase(_syncCode, timestamp, texto, tagFinal)
 }
 
@@ -314,11 +298,9 @@ export async function agendarTodasNotificacoes(tarefas) {
   const ativas = tarefas.filter(t => !t.feito && t.horario)
   if (!ativas.length) return
 
-  // Cancela timers antigos dessas tags
   const tagsAtualizar = new Set(ativas.map(t => `tarefa-${t._key}`))
   for (const tag of tagsAtualizar) _cancelarTimer(tag)
 
-  // Atualiza localStorage de uma vez
   let lista = _getAgendadas()
   lista = lista.filter(n => !tagsAtualizar.has(n.tag))
   for (const t of ativas) {
@@ -329,7 +311,6 @@ export async function agendarTodasNotificacoes(tarefas) {
   }
   _salvar(lista)
 
-  // Salva no Firebase em paralelo
   await Promise.all(ativas.map(t => {
     const timestamp = _proximoTimestamp(t.horario)
     return _salvarNoFirebase(_syncCode, timestamp, t.texto, `tarefa-${t._key}`)
@@ -359,14 +340,10 @@ export async function limparNotificacoesPorPrefixo(prefixo, tagsAtivas = []) {
   if (!prefixo) return
   const manter = new Set((tagsAtivas || []).filter(Boolean))
 
-  // Cancela timers das tags sendo removidas
   for (const [tag] of _timers) {
-    if (tag.startsWith(prefixo) && !manter.has(tag)) {
-      _cancelarTimer(tag)
-    }
+    if (tag.startsWith(prefixo) && !manter.has(tag)) _cancelarTimer(tag)
   }
 
-  // Limpeza local
   const lista = _getAgendadas().filter((item) => {
     const tag = item?.tag || ''
     if (!tag.startsWith(prefixo)) return true
@@ -374,7 +351,6 @@ export async function limparNotificacoesPorPrefixo(prefixo, tagsAtivas = []) {
   })
   _salvar(lista)
 
-  // Limpeza Firebase
   if (!_syncCode) return
   try {
     const base = dbRef(db, `notificacoes_agendadas/${_syncCode}/agendadas`)
@@ -384,11 +360,8 @@ export async function limparNotificacoesPorPrefixo(prefixo, tagsAtivas = []) {
     const ops = []
     snap.forEach((child) => {
       const tag = child.val()?.tag || ''
-      if (tag.startsWith(prefixo) && !manter.has(tag)) {
-        ops.push(remove(child.ref))
-      }
+      if (tag.startsWith(prefixo) && !manter.has(tag)) ops.push(remove(child.ref))
     })
-
     if (ops.length) await Promise.all(ops)
   } catch (_) {}
 }

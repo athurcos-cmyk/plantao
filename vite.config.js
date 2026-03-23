@@ -35,8 +35,8 @@ export default defineConfig({
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        // Importa handlers de push/notificação no service worker gerado
-        importScripts: ['/push-handlers.js'],
+        // OneSignal usa SW próprio — não deixar Workbox sobrescrever
+        globIgnores: ['OneSignalSDKWorker.js', 'push-handlers.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

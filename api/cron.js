@@ -1,20 +1,18 @@
 /**
  * api/cron.js
  * Vercel Cron Job chamado a cada minuto.
- * Lê notificações agendadas no Firebase e envia Web Push direto pro browser.
- * Sem FCM — usa web-push lib que manda direto pro push server do browser.
+ * Lê notificações agendadas no Firebase e envia via OneSignal Web Push.
+ * OneSignal gerencia subscriptions por external_user_id (= syncCode).
  */
 
 import admin from 'firebase-admin'
-import webpush from 'web-push'
 
 let initialized = false
 
 const MAX_ATRASO_ENVIO_MS = 12 * 60 * 60 * 1000
 
-// VAPID keys geradas com: npx web-push generate-vapid-keys
-const VAPID_PUBLIC_KEY = 'BF8WQFGzmFAjVJtHyuoUpCOiZcLk3rrSOoC78FCwddzw8r3YE6VG229BxRSJAX7k9fNpe-_ItR30Nag0D9WPZgk'
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || ''
+const ONESIGNAL_APP_ID      = process.env.ONESIGNAL_APP_ID      || ''
+const ONESIGNAL_REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY || ''
 
 function initAdmin() {
   if (initialized) return
@@ -26,14 +24,41 @@ function initAdmin() {
     databaseURL: 'https://anotacao-hc-default-rtdb.firebaseio.com',
   })
 
-  if (!VAPID_PRIVATE_KEY) throw new Error('VAPID_PRIVATE_KEY env var nao configurada')
-  webpush.setVapidDetails(
-    'mailto:contato@plantao.net',
-    VAPID_PUBLIC_KEY,
-    VAPID_PRIVATE_KEY,
-  )
+  if (!ONESIGNAL_APP_ID)       throw new Error('ONESIGNAL_APP_ID env var nao configurada')
+  if (!ONESIGNAL_REST_API_KEY) throw new Error('ONESIGNAL_REST_API_KEY env var nao configurada')
 
   initialized = true
+}
+
+// Envia push via OneSignal REST API para todos os dispositivos do syncCode
+async function _enviarOneSignal(syncCode, notif) {
+  const res = await fetch('https://onesignal.com/api/v1/notifications', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Key ${ONESIGNAL_REST_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      app_id: ONESIGNAL_APP_ID,
+      // Envia para todos os dispositivos do usuário identificado pelo syncCode
+      include_external_user_ids: [syncCode],
+      channel_for_external_user_ids: 'push',
+      contents: { en: notif.body || '' },
+      headings: { en: '⏰ Plantão' },
+      web_push_topic: notif.tag || 'plantao',
+      url: 'https://plantao.net',
+      web_url: 'https://plantao.net',
+      isAnyWeb: true,
+      ttl: 3600,
+    }),
+  })
+
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`OneSignal ${res.status}: ${err}`)
+  }
+
+  return await res.json()
 }
 
 export default async function handler(req, res) {
@@ -73,45 +98,6 @@ export default async function handler(req, res) {
       continue
     }
 
-    // Ler subscriptions web push (novo) OU fcm_tokens (legado)
-    let subscriptions = []
-
-    // Primeiro tenta push_subscriptions (web-push direto)
-    const subSnap = await db.ref(`push_subscriptions/${syncCode}`).get()
-    if (subSnap.exists()) {
-      const subData = subSnap.val()
-      for (const [id, val] of Object.entries(subData)) {
-        try {
-          const sub = JSON.parse(val?.subscription || val)
-          if (sub?.endpoint) {
-            subscriptions.push({ id, subscription: sub, type: 'webpush' })
-          }
-        } catch (_) {}
-      }
-    }
-
-    // Fallback: fcm_tokens legado (para dispositivos que ainda não atualizaram)
-    if (subscriptions.length === 0) {
-      const tokenSnap = await db.ref(`fcm_tokens/${syncCode}`).get()
-      if (tokenSnap.exists()) {
-        const tokenData = tokenSnap.val()
-        if (typeof tokenData === 'string') {
-          subscriptions.push({ id: 'legacy', token: tokenData, type: 'fcm' })
-        } else {
-          for (const [id, val] of Object.entries(tokenData)) {
-            if (typeof val === 'string') subscriptions.push({ id, token: val, type: 'fcm' })
-            else if (val?.token) subscriptions.push({ id, token: val.token, type: 'fcm' })
-          }
-        }
-      }
-    }
-
-    if (subscriptions.length === 0) {
-      console.log(`[CRON] ${syncCode}: no push subscriptions or tokens`)
-      continue
-    }
-    console.log(`[CRON] ${syncCode}: ${subscriptions.length} subscription(s)`)
-
     for (const [key, _notif] of Object.entries(entry.agendadas)) {
       const notifRef = db.ref(`notificacoes_agendadas/${syncCode}/agendadas/${key}`)
 
@@ -122,12 +108,12 @@ export default async function handler(req, res) {
       console.log(`[CRON] ${syncCode}/${key}: ts=${notif?.timestamp}, now=${agora}`)
 
       if (!notif?.timestamp) {
-        console.log(`[CRON] ${syncCode}/${key}: invalid timestamp or deleted, skipping`)
+        console.log(`[CRON] ${syncCode}/${key}: invalid or deleted, skipping`)
         continue
       }
 
       if (notif.sentAt) {
-        console.log(`[CRON] ${syncCode}/${key}: already sent, removing residual`)
+        console.log(`[CRON] ${syncCode}/${key}: already sent, removing`)
         await notifRef.remove()
         continue
       }
@@ -139,85 +125,33 @@ export default async function handler(req, res) {
       }
 
       if ((agora - notif.timestamp) > MAX_ATRASO_ENVIO_MS) {
-        console.log(`[CRON] ${syncCode}/${key}: too old (${Math.round((agora - notif.timestamp) / 1000)}s), removing without send`)
+        console.log(`[CRON] ${syncCode}/${key}: too old, removing without send`)
         await notifRef.remove()
         continue
       }
 
-      console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago)`)
+      console.log(`[CRON] ${syncCode}/${key}: ready to send — "${notif.body || ''}"`)
       totalProcessados++
-
-      console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}" to ${subscriptions.length} device(s)`)
       totalEnviados++
 
-      const pushPayload = JSON.stringify({
-        title: '⏰ Plantão',
-        body: notif.body || '',
-        tag: notif.tag || 'plantao',
-        icon: '/icons/icon-192.png',
-        url: '/',
-      })
+      envios.push(
+        _enviarOneSignal(syncCode, notif)
+          .then(result => {
+            console.log(`[CRON] ${syncCode}/${key}: OneSignal ok, id=${result.id}`)
+          })
+          .catch(err => {
+            console.error(`[CRON] ${syncCode}/${key}: OneSignal error —`, err.message)
+            erros.push({ syncCode, key, error: err.message })
+          })
+      )
 
-      for (const sub of subscriptions) {
-        if (sub.type === 'webpush') {
-          // Web Push direto — sem intermediário
-          envios.push(
-            webpush.sendNotification(sub.subscription, pushPayload, { TTL: 3600 })
-              .then(() => {
-                console.log(`[CRON] ${syncCode}/${key}@${sub.id}: web-push sent ok`)
-              })
-              .catch(async (err) => {
-                console.error(`[CRON] ${syncCode}/${key}@${sub.id}: web-push error - ${err.statusCode} ${err.body}`)
-                erros.push({ syncCode, key, id: sub.id, error: err.body || err.message })
-                // 404 ou 410 = subscription expirou, remover
-                if (err.statusCode === 404 || err.statusCode === 410) {
-                  console.log(`[CRON] ${syncCode}@${sub.id}: subscription expirada, removendo`)
-                  await db.ref(`push_subscriptions/${syncCode}/${sub.id}`).remove().catch(() => {})
-                }
-              })
-          )
-        } else {
-          // FCM legado (fallback para dispositivos antigos)
-          envios.push(
-            admin.messaging().send({
-              token: sub.token,
-              notification: { title: '⏰ Plantão', body: notif.body || '' },
-              webpush: {
-                notification: {
-                  title: '⏰ Plantão',
-                  body: notif.body || '',
-                  icon: '/icons/icon-192.png',
-                  badge: '/icons/icon-192.png',
-                  tag: notif.tag || 'plantao',
-                },
-                fcmOptions: { link: '/' },
-              },
-            })
-              .then((msgId) => {
-                console.log(`[CRON] ${syncCode}/${key}@${sub.id}: fcm sent ok, msgId=${msgId}`)
-              })
-              .catch(async (err) => {
-                console.error(`[CRON] ${syncCode}/${key}@${sub.id}: fcm error - ${err.message}`)
-                erros.push({ syncCode, key, id: sub.id, error: err.message })
-                const tokenInvalido = err.message?.includes('registration-token-not-registered')
-                  || err.message?.includes('invalid-registration-token')
-                  || err.message?.includes('Requested entity was not found')
-                if (tokenInvalido) {
-                  console.log(`[CRON] ${syncCode}@${sub.id}: token inválido, removendo`)
-                  await db.ref(`fcm_tokens/${syncCode}/${sub.id}`).remove().catch(() => {})
-                }
-              })
-          )
-        }
-      }
-
-      // Remove notificação após enviar para todos os dispositivos
+      // Remove notificação após enviar
       envios.push(
         Promise.resolve().then(async () => {
           try {
             await notifRef.remove()
           } catch (_) {
-            await notifRef.update({ sentAt: Date.now(), processingAt: null, processingBy: null })
+            await notifRef.update({ sentAt: Date.now() }).catch(() => {})
           }
         })
       )
