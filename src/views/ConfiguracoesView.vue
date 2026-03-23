@@ -329,6 +329,7 @@ async function confirmarDelete() {
       `livres/${syncCode}`,
       `curativo/${syncCode}`,
       `fcm_tokens/${syncCode}`,
+      `push_subscriptions/${syncCode}`,
       `notificacoes_agendadas/${syncCode}`,
       `configuracoes/${syncCode}`,
       `feedback/${syncCode}`,
