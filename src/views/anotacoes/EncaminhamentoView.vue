@@ -205,16 +205,19 @@
           <div class="chips-wrap" style="margin-bottom:10px">
             <button
               v-for="c in cargoOpcoes" :key="c.label"
-              class="chip" :class="{ 'chip-on': form.cargo === c.label }"
-              @click="form.cargo = c.label"
+              class="chip" :class="{ 'chip-on': form.cargos.includes(c.label) }"
+              @click="toggleCargo(c.label)"
             >{{ c.label }}</button>
           </div>
-          <input
-            v-if="form.cargo && form.cargo !== 'Sem acompanhante'"
-            type="text"
-            v-model="form.nomeAcomp"
-            placeholder="Nome do profissional (opcional)"
-          >
+          <template v-for="c in cargoOpcoes" :key="c.label">
+            <input
+              v-if="form.cargos.includes(c.label) && c.label !== 'Sem acompanhante'"
+              type="text"
+              v-model="form.nomesAcomp[c.label]"
+              :placeholder="`Nome do ${c.label} (opcional)`"
+              style="margin-bottom:6px"
+            >
+          </template>
         </div>
 
         <!-- ── Dispositivos em uso ── -->
@@ -559,8 +562,8 @@ const form = reactive({
   condicao:        '',
   localRetorno:    '',
   procedRetorno:   '',
-  cargo:           '',
-  nomeAcomp:       '',
+  cargos:          [],
+  nomesAcomp:      {},
   recebidoPor:     '',
   observacoes:     '',
 })
@@ -574,14 +577,23 @@ const destinosPadrao   = ['UTI', 'Centro Cirúrgico', 'Raio-X', 'Tomografia', 'E
 const transporteOpcoes = ['Cadeira de rodas', 'Maca', 'A pé', 'Ambulância']
 
 const cargoOpcoes = [
-  { label: 'Téc. de enfermagem', texto: 'técnico de enfermagem',  artigo: 'do' },
-  { label: 'Téc.ª de enfermagem', texto: 'técnica de enfermagem', artigo: 'da' },
-  { label: 'Enf.',               texto: 'enfermeiro',             artigo: 'do' },
-  { label: 'Enf.ª',              texto: 'enfermeira',             artigo: 'da' },
-  { label: 'Médico',             texto: 'médico',                 artigo: 'do' },
-  { label: 'Médica',             texto: 'médica',                 artigo: 'da' },
-  { label: 'Sem acompanhante',   texto: 'sem acompanhante',       artigo: ''   },
+  { label: 'Tec.'            },
+  { label: 'Enf.'            },
+  { label: 'Dr(a).'          },
+  { label: 'Sem acompanhante'},
 ]
+
+function toggleCargo(label) {
+  if (label === 'Sem acompanhante') {
+    form.cargos = form.cargos.includes('Sem acompanhante') ? [] : ['Sem acompanhante']
+    return
+  }
+  const semIdx = form.cargos.indexOf('Sem acompanhante')
+  if (semIdx !== -1) form.cargos.splice(semIdx, 1)
+  const idx = form.cargos.indexOf(label)
+  if (idx === -1) form.cargos.push(label)
+  else form.cargos.splice(idx, 1)
+}
 
 // ── Dispositivos ──
 const dispositivosSimples = ['SVD', 'SNG', 'TOT']
@@ -758,7 +770,7 @@ function limparBloco() {
     form.motivo = ''; form.condicao = ''
     form.localRetorno = ''; form.procedRetorno = ''
   } else if (passo.value === 3) {
-    form.cargo = ''; form.nomeAcomp = ''
+    form.cargos = []; form.nomesAcomp = {}
     limparDispositivos()
     form.recebidoPor = ''; form.observacoes = ''
   }
@@ -860,16 +872,21 @@ function gerar() {
     : form.transporte.toLowerCase()
 
   // Acompanhante (compartilhado)
-  const cargo = cargoOpcoes.find(c => c.label === form.cargo)
   const enc   = form.genero === 'F' ? 'encaminhada' : 'encaminhado'
   const acomp = form.genero === 'F' ? 'acompanhada' : 'acompanhado'
 
   let acompTxt = ''
-  if (cargo && cargo.texto === 'sem acompanhante') {
+  if (form.cargos.includes('Sem acompanhante')) {
     acompTxt = ', sem acompanhante'
-  } else if (cargo) {
-    acompTxt = `, ${acomp} ${cargo.artigo} ${cargo.texto}`
-    if (form.nomeAcomp.trim()) acompTxt += ` ${form.nomeAcomp.trim()}`
+  } else if (form.cargos.length > 0) {
+    const parts = form.cargos.map(label => {
+      const nome = (form.nomesAcomp[label] || '').trim()
+      return nome ? `${label} ${nome}` : label
+    })
+    const listTxt = parts.length === 1
+      ? parts[0]
+      : parts.slice(0, -1).join(', ') + ' e ' + parts[parts.length - 1]
+    acompTxt = `, ${acomp} por ${listTxt}`
   }
 
   let texto = ''
@@ -950,7 +967,7 @@ function novaAnotacao() {
     horario: '', genero: 'M', nome: '', leito: '', destino: '',
     transporte: '', transporteOutro: '', motivo: '', condicao: '',
     localRetorno: '', procedRetorno: '',
-    cargo: '', nomeAcomp: '', recebidoPor: '', observacoes: '',
+    cargos: [], nomesAcomp: {}, recebidoPor: '', observacoes: '',
   })
   limparDispositivos()
   textoGerado.value = ''; gerado.value = false; passo.value = 1
