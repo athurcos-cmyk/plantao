@@ -75,6 +75,33 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 
 ## Pendentes
 
+### [x] Admin broadcast (concluído 2026-03-23)
+**O quê:** Página `/admin` para enviar push e/ou email para todos os usuários cadastrados.
+**Implementado:**
+- `api/broadcast.js`: idToken verificado + restrição ao email admin. FCM data-only + Resend. Tokens inválidos auto-removidos.
+- `AdminView.vue`: form com título, mensagem, chips push/email/ambos. Exibe resultado com erros parciais detalhados.
+- `router/index.js`: rota com `requiresAdmin` — redireciona para dashboard se não for o admin.
+
+---
+
+### [x] Dashboard desktop responsivo (concluído 2026-03-23)
+**O quê:** Layout melhorado para PC (≥768px) sem alterar mobile.
+**Implementado:** Grid 4 colunas nos cards de anotação. Histórico + Pacientes + Organizador em 3 colunas, histórico em destaque azul e primeiro. Container 960px.
+
+---
+
+### [x] Fix notificações: cron desabilitado no cron-job.org (concluído 2026-03-23)
+**Causa raiz:** cron-job.org auto-desabilita o job após falhas HTTP consecutivas. Toggle estava off no painel — não era bug de código.
+**Fix:** reativar toggle no painel + payload data-only no cron + push handler raw no SW antes do Firebase SDK.
+**Regra:** erros de token FCM nunca derrubam o cron (retorna 200 sempre). Se FCM parar: checar cron-job.org primeiro.
+
+---
+
+### [x] Branding: remoção de "técnico de enfermagem" (concluído 2026-03-23)
+`welcome.js` e `LandingView.vue` atualizados — referências removidas de todos os textos públicos.
+
+---
+
 ### [x] Histórico de cálculos na Calculadora (concluído 2026-03-21)
 **O quê:** Salvar os últimos 5 cálculos no `localStorage` para reutilizar durante o plantão.
 **Por quê:** Evita redigitar a mesma prescrição ao medicar múltiplos pacientes — comum em plantão.

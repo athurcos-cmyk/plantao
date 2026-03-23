@@ -63,6 +63,7 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 - `api/feedback.js` — email de agradecimento ao usuário + notificação interna para Arthur (Resend). Auth idToken obrigatório. Rate limit 5/min por uid.
 - `api/goodbye.js` — email de despedida ao deletar conta (Resend). Auth idToken obrigatório. Busca nome/email server-side. Timeout 5s, falha silenciosa.
 - `api/delete-account.js` — deleta todos os dados do usuário via firebase-admin (bypassa regras de segurança). Verifica idToken, busca syncCode via uid_map, remove 15 paths incluindo owners e uid_map. Chamado pela ConfiguracoesView antes de deleteUser().
+- `api/broadcast.js` — envia push FCM e/ou email Resend para todos os usuários cadastrados. Restrito ao email admin (a.thurcos@gmail.com) via idToken. Tokens inválidos auto-removidos. Retorna `{push, email, erros}`.
 
 ## Variáveis de ambiente — NUNCA no .env, sempre no Vercel
 - `VITE_FCM_VAPID_KEY` — chave pública VAPID (compilada no bundle)
@@ -86,10 +87,11 @@ Sistema de notificações com 3 camadas de confiabilidade:
 
 **Camada 2 — FCM via cron (app fechado/minimizado)**
 - cron-job.org → `/api/cron` a cada minuto → Firebase Admin → FCM → Service Worker
-- Payload inclui tag em DOIS lugares: `data.tag` + `webpush.notification.tag` (redundância)
-- `push-handlers.js` extrai tag de: `data?.tag` → `notification?.tag` → fallback `'plantao'`
+- Payload **data-only** (sem `webpush.notification`) — evita que Firebase SDK encaminhe push para aba congelada em vez de exibir
+- Push handler raw no SW (`firebase-messaging-sw.js`) registrado ANTES do Firebase SDK — sempre chama `showNotification()` independente do estado da aba
+- `push-handlers.js` extrai tag de: `data?.tag` → fallback `'plantao'`
 - Tag única por notificação evita que browser substitua uma pela outra
-- `onMessage` handler OBRIGATÓRIO para foreground — sem ele, FCM é engolido pelo SDK
+- **ATENÇÃO cron-job.org:** o job pode ser auto-desabilitado após falhas HTTP consecutivas (toggle fica off no painel silenciosamente). Se FCM parar de funcionar com app fechado, verificar PRIMEIRO se o job está ativo em cron-job.org antes de debugar código.
 
 **Camada 3 — setInterval 60s (safety net)**
 - Roda a cada 60s verificando localStorage por notificações perdidas

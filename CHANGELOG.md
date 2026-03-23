@@ -127,6 +127,35 @@ feedback/{syncCode}/                             feedbacks dos usuários
 
 ## Histórico de sessões
 
+### Mar 2026 — v1.0 oficial: broadcast admin + desktop responsivo + fix notificações
+
+**Fix crítico: cron desabilitado no cron-job.org**
+- **Causa raiz:** cron-job.org auto-desabilita jobs após N falhas HTTP consecutivas (toggle fica off silenciosamente no painel). Não era problema de código, CRON_SECRET ou Vercel — o job simplesmente estava desativado.
+- **Solução:** reativar manualmente o toggle no painel do cron-job.org.
+- **Aprendizado:** se notificações FCM pararem de funcionar com app fechado, verificar PRIMEIRO se o job está ativo em cron-job.org antes de debugar código. Tokens FCM inválidos não derrubam o cron (erros são capturados por `Promise.allSettled`, cron retorna 200 sempre).
+
+**Fix: notificações não chegavam com app minimizado**
+- **Causa:** Firebase SDK no SW detectava aba congelada (minimizada) e encaminhava push via `postMessage` para a aba em vez de exibir a notificação → mensagem perdida silenciosamente.
+- **Solução 1:** `api/cron.js` alterado para payload **data-only** (sem `webpush.notification`) — sem `notification`, Firebase SDK não tenta auto-exibir nem encaminhar.
+- **Solução 2:** push handler raw registrado **antes** do Firebase SDK no `firebase-messaging-sw.js` — sempre chama `showNotification()` independente do estado da aba.
+- **`onMessage` removido** do `usePushNotificacoes.js` — sem ele, Firebase SDK não encaminha push para aba congelada.
+
+**Admin broadcast — `api/broadcast.js` + `AdminView.vue` (NOVO)**
+- `api/broadcast.js`: endpoint serverless com verificação de idToken + restrição ao email admin (`a.thurcos@gmail.com`). Envia FCM data-only e/ou email Resend para todos os usuários cadastrados. Tokens FCM inválidos removidos automaticamente. Retorna `{push, email, erros}`.
+- `src/views/AdminView.vue`: página `/admin` com form (título, mensagem, tipo push/email/ambos) e exibição detalhada dos erros parciais (tipo, device key, mensagem de erro).
+- `src/router/index.js`: rota `/admin` com guards `requiresAuth` + `requiresAdmin` — redireciona para dashboard se não for o admin.
+
+**Dashboard desktop responsivo**
+- Media query `≥768px`: grid de 4 colunas nos cards de anotação, container alargado para 960px.
+- Histórico, Pacientes e Organizador em 3 colunas lado a lado — **Histórico em destaque azul e posicionado primeiro** (mais usado no PC).
+- Mobile sem nenhuma alteração.
+
+**Branding: remoção de "técnico de enfermagem"**
+- `api/welcome.js`: removida frase "Sou técnico de enfermagem e criei esse app..." — agora apenas "Criei esse app porque sentia falta de uma ferramenta que entendesse de verdade a rotina do plantão."
+- `LandingView.vue`: badge hero → "Para a equipe de enfermagem"; título dos depoimentos → "Criado por quem vive o plantão, para quem vive o plantão".
+
+---
+
 ### Mar 2026 — v1.0: FCM nativo + exclusão de conta robusta + UX de notificações
 
 **Migração OneSignal → FCM nativo:**
