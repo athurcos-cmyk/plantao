@@ -267,7 +267,8 @@ onMounted(async () => {
   // Onboarding: redireciona para telas de boas-vindas na primeira abertura
   try {
     const jaViu = localStorage.getItem('onboarding_visto')
-    if (!jaViu && !auth.isLoggedIn) {
+    const rotaAtual = router.currentRoute.value.name
+    if (!jaViu && !auth.isLoggedIn && rotaAtual !== 'landing' && rotaAtual !== 'onboarding') {
       router.push({ name: 'onboarding' })
     }
   } catch {
