@@ -154,14 +154,14 @@
           <label>Comunicado</label>
           <div class="chips-wrap">
             <button class="chip" :class="{ 'chip-on': form.comunicado }" @click="form.comunicado = !form.comunicado">
-              Comunicado à enfermeira
+              Comunicado ao Enf.
             </button>
           </div>
           <input
             v-if="form.comunicado"
             type="text"
             v-model="form.comunicadoNome"
-            placeholder="Nome da enfermeira (opcional)"
+            placeholder="Nome do Enf. (opcional)"
             style="margin-top:8px"
           >
         </div>
@@ -337,8 +337,8 @@ function gerar() {
   let comunicadoLine = ''
   if (form.comunicado) {
     comunicadoLine = form.comunicadoNome.trim()
-      ? `\nComunicado à enfermeira ${form.comunicadoNome.trim()} sobre os sinais vitais.`
-      : '\nComunicado à enfermeira sobre os sinais vitais.'
+      ? `\nComunicado ao Enf. ${form.comunicadoNome.trim()} sobre os sinais vitais.`
+      : '\nComunicado ao Enf. sobre os sinais vitais.'
   }
 
   textoGerado.value = sv.length > 0
