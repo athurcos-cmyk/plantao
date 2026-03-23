@@ -106,11 +106,15 @@ export const useAuthStore = defineStore('auth', () => {
             console.warn('[Auth] uid_map lookup failed:', e.message)
           }
         } else {
-          // Só limpa estado se NÃO tiver dados em cache.
-          // Evita flicker: onAuthStateChanged pode disparar null temporário
-          // durante refresh de token, antes de disparar com o user válido.
+          // Evita flicker no carregamento inicial: onAuthStateChanged pode disparar
+          // null temporário antes de disparar com o user válido.
+          // MAS se uid.value já estava setado, é logout real (manual ou conta deletada
+          // em outro dispositivo) — limpa tudo e recarrega.
           const hasCachedSession = _lsOk && localStorage.getItem('sync_code')
-          if (!hasCachedSession) {
+          const eraLogado = !!uid.value
+
+          if (eraLogado) {
+            // Sessão encerrada enquanto app estava aberto (logout remoto ou conta excluída)
             uid.value = ''
             userEmail.value = ''
             syncCode.value = ''
@@ -120,6 +124,14 @@ export const useAuthStore = defineStore('auth', () => {
               localStorage.removeItem('user_name')
               localStorage.removeItem('login_time')
             }
+            // Recarrega a página para limpar todo estado Vue/Pinia/listeners/FCM
+            window.location.replace('/')
+          } else if (!hasCachedSession) {
+            // Carregamento inicial sem cache — limpa estado normalmente
+            uid.value = ''
+            userEmail.value = ''
+            syncCode.value = ''
+            userName.value = ''
           }
         }
         // Resolve para usuários sem cache (com cache já resolveu acima)
