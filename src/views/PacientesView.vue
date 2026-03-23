@@ -222,10 +222,9 @@ import {
   solicitarPermissaoNotificacao,
   agendarNotificacaoTarefa,
   cancelarNotificacao,
-  configurarFCM,
+  configurarPush,
   limparNotificacoesPorPrefixo,
   notificacoesHabilitadas,
-  fcmAtivo,
 } from '../composables/usePushNotificacoes.js'
 
 const { showToast } = useToast()
@@ -304,7 +303,7 @@ onMounted(async () => {
   store.iniciar()
   timerAgora = setInterval(() => { agora.value = Date.now() }, 30000)
   await solicitarPermissaoNotificacao(auth.syncCode)
-  await configurarFCM(auth.syncCode)
+  await configurarPush(auth.syncCode)
   // agenda após store carregar
   setTimeout(agendarNotifPendencias, 1500)
 })

@@ -36,7 +36,7 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // OneSignal usa SW próprio — não deixar Workbox sobrescrever
-        globIgnores: ['OneSignalSDKWorker.js', 'push-handlers.js'],
+        globIgnores: ['OneSignalSDKWorker.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

@@ -21,8 +21,6 @@ let _pushAtivo = false
 let _osInitialized = false
 
 export function pushAtivo() { return _pushAtivo }
-// Compatibilidade — views usam fcmAtivo()
-export function fcmAtivo() { return _pushAtivo }
 
 // ── localStorage ────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'plantao_notifs_v2'
@@ -217,7 +215,7 @@ async function _removerTodosFirebase(syncCode) {
 /**
  * Configura push para o usuário logado. Chamar após login.
  */
-export async function configurarFCM(syncCode) {
+export async function configurarPush(syncCode) {
   _syncCode = syncCode
   _initOneSignal()
   if (syncCode && notificacoesHabilitadas()) {

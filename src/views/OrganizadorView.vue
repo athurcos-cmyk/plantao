@@ -37,9 +37,9 @@
         </button>
       </div>
 
-      <!-- Aviso FCM não disponível neste dispositivo -->
+      <!-- Aviso push não disponível neste dispositivo -->
       <transition name="fade">
-        <div v-if="somenteFallback && store.plantao" class="aviso-fcm">
+        <div v-if="semPush && store.plantao" class="aviso-sem-push">
           <span>🔔</span>
           <span>Notificações funcionam <strong>só com o app aberto</strong> neste dispositivo</span>
         </div>
@@ -256,21 +256,20 @@ import { useAuthStore } from '../stores/auth.js'
 import {
   solicitarPermissaoNotificacao,
   agendarTodasNotificacoes,
-  configurarFCM,
-  fcmAtivo,
+  configurarPush,
+  pushAtivo,
 } from '../composables/usePushNotificacoes.js'
 
 const router = useRouter()
 const store  = useOrganizadorStore()
-const somenteFallback = ref(false) // true = FCM não disponível neste dispositivo
+const semPush = ref(false) // true = push não disponível neste dispositivo
 const auth   = useAuthStore()
 
 onMounted(async () => {
   store.iniciar()
   await solicitarPermissaoNotificacao(auth.syncCode)
-  await configurarFCM(auth.syncCode)
-  // Após configurar FCM, checa se o token foi registrado com sucesso
-  somenteFallback.value = !fcmAtivo()
+  await configurarPush(auth.syncCode)
+  semPush.value = !pushAtivo()
 })
 
 onUnmounted(() => {
@@ -374,8 +373,8 @@ async function adicionarTemplate() {
 </script>
 
 <style scoped>
-/* Aviso FCM fallback */
-.aviso-fcm {
+/* Aviso push não disponível */
+.aviso-sem-push {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -387,7 +386,7 @@ async function adicionarTemplate() {
   padding: 9px 14px;
   margin-bottom: 12px;
 }
-.aviso-fcm strong { color: var(--text); }
+.aviso-sem-push strong { color: var(--text); }
 
 /* Header icon buttons */
 .btn-icon {

@@ -100,7 +100,7 @@ import { useOrganizadorStore } from './stores/organizador.js'
 import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
-import { configurarFCM, solicitarPermissaoNotificacao } from './composables/usePushNotificacoes.js'
+import { configurarPush, solicitarPermissaoNotificacao } from './composables/usePushNotificacoes.js'
 import { useChat } from './composables/useChat.js'
 import BotaoChat from './components/BotaoChat.vue'
 import ChatAssistente from './components/ChatAssistente.vue'
@@ -155,7 +155,7 @@ watch(
     if (logado) {
       anotacoes.iniciar()
       if (isOnline.value) sincronizarTudo(false)
-      configurarFCM(auth.syncCode)
+      configurarPush(auth.syncCode)
       solicitarPermissaoNotificacao(auth.syncCode)
     } else {
       anotacoes.parar()
