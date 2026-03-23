@@ -39,6 +39,10 @@ async function _enviarFCM(db, syncCode, notif) {
     const msg = {
       token,
       webpush: {
+        headers: {
+          TTL: '3600',      // expira em 1h — evita chegar "muito depois"
+          Urgency: 'high',  // entrega imediata no Android (bypassa Doze)
+        },
         notification: {
           title: '⏰ Plantão',
           body: notif.body || '',

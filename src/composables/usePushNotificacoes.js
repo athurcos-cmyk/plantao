@@ -20,6 +20,7 @@ let _syncCode = null
 let _pushAtivo = false
 let _messaging = null
 let _lastTokenRefresh = 0
+let _onMessageRegistered = false
 
 // Device ID persistente por dispositivo
 function _getDeviceId() {
@@ -179,13 +180,16 @@ async function _registrarFCM(syncCode) {
     _pushAtivo = true
     console.log('[PUSH] FCM token registrado ✓')
 
-    // Handler para mensagens quando app está em foreground (obrigatório)
-    onMessage(messaging, (payload) => {
-      const title = payload?.notification?.title || '⏰ Plantão'
-      const body  = payload?.notification?.body  || ''
-      const tag   = payload?.data?.tag || 'plantao'
-      _mostrarNotificacao(body, tag)
-    })
+    // Registrar onMessage apenas uma vez — evita múltiplos listeners acumulados
+    // a cada refresh de token (visibilitychange, retry, etc.)
+    if (!_onMessageRegistered) {
+      _onMessageRegistered = true
+      onMessage(messaging, (payload) => {
+        const body = payload?.notification?.body || ''
+        const tag  = payload?.data?.tag || payload?.notification?.tag || 'plantao'
+        _mostrarNotificacao(body, tag)
+      })
+    }
 
   } catch (e) {
     _pushAtivo = false
