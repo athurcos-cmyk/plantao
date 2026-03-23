@@ -4,25 +4,24 @@
  * Notificações confiáveis com 3 camadas:
  *
  * 1. setTimeout preciso — dispara no horário exato quando app está aberto
- * 2. FCM (Firebase Cloud Messaging) — funciona com app FECHADO
- *    - Registra token FCM no Firebase (com refresh automático a cada 12h)
- *    - Salva notificações agendadas no Firebase
- *    - Vercel Cron roda a cada minuto e envia push via FCM
- *    - onMessage handler mostra notificação quando app está em foreground
+ * 2. Web Push direto — funciona com app FECHADO (sem FCM, sem intermediário Google)
+ *    - PushManager.subscribe() → subscription salva no Firebase
+ *    - Cron envia via web-push direto pro browser
  * 3. setInterval 60s — safety net caso setTimeout seja cancelado pelo browser
  */
 
-import { getToken, onMessage } from 'firebase/messaging'
 import { ref as dbRef, set, remove, get } from 'firebase/database'
-import { db, messagingReady } from '../firebase.js'
+import { db } from '../firebase.js'
 
 // ── Config ──────────────────────────────────────────────────────────────────────
-const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY || ''
-const TOKEN_REFRESH_MS = 12 * 60 * 60 * 1000 // 12 horas
+// VAPID public key gerada com: npx web-push generate-vapid-keys
+const VAPID_PUBLIC_KEY = 'BF8WQFGzmFAjVJtHyuoUpCOiZcLk3rrSOoC78FCwddzw8r3YE6VG229BxRSJAX7k9fNpe-_ItR30Nag0D9WPZgk'
 
 let _syncCode = null
-let _fcmAtivo = false
-export function fcmAtivo() { return _fcmAtivo }
+let _pushAtivo = false
+export function pushAtivo() { return _pushAtivo }
+// Compatibilidade — views usam fcmAtivo()
+export function fcmAtivo() { return _pushAtivo }
 
 // ── localStorage ────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'plantao_notifs_v2'
@@ -103,13 +102,13 @@ function _inicializarTimers() {
 // Inicializar na carga do módulo
 _inicializarTimers()
 
-// Re-inicializar quando usuário volta à aba (timers podem ter sido cancelados)
+// Re-inicializar quando usuário volta à aba
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
     _inicializarTimers()
-    // Re-registrar token FCM se necessário
-    if (_syncCode && !_fcmAtivo && VAPID_KEY) {
-      _registrarTokenFCM(_syncCode)
+    // Re-registrar push se necessário
+    if (_syncCode && !_pushAtivo) {
+      _registrarPushSubscription(_syncCode)
     }
   }
 })
@@ -134,68 +133,66 @@ setInterval(() => {
   _salvar(restantes)
 }, 60_000)
 
-// ── FCM: onMessage para foreground ──────────────────────────────────────────────
-// Sem isso, FCM recebido com app aberto é ENGOLIDO silenciosamente pelo SDK
-messagingReady.then(msg => {
-  if (!msg) return
-  onMessage(msg, (payload) => {
-    const body = payload.notification?.body || payload.data?.body || ''
-    const tag = payload.data?.tag || payload.notification?.tag || 'plantao'
-    _mostrarNotificacao(body, tag)
-  })
-})
-
-// ── FCM: registro de token com refresh automático ───────────────────────────────
+// ── Web Push: registro de subscription ───────────────────────────────────────────
 let _registrandoPromise = null
-let _tokenRefreshTimer = null
 
-async function _registrarTokenFCM(syncCode) {
-  if (!VAPID_KEY) {
-    console.error('[FCM] VITE_FCM_VAPID_KEY não configurada. Push desativado.')
-    return
+function _urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
   }
+  return outputArray
+}
+
+async function _registrarPushSubscription(syncCode) {
   if (_registrandoPromise) return _registrandoPromise
 
   _registrandoPromise = (async () => {
     try {
-      const msg = await messagingReady
-      if (!msg) {
-        console.warn('[FCM] Messaging não suportado neste navegador/contexto')
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.warn('[PUSH] PushManager não suportado neste navegador')
         return
       }
+
       const swReg = await navigator.serviceWorker.ready
-      const token = await getToken(msg, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg })
 
-      if (token) {
-        let deviceId = localStorage.getItem('plantao_device_id')
-        if (!deviceId) {
-          deviceId = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
-          localStorage.setItem('plantao_device_id', deviceId)
-        }
-        await set(dbRef(db, `fcm_tokens/${syncCode}/${deviceId}`), {
-          token,
-          updatedAt: Date.now(),
+      // Verifica se já tem subscription ativa
+      let subscription = await swReg.pushManager.getSubscription()
+
+      if (!subscription) {
+        // Cria nova subscription com VAPID key
+        subscription = await swReg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: _urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
         })
-        _fcmAtivo = true
-        console.log('[FCM] Token registrado ✓')
-
-        // Agendar refresh automático do token (FCM tokens expiram)
-        if (_tokenRefreshTimer) clearTimeout(_tokenRefreshTimer)
-        _tokenRefreshTimer = setTimeout(() => {
-          _registrandoPromise = null
-          _registrarTokenFCM(syncCode)
-        }, TOKEN_REFRESH_MS)
-
-      } else {
-        console.warn('[FCM] getToken retornou null — push subscription pode ter falhado')
+        console.log('[PUSH] Nova subscription criada')
       }
+
+      // Salva subscription no Firebase (multi-dispositivo)
+      let deviceId = localStorage.getItem('plantao_device_id')
+      if (!deviceId) {
+        deviceId = 'dev_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+        localStorage.setItem('plantao_device_id', deviceId)
+      }
+
+      await set(dbRef(db, `push_subscriptions/${syncCode}/${deviceId}`), {
+        subscription: JSON.stringify(subscription),
+        updatedAt: Date.now(),
+      })
+
+      _pushAtivo = true
+      console.log('[PUSH] Subscription registrada ✓')
+
     } catch (e) {
-      _fcmAtivo = false
-      console.warn('[FCM] Token não registrado:', e.message)
+      _pushAtivo = false
+      console.warn('[PUSH] Subscription não registrada:', e.message)
       // Retry em 30s se falhou
       setTimeout(() => {
         _registrandoPromise = null
-        if (_syncCode) _registrarTokenFCM(syncCode)
+        if (_syncCode) _registrarPushSubscription(syncCode)
       }, 30_000)
     } finally {
       _registrandoPromise = null
@@ -213,7 +210,7 @@ async function _salvarNoFirebase(syncCode, timestamp, body, tag) {
       timestamp, body, tag,
     })
   } catch (e) {
-    console.error('[FCM] Erro ao salvar:', e.message)
+    console.error('[PUSH] Erro ao salvar:', e.message)
   }
 }
 
@@ -241,27 +238,27 @@ async function _removerTodosFirebase(syncCode) {
 // ── Exports públicos ────────────────────────────────────────────────────────────
 
 /**
- * Configura FCM para o usuário logado. Chamar após login.
+ * Configura push para o usuário logado. Chamar após login.
  */
 export async function configurarFCM(syncCode) {
   _syncCode = syncCode
   if (syncCode && notificacoesHabilitadas()) {
-    await _registrarTokenFCM(syncCode)
+    await _registrarPushSubscription(syncCode)
   }
 }
 
 /**
- * Solicita permissão de notificação e registra token FCM.
+ * Solicita permissão de notificação e registra push subscription.
  */
 export async function solicitarPermissaoNotificacao(syncCode) {
   if (!('Notification' in window)) return false
   if (Notification.permission === 'granted') {
-    if (syncCode) await _registrarTokenFCM(syncCode)
+    if (syncCode) await _registrarPushSubscription(syncCode)
     return true
   }
   if (Notification.permission === 'denied') return false
   const perm = await Notification.requestPermission()
-  if (perm === 'granted' && syncCode) await _registrarTokenFCM(syncCode)
+  if (perm === 'granted' && syncCode) await _registrarPushSubscription(syncCode)
   return perm === 'granted'
 }
 
@@ -288,7 +285,7 @@ function _proximoTimestamp(horario) {
 
 /**
  * Agenda uma notificação para HH:MM.
- * Salva em localStorage + timer preciso + Firebase (FCM via cron).
+ * Salva em localStorage + timer preciso + Firebase (cron envia push).
  */
 export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
   if (!notificacoesHabilitadas() || !horario) return
@@ -304,7 +301,7 @@ export async function agendarNotificacaoTarefa(horario, texto, tag = '') {
   // Timer preciso (app aberto — dispara no horário exato)
   _agendarTimer(tagFinal, timestamp, texto)
 
-  // Firebase (FCM quando app fechado — cron envia push)
+  // Firebase (quando app fechado — cron envia push)
   await _salvarNoFirebase(_syncCode, timestamp, texto, tagFinal)
 }
 
@@ -344,7 +341,6 @@ export async function agendarTodasNotificacoes(tarefas) {
  */
 export async function cancelarNotificacao(tag = '') {
   if (!tag) {
-    // Cancela todos os timers
     for (const [, id] of _timers) clearTimeout(id)
     _timers.clear()
     _salvar([])

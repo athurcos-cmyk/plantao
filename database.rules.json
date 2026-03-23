@@ -109,6 +109,12 @@
         }
       }
     },
+    "push_subscriptions": {
+      "$code": {
+        ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",
+        ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true"
+      }
+    },
     "fcm_tokens": {
       "$code": {
         ".read": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true",

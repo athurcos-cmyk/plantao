@@ -1,14 +1,20 @@
 /**
  * api/cron.js
  * Vercel Cron Job chamado a cada minuto.
- * Le notificacoes agendadas no Firebase e envia FCM para o dispositivo.
+ * Lê notificações agendadas no Firebase e envia Web Push direto pro browser.
+ * Sem FCM — usa web-push lib que manda direto pro push server do browser.
  */
 
 import admin from 'firebase-admin'
+import webpush from 'web-push'
 
 let initialized = false
 
 const MAX_ATRASO_ENVIO_MS = 12 * 60 * 60 * 1000
+
+// VAPID keys geradas com: npx web-push generate-vapid-keys
+const VAPID_PUBLIC_KEY = 'BF8WQFGzmFAjVJtHyuoUpCOiZcLk3rrSOoC78FCwddzw8r3YE6VG229BxRSJAX7k9fNpe-_ItR30Nag0D9WPZgk'
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || ''
 
 function initAdmin() {
   if (initialized) return
@@ -19,6 +25,14 @@ function initAdmin() {
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://anotacao-hc-default-rtdb.firebaseio.com',
   })
+
+  if (!VAPID_PRIVATE_KEY) throw new Error('VAPID_PRIVATE_KEY env var nao configurada')
+  webpush.setVapidDetails(
+    'mailto:contato@plantao.net',
+    VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY,
+  )
+
   initialized = true
 }
 
@@ -59,35 +73,52 @@ export default async function handler(req, res) {
       continue
     }
 
-    const tokenSnap = await db.ref(`fcm_tokens/${syncCode}`).get()
-    if (!tokenSnap.exists()) {
-      console.log(`[CRON] ${syncCode}: no FCM token`)
-      continue
-    }
-    const tokenData = tokenSnap.val()
-    // Suporte multi-dispositivo: pode ser string (legado) ou objeto { id: { token, updatedAt } }
-    const tokens = []
-    if (typeof tokenData === 'string') {
-      tokens.push({ id: 'legacy', token: tokenData })
-    } else {
-      for (const [id, val] of Object.entries(tokenData)) {
-        if (typeof val === 'string') tokens.push({ id, token: val })
-        else if (val?.token) tokens.push({ id, token: val.token })
+    // Ler subscriptions web push (novo) OU fcm_tokens (legado)
+    let subscriptions = []
+
+    // Primeiro tenta push_subscriptions (web-push direto)
+    const subSnap = await db.ref(`push_subscriptions/${syncCode}`).get()
+    if (subSnap.exists()) {
+      const subData = subSnap.val()
+      for (const [id, val] of Object.entries(subData)) {
+        try {
+          const sub = JSON.parse(val?.subscription || val)
+          if (sub?.endpoint) {
+            subscriptions.push({ id, subscription: sub, type: 'webpush' })
+          }
+        } catch (_) {}
       }
     }
-    if (tokens.length === 0) {
-      console.log(`[CRON] ${syncCode}: no valid tokens`)
+
+    // Fallback: fcm_tokens legado (para dispositivos que ainda não atualizaram)
+    if (subscriptions.length === 0) {
+      const tokenSnap = await db.ref(`fcm_tokens/${syncCode}`).get()
+      if (tokenSnap.exists()) {
+        const tokenData = tokenSnap.val()
+        if (typeof tokenData === 'string') {
+          subscriptions.push({ id: 'legacy', token: tokenData, type: 'fcm' })
+        } else {
+          for (const [id, val] of Object.entries(tokenData)) {
+            if (typeof val === 'string') subscriptions.push({ id, token: val, type: 'fcm' })
+            else if (val?.token) subscriptions.push({ id, token: val.token, type: 'fcm' })
+          }
+        }
+      }
+    }
+
+    if (subscriptions.length === 0) {
+      console.log(`[CRON] ${syncCode}: no push subscriptions or tokens`)
       continue
     }
-    console.log(`[CRON] ${syncCode}: ${tokens.length} token(s)`)
+    console.log(`[CRON] ${syncCode}: ${subscriptions.length} subscription(s)`)
 
     for (const [key, _notif] of Object.entries(entry.agendadas)) {
       const notifRef = db.ref(`notificacoes_agendadas/${syncCode}/agendadas/${key}`)
-      
-      // ⚠️ RE-LER a notificação do Firebase (pode ter mudado enquanto iterava)
+
+      // RE-LER a notificação do Firebase (pode ter mudado enquanto iterava)
       const freshSnap = await notifRef.get()
       const notif = freshSnap.val()
-      
+
       console.log(`[CRON] ${syncCode}/${key}: ts=${notif?.timestamp}, now=${agora}`)
 
       if (!notif?.timestamp) {
@@ -116,41 +147,70 @@ export default async function handler(req, res) {
       console.log(`[CRON] ${syncCode}/${key}: ready to send (${Math.round((agora - notif.timestamp) / 1000)}s ago)`)
       totalProcessados++
 
-      console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}" to ${tokens.length} device(s)`)
+      console.log(`[CRON] ${syncCode}/${key}: sending "${notif.body || ''}" to ${subscriptions.length} device(s)`)
       totalEnviados++
 
-      for (const { id: tokenId, token } of tokens) {
-        envios.push(
-          admin.messaging().send({
-            token,
-            notification: { title: '⏰ Plantão', body: notif.body || '' },
-            webpush: {
-              notification: {
-                title: '⏰ Plantão',
-                body: notif.body || '',
-                icon: '/icons/icon-192.png',
-                badge: '/icons/icon-192.png',
-                tag: notif.tag || 'plantao',
+      const pushPayload = JSON.stringify({
+        title: '⏰ Plantão',
+        body: notif.body || '',
+        tag: notif.tag || 'plantao',
+        icon: '/icons/icon-192.png',
+        url: '/',
+      })
+
+      for (const sub of subscriptions) {
+        if (sub.type === 'webpush') {
+          // Web Push direto — sem intermediário
+          envios.push(
+            webpush.sendNotification(sub.subscription, pushPayload, { TTL: 3600 })
+              .then(() => {
+                console.log(`[CRON] ${syncCode}/${key}@${sub.id}: web-push sent ok`)
+              })
+              .catch(async (err) => {
+                console.error(`[CRON] ${syncCode}/${key}@${sub.id}: web-push error - ${err.statusCode} ${err.body}`)
+                erros.push({ syncCode, key, id: sub.id, error: err.body || err.message })
+                // 404 ou 410 = subscription expirou, remover
+                if (err.statusCode === 404 || err.statusCode === 410) {
+                  console.log(`[CRON] ${syncCode}@${sub.id}: subscription expirada, removendo`)
+                  await db.ref(`push_subscriptions/${syncCode}/${sub.id}`).remove().catch(() => {})
+                }
+              })
+          )
+        } else {
+          // FCM legado (fallback para dispositivos antigos)
+          envios.push(
+            admin.messaging().send({
+              token: sub.token,
+              notification: { title: '⏰ Plantão', body: notif.body || '' },
+              webpush: {
+                notification: {
+                  title: '⏰ Plantão',
+                  body: notif.body || '',
+                  icon: '/icons/icon-192.png',
+                  badge: '/icons/icon-192.png',
+                  tag: notif.tag || 'plantao',
+                },
+                fcmOptions: { link: '/' },
               },
-              fcmOptions: { link: '/' },
-            },
-          })
-            .then(async (msgId) => {
-              console.log(`[CRON] ${syncCode}/${key}@${tokenId}: sent ok, msgId=${msgId}`)
             })
-            .catch(async (err) => {
-              console.error(`[CRON] ${syncCode}/${key}@${tokenId}: send error - ${err.message}`)
-              erros.push({ syncCode, key, tokenId, error: err.message })
-              const tokenInvalido = err.message?.includes('registration-token-not-registered')
-                || err.message?.includes('invalid-registration-token')
-                || err.message?.includes('Requested entity was not found')
-              if (tokenInvalido) {
-                console.log(`[CRON] ${syncCode}@${tokenId}: token inválido, removendo`)
-                await db.ref(`fcm_tokens/${syncCode}/${tokenId}`).remove().catch(() => {})
-              }
-            })
-        )
+              .then((msgId) => {
+                console.log(`[CRON] ${syncCode}/${key}@${sub.id}: fcm sent ok, msgId=${msgId}`)
+              })
+              .catch(async (err) => {
+                console.error(`[CRON] ${syncCode}/${key}@${sub.id}: fcm error - ${err.message}`)
+                erros.push({ syncCode, key, id: sub.id, error: err.message })
+                const tokenInvalido = err.message?.includes('registration-token-not-registered')
+                  || err.message?.includes('invalid-registration-token')
+                  || err.message?.includes('Requested entity was not found')
+                if (tokenInvalido) {
+                  console.log(`[CRON] ${syncCode}@${sub.id}: token inválido, removendo`)
+                  await db.ref(`fcm_tokens/${syncCode}/${sub.id}`).remove().catch(() => {})
+                }
+              })
+          )
+        }
       }
+
       // Remove notificação após enviar para todos os dispositivos
       envios.push(
         Promise.resolve().then(async () => {
@@ -168,18 +228,14 @@ export default async function handler(req, res) {
   console.log(`[CRON] done. processados=${totalProcessados}, enviados=${totalEnviados}, errors=${erros.length}`)
 
   // ─── Email Dia 3 ───────────────────────────────────────────────────────────
-  // Envia um email de dicas para usuários criados há exatamente 3 dias (janela 1h).
-  // A janela de 1h garante cobertura mesmo com variações de timing do cron.
-  // Flag email_dia3_enviado é setada ANTES do envio para evitar duplicatas.
-  // Falha silenciosa — não afeta o fluxo principal de FCM.
   const RESEND_KEY = process.env.RESEND_API_KEY
   if (RESEND_KEY) {
     try {
       const DIA3_MS = 3 * 24 * 60 * 60 * 1000
-      const JANELA_MS = 60 * 60 * 1000 // 1h de tolerância
+      const JANELA_MS = 60 * 60 * 1000
       const now = Date.now()
-      const limiteSuperior = now - DIA3_MS        // 3 dias atrás
-      const limiteInferior = now - DIA3_MS - JANELA_MS  // 3 dias e 1h atrás
+      const limiteSuperior = now - DIA3_MS
+      const limiteInferior = now - DIA3_MS - JANELA_MS
 
       const usuariosSnap = await db.ref('usuarios').get()
       if (usuariosSnap.exists()) {
@@ -191,14 +247,12 @@ export default async function handler(req, res) {
           const emailUsr = usuario?.email
           const jaEnviado = usuario?.email_dia3_enviado
 
-          // Condição: criado na janela de 3d±1h, sem email enviado ainda, com email válido
           if (!criadoEm || jaEnviado || !emailUsr || !emailUsr.includes('@')) continue
           if (criadoEm > limiteSuperior || criadoEm <= limiteInferior) continue
 
           const nomeUsuario = (usuario.nome || '').split(' ')[0] || 'enfermeiro(a)'
           console.log(`[CRON/DIA3] ${syncCode}: enviando email dia 3 para ${emailUsr}`)
 
-          // Setar flag PRIMEIRO (idempotência)
           await db.ref(`usuarios/${syncCode}/email_dia3_enviado`).set(true)
 
           enviosDia3.push(

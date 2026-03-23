@@ -1,27 +1,32 @@
 /**
  * push-handlers.js — importado pelo service worker gerado pelo Workbox
- * Gerencia notificações push do FCM e do agendador local.
- * v2 — FCM via Vercel Cron + firebase-admin
+ * Gerencia notificações push e cliques.
+ * v3 — Web Push direto (sem FCM)
  */
 
-// ── Push recebido do FCM (via Vercel Cron + Firebase Admin) ──────────────────
+// ── Push recebido ────────────────────────────────────────────────────────────
 self.addEventListener('push', (event) => {
-  const payload = event.data?.json?.() ?? {}
+  let payload = {}
+  try {
+    payload = event.data?.json?.() ?? {}
+  } catch (_) {
+    // fallback: tenta como texto
+    try { payload = { body: event.data?.text?.() || '' } } catch (_) {}
+  }
 
-  // FCM envia notification sob .notification, agendador local envia flat
-  const title  = payload.notification?.title  || payload.title  || '⏰ Plantão'
-  const body   = payload.notification?.body   || payload.body   || ''
-  const tag    = payload.data?.tag            || payload.tag    || 'plantao'
-  const url    = payload.data?.url            || payload.url    || '/'
+  const title = payload.title || '⏰ Plantão'
+  const body  = payload.body  || ''
+  const tag   = payload.tag   || 'plantao'
+  const url   = payload.url   || '/'
 
   event.waitUntil(
     self.registration.showNotification(title, {
       body,
-      icon:      '/icons/icon-192.png',
-      badge:     '/icons/icon-192.png',
+      icon:     '/icons/icon-192.png',
+      badge:    '/icons/icon-192.png',
       tag,
-      renotify:  true,
-      data:      { url },
+      renotify: true,
+      data:     { url },
     })
   )
 })
