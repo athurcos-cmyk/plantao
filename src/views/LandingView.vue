@@ -353,6 +353,7 @@ function copiarUrl() {
 }
 
 function acessarNoPc() {
+  try { localStorage.setItem('onboarding_visto', '1') } catch {}
   window.location.href = appUrl
 }
 
