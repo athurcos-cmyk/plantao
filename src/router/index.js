@@ -95,6 +95,12 @@ const routes = [
     component: () => import('../views/ConfiguracoesView.vue'),
     meta: { requiresAuth: true }
   },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('../views/AdminView.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
+  },
 ]
 
 const router = createRouter({
@@ -117,6 +123,10 @@ router.beforeEach(async (to) => {
 
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return { name: 'login' }
+  }
+
+  if (to.meta.requiresAdmin && auth.userEmail !== 'a.thurcos@gmail.com') {
+    return { name: 'dashboard' }
   }
 })
 
