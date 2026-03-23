@@ -24,6 +24,24 @@
         <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">🗑️ Limpar plantão</button>
       </div>
 
+      <!-- Dica de notificação em background -->
+      <div v-if="temPendComHorario() && !dicaNotifFechada" class="dica-notif">
+        <div class="dica-notif-header">
+          <span class="dica-notif-icon">💡</span>
+          <strong>Dica: notificações com app fechado</strong>
+          <button class="dica-notif-fechar" @click="fecharDicaNotif">&times;</button>
+        </div>
+        <p class="dica-notif-texto">
+          Para receber notificações com o app fechado ou minimizado, configure no seu celular:
+        </p>
+        <ol class="dica-notif-passos">
+          <li><strong>Configurações</strong> → Bateria → Otimização de bateria</li>
+          <li>Encontre o <strong>Chrome</strong> (ou seu navegador)</li>
+          <li>Selecione <strong>"Sem restrição"</strong> ou <strong>"Não otimizar"</strong></li>
+        </ol>
+        <p class="dica-notif-sub">Sem isso, o Android impede que notificações cheguem com o app em segundo plano.</p>
+      </div>
+
       <!-- Empty state -->
       <div v-if="store.pacientes.length === 0" class="empty-pac">
         <div class="empty-pac-icon">🛏️</div>
@@ -206,6 +224,8 @@ import {
   cancelarNotificacao,
   configurarFCM,
   limparNotificacoesPorPrefixo,
+  notificacoesHabilitadas,
+  fcmAtivo,
 } from '../composables/usePushNotificacoes.js'
 
 const { showToast } = useToast()
@@ -314,6 +334,17 @@ function urgenciaPend(pend) {
 const excluindo = ref(null)
 const excluindoTodos = ref(false)
 const helpAberto = ref(false)
+const dicaNotifFechada = ref(localStorage.getItem('plantao_dica_notif_fechada') === '1')
+
+function fecharDicaNotif() {
+  dicaNotifFechada.value = true
+  localStorage.setItem('plantao_dica_notif_fechada', '1')
+}
+
+// Tem pendência com horário ativo?
+function temPendComHorario() {
+  return store.pacientes.some(p => p.pendencias.some(pd => pd.horario && !pd.feito))
+}
 
 const helpItens = [
   { icone: '➕', titulo: 'Cadastrar paciente', desc: 'Toque em "+ Adicionar paciente" ou no botão azul (+) para cadastrar. O leito é opcional mas ajuda na organização e aparece como badge azul.' },
@@ -439,6 +470,48 @@ async function excluirPend(pac, pend) {
 </script>
 
 <style scoped>
+/* Dica notificação background */
+.dica-notif {
+  background: var(--info-muted, rgba(56, 178, 172, 0.1));
+  border: 1px solid var(--info, #38b2ac);
+  border-radius: var(--radius-lg, 12px);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.dica-notif-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.dica-notif-icon { font-size: 1rem; }
+.dica-notif-fechar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+.dica-notif-texto { margin: 0 0 8px; color: var(--text-dim); }
+.dica-notif-passos {
+  margin: 0 0 8px;
+  padding-left: 20px;
+  color: var(--text);
+}
+.dica-notif-passos li { margin-bottom: 4px; }
+.dica-notif-sub {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 .btn-icon {
   background: none; border: none; color: var(--text-dim);
   cursor: pointer; padding: 6px; border-radius: 8px;
