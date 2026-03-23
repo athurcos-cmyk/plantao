@@ -298,29 +298,22 @@ async function confirmarDelete() {
   erro.value = ''
 
   try {
-    const syncCode = auth.syncCode
     const user = firebaseAuth.currentUser
-    const uid = user.uid
+    const idToken = await user.getIdToken()
 
     // 0. Email de despedida (timeout 5s — nunca bloqueia o delete)
     try {
-      const idToken = await user.getIdToken()
       await Promise.race([
         fetch('/api/goodbye', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${idToken}`,
-          },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
           body: JSON.stringify({}),
         }),
         new Promise(resolve => setTimeout(resolve, 5000)),
       ])
-    } catch (_) { /* falha silenciosa — o delete sempre prossegue */ }
+    } catch (_) { /* falha silenciosa */ }
 
-    // 1. Deletar dados via servidor (firebase-admin bypassa regras de segurança)
-    //    Garante que owners, organizador, uid_map, etc. sejam deletados sem falha silenciosa.
-    const idToken = await user.getIdToken()
+    // 1. Deletar todos os dados via servidor (firebase-admin bypassa regras de segurança)
     const deleteRes = await fetch('/api/delete-account', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${idToken}` },
@@ -330,14 +323,14 @@ async function confirmarDelete() {
       throw new Error(errBody.error || `delete-account falhou: ${deleteRes.status}`)
     }
 
-    // 2. Limpar localStorage
+    // 2. Limpar localStorage (FCM token, syncCode, cache)
     try { localStorage.clear() } catch {}
 
     // 3. Deletar conta do Firebase Auth
     await deleteUser(user)
 
-    // 4. Redirecionar
-    router.push({ name: 'login' })
+    // 4. Recarregar a página completamente — limpa todo estado Vue/Pinia/listeners/FCM
+    window.location.replace('/')
   } catch (e) {
     if (e.code === 'auth/requires-recent-login') {
       erro.value = 'Faça login novamente antes de deletar a conta.'
@@ -345,7 +338,6 @@ async function confirmarDelete() {
       erro.value = 'Erro ao deletar conta. Tente novamente.'
       console.error('[CONFIG] delete error:', e)
     }
-  } finally {
     deletando.value = false
   }
 }
