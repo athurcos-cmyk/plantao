@@ -122,15 +122,20 @@ export default async function handler(req, res) {
     try {
       const usuariosSnap = await db.ref('usuarios').get()
       if (usuariosSnap.exists()) {
-        const envios = []
+        const destinatarios = []
         usuariosSnap.forEach((snap) => {
           const u = snap.val() || {}
           const email = u.email
           if (!email || !email.includes('@')) return
+          destinatarios.push({ email, nome: (u.nome || '').split(' ')[0] || 'enfermeiro(a)' })
+        })
 
-          const nome = (u.nome || '').split(' ')[0] || 'enfermeiro(a)'
-
-          envios.push(
+        // Envio em lotes de 3 com 350ms entre lotes — evita HTTP 429 do Resend
+        const LOTE = 3
+        const PAUSA = 350
+        for (let i = 0; i < destinatarios.length; i += LOTE) {
+          const lote = destinatarios.slice(i, i + LOTE)
+          await Promise.allSettled(lote.map(({ email, nome }) =>
             fetch('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
@@ -149,9 +154,11 @@ export default async function handler(req, res) {
                 else { erros.push({ tipo: 'email', email, error: `HTTP ${r.status}` }) }
               })
               .catch(e => erros.push({ tipo: 'email', email, error: e.message }))
-          )
-        })
-        await Promise.allSettled(envios)
+          ))
+          if (i + LOTE < destinatarios.length) {
+            await new Promise(r => setTimeout(r, PAUSA))
+          }
+        }
       }
     } catch (e) {
       console.error('[BROADCAST] email error:', e.message)
