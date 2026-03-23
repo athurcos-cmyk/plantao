@@ -275,7 +275,14 @@ export const useAuthStore = defineStore('auth', () => {
   async function _vincularGoogleSeNovo(user) {
     const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
     if (mapSnap.exists()) {
-      return mapSnap.val() // usuário existente
+      const code = mapSnap.val()
+      // Verificar se owners ainda existe (conta pode ter sido excluída mas uid_map sobrou)
+      const ownerSnap = await get(dbRef(db, `owners/${code}/${user.uid}`))
+      if (ownerSnap.exists()) {
+        return code // conta existente e válida
+      }
+      // uid_map existe mas owners não — dados de conta excluída, tratar como novo usuário
+      console.warn('[Auth] uid_map encontrado mas owners ausente — nova conta')
     }
     // Novo usuário — criar registros em paralelo
     const code = _gerarSyncCodeUnico()

@@ -126,7 +126,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import { auth as firebaseAuth, db } from '../firebase.js'
-import { ref as dbRef, remove, set } from 'firebase/database'
+import { ref as dbRef, set } from 'firebase/database'
 import {
   updateProfile,
   EmailAuthProvider,
@@ -318,31 +318,17 @@ async function confirmarDelete() {
       ])
     } catch (_) { /* falha silenciosa — o delete sempre prossegue */ }
 
-    // 1. Deletar dados do Firebase — ORDEM IMPORTA:
-    //    deletar dados primeiro (enquanto owners ainda existe para passar nas regras),
-    //    depois owners e uid_map (que têm regras mais restritivas).
-    const dataPaths = [
-      `usuarios/${syncCode}`,
-      `anotacoes/${syncCode}`,
-      `anotacoes_hc/${syncCode}`,
-      `pacientes/${syncCode}`,
-      `organizador/${syncCode}`,
-      `encaminhamento/${syncCode}`,
-      `livres/${syncCode}`,
-      `curativo/${syncCode}`,
-      `fcm_tokens/${syncCode}`,
-      `push_subscriptions/${syncCode}`,
-      `notificacoes_agendadas/${syncCode}`,
-      `configuracoes/${syncCode}`,
-      `feedback/${syncCode}`,
-    ]
-    await Promise.all(dataPaths.map(p => remove(dbRef(db, p)).catch(() => {})))
-
-    // Owners e uid_map por último (sem eles as regras de outros nós falhariam)
-    await Promise.all([
-      remove(dbRef(db, `owners/${syncCode}`)).catch(() => {}),
-      remove(dbRef(db, `uid_map/${uid}`)).catch(() => {}),
-    ])
+    // 1. Deletar dados via servidor (firebase-admin bypassa regras de segurança)
+    //    Garante que owners, organizador, uid_map, etc. sejam deletados sem falha silenciosa.
+    const idToken = await user.getIdToken()
+    const deleteRes = await fetch('/api/delete-account', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${idToken}` },
+    })
+    if (!deleteRes.ok) {
+      const errBody = await deleteRes.json().catch(() => ({}))
+      throw new Error(errBody.error || `delete-account falhou: ${deleteRes.status}`)
+    }
 
     // 2. Limpar localStorage
     try { localStorage.clear() } catch {}
