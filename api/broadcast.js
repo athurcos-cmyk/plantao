@@ -130,13 +130,10 @@ export default async function handler(req, res) {
           destinatarios.push({ email, nome: (u.nome || '').split(' ')[0] || 'enfermeiro(a)' })
         })
 
-        // Envio em lotes de 3 com 350ms entre lotes — evita HTTP 429 do Resend
-        const LOTE = 3
-        const PAUSA = 350
-        for (let i = 0; i < destinatarios.length; i += LOTE) {
-          const lote = destinatarios.slice(i, i + LOTE)
-          await Promise.allSettled(lote.map(({ email, nome }) =>
-            fetch('https://api.resend.com/emails', {
+        // Envio sequencial com 500ms entre cada — evita HTTP 429 do Resend
+        for (const { email, nome } of destinatarios) {
+          try {
+            const r = await fetch('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${RESEND_KEY}`,
@@ -149,15 +146,12 @@ export default async function handler(req, res) {
                 html: _htmlBroadcast(nome, tituloPush, mensagem),
               }),
             })
-              .then(r => {
-                if (r.ok) { emailsEnviados++ }
-                else { erros.push({ tipo: 'email', email, error: `HTTP ${r.status}` }) }
-              })
-              .catch(e => erros.push({ tipo: 'email', email, error: e.message }))
-          ))
-          if (i + LOTE < destinatarios.length) {
-            await new Promise(r => setTimeout(r, PAUSA))
+            if (r.ok) { emailsEnviados++ }
+            else { erros.push({ tipo: 'email', email, error: `HTTP ${r.status}` }) }
+          } catch (e) {
+            erros.push({ tipo: 'email', email, error: e.message })
           }
+          await new Promise(r => setTimeout(r, 500))
         }
       }
     } catch (e) {
