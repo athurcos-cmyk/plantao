@@ -43,15 +43,16 @@ async function _enviarFCM(db, syncCode, notif) {
           TTL: '3600',      // expira em 1h — evita chegar "muito depois"
           Urgency: 'high',  // entrega imediata no Android (bypassa Doze)
         },
-        notification: {
+        // IMPORTANTE: data-only, SEM notification.
+        // Com webpush.notification, o Firebase SDK no SW encaminha para
+        // a aba via postMessage ao invés de exibir — se a aba estiver
+        // congelada (minimizada), a notificação é perdida.
+        // Com data-only, o push handler direto no SW exibe sempre.
+        data: {
           title: '⏰ Plantão',
           body: notif.body || '',
-          icon: '/icons/icon-192.png',
-          badge: '/icons/icon-192.png',
           tag: notif.tag || 'plantao',
-          renotify: true,
         },
-        fcmOptions: { link: '/' },
       },
     }
 

@@ -9,7 +9,7 @@
  */
 
 import { ref as dbRef, set, remove, get } from 'firebase/database'
-import { getMessaging, getToken, onMessage } from 'firebase/messaging'
+import { getMessaging, getToken } from 'firebase/messaging'
 import { app, db } from '../firebase.js'
 
 // ── Config FCM ────────────────────────────────────────────────────────────────
@@ -20,7 +20,6 @@ let _syncCode = null
 let _pushAtivo = false
 let _messaging = null
 let _lastTokenRefresh = 0
-let _onMessageRegistered = false
 
 // Device ID persistente por dispositivo
 function _getDeviceId() {
@@ -179,17 +178,9 @@ async function _registrarFCM(syncCode) {
     _lastTokenRefresh = Date.now()
     _pushAtivo = true
     console.log('[PUSH] FCM token registrado ✓')
-
-    // Registrar onMessage apenas uma vez — evita múltiplos listeners acumulados
-    // a cada refresh de token (visibilitychange, retry, etc.)
-    if (!_onMessageRegistered) {
-      _onMessageRegistered = true
-      onMessage(messaging, (payload) => {
-        const body = payload?.notification?.body || ''
-        const tag  = payload?.data?.tag || payload?.notification?.tag || 'plantao'
-        _mostrarNotificacao(body, tag)
-      })
-    }
+    // onMessage removido — o push handler direto no SW exibe as notificações
+    // em qualquer estado (aberto, minimizado, fechado). Sem onMessage,
+    // o Firebase SDK não encaminha push para aba congelada.
 
   } catch (e) {
     _pushAtivo = false
