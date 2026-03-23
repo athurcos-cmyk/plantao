@@ -131,6 +131,7 @@
     </main>
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Plantão" :itens="helpItens" />
+    <TourDashboard />
   </div>
 </template>
 
@@ -147,6 +148,7 @@ import { useOnlineStatus } from '../composables/useOnlineStatus.js'
 import { db } from '../firebase.js'
 import { ref as dbRef, push, remove } from 'firebase/database'
 import HelpModal from '../components/HelpModal.vue'
+import TourDashboard from '../components/TourDashboard.vue'
 
 const router   = useRouter()
 const auth     = useAuthStore()
