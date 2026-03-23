@@ -35,8 +35,9 @@ export default defineConfig({
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        // OneSignal usa SW próprio — não deixar Workbox sobrescrever
-        globIgnores: ['OneSignalSDKWorker.js'],
+        // firebase-messaging-sw.js importado via importScripts — não precachear
+        globIgnores: ['firebase-messaging-sw.js'],
+        importScripts: ['/firebase-messaging-sw.js'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

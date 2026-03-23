@@ -37,14 +37,6 @@
         </button>
       </div>
 
-      <!-- Aviso push não disponível neste dispositivo -->
-      <transition name="fade">
-        <div v-if="semPush && store.plantao" class="aviso-sem-push">
-          <span>🔔</span>
-          <span>Notificações funcionam <strong>só com o app aberto</strong> neste dispositivo</span>
-        </div>
-      </transition>
-
       <!-- Active shift -->
       <div v-if="store.plantao">
 
@@ -248,32 +240,16 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOrganizadorStore } from '../stores/organizador.js'
 import HelpModal from '../components/HelpModal.vue'
-import { useAuthStore } from '../stores/auth.js'
-import {
-  solicitarPermissaoNotificacao,
-  agendarTodasNotificacoes,
-  configurarPush,
-  pushAtivo,
-} from '../composables/usePushNotificacoes.js'
 
 const router = useRouter()
 const store  = useOrganizadorStore()
-const semPush = ref(false) // true = push não disponível neste dispositivo
-const auth   = useAuthStore()
 
-onMounted(async () => {
+onMounted(() => {
   store.iniciar()
-  await solicitarPermissaoNotificacao(auth.syncCode)
-  await configurarPush(auth.syncCode)
-  semPush.value = !pushAtivo()
-})
-
-onUnmounted(() => {
-  notifIds.value.forEach(id => clearTimeout(id))
 })
 
 // Reactive state
@@ -283,7 +259,6 @@ const novaProxima      = ref('')
 const confirmarNovo    = ref(false)
 const modalTemplate    = ref(false)
 const novoTemplateTxt  = ref('')
-const notifIds         = ref([])
 const helpAberto       = ref(false)
 
 const helpItens = [
@@ -300,16 +275,6 @@ const helpItens = [
 const concluidas = computed(() => store.plantao?.tarefas.filter(t => t.feito).length ?? 0)
 const total      = computed(() => store.plantao?.tarefas.length ?? 0)
 const progressoPct = computed(() => total.value ? Math.round(concluidas.value / total.value * 100) : 0)
-
-// Watch tarefas: re-agenda notificações sempre que mudar
-watch(
-  () => store.plantao?.tarefas,
-  (tarefas) => {
-    agendarNotificacoes()          // fallback inline (legado)
-    agendarTodasNotificacoes(tarefas ?? []) // via SW (background/app fechado)
-  },
-  { deep: true }
-)
 
 function urgenciaClass(tarefa) {
   if (!tarefa.horario || tarefa.feito) return ''
@@ -328,24 +293,6 @@ function formatarInicio(ts) {
   const dia = d.getDate().toString().padStart(2, '0')
   const mes = (d.getMonth() + 1).toString().padStart(2, '0')
   return `Iniciado às ${hora} · ${dias[d.getDay()]}, ${dia}/${mes}`
-}
-
-function agendarNotificacoes() {
-  notifIds.value.forEach(id => clearTimeout(id))
-  notifIds.value = []
-  if (!store.plantao?.tarefas || typeof Notification === 'undefined' || Notification.permission !== 'granted') return
-  store.plantao.tarefas.forEach(tarefa => {
-    if (tarefa.feito || !tarefa.horario) return
-    const [h, m] = tarefa.horario.split(':').map(Number)
-    const alvo = new Date(); alvo.setHours(h, m, 0, 0)
-    const diff = alvo - new Date()
-    if (diff > 0) {
-      const id = setTimeout(() => {
-        new Notification('⏰ Plantão', { body: tarefa.texto })
-      }, diff)
-      notifIds.value.push(id)
-    }
-  })
 }
 
 async function adicionarAvulsa() {
@@ -373,21 +320,6 @@ async function adicionarTemplate() {
 </script>
 
 <style scoped>
-/* Aviso push não disponível */
-.aviso-sem-push {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  background: var(--warning-muted);
-  border: 1px solid rgba(255, 193, 7, 0.2);
-  border-radius: 10px;
-  padding: 9px 14px;
-  margin-bottom: 12px;
-}
-.aviso-sem-push strong { color: var(--text); }
-
 /* Header icon buttons */
 .btn-icon {
   background: none; border: none; color: var(--text-dim);

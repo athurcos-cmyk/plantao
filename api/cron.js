@@ -1,8 +1,8 @@
 /**
  * api/cron.js
  * Vercel Cron Job chamado a cada minuto.
- * Lê notificações agendadas no Firebase e envia via OneSignal Web Push.
- * OneSignal gerencia subscriptions por external_user_id (= syncCode).
+ * Lê notificações agendadas no Firebase e envia via FCM (firebase-admin).
+ * Tokens FCM ficam em fcm_tokens/{syncCode}/{deviceId}/token
  */
 
 import admin from 'firebase-admin'
@@ -10,9 +10,6 @@ import admin from 'firebase-admin'
 let initialized = false
 
 const MAX_ATRASO_ENVIO_MS = 12 * 60 * 60 * 1000
-
-const ONESIGNAL_APP_ID      = process.env.ONESIGNAL_APP_ID      || ''
-const ONESIGNAL_REST_API_KEY = process.env.ONESIGNAL_REST_API_KEY || ''
 
 function initAdmin() {
   if (initialized) return
@@ -23,42 +20,52 @@ function initAdmin() {
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://anotacao-hc-default-rtdb.firebaseio.com',
   })
-
-  if (!ONESIGNAL_APP_ID)       throw new Error('ONESIGNAL_APP_ID env var nao configurada')
-  if (!ONESIGNAL_REST_API_KEY) throw new Error('ONESIGNAL_REST_API_KEY env var nao configurada')
-
   initialized = true
 }
 
-// Envia push via OneSignal REST API para todos os dispositivos do syncCode
-async function _enviarOneSignal(syncCode, notif) {
-  const res = await fetch('https://onesignal.com/api/v1/notifications', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Key ${ONESIGNAL_REST_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      app_id: ONESIGNAL_APP_ID,
-      // Envia para todos os dispositivos do usuário identificado pelo syncCode
-      include_external_user_ids: [syncCode],
-      channel_for_external_user_ids: 'push',
-      contents: { en: notif.body || '' },
-      headings: { en: '⏰ Plantão' },
-      web_push_topic: notif.tag || 'plantao',
-      url: 'https://plantao.net',
-      web_url: 'https://plantao.net',
-      isAnyWeb: true,
-      ttl: 3600,
-    }),
-  })
-
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`OneSignal ${res.status}: ${err}`)
+// Envia push via FCM para todos os dispositivos registrados do syncCode
+async function _enviarFCM(db, syncCode, notif) {
+  const tokensSnap = await db.ref(`fcm_tokens/${syncCode}`).get()
+  if (!tokensSnap.exists()) {
+    console.log(`[CRON] ${syncCode}: sem tokens FCM registrados`)
+    return
   }
 
-  return await res.json()
+  const envios = []
+  tokensSnap.forEach((deviceSnap) => {
+    const token = deviceSnap.val()?.token
+    if (!token) return
+
+    const msg = {
+      token,
+      webpush: {
+        notification: {
+          title: '⏰ Plantão',
+          body: notif.body || '',
+          icon: '/icons/icon-192.png',
+          badge: '/icons/icon-192.png',
+          tag: notif.tag || 'plantao',
+          renotify: true,
+        },
+        fcmOptions: { link: '/' },
+      },
+    }
+
+    envios.push(
+      admin.messaging().send(msg)
+        .then(id => console.log(`[CRON] ${syncCode}/${deviceSnap.key}: FCM ok, id=${id}`))
+        .catch(e => {
+          console.error(`[CRON] ${syncCode}/${deviceSnap.key}: FCM error — ${e.message}`)
+          // Token inválido: remover do Firebase
+          if (e.code === 'messaging/registration-token-not-registered' ||
+              e.code === 'messaging/invalid-registration-token') {
+            db.ref(`fcm_tokens/${syncCode}/${deviceSnap.key}`).remove().catch(() => {})
+          }
+        })
+    )
+  })
+
+  await Promise.allSettled(envios)
 }
 
 export default async function handler(req, res) {
@@ -135,12 +142,9 @@ export default async function handler(req, res) {
       totalEnviados++
 
       envios.push(
-        _enviarOneSignal(syncCode, notif)
-          .then(result => {
-            console.log(`[CRON] ${syncCode}/${key}: OneSignal ok, id=${result.id}`)
-          })
+        _enviarFCM(db, syncCode, notif)
           .catch(err => {
-            console.error(`[CRON] ${syncCode}/${key}: OneSignal error —`, err.message)
+            console.error(`[CRON] ${syncCode}/${key}: FCM error —`, err.message)
             erros.push({ syncCode, key, error: err.message })
           })
       )

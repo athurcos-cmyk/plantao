@@ -1,24 +1,35 @@
 /**
  * usePushNotificacoes.js
  *
- * Notificações confiáveis com 3 camadas:
+ * Notificações com 3 camadas de confiabilidade:
  *
  * 1. setTimeout preciso — dispara no horário exato quando app está aberto
- * 2. OneSignal Web Push — funciona com app FECHADO (sem VAPID manual, sem FCM)
- *    - OneSignal gerencia o service worker e as subscriptions
- *    - Cron envia via REST API do OneSignal usando syncCode como external_user_id
+ * 2. FCM via cron (app fechado/minimizado) — firebase-admin → FCM → Service Worker
  * 3. setInterval 60s — safety net caso setTimeout seja cancelado pelo browser
  */
 
 import { ref as dbRef, set, remove, get } from 'firebase/database'
-import { db } from '../firebase.js'
+import { getMessaging, getToken, onMessage } from 'firebase/messaging'
+import { app, db } from '../firebase.js'
 
-// ── Config OneSignal ────────────────────────────────────────────────────────────
-const ONESIGNAL_APP_ID = import.meta.env.VITE_ONESIGNAL_APP_ID || ''
+// ── Config FCM ────────────────────────────────────────────────────────────────
+const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY || ''
+const TOKEN_REFRESH_MS = 12 * 60 * 60 * 1000 // 12h
 
 let _syncCode = null
 let _pushAtivo = false
-let _osInitialized = false
+let _messaging = null
+let _lastTokenRefresh = 0
+
+// Device ID persistente por dispositivo
+function _getDeviceId() {
+  let id = localStorage.getItem('plantao_device_id')
+  if (!id) {
+    id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)
+    localStorage.setItem('plantao_device_id', id)
+  }
+  return id
+}
 
 export function pushAtivo() { return _pushAtivo }
 
@@ -102,6 +113,10 @@ _inicializarTimers()
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible') {
     _inicializarTimers()
+    // Re-registra token FCM a cada 12h
+    if (_syncCode && (Date.now() - _lastTokenRefresh > TOKEN_REFRESH_MS)) {
+      _registrarFCM(_syncCode).catch(() => {})
+    }
   }
 })
 
@@ -123,56 +138,62 @@ setInterval(() => {
   _salvar(restantes)
 }, 60_000)
 
-// ── OneSignal: helpers ─────────────────────────────────────────────────────────
-
-// Executa uma função no contexto do OneSignal SDK (após init)
-function _runOneSignal(fn) {
-  return new Promise((resolve, reject) => {
-    if (!ONESIGNAL_APP_ID) {
-      reject(new Error('VITE_ONESIGNAL_APP_ID não configurado'))
-      return
-    }
-    window.OneSignalDeferred = window.OneSignalDeferred || []
-    window.OneSignalDeferred.push(async (OneSignal) => {
-      try { resolve(await fn(OneSignal)) }
-      catch (e) { reject(e) }
-    })
-  })
+// ── FCM: registro de token ─────────────────────────────────────────────────────
+function _getMessagingInstance() {
+  if (!_messaging) {
+    try { _messaging = getMessaging(app) } catch (_) { return null }
+  }
+  return _messaging
 }
 
-// Inicializa OneSignal SDK (chamado uma vez)
-function _initOneSignal() {
-  if (_osInitialized || !ONESIGNAL_APP_ID) return
-  _osInitialized = true
-
-  window.OneSignalDeferred = window.OneSignalDeferred || []
-  window.OneSignalDeferred.push(async (OneSignal) => {
-    await OneSignal.init({
-      appId: ONESIGNAL_APP_ID,
-      serviceWorkerPath: '/OneSignalSDKWorker.js',
-      serviceWorkerParam: { scope: '/' },
-      notifyButton: { enable: false },
-      allowLocalhostAsSecureOrigin: true,
-    })
-    console.log('[PUSH] OneSignal init OK')
-  })
-}
-
-// Registra o syncCode como external_user_id no OneSignal
-async function _registrarOneSignal(syncCode) {
-  if (!ONESIGNAL_APP_ID) {
-    console.warn('[PUSH] VITE_ONESIGNAL_APP_ID não configurado')
+async function _registrarFCM(syncCode) {
+  if (!VAPID_KEY) {
+    console.warn('[PUSH] VITE_FCM_VAPID_KEY não configurado')
     return
   }
+  if (!('serviceWorker' in navigator)) return
+
+  const messaging = _getMessagingInstance()
+  if (!messaging) return
+
   try {
-    await _runOneSignal(async (OneSignal) => {
-      await OneSignal.login(syncCode)
+    const reg = await navigator.serviceWorker.ready
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: reg,
     })
+
+    if (!token) {
+      console.warn('[PUSH] FCM: token vazio')
+      _pushAtivo = false
+      return
+    }
+
+    const deviceId = _getDeviceId()
+    await set(dbRef(db, `fcm_tokens/${syncCode}/${deviceId}`), {
+      token,
+      updatedAt: Date.now(),
+    })
+
+    _lastTokenRefresh = Date.now()
     _pushAtivo = true
-    console.log('[PUSH] OneSignal login OK ✓ syncCode:', syncCode)
+    console.log('[PUSH] FCM token registrado ✓')
+
+    // Handler para mensagens quando app está em foreground (obrigatório)
+    onMessage(messaging, (payload) => {
+      const title = payload?.notification?.title || '⏰ Plantão'
+      const body  = payload?.notification?.body  || ''
+      const tag   = payload?.data?.tag || 'plantao'
+      _mostrarNotificacao(body, tag)
+    })
+
   } catch (e) {
     _pushAtivo = false
-    console.warn('[PUSH] OneSignal login falhou:', e.message)
+    console.warn('[PUSH] FCM error:', e.message)
+    // Retry em 30s se falhar
+    setTimeout(() => {
+      if (_syncCode === syncCode) _registrarFCM(syncCode).catch(() => {})
+    }, 30_000)
   }
 }
 
@@ -194,7 +215,7 @@ async function _removerDoFirebase(syncCode, tag) {
   try {
     await remove(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas/${_tagKey(tag)}`))
 
-    // Remove registros legados com mesma tag
+    // Remove registros com mesma tag
     const snap = await get(dbRef(db, `notificacoes_agendadas/${syncCode}/agendadas`))
     if (!snap.exists()) return
     const ops = []
@@ -213,43 +234,29 @@ async function _removerTodosFirebase(syncCode) {
 // ── Exports públicos ────────────────────────────────────────────────────────────
 
 /**
- * Configura push para o usuário logado. Chamar após login.
+ * Configura push FCM para o usuário logado. Chamar após login.
  */
 export async function configurarPush(syncCode) {
   _syncCode = syncCode
-  _initOneSignal()
   if (syncCode && notificacoesHabilitadas()) {
-    await _registrarOneSignal(syncCode)
+    await _registrarFCM(syncCode)
   }
 }
 
 /**
- * Solicita permissão de notificação e registra no OneSignal.
+ * Solicita permissão de notificação e registra token FCM.
  */
 export async function solicitarPermissaoNotificacao(syncCode) {
   if (!('Notification' in window)) return false
 
   if (Notification.permission === 'granted') {
-    if (syncCode) await _registrarOneSignal(syncCode)
+    if (syncCode) await _registrarFCM(syncCode)
     return true
   }
   if (Notification.permission === 'denied') return false
 
-  // Solicita via OneSignal (gerencia SW e subscription automaticamente)
-  if (ONESIGNAL_APP_ID) {
-    try {
-      await _runOneSignal(async (OneSignal) => {
-        await OneSignal.Notifications.requestPermission()
-      })
-      const granted = Notification.permission === 'granted'
-      if (granted && syncCode) await _registrarOneSignal(syncCode)
-      return granted
-    } catch (_) {}
-  }
-
-  // Fallback nativo
   const perm = await Notification.requestPermission()
-  if (perm === 'granted' && syncCode) await _registrarOneSignal(syncCode)
+  if (perm === 'granted' && syncCode) await _registrarFCM(syncCode)
   return perm === 'granted'
 }
 
