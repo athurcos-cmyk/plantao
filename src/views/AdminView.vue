@@ -6,6 +6,28 @@
     </header>
 
     <div class="admin-body">
+
+      <!-- ── Contador de vagas ── -->
+      <div class="counter-card">
+        <div class="counter-row">
+          <div>
+            <p class="counter-label">Usuários cadastrados</p>
+            <p class="counter-num" v-if="contadorStatus !== 'carregando'">
+              {{ totalUsuarios !== null ? totalUsuarios : '—' }}
+              <span class="counter-de">/ 100 vagas</span>
+            </p>
+            <p class="counter-num" v-else>…</p>
+          </div>
+          <button class="btn-init" @click="inicializarContador" :disabled="inicializando">
+            {{ inicializando ? 'Sincronizando…' : '🔄 Sincronizar contador' }}
+          </button>
+        </div>
+        <p class="counter-hint" v-if="contadorMsg" :class="contadorMsg.startsWith('✅') ? 'counter-ok' : 'counter-err'">
+          {{ contadorMsg }}
+        </p>
+        <p class="counter-hint">Use "Sincronizar" uma vez para inicializar o contador com os usuários já existentes.</p>
+      </div>
+
       <p class="admin-hint">Envia mensagem para todos os usuários cadastrados.</p>
 
       <div class="field">
@@ -83,11 +105,53 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth.js'
 import { getAuth } from 'firebase/auth'
+import { db } from '../firebase.js'
+import { ref as dbRef, get } from 'firebase/database'
 
 const auth = useAuthStore()
+
+// ── Contador de usuários ──
+const totalUsuarios = ref(null)
+const contadorStatus = ref('idle')
+const contadorMsg = ref('')
+const inicializando = ref(false)
+
+onMounted(async () => {
+  contadorStatus.value = 'carregando'
+  try {
+    const snap = await get(dbRef(db, 'config/total_usuarios'))
+    totalUsuarios.value = snap.exists() ? snap.val() : 0
+  } catch {
+    totalUsuarios.value = null
+  }
+  contadorStatus.value = 'idle'
+})
+
+async function inicializarContador() {
+  if (inicializando.value) return
+  inicializando.value = true
+  contadorMsg.value = ''
+  try {
+    const user = getAuth().currentUser
+    if (!user) throw new Error('Não autenticado')
+    const idToken = await user.getIdToken()
+    const res = await fetch('/api/init-counter', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${idToken}` },
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || `Erro ${res.status}`)
+    totalUsuarios.value = data.total
+    contadorMsg.value = `✅ ${data.mensagem}`
+  } catch (e) {
+    contadorMsg.value = `❌ ${e.message}`
+  } finally {
+    inicializando.value = false
+  }
+}
 
 const form = reactive({
   titulo: '',
@@ -186,6 +250,60 @@ async function enviar() {
   font-size: 0.875rem;
   color: #8899AA;
 }
+.counter-card {
+  background: #111d32;
+  border: 1px solid #1e3050;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.counter-label {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #8899AA;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.counter-num {
+  margin: 4px 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #EAEEF3;
+  line-height: 1;
+}
+.counter-de {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #8899AA;
+}
+.btn-init {
+  background: #1E88E5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-init:disabled { opacity: 0.5; cursor: default; }
+.counter-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #8899AA;
+}
+.counter-ok { color: #4caf50; }
+.counter-err { color: #ef5350; }
 
 .field {
   display: flex;
