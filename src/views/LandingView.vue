@@ -33,6 +33,9 @@
           <p class="hero-sub">
             Anotações, lembretes de medicação, calculadora de dose, organização de pacientes — tudo no celular, funciona offline.
           </p>
+          <p class="hero-disclaimer">
+            ⚠️ Ferramenta pessoal de apoio — não substitui o sistema oficial do hospital.
+          </p>
           <div class="hero-actions">
             <a class="btn-hero" href="#" @click.prevent="acessarNoPc">
               Começar agora — grátis
@@ -387,6 +390,7 @@ const features = [
 ]
 
 const faq = [
+  { q: 'Isso substitui o sistema do hospital?', a: 'Não. O Plantão é uma ferramenta pessoal — você anota no celular e o app gera o texto formatado pronto. Depois é só copiar e colar no sistema oficial do seu hospital. O registro no prontuário continua sendo feito pelo sistema do hospital, normalmente.' },
   { q: 'Precisa de internet para funcionar?', a: 'Não. O app funciona 100% offline. Você anota durante o plantão e quando tiver internet, sincroniza automaticamente.' },
   { q: 'Funciona no meu celular?', a: 'Sim. Funciona em qualquer celular Android ou iPhone com navegador. Não precisa baixar na loja de apps.' },
   { q: 'É realmente gratuito?', a: 'Sim, completamente grátis. Sem período de teste, sem cartão de crédito, sem funcionalidade bloqueada.' },
@@ -545,6 +549,13 @@ const testimonials = [
 .hero-accent {
   color: var(--blue);
   position: relative;
+}
+.hero-disclaimer {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  opacity: 0.65;
+  margin: 4px 0 0;
+  letter-spacing: 0.01em;
 }
 .hero-sub {
   color: var(--text-dim);

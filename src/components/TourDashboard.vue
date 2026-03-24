@@ -57,7 +57,7 @@ const passos = [
   {
     icone: '📋✅',
     titulo: 'Preencha e copie',
-    desc: 'Depois de preencher os dados do paciente, role a tela e toque em Copiar. O texto vai direto para a área de transferência — é só colar no sistema do hospital.'
+    desc: 'Depois de preencher os dados, role e toque em Copiar. Cole no sistema oficial do hospital normalmente. O Plantão não é um sistema hospitalar — ele gera o texto pra você, o registro no prontuário continua sendo feito pelo sistema do hospital.'
   },
   {
     icone: '🔔',
