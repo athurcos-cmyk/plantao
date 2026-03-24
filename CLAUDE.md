@@ -1,12 +1,23 @@
 # Plantão — instruções do projeto
 
-## Início de sessão — leitura obrigatória
-Antes de qualquer tarefa, ler:
+## Início de sessão — leitura OBRIGATÓRIA (sem exceção)
+
+**REGRA ABSOLUTA:** Antes de qualquer tarefa, ler TODOS estes arquivos na ordem abaixo.
+Não iniciar nenhuma implementação sem ter lido todos. Contexto incompleto = trabalho errado.
+
 1. **CHANGELOG.md** — estado atual do app, funcionalidades completas, histórico de sessões recentes
 2. **TODOS.md** — pendências abertas e itens já concluídos
-3. **Designs gstack** — ler o design doc mais recente em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\` (arquivo `*-design-*.md` com timestamp mais novo). Contém decisões de produto, premissas confirmadas e arquitetura das features em desenvolvimento.
+3. **MEMORY.md** — status do projeto, decisões de produto, contexto de negócio e próximos passos
+4. **Design doc gstack mais recente** — ler o arquivo `*-design-*.md` com timestamp mais novo em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\`. Contém decisões de produto, premissas confirmadas, estratégia de monetização e arquitetura das features em desenvolvimento.
 
-Esses arquivos são a memória do projeto. Sem lê-los, o contexto está incompleto.
+**Como ler o design doc mais recente:**
+```
+ls -t C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\*-design-*.md | head -1
+```
+Ler esse arquivo completo antes de qualquer decisão de produto ou arquitetura.
+
+**Ao fim de cada sessão:** atualizar CHANGELOG.md, TODOS.md e MEMORY.md com o que foi feito.
+Não fechar sessão sem atualizar a memória do projeto.
 
 ## Design System
 Sempre ler DESIGN.md antes de qualquer decisão visual ou de UI.

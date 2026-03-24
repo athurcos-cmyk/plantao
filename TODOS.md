@@ -75,6 +75,40 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 
 ## Pendentes
 
+### [ ] Validação de pagamento com usuárias (próxima ação prioritária)
+**O quê:** Perguntar pessoalmente para cada uma das 5 usuárias: "Você pagaria R$14,99/mês?"
+**Por quê:** É a validação mais importante antes de qualquer linha de código de paywall.
+**Como:** Presencialmente ou ligação — não por mensagem. Ouvir a resposta completa.
+**Meta:** ≥3 de 5 dizem sim → implementar paywall. Abaixo disso → ajustar proposta.
+**Prioridade:** P0 — fazer essa semana
+
+---
+
+### [ ] Paywall Stripe Checkout (após validação)
+**O quê:** 45 dias gratuitos → R$14,99/mês. Stripe Checkout (sem UI customizada).
+**Implementação:**
+- Salvar status em `usuarios/{syncCode}/subscription` no Firebase
+- Bloquear acesso apenas quando online (offline = período de graça — nurse mid-shift não é bloqueada)
+- Cancelamento via Stripe portal (self-serve)
+**Depende de:** Validação com usuárias (item acima)
+**Prioridade:** P1
+
+---
+
+### [ ] Aviso iOS: reinstalar PWA se ícone sumir
+**O quê:** Pequeno aviso no onboarding ou login para usuários iOS: "Se o ícone sumir após atualização do iOS, abra o Safari, acesse plantao.net e adicione à tela novamente. Seus dados estão salvos."
+**Por quê:** iOS remove PWAs após atualização do sistema. Usuária reportou o problema.
+**Prioridade:** P2
+
+---
+
+### [ ] Resend Batch API para broadcast em escala
+**O quê:** Quando base crescer para 50+ usuários, substituir envio sequencial por `/emails/batch` do Resend (até 100 por request).
+**Por quê:** Envio sequencial com 500ms funciona para 8 usuários mas não escala.
+**Prioridade:** P3 — só quando necessário
+
+---
+
 ### [x] Admin broadcast (concluído 2026-03-23)
 **O quê:** Página `/admin` para enviar push e/ou email para todos os usuários cadastrados.
 **Implementado:**

@@ -127,6 +127,34 @@ feedback/{syncCode}/                             feedbacks dos usuários
 
 ## Histórico de sessões
 
+### Mar 2026 — Sessão pós-v1.0: usabilidade, histórico offline e estratégia de negócio
+
+**Fix: excluir histórico sem internet**
+- `anotacoes.js`: `deletar()` e `limparTudo()` agora atualizam local primeiro (otimista) — funciona offline, Firebase sincroniza quando voltar.
+- Nova função `limparPorKeys(keys)` para exclusão seletiva.
+
+**Limpar histórico por paciente**
+- `HistoricoView`: quando chip de paciente está ativo, botão vira "Limpar [Nome]" e modal confirma apenas as anotações daquele paciente.
+
+**Tour interativo + aviso Google no hospital**
+- Novo passo no tour: explica que login Google pode não funcionar no computador do hospital → orientar criar senha em Configurações → Criar senha. Badge com logo Google colorido inline.
+
+**Paywall de broadcast (HTTP 429)**
+- `api/broadcast.js`: emails agora enviados sequencialmente com 500ms entre cada um. Elimina HTTP 429 do Resend. Para >50 usuários implementar Resend Batch API.
+
+**Estratégia de negócio definida (office-hours)**
+- Modelo: 45 dias gratuitos → R$14,99/mês (individual, não B2B)
+- O Plantão é uma lista de verificação clínica portátil, não apenas app de notas
+- Visão longa: rede profissional da enfermagem brasileira (Doximity brasileiro) — adiada para 5.000+ usuários
+- Design doc: `Thurcos-main-design-20260323-205359.md`
+- **Próxima ação:** perguntar pessoalmente para as 5 usuárias se pagariam R$14,99/mês
+
+**Memória do projeto atualizada**
+- `~/.claude/projects/C--Users-Thurcos-Desktop-plantao/memory/` atualizado com status v1.0 e estratégia
+- `CLAUDE.md`: leitura obrigatória agora inclui MEMORY.md + design doc gstack + regra de atualizar ao fim de sessão
+
+---
+
 ### Mar 2026 — v1.0 oficial: broadcast admin + desktop responsivo + fix notificações
 
 **Fix crítico: cron desabilitado no cron-job.org**
