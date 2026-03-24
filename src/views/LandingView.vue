@@ -310,7 +310,7 @@
       <div class="cta-glow"></div>
       <div class="section-inner cta-inner">
         <div class="section-eyebrow eyebrow-light">Comece agora</div>
-        <h2 class="cta-title">Entra no seu próximo plantão<br>com tudo organizado</h2>
+        <h2 class="cta-title">Entra no seu próximo plantão com tudo organizado</h2>
         <p class="cta-sub">Lembretes, calculadora, anotações prontas. Grátis. Conta em 10 segundos.</p>
         <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Começar agora →</a>
         <p class="cta-hint">Android e iPhone. Funciona offline.</p>
