@@ -138,6 +138,12 @@
         ".write": "auth != null && root.child('owners').child($code).child(auth.uid).val() === true"
       }
     },
+    "config": {
+      "total_usuarios": {
+        ".read": true,
+        ".write": "auth != null"
+      }
+    },
     "feedback": {
       "$code": {
         ".read": false,

@@ -1,7 +1,19 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { db, auth as firebaseAuth, googleProvider } from '../firebase.js'
-import { ref as dbRef, get, set } from 'firebase/database'
+import { ref as dbRef, get, set, increment, update } from 'firebase/database'
+
+const _LIMITE_USUARIOS = 100
+
+async function _verificarVagas() {
+  try {
+    const snap = await get(dbRef(db, 'config/total_usuarios'))
+    const count = snap.exists() ? snap.val() : 0
+    return count < _LIMITE_USUARIOS
+  } catch {
+    return true // se falhar a leitura, não bloqueia o cadastro
+  }
+}
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -145,6 +157,11 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(email, senha, nome) {
     authError.value = ''
     try {
+      const temVaga = await _verificarVagas()
+      if (!temVaga) {
+        authError.value = 'limite-atingido'
+        return false
+      }
       const cred = await createUserWithEmailAndPassword(firebaseAuth, email, senha)
       const user = cred.user
 
@@ -179,6 +196,9 @@ export const useAuthStore = defineStore('auth', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome: nome || '', email, syncCode: code }),
       }).catch(() => {})
+
+      // Incrementar contador de usuários
+      update(dbRef(db, 'config'), { total_usuarios: increment(1) }).catch(() => {})
 
       return true
     } catch (e) {
@@ -251,6 +271,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       if (result && result.user) {
         const code = await _vincularGoogleSeNovo(result.user)
+        if (!code) return false
         // Seta estado sem esperar onAuthStateChanged → redirect imediato
         uid.value = result.user.uid
         userEmail.value = result.user.email || ''
@@ -263,6 +284,10 @@ export const useAuthStore = defineStore('auth', () => {
       }
       return true
     } catch (e) {
+      if (e.code === 'limite-atingido') {
+        authError.value = 'limite-atingido'
+        return false
+      }
       console.error('[Auth] Google vinculação error:', e.code || '', e.message)
       authError.value = 'Conta Google autenticada, mas houve erro ao criar perfil. Tente novamente.'
       return false
@@ -296,7 +321,11 @@ export const useAuthStore = defineStore('auth', () => {
       // uid_map existe mas owners não — dados de conta excluída, tratar como novo usuário
       console.warn('[Auth] uid_map encontrado mas owners ausente — nova conta')
     }
-    // Novo usuário — criar registros em paralelo
+    // Novo usuário — verificar limite antes de criar
+    const temVaga = await _verificarVagas()
+    if (!temVaga) {
+      throw { code: 'limite-atingido' }
+    }
     const code = _gerarSyncCodeUnico()
     await Promise.all([
       set(dbRef(db, `owners/${code}/${user.uid}`), true),
@@ -313,6 +342,8 @@ export const useAuthStore = defineStore('auth', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nome: user.displayName || '', email: user.email || '', syncCode: code }),
     }).catch(() => {})
+    // Incrementar contador de usuários
+    update(dbRef(db, 'config'), { total_usuarios: increment(1) }).catch(() => {})
     return code
   }
 

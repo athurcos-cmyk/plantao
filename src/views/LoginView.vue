@@ -233,8 +233,25 @@
         </transition>
       </div>
 
+      <!-- ══ Tela de Lista de Espera ══ -->
+      <div v-else-if="tela === 'lista-espera'" class="lista-espera-wrap">
+        <div class="lista-espera-icon">🔒</div>
+        <h2 class="lista-espera-titulo">Vagas esgotadas</h2>
+        <p class="lista-espera-desc">
+          O Plantão está em lançamento limitado com <strong>100 vagas gratuitas</strong> e todas foram preenchidas.
+        </p>
+        <p class="lista-espera-desc">
+          Para entrar na lista de espera e ser avisado quando abrirmos novas vagas, entre em contato:
+        </p>
+        <a href="mailto:contato@plantao.net" class="lista-espera-email">
+          ✉️ contato@plantao.net
+        </a>
+        <p class="lista-espera-hint">Respondo pessoalmente a todos os emails.</p>
+        <button class="btn btn-secondary btn-block" style="margin-top:16px" @click="tela = 'login'">Voltar ao login</button>
+      </div>
+
       <!-- Erro global -->
-      <p v-if="auth.authError" class="erro-msg" style="margin-top:12px">{{ auth.authError }}</p>
+      <p v-if="auth.authError && auth.authError !== 'limite-atingido'" class="erro-msg" style="margin-top:12px">{{ auth.authError }}</p>
     </div>
 
     <!-- Aviso modo privado -->
@@ -322,6 +339,7 @@ async function criarConta() {
   auth.authError = ''
   const ok = await auth.register(email.value, senha.value, nome.value)
   if (ok) router.push({ name: 'dashboard' })
+  else if (auth.authError === 'limite-atingido') tela.value = 'lista-espera'
   carregando.value = false
 }
 
@@ -330,9 +348,8 @@ async function entrarGoogle() {
   carregando.value = true
   auth.authError = ''
   const ok = await auth.loginGoogle()
-  if (ok) {
-    router.push({ name: 'dashboard' })
-  }
+  if (ok) router.push({ name: 'dashboard' })
+  else if (auth.authError === 'limite-atingido') tela.value = 'lista-espera'
   carregando.value = false
 }
 
@@ -702,5 +719,38 @@ async function recuperar() {
   color: var(--danger);
   font-size: 0.85rem;
   text-align: center;
+}
+.lista-espera-wrap {
+  text-align: center;
+  padding: 8px 0 4px;
+}
+.lista-espera-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+.lista-espera-titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.lista-espera-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.lista-espera-email {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+  margin: 8px 0 4px;
+}
+.lista-espera-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
 }
 </style>

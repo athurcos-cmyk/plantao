@@ -15,6 +15,13 @@
       </div>
     </nav>
 
+    <!-- ── URGÊNCIA ── -->
+    <div class="urgencia-bar" v-if="vagasRestantes <= 20">
+      <span class="urgencia-dot"></span>
+      <span v-if="vagasRestantes > 0">Restam apenas <strong>{{ vagasRestantes }} vagas</strong> no lançamento — após isso, lista de espera.</span>
+      <span v-else>🔒 Vagas esgotadas — entre na lista de espera: <a href="mailto:contato@plantao.net" class="urgencia-link">contato@plantao.net</a></span>
+    </div>
+
     <!-- ── HERO ── -->
     <section class="hero">
       <div class="hero-dots"></div>
@@ -23,7 +30,7 @@
         <div class="hero-text">
           <div class="hero-badge">
             <span class="badge-dot"></span>
-            Para a equipe de enfermagem
+            Lançamento beta · {{ vagasRestantes > 0 ? vagasRestantes + ' vagas restantes' : 'Vagas esgotadas' }}
           </div>
           <h1 class="hero-title">
             Organize seu plantão.<br>
@@ -37,10 +44,16 @@
             ⚠️ Ferramenta pessoal de apoio — não substitui o sistema oficial do hospital.
           </p>
           <div class="hero-actions">
-            <a class="btn-hero" href="#" @click.prevent="acessarNoPc">
+            <a v-if="vagasRestantes > 0" class="btn-hero" href="#" @click.prevent="acessarNoPc">
               Começar agora — grátis
             </a>
-            <p class="hero-hint">Cria a conta em 10 segundos com Google ou email. Sem cartão.</p>
+            <a v-else class="btn-hero btn-hero-esgotado" href="mailto:contato@plantao.net">
+              Entrar na lista de espera →
+            </a>
+            <p class="hero-hint">
+              <span v-if="vagasRestantes > 0">Cria a conta em 10 segundos com Google ou email. Sem cartão.</span>
+              <span v-else>Vagas esgotadas. Me manda um email e te aviso quando abrir novas vagas.</span>
+            </p>
           </div>
           <div class="hero-trust">
             <div class="trust-item">
@@ -311,8 +324,14 @@
       <div class="section-inner cta-inner">
         <div class="section-eyebrow eyebrow-light">Comece agora</div>
         <h2 class="cta-title">Entra no seu próximo plantão com tudo organizado</h2>
-        <p class="cta-sub">Lembretes, calculadora, anotações prontas. Grátis. Conta em 10 segundos.</p>
-        <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Começar agora →</a>
+        <p class="cta-sub" v-if="vagasRestantes > 0">
+          Ainda restam <strong>{{ vagasRestantes }} vagas</strong> no lançamento. Lembretes, calculadora, anotações prontas. Grátis.
+        </p>
+        <p class="cta-sub" v-else>
+          Vagas esgotadas. Entre na lista de espera e te aviso quando abrir novas vagas.
+        </p>
+        <a v-if="vagasRestantes > 0" class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Garantir minha vaga →</a>
+        <a v-else class="btn-hero btn-hero-lg" href="mailto:contato@plantao.net">Entrar na lista de espera →</a>
         <p class="cta-hint">Android e iPhone. Funciona offline.</p>
       </div>
     </section>
@@ -336,10 +355,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { db } from '../firebase.js'
+import { ref as dbRef, get } from 'firebase/database'
 
 const appUrl = window.location.origin + '/'
 const displayUrl = window.location.origin
+
+const vagasRestantes = ref(100)
+
+onMounted(async () => {
+  try {
+    const snap = await get(dbRef(db, 'config/total_usuarios'))
+    const total = snap.exists() ? snap.val() : 0
+    vagasRestantes.value = Math.max(0, 100 - total)
+  } catch {
+    // se falhar, mantém 100 (não bloqueia a landing)
+  }
+})
 
 const urlCopiada = ref(false)
 function copiarUrl() {
@@ -393,7 +426,7 @@ const faq = [
   { q: 'Isso substitui o sistema do hospital?', a: 'Não. O Plantão é uma ferramenta pessoal — você anota no celular e o app gera o texto formatado pronto. Depois é só copiar e colar no sistema oficial do seu hospital. O registro no prontuário continua sendo feito pelo sistema do hospital, normalmente.' },
   { q: 'Precisa de internet para funcionar?', a: 'Não. O app funciona 100% offline. Você anota durante o plantão e quando tiver internet, sincroniza automaticamente.' },
   { q: 'Funciona no meu celular?', a: 'Sim. Funciona em qualquer celular Android ou iPhone com navegador. Não precisa baixar na loja de apps.' },
-  { q: 'É realmente gratuito?', a: 'Sim, completamente grátis. Sem período de teste, sem cartão de crédito, sem funcionalidade bloqueada.' },
+  { q: 'É realmente gratuito?', a: 'Sim, 100% grátis. O lançamento é limitado a 100 vagas — sem cartão, sem funcionalidade bloqueada. Se as vagas esgotarem, entre em contato em contato@plantao.net para entrar na lista de espera.' },
   { q: 'Meus dados ficam seguros?', a: 'Sim. Login com Google ou email, dados criptografados e isolados por usuário. Ninguém mais tem acesso às suas anotações.' },
   { q: 'Consigo usar no computador do hospital também?', a: 'Sim. Faça login com a mesma conta em qualquer dispositivo. Suas anotações ficam sincronizadas.' },
 ]
@@ -428,6 +461,41 @@ const testimonials = [
   font-family: inherit;
   min-height: 100dvh;
   overflow-x: hidden;
+}
+
+/* ── BARRA DE URGÊNCIA ── */
+.urgencia-bar {
+  background: linear-gradient(90deg, #7c3aed22, #1E88E522);
+  border-bottom: 1px solid #7c3aed44;
+  text-align: center;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.urgencia-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulsar 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulsar {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+.urgencia-link {
+  color: var(--blue);
+  font-weight: 600;
+}
+.btn-hero-esgotado {
+  background: var(--text-muted) !important;
+  cursor: default;
+  opacity: 0.75;
 }
 
 /* ── NAV ── */
