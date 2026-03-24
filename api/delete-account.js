@@ -99,6 +99,12 @@ export default async function handler(req, res) {
     }
   }
 
+  // Decrementar contador de usuários (fire-and-forget — não bloqueia o delete)
+  db.ref('config/total_usuarios').transaction(count => {
+    if (count === null) return 0
+    return Math.max(0, count - 1)
+  }).catch(e => console.warn('[DELETE-ACCOUNT] erro ao decrementar contador:', e.message))
+
   console.log(`[DELETE-ACCOUNT] uid=${uid} syncCode=${syncCode}: concluído. Erros: ${erros.length}`)
   return res.json({ deleted: true, syncCode, erros })
 }
