@@ -49,7 +49,7 @@
 
         <!-- Horário -->
         <div class="campo">
-          <label>Horário </label>
+          <label>Horário <span class="obrigatorio">*</span></label>
           <input  data-testid="auto-input-anotacaomedicacaoview-1" type="time" v-model="form.horario">
         </div>
 
@@ -860,7 +860,10 @@ function gerarLinhaDupla(med) {
 
 function gerar() {
   erro.value = ''
-
+  if (!form.horario) {
+    erro.value = 'Informe o horário.'
+    return
+  }
 
   const h = form.horario.replace(':', 'h')
 

@@ -60,7 +60,7 @@
         </div>
 
         <div class="campo">
-          <label>Horário </label>
+          <label>Horário <span class="obrigatorio">*</span></label>
           <input  data-testid="auto-input-anotacaoinicialview-1" type="time" v-model="form.horario">
         </div>
 

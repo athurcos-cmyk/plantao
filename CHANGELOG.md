@@ -127,6 +127,12 @@ feedback/{syncCode}/                             feedbacks dos usuários
 
 ## Histórico de sessões
 
+### Mar 2026 — Documentação: localização do MEMORY.md
+
+- `CLAUDE.md`: instrução de leitura obrigatória agora inclui caminho completo do MEMORY.md (`C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`) — evita confusão com MEMORY.md inexistente na raiz do projeto.
+
+---
+
 ### Mar 2026 — Sessão pós-v1.0: usabilidade, histórico offline e estratégia de negócio
 
 **Fix: excluir histórico sem internet**

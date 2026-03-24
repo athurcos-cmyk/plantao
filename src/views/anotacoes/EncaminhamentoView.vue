@@ -49,7 +49,7 @@
         </div>
 
         <div class="campo">
-          <label>Horário </label>
+          <label>Horário <span class="obrigatorio">*</span></label>
           <input type="time" v-model="form.horario">
         </div>
 
@@ -780,6 +780,10 @@ function avancar() {
   erro.value = ''
   if (passo.value === 1 && !form.nome.trim()) {
     erro.value = 'Informe o nome do paciente.'
+    return
+  }
+  if (passo.value === 1 && !form.horario) {
+    erro.value = 'Informe o horário.'
     return
   }
   passo.value++

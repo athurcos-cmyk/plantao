@@ -462,6 +462,10 @@ export function useAnotacaoInicial() {
   // ── Geração de texto ──────────────────────────────────────────────────────
   function gerar() {
     erro.value = ''
+    if (!form.horario) {
+      erro.value = 'Informe o horário.'
+      return
+    }
     if (!form.fechamento) atualizarFechamento()
     textoGerado.value = gerarTexto(form, camposAtivos)
     gerado.value = true

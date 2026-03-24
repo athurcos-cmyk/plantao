@@ -51,7 +51,7 @@
 
           <!-- Horário -->
           <div class="campo campo-full">
-            <label>Horário </label>
+            <label>Horário <span class="obrigatorio">*</span></label>
             <input  data-testid="auto-input-sinaisvitaisview-1" type="time" v-model="form.horario">
           </div>
 
@@ -286,7 +286,10 @@ function mostrarFeedback(msg) {
 
 function gerar() {
   erro.value = ''
-
+  if (!form.horario) {
+    erro.value = 'Informe o horário.'
+    return
+  }
 
   const h = form.horario.replace(':', 'h')
 

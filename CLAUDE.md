@@ -7,7 +7,7 @@ Não iniciar nenhuma implementação sem ter lido todos. Contexto incompleto = t
 
 1. **CHANGELOG.md** — estado atual do app, funcionalidades completas, histórico de sessões recentes
 2. **TODOS.md** — pendências abertas e itens já concluídos
-3. **MEMORY.md** — status do projeto, decisões de produto, contexto de negócio e próximos passos
+3. **MEMORY.md** — status do projeto, decisões de produto, contexto de negócio e próximos passos. Localizado em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
 4. **Design doc gstack mais recente** — ler o arquivo `*-design-*.md` com timestamp mais novo em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\`. Contém decisões de produto, premissas confirmadas, estratégia de monetização e arquitetura das features em desenvolvimento.
 
 **Como ler o design doc mais recente:**
@@ -16,7 +16,7 @@ ls -t C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\*-design-*.md | he
 ```
 Ler esse arquivo completo antes de qualquer decisão de produto ou arquitetura.
 
-**Ao fim de cada sessão:** atualizar CHANGELOG.md, TODOS.md e MEMORY.md com o que foi feito.
+**Ao fim de cada sessão:** atualizar CHANGELOG.md, TODOS.md e o MEMORY.md em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md` com o que foi feito.
 Não fechar sessão sem atualizar a memória do projeto.
 
 ## Design System
