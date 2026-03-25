@@ -282,11 +282,6 @@
       <button class="btn-como-funciona" @click="() => location.reload()">🔄 Verificar atualizações</button>
     </div>
 
-    <div class="login-footer-legal">
-      <a href="/privacidade" target="_blank">Privacidade</a>
-      <span>·</span>
-      <a href="/termos" target="_blank">Termos</a>
-    </div>
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como funciona o acesso" :itens="helpItens" />
   </div>

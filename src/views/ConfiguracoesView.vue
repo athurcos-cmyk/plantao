@@ -98,6 +98,15 @@
         </button>
       </section>
 
+      <!-- Legal -->
+      <section class="config-section">
+        <h2 class="config-section-titulo">Legal</h2>
+        <div class="legal-links">
+          <a href="/privacidade" target="_blank" class="legal-link">Política de Privacidade</a>
+          <a href="/termos" target="_blank" class="legal-link">Termos de Serviço</a>
+        </div>
+      </section>
+
       <!-- Zona de perigo -->
       <section class="config-section config-danger">
         <h2 class="config-section-titulo danger-titulo">Zona de perigo</h2>
@@ -366,6 +375,25 @@ async function confirmarDelete() {
   padding: 16px;
   margin-bottom: 14px;
 }
+
+.legal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.legal-link {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.legal-link:last-child { border-bottom: none; }
+.legal-link::after { content: '→'; opacity: 0.4; }
+.legal-link:hover { color: var(--text); }
 
 .config-section-titulo {
   font-size: 0.82rem;
