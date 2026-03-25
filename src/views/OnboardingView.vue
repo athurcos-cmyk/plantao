@@ -38,6 +38,12 @@
         Próximo
       </button>
     </div>
+
+    <div class="onboarding-legal">
+      <a href="/privacidade" target="_blank">Privacidade</a>
+      <span>·</span>
+      <a href="/termos" target="_blank">Termos</a>
+    </div>
   </div>
 </template>
 
@@ -164,4 +170,19 @@ function concluir() {
   width: 24px;
   border-radius: 4px;
 }
+
+.onboarding-legal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+.onboarding-legal a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.onboarding-legal a:hover { color: var(--text-muted); text-decoration: underline; }
+.onboarding-legal span { opacity: 0.5; }
 </style>
