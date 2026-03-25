@@ -3,7 +3,7 @@
     <header class="app-header">
       <div style="width:34px"/>
       <div class="header-logo">
-        <img src="/icons/icon.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
+        <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
         <span>Plantão</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px">

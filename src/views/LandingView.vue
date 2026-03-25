@@ -5,7 +5,7 @@
     <nav class="nav">
       <div class="nav-inner">
         <div class="nav-brand">
-          <img src="/icons/icon.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
+          <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
           <span class="nav-logo">Plantão</span>
         </div>
         <a class="nav-cta" href="#" @click.prevent="acessarNoPc">Abrir o app →</a>
@@ -75,7 +75,7 @@
             <div class="phone-screen">
               <div class="sim-header">
                 <div class="sim-brand">
-                  <img src="/icons/icon.png" width="14" height="14" alt="Plantão" style="border-radius:3px;display:block" />
+                  <img src="/icons/icon-512.png" width="14" height="14" alt="Plantão" style="border-radius:3px;display:block" />
                   <span class="sim-title">Plantão</span>
                 </div>
                 <span class="sim-badge">● online</span>
@@ -334,7 +334,7 @@
     <footer class="footer">
       <div class="footer-inner">
         <div class="footer-brand">
-          <img src="/icons/icon.png" width="22" height="22" alt="Plantão" style="border-radius:5px;display:block" />
+          <img src="/icons/icon-512.png" width="22" height="22" alt="Plantão" style="border-radius:5px;display:block" />
           <span class="nav-logo">Plantão</span>
         </div>
         <p class="footer-sub">App de anotações de enfermagem para uso no plantão hospitalar.</p>

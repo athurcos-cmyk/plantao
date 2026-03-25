@@ -17,7 +17,14 @@
       "Bash(dir \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\\\\public\")",
       "Bash(dir \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\")",
       "Bash(npm run:*)",
-      "Bash(grep -roh \"dbRef\\(db, \\\\`[^/]*\" \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\\\\src\")"
+      "Bash(grep -roh \"dbRef\\(db, \\\\`[^/]*\" \"C:\\\\Users\\\\Thurcos\\\\Desktop\\\\plantao\\\\src\")",
+      "Bash(ls -t C:UsersThurcos.gstackprojectsathurcos-cmyk-plantao*-design-*.md)",
+      "Skill(plan-eng-review)",
+      "Skill(plan-eng-review:*)",
+      "Skill(gstack-upgrade)",
+      "Skill(gstack-upgrade:*)",
+      "Bash(npx vite:*)",
+      "mcp__Windows-MCP__PowerShell"
     ]
   }
 }

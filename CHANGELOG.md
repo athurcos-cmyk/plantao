@@ -6,6 +6,34 @@
 
 ---
 
+## Sessão 2026-03-25 (continuação — noite)
+
+### Correções legais + melhorias admin
+
+**Correções na Política de Privacidade:**
+- Revogação de consentimento para e-mails: removido "link descadastrar no rodapé" (inexistente) → substituído por "enviar e-mail para contato@plantao.net"
+
+**Correções nos Termos de Serviço:**
+- Adicionados "auxiliares de enfermagem" na lista de público-alvo (antes só tinha enfermeiros e técnicos)
+- "julgamento profissional do enfermeiro" → "do profissional de enfermagem" (inclusivo para técnico e auxiliar)
+
+**Correção crítica no broadcast.js:**
+- `SyntaxError`: `const { titulo, mensagem, tipo }` redeclarado na linha 168 (histórico fire-and-forget) — causava crash da função e resposta HTML em vez de JSON → "Unexpected token 'A'" no admin
+- Removida redeclaração; variáveis já declaradas na linha 58 são reutilizadas
+
+**Admin — broadcast no header:**
+- Botão `📢` adicionado no header do AdminView (sempre visível, sem precisar rolar)
+- Formulário de broadcast movido para modal overlay
+- Seção de broadcast removida do final da página
+
+**Admin — erros de broadcast mais detalhados:**
+- Lista de erros agora exibe `device key` (push) ou `email` (email) além do tipo e mensagem
+- "Requested entity was not found" agora identifica qual token específico falhou
+
+**Commits:** `a29d72a`, `db96637`, `d7611a5`, `ae9c39f`, `d14541f`
+
+---
+
 ## Sessão 2026-03-25 (continuação — tarde)
 
 ### Admin dashboard completo + métricas de engajamento

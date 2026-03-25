@@ -4,7 +4,7 @@
     <!-- Hero -->
     <div class="hero">
       <div class="hero-icon">
-        <img src="/icons/icon.png" width="64" height="64" alt="Plantão" style="border-radius:14px;display:block" />
+        <img src="/icons/icon-512.png" width="64" height="64" alt="Plantão" style="border-radius:14px;display:block" />
       </div>
       <h1>Plantão</h1>
       <p>Anotações de enfermagem</p>

@@ -131,6 +131,15 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 
 ---
 
+### [x] Correções legais + melhorias admin broadcast (concluído 2026-03-25 noite)
+- Política: revogação e-mails via contato@plantao.net (sem link inexistente)
+- Termos: auxiliares de enfermagem incluídos + linguagem inclusiva ("profissional de enfermagem")
+- broadcast.js: SyntaxError (redeclaração de const) corrigido
+- AdminView: broadcast movido para modal no header (botão 📢 sempre visível)
+- Erros de broadcast agora mostram device key / email
+
+---
+
 ### [x] Admin dashboard completo (concluído 2026-03-25 tarde)
 - 4 tabs: Usuários, Feedbacks, Métricas, Monitor
 - Busca, badge atividade, email individual, FCM tokens por usuário
