@@ -228,6 +228,7 @@
             <ul v-if="resultado.erros?.length" class="erros-lista">
               <li v-for="(e, i) in resultado.erros" :key="i" class="erro-item">
                 <span class="erro-tipo">{{ e.tipo }}</span>
+                <span v-if="e.key || e.email" class="erro-key">{{ e.email || e.key }}</span>
                 <span class="erro-msg">{{ e.error }}</span>
               </li>
             </ul>
@@ -668,6 +669,7 @@ function barraLargura(count, lista) {
 .erros-lista { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
 .erro-item { display: flex; gap: 6px; font-size: 0.8rem; }
 .erro-tipo { font-weight: 700; text-transform: uppercase; font-size: 0.7rem; color: #E53935; }
+.erro-key { font-size: 0.75rem; color: #556677; font-family: monospace; }
 .erro-msg { color: #8899AA; }
 
 /* ── Modal ── */
