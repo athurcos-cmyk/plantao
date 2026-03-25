@@ -282,6 +282,12 @@
       <button class="btn-como-funciona" @click="() => location.reload()">🔄 Verificar atualizações</button>
     </div>
 
+    <div class="login-footer-legal">
+      <a href="/privacidade" target="_blank">Privacidade</a>
+      <span>·</span>
+      <a href="/termos" target="_blank">Termos</a>
+    </div>
+
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como funciona o acesso" :itens="helpItens" />
   </div>
 </template>
@@ -720,6 +726,21 @@ async function recuperar() {
 }
 .btn-como-funciona:hover { color: var(--text); }
 .btn-como-funciona:active { background: var(--bg-hover); }
+
+/* ── Footer legal ── */
+.login-footer-legal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+.login-footer-legal a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.login-footer-legal a:hover { color: var(--text-muted); text-decoration: underline; }
+.login-footer-legal span { opacity: 0.5; }
 
 /* ── Texto termos ── */
 .texto-termos {
