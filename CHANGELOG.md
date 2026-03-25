@@ -6,6 +6,41 @@
 
 ---
 
+## Sessão 2026-03-25
+
+### Admin dashboard melhorado + remoção onboarding + LGPD
+
+**Admin dashboard (AdminView.vue):**
+- Tabs Usuários / Feedbacks / Métricas carregados do Firebase via `api/admin-data.js`
+- Lista de usuários com nome, email, data de cadastro, badges de emails enviados e syncCode
+- Botão 🗑 por usuário — exclui todos os dados (15 paths + Auth + decrementa contador) via `api/admin-delete-user.js`
+- Tab Feedbacks: lista completa com autor, data e versão
+- Tab Métricas: total de usuários, total de feedbacks, taxa de email boas-vindas, gráfico de barras de cadastros por semana (últimas 4 semanas)
+
+**Novos endpoints serverless:**
+- `api/admin-data.js` — GET. Lê `usuarios/`, `feedback/`, `owners/` em paralelo via firebase-admin. Retorna lista enriquecida (uid via owners) + feedbacks + métricas calculadas. Restrito a `a.thurcos@gmail.com`
+- `api/admin-delete-user.js` — POST `{ uid }`. Replica lógica do delete-account mas acionado pelo admin. Deleta 15 paths + conta Auth + decrementa contador. Restrito a admin
+
+**Remoção do onboarding:**
+- `OnboardingView.vue` deletado
+- `src/config/onboarding.js` deletado
+- Router: `/onboarding` redireciona para login, catch-all `/:pathMatch(.*)` → login
+
+**Conformidade LGPD (privacidade.html + termos.html):**
+- Corrigida afirmação falsa: "não temos acesso ao conteúdo das anotações" → texto honesto sobre acesso técnico restrito
+- Removida promessa de exportação via e-mail (direito de portabilidade mantido via contato)
+- Adicionada base legal de tratamento (Art. 7 LGPD): execução de contrato, legítimo interesse, consentimento
+- Adicionada seção de transferência internacional (Firebase/EUA, Art. 33 LGPD)
+- Nomeado encarregado DPO (Art. 41 LGPD): Arthur Olímpio Lima
+- Adicionada cláusula sobre assistente Clara (IA não substitui julgamento clínico) nos Termos
+- Prazo mínimo de 15 dias para alterações de política, 30 dias para mudança de plano pago
+- Adicionado foro competente e lei aplicável (legislação brasileira) nos Termos
+- skill `economia-tokens.md`: adicionada regra de não reler arquivo já lido na sessão
+
+**Commits:** `82ef943`, `ffa610a`
+
+---
+
 ## Estado atual — Março 2026 (v1.0)
 
 ### Funcionalidades completas

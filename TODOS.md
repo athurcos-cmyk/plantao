@@ -79,7 +79,7 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 **O quê:** Counters `config/total_anotacoes` e `config/usuarios_ativos_7d` incrementados nas stores ao criar anotação.
 **Por quê:** Métricas de engajamento real — "X anotações feitas" é melhor sinal de valor que "X cadastros" para decisão de paywall.
 **Como:** Incrementar `config/total_anotacoes` com `increment(1)` em `anotacoes.js` ao salvar. Para ativos_7d: salvar timestamp em `usuarios/{syncCode}/ultimo_acesso` e calcular no admin-data.
-**Depende de:** admin-data.js no ar (admin dashboard melhorado).
+**Depende de:** admin-data.js no ar ✅ (concluído 2026-03-25).
 **Prioridade:** P2 — fazer após 50+ usuários para ter volume real de dados.
 
 ---
@@ -128,6 +128,15 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 **O quê:** Quando base crescer para 50+ usuários, substituir envio sequencial por `/emails/batch` do Resend (até 100 por request).
 **Por quê:** Envio sequencial com 500ms funciona para 8 usuários mas não escala.
 **Prioridade:** P3 — só quando necessário
+
+---
+
+### [x] Admin dashboard melhorado + remoção onboarding + LGPD (concluído 2026-03-25)
+- Tabs Usuários / Feedbacks / Métricas no AdminView com dados reais do Firebase
+- Botão excluir usuário (admin): remove 15 paths + Auth + decrementa contador
+- `api/admin-data.js` e `api/admin-delete-user.js` criados
+- Onboarding removido (OnboardingView.vue, onboarding.js, router atualizado)
+- privacidade.html e termos.html conformes com LGPD (base legal, DPO, transferência internacional, Clara/IA)
 
 ---
 

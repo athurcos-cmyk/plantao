@@ -7,8 +7,10 @@ Não iniciar nenhuma implementação sem ter lido todos. Contexto incompleto = t
 
 1. **CHANGELOG.md** — estado atual do app, funcionalidades completas, histórico de sessões recentes
 2. **TODOS.md** — pendências abertas e itens já concluídos
-3. **MEMORY.md** — status do projeto, decisões de produto, contexto de negócio e próximos passos. Localizado em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
-4. **Design doc gstack mais recente** — ler o arquivo `*-design-*.md` com timestamp mais novo em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\`. Contém decisões de produto, premissas confirmadas, estratégia de monetização e arquitetura das features em desenvolvimento.
+3. **MEMORY.md** (índice) — `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
+4. **project_status.md** — `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md` — features prontas, alertas operacionais, pendentes técnicos, estratégia de negócio, conformidade legal
+5. **project_overview.md** — `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md` — stack, estrutura de pastas, convenções de código
+6. **Design doc gstack mais recente** — ler o arquivo `*-design-*.md` com timestamp mais novo em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\`. Contém decisões de produto, premissas confirmadas, estratégia de monetização e arquitetura das features em desenvolvimento.
 
 **Como ler o design doc mais recente:**
 ```
