@@ -106,6 +106,12 @@ const routes = [
     component: () => import('../views/AdminView.vue'),
     meta: { requiresAuth: true, requiresAdmin: true }
   },
+  // Redefinição de senha via link do Firebase Auth
+  {
+    path: '/auth/action',
+    name: 'auth-action',
+    component: () => import('../views/RedefinirSenhaView.vue')
+  },
   // Rota legada — redireciona para login
   { path: '/onboarding', redirect: { name: 'login' } },
   // Qualquer rota desconhecida → login
