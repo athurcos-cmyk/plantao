@@ -13,6 +13,7 @@ import {
   onChildAdded,
   onChildChanged,
   onChildRemoved,
+  increment,
 } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
@@ -196,6 +197,8 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
       remotoMap.set(key, { ...anot, _key: key })
       _upsertLocal({ ...anot, _key: key, _pending: false })
       _agendarSalvarCache(code)
+      // Incrementar contador de anotações do usuário (fire-and-forget)
+      update(dbRef(db, `usuarios/${code}`), { total_anotacoes: increment(1) }).catch(() => {})
       return { anot, modo: 'online' }
     } catch (_) {
       // Conexao fraca/intermitente: cai para fila offline com a mesma key (idempotente).

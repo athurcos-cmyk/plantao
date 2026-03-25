@@ -225,6 +225,9 @@ export default async function handler(req, res) {
     }
   }
 
+  // Registrar última execução do cron para monitoramento no admin (fire-and-forget)
+  db.ref('config/cron_last_run').set({ ts: agora, sent: totalEnviados, ok: true }).catch(() => {})
+
   return res.json({ sent: totalEnviados, processados: totalProcessados, erros, agora })
 }
 

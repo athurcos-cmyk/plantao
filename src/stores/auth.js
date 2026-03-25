@@ -112,6 +112,8 @@ export const useAuthStore = defineStore('auth', () => {
                   if (_lsOk) localStorage.setItem('user_name', userName.value)
                 }
               }
+              // Atualizar último acesso (fire-and-forget — não bloqueia a UI)
+              set(dbRef(db, `usuarios/${code}/ultimo_acesso`), Date.now()).catch(() => {})
             }
           } catch (e) {
             // DB lookup falhou (offline ou rede lenta) — mantém cache do localStorage
