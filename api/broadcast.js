@@ -165,7 +165,6 @@ export default async function handler(req, res) {
   console.log(`[BROADCAST] push=${pushEnviados}, email=${emailsEnviados}, erros=${erros.length}`)
 
   // Salvar histórico de broadcasts para o painel admin (fire-and-forget)
-  const { titulo = '', mensagem = '', tipo = 'ambos' } = req.body || {}
   admin.database().ref('admin/broadcasts').push({
     ts: Date.now(), titulo, mensagem, tipo, push: pushEnviados, email: emailsEnviados,
   }).catch(() => {})
