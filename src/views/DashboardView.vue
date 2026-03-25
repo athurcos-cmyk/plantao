@@ -3,11 +3,7 @@
     <header class="app-header">
       <div style="width:34px"/>
       <div class="header-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
-          <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
-          <path d="M9 17c-2-1-3-2-3-3s2-2 6-2 6 1 6 2-1 2-3 3"/>
-        </svg>
+        <img src="/icons/icon.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
         <span>Plantão</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px">

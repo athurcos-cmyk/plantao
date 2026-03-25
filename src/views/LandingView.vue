@@ -5,10 +5,7 @@
     <nav class="nav">
       <div class="nav-inner">
         <div class="nav-brand">
-          <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
-            <circle cx="24" cy="24" r="22" stroke="#1E88E5" stroke-width="2.5"/>
-            <path d="M24 13v22M13 24h22" stroke="#1E88E5" stroke-width="3" stroke-linecap="round"/>
-          </svg>
+          <img src="/icons/icon.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
           <span class="nav-logo">Plantão</span>
         </div>
         <a class="nav-cta" href="#" @click.prevent="acessarNoPc">Abrir o app →</a>
@@ -78,10 +75,7 @@
             <div class="phone-screen">
               <div class="sim-header">
                 <div class="sim-brand">
-                  <svg width="14" height="14" viewBox="0 0 48 48" fill="none">
-                    <circle cx="24" cy="24" r="22" stroke="#1E88E5" stroke-width="3"/>
-                    <path d="M24 13v22M13 24h22" stroke="#1E88E5" stroke-width="3.5" stroke-linecap="round"/>
-                  </svg>
+                  <img src="/icons/icon.png" width="14" height="14" alt="Plantão" style="border-radius:3px;display:block" />
                   <span class="sim-title">Plantão</span>
                 </div>
                 <span class="sim-badge">● online</span>
@@ -340,10 +334,7 @@
     <footer class="footer">
       <div class="footer-inner">
         <div class="footer-brand">
-          <svg width="18" height="18" viewBox="0 0 48 48" fill="none">
-            <circle cx="24" cy="24" r="22" stroke="#1E88E5" stroke-width="2.5"/>
-            <path d="M24 13v22M13 24h22" stroke="#1E88E5" stroke-width="3" stroke-linecap="round"/>
-          </svg>
+          <img src="/icons/icon.png" width="22" height="22" alt="Plantão" style="border-radius:5px;display:block" />
           <span class="nav-logo">Plantão</span>
         </div>
         <p class="footer-sub">App de anotações de enfermagem para uso no plantão hospitalar.</p>

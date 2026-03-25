@@ -4,18 +4,7 @@
     <!-- Hero -->
     <div class="hero">
       <div class="hero-icon">
-        <svg width="38" height="38" viewBox="0 0 48 48" fill="none">
-          <rect x="8" y="4" width="32" height="40" rx="4" fill="#1B3B6F"/>
-          <rect x="8" y="4" width="8" height="40" rx="2" fill="#2962FF"/>
-          <circle cx="12" cy="13" r="2" fill="white"/>
-          <circle cx="12" cy="21" r="2" fill="white"/>
-          <circle cx="12" cy="29" r="2" fill="white"/>
-          <circle cx="12" cy="37" r="2" fill="white"/>
-          <rect x="20" y="16" width="16" height="2" rx="1" fill="#B0C4DE"/>
-          <rect x="20" y="22" width="12" height="2" rx="1" fill="#B0C4DE"/>
-          <rect x="20" y="28" width="14" height="2" rx="1" fill="#B0C4DE"/>
-          <rect x="20" y="34" width="10" height="2" rx="1" fill="#B0C4DE"/>
-        </svg>
+        <img src="/icons/icon.png" width="64" height="64" alt="Plantão" style="border-radius:14px;display:block" />
       </div>
       <h1>Plantão</h1>
       <p>Anotações de enfermagem</p>
