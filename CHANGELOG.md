@@ -6,6 +6,37 @@
 
 ---
 
+## Sessão 2026-03-25 (continuação — tarde)
+
+### Admin dashboard completo + métricas de engajamento
+
+**Novos dados coletados automaticamente:**
+- `usuarios/{syncCode}/ultimo_acesso` — salvo a cada login via `auth.js`
+- `usuarios/{syncCode}/total_anotacoes` — incrementado via `anotacoes.js` a cada anotação salva
+- `config/cron_last_run` — registrado pelo `cron.js` após cada execução
+- `admin/broadcasts/{pushKey}` — histórico salvo pelo `broadcast.js` após cada envio
+
+**4 tabs no AdminView:**
+- **Usuários**: busca por nome/email, badge atividade (ativo hoje/Xd/inativo), stats (último acesso, total anotações, FCM tokens), email individual via modal, excluir
+- **Feedbacks**: lido/não lido (localStorage), responder via mailto, badge de não lidos na tab
+- **Métricas**: ativos 7d, total anotações global, crescimento acumulado 8 semanas, cadastros por semana
+- **Monitor**: status do cron (última execução, há quanto tempo, alerta se >5min parado), histórico broadcasts
+
+**Novos endpoints:**
+- `api/admin-email-user.js` — POST `{ uid, assunto, mensagem }` — envia email individual via Resend
+
+**Discussões estratégicas:**
+- Monetização: mensal apenas (R$14,99/mês) — anual tem risco jurídico (CDC) se app descontinuar
+- Freemium: campo `subscription: 'free'|'pro'` no Firebase, bloqueio só quando online
+- Stripe: `cancel_at_period_end: true` — usuário usa até fim do período mesmo após cancelar
+- Anúncios: descartado para esse público
+- Firebase aguenta para tudo planejado; Supabase só valeria para queries SQL complexas
+- Rede social futura: Firestore + Algolia + FCM — aguenta 1-2M usuários
+
+**Commit:** `436dba2`
+
+---
+
 ## Sessão 2026-03-25
 
 ### Admin dashboard melhorado + remoção onboarding + LGPD

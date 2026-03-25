@@ -131,6 +131,16 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 
 ---
 
+### [x] Admin dashboard completo (concluído 2026-03-25 tarde)
+- 4 tabs: Usuários, Feedbacks, Métricas, Monitor
+- Busca, badge atividade, email individual, FCM tokens por usuário
+- Feedbacks: lido/não lido, responder, badge não lidos
+- Monitor: cron status + alerta + histórico broadcasts
+- Coleta: ultimo_acesso (auth), total_anotacoes (anotacoes store), cron_last_run, admin/broadcasts
+- `api/admin-email-user.js` criado
+
+---
+
 ### [x] Admin dashboard melhorado + remoção onboarding + LGPD (concluído 2026-03-25)
 - Tabs Usuários / Feedbacks / Métricas no AdminView com dados reais do Firebase
 - Botão excluir usuário (admin): remove 15 paths + Auth + decrementa contador
