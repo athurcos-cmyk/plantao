@@ -3,9 +3,12 @@
     <header class="admin-header">
       <button class="btn-back" @click="$router.back()">←</button>
       <h1 class="admin-title">Admin</h1>
-      <button class="btn-refresh" :disabled="carregando" @click="carregarDadosAdmin" title="Recarregar">
-        <span :class="{ 'spin': carregando }">↺</span>
-      </button>
+      <div class="header-acoes">
+        <button class="btn-broadcast" @click="broadcastAberto = true" title="Enviar broadcast">📢</button>
+        <button class="btn-refresh" :disabled="carregando" @click="carregarDadosAdmin" title="Recarregar">
+          <span :class="{ 'spin': carregando }">↺</span>
+        </button>
+      </div>
     </header>
 
     <div class="admin-body">
@@ -195,44 +198,49 @@
         </div>
       </template>
 
-      <!-- ── Divider ── -->
-      <div class="divider"></div>
+    </div>
 
-      <!-- ── Broadcast ── -->
-      <p class="admin-hint">Enviar mensagem para todos os usuários cadastrados.</p>
-      <div class="field">
-        <label class="field-label">Título</label>
-        <input v-model="form.titulo" class="input" placeholder="Ex: Novidade no Plantão 🎉" maxlength="100" />
-      </div>
-      <div class="field">
-        <label class="field-label">Mensagem</label>
-        <textarea v-model="form.mensagem" class="input textarea" placeholder="Escreva a mensagem aqui..." rows="4" maxlength="1000" />
-        <span class="char-count">{{ form.mensagem.length }}/1000</span>
-      </div>
-      <div class="field">
-        <label class="field-label">Enviar via</label>
-        <div class="chips">
-          <button class="chip" :class="{ 'chip-on': form.tipo === 'push' }" @click="form.tipo = 'push'">🔔 Push</button>
-          <button class="chip" :class="{ 'chip-on': form.tipo === 'email' }" @click="form.tipo = 'email'">✉️ Email</button>
-          <button class="chip" :class="{ 'chip-on': form.tipo === 'ambos' }" @click="form.tipo = 'ambos'">📢 Ambos</button>
+    <!-- ── Modal: Broadcast ── -->
+    <div v-if="broadcastAberto" class="modal-overlay" @click.self="broadcastAberto = false">
+      <div class="modal">
+        <h2 class="modal-titulo">📢 Broadcast</h2>
+        <p class="modal-sub">Envia para todos os usuários cadastrados</p>
+        <div class="field">
+          <label class="field-label">Título</label>
+          <input v-model="form.titulo" class="input" placeholder="Ex: Novidade no Plantão 🎉" maxlength="100" />
+        </div>
+        <div class="field">
+          <label class="field-label">Mensagem</label>
+          <textarea v-model="form.mensagem" class="input textarea" placeholder="Escreva a mensagem aqui..." rows="5" maxlength="1000" />
+          <span class="char-count">{{ form.mensagem.length }}/1000</span>
+        </div>
+        <div class="field">
+          <label class="field-label">Enviar via</label>
+          <div class="chips">
+            <button class="chip" :class="{ 'chip-on': form.tipo === 'push' }" @click="form.tipo = 'push'">🔔 Push</button>
+            <button class="chip" :class="{ 'chip-on': form.tipo === 'email' }" @click="form.tipo = 'email'">✉️ Email</button>
+            <button class="chip" :class="{ 'chip-on': form.tipo === 'ambos' }" @click="form.tipo = 'ambos'">📢 Ambos</button>
+          </div>
+        </div>
+        <div v-if="resultado" class="resultado" :class="resultado.erro ? 'resultado-erro' : 'resultado-ok'" style="margin-bottom:12px">
+          <template v-if="!resultado.erro">
+            <p class="resultado-linha">✅ Push: <strong>{{ resultado.push }}</strong> &nbsp; ✉️ Email: <strong>{{ resultado.email }}</strong></p>
+            <ul v-if="resultado.erros?.length" class="erros-lista">
+              <li v-for="(e, i) in resultado.erros" :key="i" class="erro-item">
+                <span class="erro-tipo">{{ e.tipo }}</span>
+                <span class="erro-msg">{{ e.error }}</span>
+              </li>
+            </ul>
+          </template>
+          <p v-else class="resultado-linha">❌ {{ resultado.erro }}</p>
+        </div>
+        <div class="modal-acoes">
+          <button class="btn-cancel" @click="broadcastAberto = false">Fechar</button>
+          <button class="btn-enviar-modal" :disabled="enviando || !form.mensagem.trim()" @click="enviar">
+            {{ enviando ? 'Enviando…' : 'Enviar' }}
+          </button>
         </div>
       </div>
-      <button class="btn-enviar" :disabled="enviando || !form.mensagem.trim()" @click="enviar">
-        {{ enviando ? 'Enviando…' : 'Enviar' }}
-      </button>
-      <div v-if="resultado" class="resultado" :class="resultado.erro ? 'resultado-erro' : 'resultado-ok'">
-        <template v-if="!resultado.erro">
-          <p class="resultado-linha">✅ Push: <strong>{{ resultado.push }}</strong> &nbsp; ✉️ Email: <strong>{{ resultado.email }}</strong></p>
-          <ul v-if="resultado.erros?.length" class="erros-lista">
-            <li v-for="(e, i) in resultado.erros" :key="i" class="erro-item">
-              <span class="erro-tipo">{{ e.tipo }}</span>
-              <span class="erro-msg">{{ e.error }}</span>
-            </li>
-          </ul>
-        </template>
-        <p v-else class="resultado-linha">❌ {{ resultado.erro }}</p>
-      </div>
-
     </div>
 
     <!-- ── Modal: Email individual ── -->
@@ -362,6 +370,7 @@ async function enviarEmailIndividual() {
 }
 
 // ── Broadcast ──
+const broadcastAberto = ref(false)
 const form = reactive({ titulo: '', mensagem: '', tipo: 'ambos' })
 const enviando = ref(false)
 const resultado = ref(null)
@@ -521,8 +530,11 @@ function barraLargura(count, lista) {
 
 /* ── Header ── */
 .admin-header { display: flex; align-items: center; gap: 12px; padding: 16px; background: #111d32; border-bottom: 1px solid #1e3050; }
+.header-acoes { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.btn-broadcast { background: rgba(30,136,229,0.12); border: 1px solid rgba(30,136,229,0.3); color: #1E88E5; font-size: 1.1rem; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: background 0.15s; }
+.btn-broadcast:hover { background: rgba(30,136,229,0.22); }
 .btn-back { background: none; border: none; color: #8899AA; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
-.admin-title { margin: 0; font-size: 1.1rem; font-weight: 700; flex: 1; }
+.admin-title { margin: 0; font-size: 1.1rem; font-weight: 700; }
 .btn-refresh { background: none; border: none; color: #8899AA; font-size: 1.4rem; cursor: pointer; padding: 4px 8px; transition: color 0.15s; }
 .btn-refresh:hover:not(:disabled) { color: #1E88E5; }
 .spin { display: inline-block; animation: spin 1s linear infinite; }
