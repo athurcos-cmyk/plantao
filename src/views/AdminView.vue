@@ -345,7 +345,7 @@ async function enviarEmailIndividual() {
   sucessoEmail.value = false
   try {
     const idToken = await getIdToken()
-    const res = await fetch('/api/admin-email-user', {
+    const res = await fetch('/api/admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
       body: JSON.stringify({ uid: modalEmail.value.uid, assunto: emailForm.assunto.trim(), mensagem: emailForm.mensagem.trim() }),
@@ -387,7 +387,7 @@ async function carregarDadosAdmin() {
   erroAdmin.value = ''
   try {
     const idToken = await getIdToken()
-    const res = await fetch('/api/admin-data', {
+    const res = await fetch('/api/admin', {
       headers: { Authorization: `Bearer ${idToken}` },
     })
     const data = await res.json()
@@ -429,8 +429,8 @@ async function excluirUsuario(u) {
   erroExcluir.value = ''
   try {
     const idToken = await getIdToken()
-    const res = await fetch('/api/admin-delete-user', {
-      method: 'POST',
+    const res = await fetch('/api/admin', {
+      method: 'DELETE',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
       body: JSON.stringify({ uid: u.uid }),
     })
