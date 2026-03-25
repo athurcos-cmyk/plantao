@@ -116,7 +116,7 @@ const organizador = useOrganizadorStore()
 const { limparConversa } = useChat()
 const router     = useRouter()
 const route      = useRoute()
-const rotasSemFab = ['landing', 'onboarding', 'login', 'pc']
+const rotasSemFab = ['landing', 'login', 'pc']
 const mostrarFab  = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
@@ -263,17 +263,6 @@ async function instalarApp() {
 // Inicializa listener de autenticação do Firebase
 onMounted(async () => {
   await auth.initAuthListener()
-
-  // Onboarding: redireciona para telas de boas-vindas na primeira abertura
-  try {
-    const jaViu = localStorage.getItem('onboarding_visto')
-    const rotaAtual = router.currentRoute.value.name
-    if (!jaViu && !auth.isLoggedIn && rotaAtual !== 'landing' && rotaAtual !== 'onboarding') {
-      router.push({ name: 'onboarding' })
-    }
-  } catch {
-    // localStorage bloqueado (modo privado extremo) — ignorar
-  }
 
   // Retry contínuo de sync enquanto houver pendências e internet.
   setInterval(() => {

@@ -75,12 +75,34 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 
 ## Pendentes
 
-### [ ] Validação de pagamento com usuárias (próxima ação prioritária)
-**O quê:** Perguntar pessoalmente para cada uma das 5 usuárias: "Você pagaria R$14,99/mês?"
-**Por quê:** É a validação mais importante antes de qualquer linha de código de paywall.
-**Como:** Presencialmente ou ligação — não por mensagem. Ouvir a resposta completa.
-**Meta:** ≥3 de 5 dizem sim → implementar paywall. Abaixo disso → ajustar proposta.
-**Prioridade:** P0 — fazer essa semana
+### [ ] Métricas de anotações no painel admin (P2)
+**O quê:** Counters `config/total_anotacoes` e `config/usuarios_ativos_7d` incrementados nas stores ao criar anotação.
+**Por quê:** Métricas de engajamento real — "X anotações feitas" é melhor sinal de valor que "X cadastros" para decisão de paywall.
+**Como:** Incrementar `config/total_anotacoes` com `increment(1)` em `anotacoes.js` ao salvar. Para ativos_7d: salvar timestamp em `usuarios/{syncCode}/ultimo_acesso` e calcular no admin-data.
+**Depende de:** admin-data.js no ar (admin dashboard melhorado).
+**Prioridade:** P2 — fazer após 50+ usuários para ter volume real de dados.
+
+---
+
+### [ ] Lançar o app publicamente (próxima ação prioritária)
+**O quê:** Divulgar o app em canais com alta densidade de enfermeiros/técnicos
+**Por quê:** Quem o fundador conhece não está usando mesmo de graça. Desconhecidos engajam mais.
+**Canais sugeridos:**
+- Grupos de Facebook: "Técnico de Enfermagem Brasil", "Enfermagem" (100k–500k membros)
+- Instagram: post/reels mostrando situação real de plantão (não propaganda)
+- Grupos de WhatsApp de equipes de enfermagem
+- TikTok: vídeo curto "como anoto no plantão"
+- LinkedIn: para enfermeiros
+**Meta:** Preencher as 90 vagas restantes → coletar feedback real de desconhecidos
+**Prioridade:** P0 — fazer agora
+
+---
+
+### [ ] Validação de pagamento com usuárias (rebaixado — aguarda feedback público)
+**O quê:** Perguntar para usuários reais (não só conhecidos) se pagariam R$14,99/mês
+**Por quê:** Quem conhece não usou mesmo de graça — feedback de desconhecidos é mais válido
+**Status:** Aguardar lançamento público e coletar feedback via Pulso do App
+**Prioridade:** P1 — após lançamento
 
 ---
 

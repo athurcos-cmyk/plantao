@@ -127,6 +127,47 @@ feedback/{syncCode}/                             feedbacks dos usuários
 
 ## Histórico de sessões
 
+### Mar 2026 — Lançamento público: limite de vagas + landing com urgência + horário obrigatório
+
+**Decisão estratégica:**
+- Pivot do plano original (validar pagamento com 5 conhecidas) para lançamento público real
+- Motivo: quem o fundador conhece não está usando o app mesmo de graça — desconhecidos engajam mais
+- Modelo mantido: 100 vagas gratuitas no lançamento → depois lista de espera → futuro paywall
+
+**Horário obrigatório em todas as anotações:**
+- 7 views de anotação + composable `useAnotacaoInicial.js` agora exigem horário antes de avançar/gerar
+- Label `Horário *` com asterisco vermelho (`<span class="obrigatorio">*</span>`) em todos os campos
+- Views multi-passo: validação em `avancar()` (Banho, Curativo, Encaminhamento, Passagem)
+- Views passo único: validação em `gerar()` (Medicação, Sinais Vitais, Inicial)
+
+**Limite de 100 vagas:**
+- `auth.js`: `_verificarVagas()` lê `config/total_usuarios` antes de criar conta (email e Google). Se ≥ 100, bloqueia com erro `'limite-atingido'`
+- `auth.js`: após cadastro bem-sucedido, incrementa `config/total_usuarios` com `increment(1)`
+- `api/delete-account.js`: decrementa `config/total_usuarios` via transaction quando conta é excluída (nunca vai abaixo de 0)
+- `database.rules.json`: `config/total_usuarios` com leitura pública + escrita autenticada. **Regras publicadas no Firebase Console.**
+
+**Landing page com urgência e escassez:**
+- Badge do hero: "Lançamento beta · X vagas restantes" (lê Firebase no `onMounted`)
+- Barra de urgência vermelha pulsante quando restam ≤ 20 vagas
+- CTA final: "Ainda restam X vagas" + botão "Garantir minha vaga →"
+- Quando esgotado: botão vira "Entrar na lista de espera →" apontando para `mailto:contato@plantao.net`
+- FAQ: resposta sobre "É gratuito?" atualizada mencionando o limite de 100 vagas
+
+**Tela de lista de espera (LoginView):**
+- Quando limite atingido, exibe tela dedicada com 🔒, título "Vagas esgotadas", email `contato@plantao.net` clicável
+- Detectado automaticamente após `criarConta()` ou `entrarGoogle()` retornarem `'limite-atingido'`
+
+**Painel admin de contador (AdminView + api/init-counter.js):**
+- AdminView: card exibe total de usuários cadastrados / 100 vagas em tempo real ao abrir `/admin`
+- Botão "🔄 Sincronizar contador": chama `/api/init-counter` que conta `usuarios/` via firebase-admin e seta o valor real
+- **Uso obrigatório após deploy para inicializar com usuários existentes** — já feito (10 usuários encontrados)
+- `api/init-counter.js`: endpoint admin-only (idToken + email `a.thurcos@gmail.com`)
+
+**Estado atual após sessão:**
+- 10 usuários cadastrados → 90 vagas restantes (confirmado via sync no /admin)
+
+---
+
 ### Mar 2026 — Documentação: localização do MEMORY.md
 
 - `CLAUDE.md`: instrução de leitura obrigatória agora inclui caminho completo do MEMORY.md (`C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`) — evita confusão com MEMORY.md inexistente na raiz do projeto.

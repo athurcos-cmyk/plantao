@@ -36,3 +36,4 @@ description: Regras de comportamento para reduzir consumo de tokens sem perder q
 - Se a conversa estiver longa, resumir o contexto relevante antes de continuar
 - Não carregar arquivos de memória que não sejam necessários para a tarefa atual
 - Preferir tarefas menores e incrementais a blocos grandes de mudança
+- Na mesma sessão, não reler arquivo que já foi lido — usar o que está no contexto

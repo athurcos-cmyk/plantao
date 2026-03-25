@@ -18,11 +18,6 @@ const routes = [
     component: () => import('../views/TermosView.vue')
   },
   {
-    path: '/onboarding',
-    name: 'onboarding',
-    component: () => import('../views/OnboardingView.vue')
-  },
-  {
     path: '/',
     name: 'login',
     component: () => import('../views/LoginView.vue')
@@ -111,6 +106,10 @@ const routes = [
     component: () => import('../views/AdminView.vue'),
     meta: { requiresAuth: true, requiresAdmin: true }
   },
+  // Rota legada — redireciona para login
+  { path: '/onboarding', redirect: { name: 'login' } },
+  // Qualquer rota desconhecida → login
+  { path: '/:pathMatch(.*)*', redirect: { name: 'login' } },
 ]
 
 const router = createRouter({
