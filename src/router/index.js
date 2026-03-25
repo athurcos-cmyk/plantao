@@ -8,6 +8,16 @@ const routes = [
     component: () => import('../views/LandingView.vue')
   },
   {
+    path: '/privacidade',
+    name: 'privacidade',
+    component: () => import('../views/PrivacidadeView.vue')
+  },
+  {
+    path: '/termos',
+    name: 'termos',
+    component: () => import('../views/TermosView.vue')
+  },
+  {
     path: '/onboarding',
     name: 'onboarding',
     component: () => import('../views/OnboardingView.vue')

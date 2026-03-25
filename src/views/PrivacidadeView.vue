@@ -1,0 +1,124 @@
+<template>
+  <div class="doc-wrap">
+    <div class="doc-header">
+      <a href="/landing" class="doc-back">← Plantão</a>
+    </div>
+    <div class="doc-body">
+      <h1>Política de Privacidade</h1>
+      <p class="doc-updated">Última atualização: março de 2026</p>
+
+      <h2>1. Sobre o Plantão</h2>
+      <p>O Plantão é um aplicativo web progressivo (PWA) criado para auxiliar profissionais de enfermagem a registrar anotações durante o plantão hospitalar. Desenvolvido e operado por Arthur Thurcos, com sede no Brasil.</p>
+      <p>Contato: <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
+
+      <h2>2. Dados coletados</h2>
+      <p>Coletamos apenas o necessário para o funcionamento do app:</p>
+      <ul>
+        <li><strong>Nome e e-mail</strong> — para criar e identificar sua conta</li>
+        <li><strong>Anotações clínicas</strong> — texto que você digita no app (sinais vitais, medicações, etc.)</li>
+        <li><strong>Dados de pacientes</strong> — nome e leito, informados por você</li>
+        <li><strong>Token de notificação (FCM)</strong> — para enviar lembretes de pendências no celular</li>
+        <li><strong>Dados de uso básico</strong> — data de cadastro, último acesso</li>
+      </ul>
+      <p>Não coletamos prontuários, CPF, dados financeiros ou qualquer informação sensível além do que você digita voluntariamente.</p>
+
+      <h2>3. Como os dados são usados</h2>
+      <ul>
+        <li>Sincronizar suas anotações entre dispositivos</li>
+        <li>Enviar notificações de pendências que você agendou</li>
+        <li>Enviar e-mails transacionais: boas-vindas, dicas e despedida</li>
+        <li>Melhorar o funcionamento do app com base em feedbacks</li>
+      </ul>
+      <p>Não vendemos, compartilhamos nem monetizamos seus dados com terceiros.</p>
+
+      <h2>4. Armazenamento</h2>
+      <p>Seus dados são armazenados no <strong>Firebase Realtime Database</strong> (Google), com servidores nos Estados Unidos. O acesso é protegido por autenticação Firebase Auth e regras de segurança que isolam os dados de cada usuário.</p>
+
+      <h2>5. Dados de pacientes</h2>
+      <p>O Plantão é uma ferramenta de apoio ao profissional — não é um sistema hospitalar. Os dados de pacientes (nome, leito, anotações) são inseridos por você e ficam restritos à sua conta. Não temos acesso ao conteúdo das suas anotações. Você é responsável por seguir as normas do seu hospital quanto ao registro de informações clínicas.</p>
+
+      <h2>6. Seus direitos</h2>
+      <ul>
+        <li><strong>Acesso:</strong> todos os seus dados estão visíveis dentro do app</li>
+        <li><strong>Exclusão:</strong> em Configurações → Excluir conta, todos os seus dados são removidos permanentemente</li>
+        <li><strong>Portabilidade:</strong> entre em contato em <a href="mailto:contato@plantao.net">contato@plantao.net</a> para exportar seus dados</li>
+      </ul>
+
+      <h2>7. Cookies e armazenamento local</h2>
+      <p>O app usa <strong>localStorage</strong> para cache de sessão e funcionamento offline. Não usamos cookies de rastreamento ou publicidade.</p>
+
+      <h2>8. Menores de idade</h2>
+      <p>O Plantão é destinado a profissionais de saúde maiores de 18 anos. Não coletamos dados de menores de idade.</p>
+
+      <h2>9. Alterações</h2>
+      <p>Atualizações nesta política serão comunicadas por e-mail. O uso continuado do app após a notificação implica aceite das mudanças.</p>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.doc-wrap {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text, #e2e8f0);
+  padding-bottom: 60px;
+}
+
+.doc-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-back {
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.doc-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.doc-updated {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 32px;
+}
+
+h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 28px;
+  margin-bottom: 10px;
+  color: var(--blue);
+}
+
+p {
+  line-height: 1.7;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+ul {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+
+li {
+  line-height: 1.7;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+a {
+  color: var(--blue);
+}
+</style>

@@ -196,6 +196,13 @@
           </svg>
           Cadastrar com Google
         </button>
+
+        <p class="texto-termos">
+          Ao criar conta, você concorda com os
+          <a href="/termos" target="_blank">Termos de Serviço</a>
+          e a
+          <a href="/privacidade" target="_blank">Política de Privacidade</a>.
+        </p>
       </div>
 
       <!-- ══ Tela de Recuperar Senha ══ -->
@@ -713,6 +720,20 @@ async function recuperar() {
 }
 .btn-como-funciona:hover { color: var(--text); }
 .btn-como-funciona:active { background: var(--bg-hover); }
+
+/* ── Texto termos ── */
+.texto-termos {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+.texto-termos a {
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+.texto-termos a:hover { color: var(--text); }
 
 /* ── Erro ── */
 .erro-msg {
