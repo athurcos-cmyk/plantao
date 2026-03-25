@@ -15,9 +15,10 @@
     h2 { font-size: 1.05rem; font-weight: 600; margin-top: 28px; margin-bottom: 10px; color: #1E88E5; }
     p { line-height: 1.7; margin-bottom: 12px; font-size: 0.95rem; color: #EAEEF3; }
     ul { padding-left: 20px; margin-bottom: 12px; }
-    li { line-height: 1.7; font-size: 0.95rem; margin-bottom: 4px; }
+    li { line-height: 1.7; font-size: 0.95rem; margin-bottom: 6px; }
     a { color: #1E88E5; }
     strong { color: #fff; }
+    .destaque { background: rgba(30,136,229,0.08); border-left: 3px solid #1E88E5; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 14px; font-size: 0.9rem; line-height: 1.6; }
   </style>
 </head>
 <body>
@@ -26,70 +27,106 @@
     <h1>Política de Privacidade</h1>
     <p class="updated">Última atualização: março de 2026</p>
 
-    <h2>1. Sobre o Plantão</h2>
-    <p>O Plantão é um aplicativo web progressivo (PWA) criado para auxiliar profissionais de enfermagem a registrar anotações durante o plantão hospitalar. Desenvolvido e operado por Arthur Olímpio Lima, com sede no Brasil.</p>
-    <p>Contato: <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
+    <h2>1. Identificação do Controlador</h2>
+    <p>O <strong>Plantão</strong> é um aplicativo web progressivo (PWA) operado por:</p>
+    <p><strong>Arthur Olímpio Lima</strong>, pessoa física, desenvolvedor independente, com sede no Brasil.<br/>
+    Contato: <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
+    <p>Para os fins da Lei nº 13.709/2018 (LGPD), Arthur Olímpio Lima é o <strong>controlador</strong> dos dados pessoais coletados diretamente pelo app (nome, e-mail, dados de conta). Em relação aos dados de pacientes inseridos pelo usuário profissional de saúde, o Plantão atua como <strong>operador</strong>, conforme detalhado na Seção 8.</p>
 
-    <h2>2. Dados coletados</h2>
-    <p>Coletamos apenas o necessário para o funcionamento do app:</p>
+    <h2>2. Dados pessoais coletados</h2>
+    <p>Coletamos exclusivamente os dados necessários para o funcionamento do serviço:</p>
     <ul>
-      <li><strong>Nome e e-mail</strong> — para criar e identificar sua conta</li>
-      <li><strong>Anotações clínicas</strong> — texto que você digita no app (sinais vitais, medicações, pendências)</li>
-      <li><strong>Dados de pacientes</strong> — nome e leito, informados por você</li>
-      <li><strong>Token de notificação (FCM)</strong> — para enviar lembretes de pendências no celular</li>
-      <li><strong>Dados de uso básico</strong> — data de cadastro, último acesso</li>
+      <li><strong>Nome e endereço de e-mail</strong> — para criação e identificação da conta</li>
+      <li><strong>Data de cadastro e data do último acesso</strong> — para operação e segurança do serviço</li>
+      <li><strong>Token de notificação push (FCM)</strong> — para envio de lembretes de pendências agendados pelo próprio usuário</li>
+      <li><strong>Feedbacks e mensagens de contato</strong> — enviados voluntariamente pelo usuário</li>
     </ul>
-    <p>Não coletamos prontuários, CPF, dados financeiros ou qualquer informação sensível além do que você digita voluntariamente.</p>
+    <p>Não coletamos CPF, RG, dados financeiros, localização geográfica, cookies de rastreamento ou qualquer dado não listado acima.</p>
 
-    <h2>3. Base legal do tratamento (LGPD)</h2>
-    <p>O tratamento dos seus dados é realizado com base nas seguintes hipóteses previstas na Lei nº 13.709/2018 (LGPD):</p>
+    <h2>3. Dados sensíveis de saúde (LGPD, Art. 11)</h2>
+    <div class="destaque">
+      As anotações clínicas inseridas pelo usuário (sinais vitais, medicações, pendências, dados de pacientes) constituem <strong>dados pessoais sensíveis</strong>, na categoria dados relativos à saúde, conforme Art. 5º, II da LGPD. Seu tratamento está sujeito a regime jurídico mais rigoroso.
+    </div>
+    <p>O tratamento desses dados pelo Plantão fundamenta-se no <strong>Art. 11, II, "f" da LGPD</strong>: tutela da saúde, em procedimento realizado por profissional de saúde, no exercício de sua atividade profissional. O usuário, na qualidade de profissional de saúde, é o <strong>controlador</strong> desses dados e o Plantão atua como <strong>operador</strong>, armazenando e sincronizando as informações exclusivamente por instrução e para benefício do próprio profissional.</p>
+    <p>Adicionalmente, o consentimento específico e destacado do usuário (Art. 11, I) é obtido no ato do cadastro, quando o usuário concorda com estes termos e com a presente política.</p>
+
+    <h2>4. Base legal do tratamento — dados de conta (LGPD, Art. 7º)</h2>
+    <p>O tratamento dos dados pessoais do usuário (nome, e-mail, data de acesso, token FCM) é realizado com fundamento nas seguintes hipóteses legais:</p>
     <ul>
-      <li><strong>Execução de contrato</strong> (Art. 7º, V) — dados de conta e sincronização, necessários para a prestação do serviço</li>
-      <li><strong>Legítimo interesse</strong> (Art. 7º, IX) — dados de uso básico para manutenção e melhoria do app</li>
-      <li><strong>Consentimento</strong> (Art. 7º, I) — envio de e-mails transacionais e notificações push</li>
-    </ul>
-
-    <h2>4. Como os dados são usados</h2>
-    <ul>
-      <li>Sincronizar suas anotações entre dispositivos</li>
-      <li>Enviar notificações de pendências que você agendou</li>
-      <li>Enviar e-mails transacionais: boas-vindas, dicas e despedida</li>
-      <li>Melhorar o funcionamento do app com base em feedbacks</li>
-    </ul>
-    <p>Não vendemos, compartilhamos nem monetizamos seus dados com terceiros.</p>
-
-    <h2>5. Armazenamento e acesso técnico</h2>
-    <p>Seus dados são armazenados no <strong>Firebase Realtime Database</strong> (Google), com servidores nos Estados Unidos. O acesso é protegido por autenticação Firebase Auth e regras de segurança que isolam os dados de cada usuário.</p>
-    <p>Como operador do serviço, o desenvolvedor possui acesso técnico ao banco de dados para fins de manutenção, suporte e operação do app. Este acesso é restrito ao necessário para a operação do serviço e não envolve leitura ou uso do conteúdo das suas anotações para fins alheios ao serviço.</p>
-
-    <h2>6. Transferência internacional de dados</h2>
-    <p>Os dados são processados e armazenados em servidores do Google (Firebase) localizados nos Estados Unidos. Essa transferência ocorre com base em cláusulas contratuais adequadas e nas políticas de privacidade do Google, em conformidade com o Art. 33 da LGPD. Para mais informações: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com/support/privacy</a>.</p>
-
-    <h2>7. Dados de pacientes</h2>
-    <p>O Plantão é uma ferramenta de apoio ao profissional — não é um sistema hospitalar oficial. Os dados de pacientes (nome, leito, anotações) são inseridos por você e ficam restritos à sua conta. Você é responsável por seguir as normas éticas e regulatórias do seu hospital quanto ao registro de informações clínicas, incluindo as resoluções do COFEN aplicáveis.</p>
-
-    <h2>8. Seus direitos (LGPD, Art. 18)</h2>
-    <ul>
-      <li><strong>Confirmação e acesso:</strong> todos os seus dados estão visíveis dentro do app</li>
-      <li><strong>Correção:</strong> você pode atualizar nome e e-mail nas configurações do app</li>
-      <li><strong>Eliminação:</strong> em Configurações → Excluir conta, todos os seus dados são removidos permanentemente dos nossos servidores</li>
-      <li><strong>Portabilidade:</strong> entre em contato pelo e-mail abaixo para solicitar seus dados</li>
-      <li><strong>Revogação do consentimento:</strong> você pode excluir sua conta a qualquer momento</li>
-      <li><strong>Informação sobre compartilhamento:</strong> seus dados não são compartilhados com terceiros, exceto os provedores de infraestrutura listados nesta política (Google Firebase, Resend)</li>
+      <li><strong>Execução de contrato</strong> (Art. 7º, V) — dados de conta e sincronização, estritamente necessários para a prestação do serviço contratado</li>
+      <li><strong>Legítimo interesse do controlador</strong> (Art. 7º, IX) — data de último acesso, para manutenção, segurança e melhoria do serviço, nos limites do Art. 10 da LGPD</li>
+      <li><strong>Consentimento</strong> (Art. 7º, I) — envio de e-mails transacionais (boas-vindas, dicas, comunicados) e notificações push. O consentimento pode ser revogado a qualquer momento de forma independente, sem necessidade de exclusão da conta, conforme Seção 9</li>
     </ul>
 
-    <h2>9. Cookies e armazenamento local</h2>
-    <p>O app usa <strong>localStorage</strong> para cache de sessão e funcionamento offline. Não usamos cookies de rastreamento ou publicidade.</p>
+    <h2>5. Finalidades do tratamento</h2>
+    <p>Os dados coletados são utilizados exclusivamente para:</p>
+    <ul>
+      <li>Autenticação e manutenção da conta do usuário</li>
+      <li>Sincronização das anotações entre dispositivos do mesmo usuário</li>
+      <li>Envio de notificações push de pendências agendadas pelo usuário</li>
+      <li>Envio de e-mails transacionais relacionados ao serviço</li>
+      <li>Manutenção, segurança e melhoria do app</li>
+      <li>Cumprimento de obrigações legais e regulatórias</li>
+    </ul>
+    <p>Os dados <strong>não são utilizados</strong> para publicidade, perfilamento, venda a terceiros ou qualquer finalidade incompatível com as listadas acima.</p>
 
-    <h2>10. Encarregado de dados (DPO)</h2>
-    <p>O encarregado pelo tratamento de dados pessoais, conforme Art. 41 da LGPD, é o próprio desenvolvedor do app:</p>
-    <p><strong>Arthur Olímpio Lima</strong> — <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
+    <h2>6. Compartilhamento e suboperadores</h2>
+    <p>Os dados são compartilhados exclusivamente com os seguintes suboperadores, para fins operacionais indispensáveis:</p>
+    <ul>
+      <li><strong>Google Firebase</strong> (Alphabet Inc.) — autenticação, armazenamento e sincronização de dados. Política de privacidade: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com/support/privacy</a></li>
+      <li><strong>Resend Inc.</strong> — envio de e-mails transacionais. Política de privacidade: <a href="https://resend.com/privacy" target="_blank" rel="noopener">resend.com/privacy</a></li>
+      <li><strong>Vercel Inc.</strong> — hospedagem da aplicação e das funções serverless. Política de privacidade: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">vercel.com/legal/privacy-policy</a></li>
+      <li><strong>Groq Inc.</strong> — processamento das consultas ao assistente Clara (IA). Apenas o texto da mensagem digitada é enviado, sem identificação do usuário. Política de privacidade: <a href="https://groq.com/privacy-policy" target="_blank" rel="noopener">groq.com/privacy-policy</a></li>
+    </ul>
+    <p>Não há compartilhamento de dados com terceiros para fins comerciais, publicitários ou de qualquer outra natureza.</p>
 
-    <h2>11. Menores de idade</h2>
-    <p>O Plantão é destinado a profissionais de saúde maiores de 18 anos. Não coletamos dados de menores de idade.</p>
+    <h2>7. Transferência internacional de dados (LGPD, Art. 33)</h2>
+    <p>Os dados são armazenados e processados em servidores localizados nos Estados Unidos da América, operados pelo Google (Firebase) e pela Vercel Inc. Essa transferência internacional ocorre com amparo no Art. 33, II da LGPD, com base em garantias contratuais adequadas (Standard Contractual Clauses) e nas políticas de conformidade dos respectivos suboperadores, que atendem a padrões equivalentes de proteção de dados.</p>
 
-    <h2>12. Alterações</h2>
-    <p>Atualizações nesta política serão comunicadas por e-mail com antecedência mínima de 15 dias. O uso continuado do app após a notificação implica aceite das mudanças.</p>
+    <h2>8. Dados de pacientes — relação controlador/operador</h2>
+    <p>Os dados de pacientes inseridos pelo usuário (nome, leito, anotações clínicas) são de responsabilidade exclusiva do profissional de saúde, que atua como <strong>controlador</strong> dessas informações nos termos do Art. 5º, VI da LGPD. O Plantão, nessa relação, atua como <strong>operador</strong> (Art. 5º, VII), limitando-se a armazenar e sincronizar os dados por instrução do controlador, sem qualquer acesso, análise ou utilização independente dessas informações.</p>
+    <p>O profissional de saúde é responsável por: (i) inserir apenas os dados estritamente necessários ao exercício de sua atividade; (ii) observar as normas éticas, deontológicas e regulatórias aplicáveis, incluindo resoluções do COFEN; e (iii) garantir que o uso do app seja compatível com as políticas de seu empregador ou instituição de saúde.</p>
+
+    <h2>9. Armazenamento, acesso técnico e prazo de retenção</h2>
+    <p>Os dados são armazenados no Firebase Realtime Database com isolamento por usuário, protegidos por autenticação Firebase Auth e regras de segurança que impedem acesso cruzado entre contas.</p>
+    <p>O desenvolvedor, na qualidade de controlador, possui acesso técnico aos dados exclusivamente para fins de manutenção, suporte, segurança e operação do serviço. Esse acesso é registrado e restrito ao estritamente necessário, sem leitura ou utilização do conteúdo das anotações para fins alheios ao serviço.</p>
+    <p><strong>Prazo de retenção:</strong> os dados pessoais são mantidos pelo período em que a conta estiver ativa. Após a exclusão da conta, todos os dados são eliminados permanentemente dos servidores em até <strong>30 dias</strong>, exceto nos casos em que a lei exija retenção por prazo superior (ex: registros de acesso, conforme Art. 15 do Marco Civil da Internet — Lei nº 12.965/2014, mantidos por 6 meses).</p>
+
+    <h2>10. Uso de armazenamento local (localStorage)</h2>
+    <p>O app utiliza o <strong>localStorage</strong> do dispositivo para cache de sessão, funcionamento offline e preferências do usuário. Não são utilizados cookies de rastreamento, analytics de terceiros ou qualquer tecnologia de perfilamento comportamental.</p>
+
+    <h2>11. Seus direitos como titular (LGPD, Art. 18)</h2>
+    <p>Nos termos do Art. 18 da LGPD, você tem direito a:</p>
+    <ul>
+      <li><strong>Confirmação e acesso:</strong> seus dados estão disponíveis dentro do app. Dados adicionais podem ser solicitados por e-mail</li>
+      <li><strong>Correção:</strong> nome e e-mail podem ser atualizados em Configurações</li>
+      <li><strong>Anonimização, bloqueio ou eliminação:</strong> em Configurações → Excluir conta, todos os dados são removidos permanentemente</li>
+      <li><strong>Portabilidade:</strong> solicite seus dados em formato estruturado pelo e-mail de contato</li>
+      <li><strong>Oposição ao tratamento:</strong> você pode se opor ao tratamento baseado em legítimo interesse pelo e-mail de contato</li>
+      <li><strong>Revogação do consentimento para e-mails:</strong> clicando em "descadastrar" no rodapé de qualquer e-mail recebido, sem necessidade de excluir sua conta</li>
+      <li><strong>Revogação do consentimento para notificações push:</strong> desativando as notificações nas configurações do seu dispositivo ou navegador</li>
+      <li><strong>Informação sobre compartilhamento:</strong> listado integralmente na Seção 6 desta política</li>
+      <li><strong>Petição à ANPD:</strong> você tem o direito de peticionar à Autoridade Nacional de Proteção de Dados (ANPD) em relação ao tratamento de seus dados</li>
+    </ul>
+    <p>Solicitações de exercício de direitos serão respondidas em até <strong>15 dias corridos</strong>, conforme Art. 18, §5º da LGPD.</p>
+
+    <h2>12. Incidentes de segurança (LGPD, Art. 48)</h2>
+    <p>Em caso de incidente de segurança que possa acarretar risco ou dano relevante aos titulares, o controlador comunicará o ocorrido à Autoridade Nacional de Proteção de Dados (ANPD) e aos titulares afetados em prazo razoável, conforme Art. 48 da LGPD e regulamentação da ANPD, contendo: (i) descrição da natureza dos dados afetados; (ii) informações sobre os titulares envolvidos; (iii) medidas técnicas e de segurança adotadas; (iv) riscos relacionados ao incidente; e (v) medidas para reversão ou mitigação dos efeitos.</p>
+
+    <h2>13. Encarregado de dados — DPO (LGPD, Art. 41)</h2>
+    <p>O encarregado pelo tratamento de dados pessoais, conforme Art. 41 da LGPD, é:</p>
+    <p><strong>Arthur Olímpio Lima</strong><br/>
+    E-mail: <a href="mailto:contato@plantao.net">contato@plantao.net</a><br/>
+    Tempo de resposta: até 15 dias corridos</p>
+
+    <h2>14. Menores de idade</h2>
+    <p>O Plantão é destinado exclusivamente a profissionais de saúde maiores de 18 anos. Não coletamos dados de menores de idade. Caso identifiquemos tal situação, os dados serão eliminados imediatamente.</p>
+
+    <h2>15. Marco Civil da Internet</h2>
+    <p>O serviço observa as disposições da Lei nº 12.965/2014 (Marco Civil da Internet), em especial: (i) respeito à privacidade do usuário (Art. 7º); (ii) proteção dos dados pessoais (Art. 7º, VII); e (iii) manutenção dos registros de conexão e de acesso a aplicações pelo prazo legal de 6 meses (Art. 15).</p>
+
+    <h2>16. Alterações desta política</h2>
+    <p>Alterações significativas serão comunicadas por e-mail com antecedência mínima de <strong>15 dias corridos</strong>. O uso continuado do app após o prazo implica aceite das mudanças. Para alterações que representem redução de direitos dos titulares, será solicitado novo consentimento expresso.</p>
   </div>
 </body>
 </html>
