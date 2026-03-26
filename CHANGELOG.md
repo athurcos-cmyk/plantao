@@ -6,6 +6,37 @@
 
 ---
 
+## Sessão 2026-03-26 — Divulgação + Instagram
+
+### Lançamento público iniciado
+
+**OAuth Google — melhorias visuais:**
+- Email de suporte do OAuth trocado de `arthurzika3@gmail.com` para `contato-plantao@googlegroups.com` (Google Group criado para contornar restrição do campo)
+- Decisão: não migrar Firebase Hosting (custaria as serverless functions do Vercel + perda dos 12 usuários Auth)
+- Decisão: não criar novo projeto Firebase (perda de usuários Auth, horas de reconfiguração)
+- authDomain mantido como `anotacao-hc.firebaseapp.com` (mudar causaria erro no login com Google)
+
+**Instagram `@plantao.app` criado:**
+- Conta profissional criada com email `plantao.contato.net@gmail.com`
+- Bio: "App para organizar seu plantão inteiro. Anotações prontas, pacientes, calculadora e notificações. Gratuito. Funciona offline."
+- Link na bio: `plantao.net/landing`
+- 3 posts publicados:
+  1. Carrossel 5 slides (história real → problema → solução → app → CTA)
+  2. Post com prints reais do dashboard + sinais vitais gerados
+  3. Post de engajamento "Como você anota durante o plantão?" com emojis
+
+**Meta Business Suite configurado:**
+- Conta criada e Instagram `@plantao.app` conectado
+- Anúncio criado: carrossel impulsionado, R$16/dia por 5 dias (R$80 total), só Instagram
+- Público: automático (sem segmentação manual disponível no fluxo simplificado de impulsionar)
+
+**Divulgação WhatsApp:**
+- Grupos de enfermagem encontrados via gruposwhats.app
+- 4 modelos de texto criados com variação natural ("sou da enfermagem há 2 anos...")
+- Texto final: história real do sistema travando no plantão
+
+---
+
 ## Sessão 2026-03-25 (continuação — noite)
 
 ### Correções legais + melhorias admin
@@ -489,3 +520,25 @@ feedback/{syncCode}/                             feedbacks dos usuários
 - Sistema de notificações agendadas (30min antes + horário exato)
 - Offline-first com sincronização automática
 - Rollback executado após integração Gemini quebrar notificações (outro AI)
+
+### Mar 2026 — Ícone real + página de redefinição de senha + melhorias visuais
+
+**Ícone do app:**
+- Novo ícone gerado via Imagen 3 (Gemini): clipboard médico com lombada azul (#1E88E5), 3 argolas, linhas de anotações e estetoscópio bold no topo
+- Substituídos SVGs genéricos em login, dashboard e landing pelo ícone real (`icon-512.png`)
+- Corrigido erro crítico de build do Vercel: `icon.png` (3.77 MB) remov ido — vite-plugin-pwa tem limite de 2 MB para precache
+- `icon-512.png` (298 KB) e `icon-192.png` (37 KB) são os arquivos definitivos em `public/icons/`
+
+**Página de redefinição de senha (`/auth/action`):**
+- Nova rota `/auth/action` no router com `AuthActionView.vue`
+- Recebe `oobCode` + `mode` do Firebase Auth e exibe formulário para criar nova senha
+- Firebase Console: URL acionável configurável para `https://plantao.net/auth/action`
+- Template de email de reset melhorado (português, texto mais claro)
+
+**Política de privacidade / termos:**
+- Identificado: política mencionava "descadastrar no rodapé do email" mas emails não têm essa opção — pendente correção
+- Discussão: "profissional de enfermagem" é o termo correto (inclui técnicos e auxiliares) vs "enfermeiro" — pendente aplicar nos documentos legais
+
+**Admin:**
+- Broadcast para usuários: mensagem sobre atualização de Política/Termos (LGPD, COFEN) redigida
+- Discussão sobre botão de broadcast mais acessível no topo do admin (usuários estão crescendo)

@@ -32,7 +32,7 @@
           <h1 class="hero-title">
             Organize seu plantão.<br>
             Não esqueça nada.<br>
-            <span class="hero-accent">Atenda melhor.</span>
+            <span class="hero-accent">100% offline.</span>
           </h1>
           <p class="hero-sub">
             Anotações, lembretes de medicação, calculadora de dose, organização de pacientes — tudo no celular, funciona offline.
@@ -633,19 +633,20 @@ const testimonials = [
   background: var(--blue);
   color: #fff;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1rem;
+  font-weight: 800;
+  font-size: 1.05rem;
   padding: 16px 32px;
   border-radius: var(--radius-full);
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  transition: all 0.2s ease;
   width: fit-content;
   box-shadow: 0 4px 24px rgba(30, 136, 229, 0.3);
 }
 .btn-hero:hover {
   background: var(--blue-dark);
-  box-shadow: 0 6px 32px rgba(30, 136, 229, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 32px rgba(30, 136, 229, 0.45);
 }
-.btn-hero:active { transform: scale(0.97); }
+.btn-hero:active { transform: translateY(0) scale(0.97); }
 .btn-hero-lg {
   font-size: 1.1rem;
   padding: 18px 40px;

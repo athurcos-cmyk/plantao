@@ -1,9 +1,11 @@
 <template>
-  <RouterView v-slot="{ Component }">
-    <Transition name="page-fade" mode="out-in">
-      <component :is="Component" :key="$route.name" />
-    </Transition>
-  </RouterView>
+  <div :style="!isOnline ? 'padding-bottom: 44px' : ''">
+    <RouterView v-slot="{ Component }">
+      <Transition name="page-fade" mode="out-in">
+        <component :is="Component" :key="$route.name" />
+      </Transition>
+    </RouterView>
+  </div>
   <BotaoChat v-if="mostrarFab" />
   <ChatAssistente v-if="mostrarFab" />
   <CalculadoraModal v-if="mostrarFab" />

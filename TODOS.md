@@ -1,5 +1,14 @@
 # TODOS — Plantão
 
+## Pendentes
+
+### [ ] Botão de broadcast mais acessível no admin
+**O quê:** Com usuários crescendo, o botão de broadcast (📢) está no header do modal mas o usuário sente que precisa descer muito para alcegar a funcionalidade.
+**Como:** Avaliar se o botão fixo no topo da tab Monitor ou um FAB no AdminView resolve.
+**Prioridade:** P2
+
+---
+
 ## Concluídos
 
 ### [x] Migração OneSignal → FCM nativo (v1.0)
@@ -84,17 +93,16 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 
 ---
 
-### [ ] Lançar o app publicamente (próxima ação prioritária)
-**O quê:** Divulgar o app em canais com alta densidade de enfermeiros/técnicos
-**Por quê:** Quem o fundador conhece não está usando mesmo de graça. Desconhecidos engajam mais.
-**Canais sugeridos:**
-- Grupos de Facebook: "Técnico de Enfermagem Brasil", "Enfermagem" (100k–500k membros)
-- Instagram: post/reels mostrando situação real de plantão (não propaganda)
-- Grupos de WhatsApp de equipes de enfermagem
-- TikTok: vídeo curto "como anoto no plantão"
-- LinkedIn: para enfermeiros
-**Meta:** Preencher as 90 vagas restantes → coletar feedback real de desconhecidos
-**Prioridade:** P0 — fazer agora
+### [x] Lançar o app publicamente (concluído 2026-03-26)
+- Instagram `@plantao.app` criado com 3 posts + anúncio R$80 no carrossel (5 dias)
+- Grupos WhatsApp de enfermagem via gruposwhats.app
+- Grupos Facebook de enfermagem
+
+### [ ] Acompanhar resultados do anúncio Instagram (P0)
+**O quê:** Anúncio carrossel rodando até ~31/03. Verificar impressões, cliques e cadastros.
+**Meta:** CPL < R$5 → escalar. CPL R$5-10 → trocar criativo. CPL > R$10 → parar.
+**Próximo passo após anúncio:** Reel gravando tela do app (converte mais que imagem)
+**Prioridade:** P0 — verificar amanhã cedo
 
 ---
 
@@ -137,6 +145,10 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 - broadcast.js: SyntaxError (redeclaração de const) corrigido
 - AdminView: broadcast movido para modal no header (botão 📢 sempre visível)
 - Erros de broadcast agora mostram device key / email
+
+### [x] Validação final: política + linguagem inclusiva (concluído 2026-03-26)
+- Política de privacidade: "descadastrar" corrigido → contato@plantao.net
+- Termos + docs: "enfermeiro" → "profissional de enfermagem" (substituição completa)
 
 ---
 
