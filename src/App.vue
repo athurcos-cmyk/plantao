@@ -176,14 +176,23 @@ watch(isOnline, async (online) => {
   }
 })
 
-// Banner de atualização — aparece quando novo SW toma controle
+// ─── PWA auto-update ───
+// registerSW retorna função updateSW() que força check + ativação do novo SW
+import { registerSW } from 'virtual:pwa-register'
 const temAtualizacao = ref(false)
 function recarregarApp() { window.location.reload() }
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    temAtualizacao.value = true
-  })
-}
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() { temAtualizacao.value = true },
+  onRegisteredSW(swUrl, registration) {
+    // Check de update ao voltar à aba (visibilitychange)
+    if (registration) {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) registration.update()
+      })
+    }
+  },
+})
 
 // Banner de instalação PWA
 const mostrarInstall = ref(false)

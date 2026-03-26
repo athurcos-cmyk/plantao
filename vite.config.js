@@ -34,6 +34,7 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // firebase-messaging-sw.js importado via importScripts — não precachear
         globIgnores: ['firebase-messaging-sw.js'],
