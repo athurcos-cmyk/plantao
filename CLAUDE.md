@@ -48,7 +48,7 @@ Vue 3 (script setup), Vite, Pinia, Firebase Auth + Firebase Realtime DB, vite-pl
 Firebase Auth — email/senha + Google (signInWithPopup, fallback signInWithRedirect).
 syncCode gerado automaticamente no cadastro (6 chars alfanuméricos, crypto.getRandomValues).
 Mapeamento uid → syncCode via `uid_map/{uid}`. Isolamento por `owners/{code}/{uid}`.
-Login rápido por código: `/api/resolve-code` (serverless) retorna email → signInWithEmailAndPassword.
+Login rápido por código: `/api/login-by-code` (serverless) resolve email server-side → retorna customToken → signInWithCustomToken.
 Sessão gerida pelo Firebase Auth (persistência nativa, sem localStorage manual).
 Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 
@@ -71,8 +71,8 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 ## Serverless (api/)
 - `api/cron.js` — FCM via firebase-admin + Day 3 email via Resend. CRON_SECRET obrigatório (fail-closed). Chamado pelo cron-job.org (URL: https://plantao.net/api/cron) a cada minuto.
 - `api/chat.js` — proxy para Groq API (Llama 3.3 70B). Protege GROQ_API_KEY. Verifica Firebase Auth idToken + owners. Rate limit 20 msg/min por uid.
-- `api/resolve-code.js` — recebe syncCode, retorna email via admin SDK. Rate limit 10 req/min por IP.
-- `api/welcome.js` — email de boas-vindas (Resend). Fire-and-forget pós-cadastro. Deduplicação via flag `email_boas_vindas_enviado`. Requer syncCode no payload.
+- `api/login-by-code.js` — login seguro via syncCode+senha. Resolve email server-side, verifica credenciais via Firebase REST API, retorna customToken. Rate limit 10/min por IP.
+- `api/welcome.js` — email de boas-vindas (Resend) + incremento do contador de usuários. Requer idToken. Deduplicação via flag `email_boas_vindas_enviado`. Rate limit 5/min por IP.
 - `api/feedback.js` — email de agradecimento ao usuário + notificação interna para Arthur (Resend). Auth idToken obrigatório. Rate limit 5/min por uid.
 - `api/goodbye.js` — email de despedida ao deletar conta (Resend). Auth idToken obrigatório. Busca nome/email server-side. Timeout 5s, falha silenciosa.
 - `api/delete-account.js` — deleta todos os dados do usuário via firebase-admin (bypassa regras de segurança). Verifica idToken, busca syncCode via uid_map, remove 15 paths incluindo owners e uid_map. Chamado pela ConfiguracoesView antes de deleteUser().
@@ -81,7 +81,7 @@ Store: `src/stores/auth.js` — initAuthListener() chamado uma vez no App.vue.
 ## Variáveis de ambiente — NUNCA no .env, sempre no Vercel
 - `VITE_FCM_VAPID_KEY` — chave pública VAPID (compilada no bundle)
 - `FIREBASE_SERVICE_ACCOUNT` — JSON service account (server-side)
-- `CRON_SECRET` — Bearer token /api/cron (valor: plantao2026)
+- `CRON_SECRET` — Bearer token /api/cron (valor APENAS no Vercel, NUNCA commitar aqui)
 - `GROQ_API_KEY` — chave Groq para Clara
 - `RESEND_API_KEY` — chave Resend para emails transacionais (welcome, feedback, day 3, goodbye)
 
