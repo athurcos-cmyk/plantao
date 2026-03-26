@@ -4,7 +4,7 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey:        'AIzaSyCHW_CTip-v1oOsbYvMJ79Ql1JvbUY7NC4',
-  authDomain:    'plantao.net',
+  authDomain:    'anotacao-hc.firebaseapp.com',
   databaseURL:   'https://anotacao-hc-default-rtdb.firebaseio.com',
   projectId:     'anotacao-hc',
   storageBucket: 'anotacao-hc.firebasestorage.app',
