@@ -144,6 +144,13 @@
         ".write": "auth != null"
       }
     },
+    "waitlist": {
+      ".read": false,
+      ".write": true,
+      "$id": {
+        ".validate": "newData.hasChildren(['email', 'criadoEm']) && newData.child('email').isString() && newData.child('email').val().length <= 120 && newData.child('criadoEm').isNumber()"
+      }
+    },
     "feedback": {
       "$code": {
         ".read": false,

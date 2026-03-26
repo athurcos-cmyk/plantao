@@ -236,13 +236,29 @@
         <p class="lista-espera-desc">
           O Plantão está em lançamento limitado com <strong>100 vagas gratuitas</strong> e todas foram preenchidas.
         </p>
-        <p class="lista-espera-desc">
-          Para entrar na lista de espera e ser avisado quando abrirmos novas vagas, entre em contato:
-        </p>
-        <a href="mailto:contato@plantao.net" class="lista-espera-email">
-          ✉️ contato@plantao.net
-        </a>
-        <p class="lista-espera-hint">Respondo pessoalmente a todos os emails.</p>
+
+        <div v-if="!esperaSalvo">
+          <p class="lista-espera-desc">
+            Deixe seu email para ser avisado quando abrirmos novas vagas:
+          </p>
+          <input
+            v-model="emailEspera"
+            type="email"
+            class="campo"
+            placeholder="seu@email.com"
+            @keyup.enter="entrarListaEspera"
+          />
+          <p v-if="esperaErro" class="erro-msg" style="margin-top:6px">{{ esperaErro }}</p>
+          <button class="btn btn-primary btn-block" style="margin-top:12px" @click="entrarListaEspera">
+            Quero ser avisado
+          </button>
+        </div>
+
+        <div v-else class="espera-sucesso">
+          <div class="espera-sucesso-icon">✅</div>
+          <p class="lista-espera-desc"><strong>Pronto!</strong> Vamos te avisar quando abrirmos novas vagas.</p>
+        </div>
+
         <button class="btn btn-secondary btn-block" style="margin-top:16px" @click="tela = 'login'">Voltar ao login</button>
       </div>
 
@@ -281,6 +297,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import HelpModal from '../components/HelpModal.vue'
+import { db } from '../firebase.js'
+import { ref as dbRef, push } from 'firebase/database'
 
 const router = useRouter()
 const auth   = useAuthStore()
@@ -307,6 +325,21 @@ const recuperacaoEnviada = ref(false)
 const helpAberto = ref(false)
 const mostrarSenha = ref(false)
 const mostrarSenhaConfirm = ref(false)
+const emailEspera = ref('')
+const esperaSalvo = ref(false)
+const esperaErro = ref('')
+
+async function entrarListaEspera() {
+  const e = emailEspera.value.trim()
+  if (!e || !e.includes('@')) { esperaErro.value = 'Digite um email válido'; return }
+  try {
+    await push(dbRef(db, 'waitlist'), { email: e, criadoEm: Date.now() })
+    esperaSalvo.value = true
+    esperaErro.value = ''
+  } catch (err) {
+    esperaErro.value = 'Erro ao salvar. Tente novamente.'
+  }
+}
 
 const emailValido = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value))
 
@@ -778,5 +811,13 @@ async function recuperar() {
   font-size: 0.8rem;
   color: var(--text-muted);
   margin-top: 4px;
+}
+.espera-sucesso {
+  text-align: center;
+  padding: 16px 0;
+}
+.espera-sucesso-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
 }
 </style>
