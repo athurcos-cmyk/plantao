@@ -130,9 +130,24 @@
         🔄 Verificar atualizações
       </button>
 
-      <button class="btn btn-ghost" style="margin-top:10px" @click="router.push({ name: 'configuracoes' })">
-        ⚙️ Configurações
-      </button>
+      <div class="rodape-acoes">
+        <button class="btn btn-ghost" @click="router.push({ name: 'configuracoes' })">
+          ⚙️ Configurações
+        </button>
+        <button class="btn btn-ghost btn-pc-rodape" @click="pcModalAberto = true">
+          💻 Acessar no computador
+        </button>
+      </div>
+
+      <div v-if="pcModalAberto" class="modal-overlay" @click.self="pcModalAberto = false">
+        <div class="modal-box">
+          <p class="modal-titulo">💻 Como acessar no computador</p>
+          <p class="modal-texto">Abra o <strong>Google Chrome</strong> ou qualquer navegador no seu computador e acesse:</p>
+          <p class="modal-url">plantao.net</p>
+          <p class="modal-texto">Faça login com a mesma conta — suas anotações já estarão lá.</p>
+          <button class="btn btn-primary" style="width:100%;margin-top:8px" @click="pcModalAberto = false">Entendi</button>
+        </div>
+      </div>
     </main>
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Plantão" :itens="helpItens" />
@@ -158,6 +173,7 @@ import TourDashboard from '../components/TourDashboard.vue'
 const router   = useRouter()
 const pcDismissed = ref(localStorage.getItem('pc_banner_dismissed') === '1')
 function dispensarPc() { localStorage.setItem('pc_banner_dismissed', '1'); pcDismissed.value = true }
+const pcModalAberto = ref(false)
 const auth     = useAuthStore()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
@@ -389,6 +405,36 @@ function navegar(tipo) {
 .saudacao { margin-bottom: 28px; }
 .saudacao-hora { color: var(--text-muted); font-size: 0.9rem; }
 .saudacao h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+.rodape-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+.btn-pc-rodape { color: var(--text-muted); }
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 24px;
+}
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%; max-width: 360px;
+}
+.modal-titulo { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+.modal-texto { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 10px; }
+.modal-url {
+  font-size: 1.3rem; font-weight: 700; color: var(--blue);
+  text-align: center; padding: 12px;
+  background: var(--bg); border-radius: var(--radius);
+  margin-bottom: 12px;
+}
 
 .card-pc {
   display: flex;
