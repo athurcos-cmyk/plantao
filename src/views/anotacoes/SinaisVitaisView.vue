@@ -7,11 +7,7 @@
         </svg>
       </button>
       <button  data-testid="auto-btn-sinaisvitaisview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M12 2c0 0-1 3-1 6s1 4 1 4-1 1-1 4 1 6 1 6"/>
-          <path d="M9 7c-2 1-3 2-3 3s2 2 6 2 6-1 6-2-1-2-3-3"/>
-          <path d="M9 17c-2-1-3-2-3-3s2-2 6-2 6 1 6 2-1 2-3 3"/>
-        </svg>
+        <img src="/icons/icon-512.png" width="22" height="22" alt="Plantão" style="border-radius:5px;display:block" />
         <span>Plantão</span>
       </button>
       <div style="width:34px"/>
