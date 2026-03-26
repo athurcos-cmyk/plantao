@@ -51,6 +51,14 @@
         </div>
       </section>
 
+      <div v-if="!pcDismissed" class="card-pc">
+        <div class="card-pc-content">
+          <span>💻</span>
+          <span>Acesse também no computador — abra o Chrome e digite <strong>plantao.net</strong></span>
+        </div>
+        <button class="card-pc-fechar" @click="dispensarPc" title="Fechar">✕</button>
+      </div>
+
       <p class="secao-label">Nova anotação</p>
 
       <div class="tipos-grid">
@@ -148,6 +156,8 @@ import HelpModal from '../components/HelpModal.vue'
 import TourDashboard from '../components/TourDashboard.vue'
 
 const router   = useRouter()
+const pcDismissed = ref(localStorage.getItem('pc_banner_dismissed') === '1')
+function dispensarPc() { localStorage.setItem('pc_banner_dismissed', '1'); pcDismissed.value = true }
 const auth     = useAuthStore()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
@@ -379,6 +389,27 @@ function navegar(tipo) {
 .saudacao { margin-bottom: 28px; }
 .saudacao-hora { color: var(--text-muted); font-size: 0.9rem; }
 .saudacao h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+.card-pc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+.card-pc-content { display: flex; align-items: center; gap: 8px; }
+.card-pc-content strong { color: var(--text); }
+.card-pc-fechar {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 0.85rem; padding: 2px 4px; flex-shrink: 0;
+}
+.card-pc-fechar:hover { color: var(--text); }
 
 .sync-card {
   background: var(--bg-card);
