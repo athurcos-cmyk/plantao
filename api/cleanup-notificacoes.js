@@ -81,7 +81,7 @@ function marcarRemocao(remocoes, stats, syncCode, key, reason) {
 
 export default async function handler(req, res) {
   const secret = process.env.CRON_SECRET
-  if (secret && req.headers.authorization !== `Bearer ${secret}`) {
+  if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
@@ -93,7 +93,7 @@ export default async function handler(req, res) {
     initAdmin()
   } catch (e) {
     console.error('[CLEANUP] initAdmin falhou:', e.message)
-    return res.status(500).json({ error: e.message })
+    return res.status(500).json({ error: 'Erro interno' })
   }
 
   const db = admin.database()

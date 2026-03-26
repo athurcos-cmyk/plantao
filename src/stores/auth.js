@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { db, auth as firebaseAuth, googleProvider } from '../firebase.js'
-import { ref as dbRef, get, set, increment, update } from 'firebase/database'
+import { ref as dbRef, get, set } from 'firebase/database'
 
 const _LIMITE_USUARIOS = 100
 
@@ -24,6 +24,7 @@ import {
   signOut,
   sendPasswordResetEmail,
   updateProfile,
+  signInWithCustomToken,
 } from 'firebase/auth'
 
 // iOS Safari modo privado lança QuotaExceededError no localStorage
@@ -192,15 +193,14 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.setItem('user_name', nome || '')
       }
 
-      // Email de boas-vindas (fire-and-forget — não bloqueia o cadastro)
-      fetch('/api/welcome', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: nome || '', email, syncCode: code }),
-      }).catch(() => {})
-
-      // Incrementar contador de usuários
-      update(dbRef(db, 'config'), { total_usuarios: increment(1) }).catch(() => {})
+      // Email de boas-vindas + incremento do contador (fire-and-forget)
+      user.getIdToken().then(token =>
+        fetch('/api/welcome', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ nome: nome || '', email, syncCode: code }),
+        })
+      ).catch(() => {})
 
       return true
     } catch (e) {
@@ -222,6 +222,36 @@ export const useAuthStore = defineStore('auth', () => {
       userName.value = user.displayName || (_lsOk ? localStorage.getItem('user_name') || '' : '')
 
       // Buscar syncCode (usa cache do localStorage para retornos rápidos)
+      const cachedCode = _lsOk ? localStorage.getItem('sync_code') : null
+      if (cachedCode) {
+        syncCode.value = cachedCode
+      } else {
+        const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
+        if (mapSnap.exists()) {
+          const code = mapSnap.val()
+          syncCode.value = code
+          if (_lsOk) {
+            localStorage.setItem('sync_code', code)
+            localStorage.setItem('user_name', userName.value)
+          }
+        }
+      }
+      return true
+    } catch (e) {
+      authError.value = _traduzirErro(e.code)
+      return false
+    }
+  }
+
+  async function loginComCustomToken(customToken) {
+    authError.value = ''
+    try {
+      const cred = await signInWithCustomToken(firebaseAuth, customToken)
+      const user = cred.user
+      uid.value = user.uid
+      userEmail.value = user.email || ''
+      userName.value = user.displayName || (_lsOk ? localStorage.getItem('user_name') || '' : '')
+
       const cachedCode = _lsOk ? localStorage.getItem('sync_code') : null
       if (cachedCode) {
         syncCode.value = cachedCode
@@ -338,14 +368,14 @@ export const useAuthStore = defineStore('auth', () => {
         criadoEm: Date.now(),
       }),
     ])
-    // Email de boas-vindas (fire-and-forget)
-    fetch('/api/welcome', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome: user.displayName || '', email: user.email || '', syncCode: code }),
-    }).catch(() => {})
-    // Incrementar contador de usuários
-    update(dbRef(db, 'config'), { total_usuarios: increment(1) }).catch(() => {})
+    // Email de boas-vindas + incremento do contador (fire-and-forget)
+    user.getIdToken().then(token =>
+      fetch('/api/welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ nome: user.displayName || '', email: user.email || '', syncCode: code }),
+      })
+    ).catch(() => {})
     return code
   }
 
@@ -406,6 +436,7 @@ export const useAuthStore = defineStore('auth', () => {
     initAuthListener,
     register,
     login,
+    loginComCustomToken,
     loginGoogle,
     handleRedirectResult,
     recuperarSenha,

@@ -83,6 +83,10 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Autenticação inválida.' })
   }
 
+  function _esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  }
+
   const primeiroNome = (email.split('@')[0] || 'enfermeiro(a)').split('.')[0]
 
   // Buscar nome do usuário no Firebase para a notificação ao Arthur
@@ -113,7 +117,7 @@ export default async function handler(req, res) {
           <tr>
             <td style="padding:32px;">
               <p style="margin:0 0 16px;font-size:1.05rem;font-weight:700;color:#EAEEF3;">
-                Li! Valeu demais, ${nomeUsuario}. 🙏
+                Li! Valeu demais, ${_esc(nomeUsuario)}. 🙏
               </p>
               <p style="margin:0 0 16px;font-size:0.95rem;color:#8899AA;line-height:1.7;">
                 Esse tipo de feedback é exatamente o que me ajuda a decidir o que melhorar no app. Não fica perdido — vai direto para mim.
@@ -143,10 +147,10 @@ export default async function handler(req, res) {
 `
 
   const htmlAdmin = `<p><strong>Feedback recebido</strong></p>
-<p><strong>Usuário:</strong> ${nomeUsuario} (${email})</p>
-<p><strong>Versão:</strong> ${versaoApp || 'desconhecida'}</p>
+<p><strong>Usuário:</strong> ${_esc(nomeUsuario)} (${_esc(email)})</p>
+<p><strong>Versão:</strong> ${_esc(versaoApp || 'desconhecida')}</p>
 <p><strong>Mensagem:</strong></p>
-<blockquote style="border-left:3px solid #1E88E5;padding-left:12px;color:#333;">${texto.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</blockquote>`
+<blockquote style="border-left:3px solid #1E88E5;padding-left:12px;color:#333;">${_esc(texto)}</blockquote>`
 
   try {
     // Enviar em paralelo: ack para usuário + notificação para Arthur

@@ -22,14 +22,51 @@ function _initAdmin() {
   _adminInit = true
 }
 
+// Rate limit: 5 req/min por IP
+const _rateMap = new Map()
+const RATE_WINDOW_MS = 60_000
+const RATE_MAX = 5
+function _checkRate(ip) {
+  const now = Date.now()
+  const entry = _rateMap.get(ip)
+  if (!entry || now - entry.start > RATE_WINDOW_MS) {
+    _rateMap.set(ip, { start: now, count: 1 })
+    return true
+  }
+  entry.count++
+  return entry.count <= RATE_MAX
+}
+
+function _esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown'
+  if (!_checkRate(ip)) {
+    return res.status(429).json({ error: 'Muitas tentativas. Aguarde um momento.' })
+  }
+
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
     return res.status(200).json({ ok: false, reason: 'not_configured' })
+  }
+
+  // Requer idToken para evitar spam de emails
+  const authHeader = req.headers.authorization || ''
+  if (!authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Token de autenticação obrigatório.' })
+  }
+  try {
+    _initAdmin()
+    const idToken = authHeader.slice(7)
+    await admin.auth().verifyIdToken(idToken)
+  } catch {
+    return res.status(401).json({ error: 'Autenticação inválida.' })
   }
 
   const { nome, email, syncCode } = req.body || {}
@@ -52,7 +89,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const primeiroNome = (nome || 'enfermeiro(a)').split(' ')[0]
+  const primeiroNome = _esc((nome || 'enfermeiro(a)').split(' ')[0])
 
   const html = `
 <!DOCTYPE html>
@@ -169,13 +206,15 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: false, reason: 'send_failed' })
     }
 
-    // Marcar como enviado para deduplicação
+    // Marcar como enviado + incrementar contador (admin SDK bypassa regras)
     if (syncCode) {
       try {
         const db = admin.database()
         await db.ref(`usuarios/${syncCode}/email_boas_vindas_enviado`).set(true)
+        // Incrementar contador de usuários (agora só server-side tem permissão)
+        await db.ref('config/total_usuarios').transaction(c => (c || 0) + 1)
       } catch (e) {
-        console.warn('[WELCOME] flag set failed:', e.message)
+        console.warn('[WELCOME] flag/counter update failed:', e.message)
       }
     }
 

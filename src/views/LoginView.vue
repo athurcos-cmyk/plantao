@@ -389,22 +389,21 @@ async function entrarComCodigo() {
   auth.authError = ''
 
   try {
-    // 1. Resolver código → email via API serverless
-    const res = await fetch('/api/resolve-code', {
+    // Login seguro: email nunca sai do servidor
+    const res = await fetch('/api/login-by-code', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ syncCode: codigo.value }),
+      body: JSON.stringify({ syncCode: codigo.value, senha: senha.value }),
     })
 
     const data = await res.json()
-    if (!res.ok || !data.email) {
+    if (!res.ok || !data.customToken) {
       auth.authError = data.error || 'Código não encontrado.'
       carregando.value = false
       return
     }
 
-    // 2. Login com email + senha
-    const ok = await auth.login(data.email, senha.value)
+    const ok = await auth.loginComCustomToken(data.customToken)
     if (ok) router.push({ name: 'dashboard' })
   } catch {
     auth.authError = 'Sem conexão com o servidor.'

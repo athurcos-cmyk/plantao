@@ -65,6 +65,11 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Autenticação inválida.' })
   }
 
+  function _esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  }
+  nomeUsuario = _esc(nomeUsuario)
+
   if (!email || !email.includes('@')) {
     // Sem email disponível — não podemos enviar, mas não bloqueamos o delete
     return res.status(200).json({ ok: false, reason: 'no_email' })

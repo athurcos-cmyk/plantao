@@ -65,7 +65,6 @@ export default async function handler(req, res) {
     }
     const email = snap.val()
     return res.json({
-      email,                   // usado internamente pelo login
       emailMasked: _maskEmail(email),  // exibido na UI
     })
   } catch (e) {

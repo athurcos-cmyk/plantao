@@ -163,7 +163,7 @@ async function handleDelete(req, res) {
 
   db.ref('config/total_usuarios').transaction(c => Math.max(0, (c || 0) - 1)).catch(() => {})
 
-  return res.json({ deleted: true, syncCode, erros })
+  return res.json({ deleted: true, syncCode, errosCount: erros.length })
 }
 
 // ── POST: email individual ─────────────────────────────────────────────────
@@ -186,10 +186,13 @@ async function handlePost(req, res) {
   const { nome = '', email = '' } = userSnap.val()
   if (!email) return res.status(400).json({ error: 'Usuário sem email' })
 
+  function _esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+  }
   const html = `
     <div style="font-family:'DM Sans',Arial,sans-serif;max-width:520px;margin:0 auto;background:#0A1628;color:#EAEEF3;padding:32px 24px;border-radius:12px">
-      <p style="font-size:1rem;line-height:1.6">Olá, ${nome || 'enfermeiro(a)'}!</p>
-      <div style="font-size:0.95rem;line-height:1.7;color:#C8D3E0;white-space:pre-wrap">${mensagem}</div>
+      <p style="font-size:1rem;line-height:1.6">Olá, ${_esc(nome || 'enfermeiro(a)')}!</p>
+      <div style="font-size:0.95rem;line-height:1.7;color:#C8D3E0;white-space:pre-wrap">${_esc(mensagem)}</div>
       <hr style="border-color:#1e3050;margin:24px 0"/>
       <p style="font-size:0.8rem;color:#556677;margin:0">Arthur Olímpio — Plantão<br/>
         <a href="mailto:contato@plantao.net" style="color:#1E88E5">contato@plantao.net</a></p>
@@ -203,7 +206,8 @@ async function handlePost(req, res) {
 
   if (!emailRes.ok) {
     const err = await emailRes.text()
-    return res.status(502).json({ error: 'Falha ao enviar email', detalhe: err })
+    console.error('[ADMIN] Resend error:', err)
+    return res.status(502).json({ error: 'Falha ao enviar email' })
   }
 
   return res.json({ ok: true, email })
@@ -216,7 +220,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  try { initAdmin() } catch (e) { return res.status(500).json({ error: e.message }) }
+  try { initAdmin() } catch (e) { console.error('[ADMIN] initAdmin failed:', e.message); return res.status(500).json({ error: 'Erro interno' }) }
 
   const decoded = await verificarAdmin(req, res)
   if (!decoded) return

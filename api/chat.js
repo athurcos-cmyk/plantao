@@ -125,7 +125,10 @@ export default async function handler(req, res) {
   // Formato OpenAI-compatível (igual ao Groq usa)
   const groqMessages = [
     { role: 'system', content: SYSTEM_PROMPT },
-    ...ultimasMensagens.map(m => ({ role: m.role, content: m.content })),
+    ...ultimasMensagens.map(m => ({
+      role: m.role === 'assistant' ? 'assistant' : 'user',
+      content: typeof m.content === 'string' ? m.content : '',
+    })),
   ]
 
   try {

@@ -141,7 +141,7 @@
     "config": {
       "total_usuarios": {
         ".read": true,
-        ".write": "auth != null"
+        ".write": false
       }
     },
     "waitlist": {

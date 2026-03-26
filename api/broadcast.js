@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     initAdmin()
   } catch (e) {
     console.error('[BROADCAST] initAdmin failed:', e.message)
-    return res.status(500).json({ error: e.message })
+    return res.status(500).json({ error: 'Erro interno' })
   }
 
   let decoded
@@ -172,9 +172,15 @@ export default async function handler(req, res) {
   return res.json({ push: pushEnviados, email: emailsEnviados, erros })
 }
 
+function _esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 function _htmlBroadcast(nome, titulo, mensagem) {
-  // Converte quebras de linha em <br> para exibição no email
-  const mensagemHtml = mensagem.replace(/\n/g, '<br>')
+  nome = _esc(nome)
+  titulo = _esc(titulo)
+  // Escape primeiro, depois converte quebras de linha em <br>
+  const mensagemHtml = _esc(mensagem).replace(/\n/g, '<br>')
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">

@@ -50,6 +50,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ total, mensagem: `Contador inicializado: ${total} usuários` })
   } catch (e) {
     console.error('[init-counter] erro:', e.message)
-    return res.status(500).json({ error: e.message || 'Erro interno' })
+    return res.status(500).json({ error: 'Erro interno' })
   }
 }

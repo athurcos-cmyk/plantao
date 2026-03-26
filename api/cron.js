@@ -83,7 +83,7 @@ export default async function handler(req, res) {
     initAdmin()
   } catch (e) {
     console.error('[CRON] initAdmin failed:', e.message)
-    return res.status(500).json({ error: e.message })
+    return res.status(500).json({ error: 'Erro interno' })
   }
 
   const db = admin.database()
@@ -231,7 +231,12 @@ export default async function handler(req, res) {
   return res.json({ sent: totalEnviados, processados: totalProcessados, erros, agora })
 }
 
+function _esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 function _htmlDia3(nomeUsuario) {
+  nomeUsuario = _esc(nomeUsuario)
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
