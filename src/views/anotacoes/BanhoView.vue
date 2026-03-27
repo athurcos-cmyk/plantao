@@ -138,6 +138,9 @@
                 <span>{{ h }}</span>
               </label>
             </div>
+            <div style="margin-top:10px">
+              <input type="text" v-model="form.higieneOutro" placeholder="Outro tipo de higiene (ex: coto umbilical, ostomia...)">
+            </div>
           </div>
 
           <div class="campo">
@@ -282,6 +285,7 @@ const form = reactive({
   protecaoCateter:    false,
   trocaRoupa:         false,
   higiene:            [],
+  higieneOutro:       '',
   trocaFralda:        false,
   semIntercorrencias: true,
   intercorrencia:     '',
@@ -329,7 +333,7 @@ function limparBloco() {
     form.cadeiraBanho = false; form.comAuxilio = false
     form.acompGenero = 'M'; form.acompNome = ''
     form.protecaoCateter = false; form.trocaRoupa = false
-    form.higiene = []; form.trocaFralda = false
+    form.higiene = []; form.higieneOutro = ''; form.trocaFralda = false
     form.eliminacao = ''; form.qtdDiurese = ''; form.qtdEvacuacao = ''; form.localElim = ''
     form.semIntercorrencias = true; form.intercorrencia = ''
   }
@@ -414,6 +418,7 @@ function gerar() {
     const higieneFeita = higieneOrdem
       .filter(h => form.higiene.includes(h))
       .map(h => h.toLowerCase())
+    if (form.higieneOutro.trim()) higieneFeita.push(form.higieneOutro.trim().toLowerCase())
 
     texto = `${hora} – realizado banho de leito`
     if (higieneFeita.length > 0) {
@@ -474,7 +479,7 @@ function novaAnotacao() {
     cadeiraBanho: false, comAuxilio: false,
     acompGenero: 'M', acompNome: '',
     protecaoCateter: false, trocaRoupa: false,
-    higiene: [], trocaFralda: false,
+    higiene: [], higieneOutro: '', trocaFralda: false,
     eliminacao: '', qtdDiurese: '', qtdEvacuacao: '', localElim: '',
     semIntercorrencias: true, intercorrencia: '',
   })

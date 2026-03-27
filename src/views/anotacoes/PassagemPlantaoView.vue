@@ -98,13 +98,18 @@
 
         <!-- Cama -->
         <div class="campo">
-          <label>Cama</label>
+          <label>Posição da cama</label>
           <div class="radio-group horizontal">
             <label v-for="op in camaOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.cama">
-              <span>{{ op }}</span>
+              <input type="radio" :value="op" v-model="form.cama" @change="desativarOutro('cama')">
+              <span>{{ cap(op) }}</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.cama" @click.prevent="outroAtivo.cama ? desativarOutro('cama') : selecionarOutro('cama')">
+              <span>Outro</span>
             </label>
           </div>
+          <input v-if="outroAtivo.cama" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.cama || ''" @input="atualizarOutro('cama', $event.target.value)" placeholder="Descreva a posição...">
         </div>
 
         <!-- Rodas -->
@@ -112,10 +117,15 @@
           <label>Rodas</label>
           <div class="radio-group horizontal">
             <label v-for="op in rodasOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.rodas">
-              <span>{{ op }}</span>
+              <input type="radio" :value="op" v-model="form.rodas" @change="desativarOutro('rodas')">
+              <span>{{ cap(op) }}</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.rodas" @click.prevent="outroAtivo.rodas ? desativarOutro('rodas') : selecionarOutro('rodas')">
+              <span>Outro</span>
             </label>
           </div>
+          <input v-if="outroAtivo.rodas" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.rodas || ''" @input="atualizarOutro('rodas', $event.target.value)" placeholder="Descreva...">
         </div>
 
         <!-- Grades -->
@@ -123,10 +133,15 @@
           <label>Grades</label>
           <div class="radio-group vertical">
             <label v-for="op in gradesOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.grades">
-              <span>{{ op }}</span>
+              <input type="radio" :value="op" v-model="form.grades" @change="desativarOutro('grades')">
+              <span>{{ cap(op) }}</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.grades" @click.prevent="outroAtivo.grades ? desativarOutro('grades') : selecionarOutro('grades')">
+              <span>Outro</span>
             </label>
           </div>
+          <input v-if="outroAtivo.grades" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.grades || ''" @input="atualizarOutro('grades', $event.target.value)" placeholder="Descreva a posição das grades...">
         </div>
 
         <!-- Decúbito -->
@@ -134,10 +149,15 @@
           <label>Decúbito</label>
           <div class="radio-group vertical">
             <label v-for="op in decubitoOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.decubito">
-              <span>{{ op }}</span>
+              <input type="radio" :value="op" v-model="form.decubito" @change="desativarOutro('decubito')">
+              <span>{{ cap(op) }}</span>
+            </label>
+            <label class="radio-btn">
+              <input type="radio" :checked="outroAtivo.decubito" @click.prevent="outroAtivo.decubito ? desativarOutro('decubito') : selecionarOutro('decubito')">
+              <span>Outro</span>
             </label>
           </div>
+          <input v-if="outroAtivo.decubito" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.decubito || ''" @input="atualizarOutro('decubito', $event.target.value)" placeholder="Descreva o decúbito...">
         </div>
 
         <!-- Informações adicionais -->
@@ -182,6 +202,30 @@
           </div>
         </div>
 
+        <!-- Dispositivos -->
+        <div class="campo">
+          <label>Dispositivos <span class="opc">(opcional)</span></label>
+          <div class="disp-lista" v-if="form.dispositivos.length > 0">
+            <div class="disp-item"
+              v-for="(d, i) in form.dispositivos" :key="i"
+              draggable="true"
+              @dragstart="onDragStart(i)"
+              @dragover.prevent="onDragOver(i)"
+              @drop.prevent="onDrop(i)"
+              :class="{ 'drag-over': dragOverIdx === i && dragIdx !== i }">
+              <span class="disp-texto">{{ d }}</span>
+              <div class="disp-acoes">
+                <button class="btn-icon-sm" @click="moverDisp(i, -1)" :disabled="i === 0">▲</button>
+                <button class="btn-icon-sm" @click="moverDisp(i, 1)" :disabled="i === form.dispositivos.length - 1">▼</button>
+                <button class="btn-icon-sm btn-danger-sm" @click="removerDisp(i)">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="disp-grid">
+            <button class="btn-disp" v-for="tipo in tiposDisp" :key="tipo" @click="abrirModal(tipo)">+ {{ tipo }}</button>
+          </div>
+        </div>
+
         <!-- Observações -->
         <div class="campo">
           <label>Observações <span class="opc">(opcional)</span></label>
@@ -219,6 +263,28 @@
       </div>
 
     </main>
+
+    <!-- ═══ MODAL — Dispositivos ═══ -->
+    <div v-if="modal.aberto" class="modal-overlay" @click.self="fecharModal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>{{ modal.tipo }}</h3>
+          <button class="btn-icon" @click="fecharModal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <component :is="modalComponentMap[modal.tipo] || ModalOutros" :d="modal.d" :locaisCentral="locaisCentral" :pulseiraOpcoes="pulseiraOpcoes" />
+        </div>
+        <p v-if="modal.erro" class="erro-msg" style="padding:0 16px 8px">{{ modal.erro }}</p>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
+          <button class="btn btn-primary" style="flex:2" @click="confirmarDisp">Adicionar</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -231,6 +297,27 @@ import { useAuthStore } from '../../stores/auth.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
+import { useDispositivos } from '../../composables/useDispositivos.js'
+import ModalAVP from '../../components/modais/ModalAVP.vue'
+import ModalCVC from '../../components/modais/ModalCVC.vue'
+import ModalPICC from '../../components/modais/ModalPICC.vue'
+import ModalPermcath from '../../components/modais/ModalPermcath.vue'
+import ModalShilley from '../../components/modais/ModalShilley.vue'
+import ModalSNE from '../../components/modais/ModalSNE.vue'
+import ModalSNG from '../../components/modais/ModalSNG.vue'
+import ModalPulseira from '../../components/modais/ModalPulseira.vue'
+import ModalMonitor from '../../components/modais/ModalMonitor.vue'
+import ModalDreno from '../../components/modais/ModalDreno.vue'
+import ModalCurativo from '../../components/modais/ModalCurativo.vue'
+import ModalOutros from '../../components/modais/ModalOutros.vue'
+
+const modalComponentMap = {
+  AVP: ModalAVP, CVC: ModalCVC, PICC: ModalPICC,
+  Permcath: ModalPermcath, Shilley: ModalShilley,
+  SNE: ModalSNE, SNG: ModalSNG,
+  Pulseira: ModalPulseira, Monitor: ModalMonitor,
+  Dreno: ModalDreno, Curativo: ModalCurativo,
+}
 
 const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()
@@ -265,8 +352,18 @@ const form = reactive({
   svd:            false,
   svdDispositivo: 'SVD',
   svdDebito:      '',
+  dispositivos:   [],
   obs:            '',
 })
+
+// ── Dispositivos (composable compartilhado) ──
+const {
+  dragIdx, dragOverIdx, modal,
+  locaisCentral, tiposDisp, pulseiraOpcoes,
+  abrirModal, fecharModal, confirmarDisp,
+  moverDisp, removerDisp,
+  onDragStart, onDragOver, onDrop
+} = useDispositivos(form.dispositivos)
 
 // ── Rascunho ──
 const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
@@ -277,7 +374,25 @@ const refeicaoOpcoes = ['café da manhã', 'almoço', 'lanche', 'janta', 'ceia']
 const camaOpcoes     = ['baixa', 'média', 'alta']
 const rodasOpcoes    = ['travadas', 'soltas']
 const gradesOpcoes   = ['totalmente elevadas', 'parcialmente elevadas', 'abaixadas']
-const decubitoOpcoes = ['parcialmente elevado', 'dorsal', 'lateral direito', 'lateral esquerdo', 'Fowler']
+const decubitoOpcoes = ['parcialmente elevado', 'dorsal', 'lateral direito', 'lateral esquerdo', 'Fowler', 'semi-Fowler', 'Trendelenburg', 'leito/cama']
+
+// ── Campos "Outro" (mesmo padrão da AnotacaoInicial) ──
+const outroAtivo = reactive({})
+const outroTexto = reactive({})
+
+function selecionarOutro(campo) {
+  outroAtivo[campo] = true
+  form[campo] = outroTexto[campo] || ''
+}
+function atualizarOutro(campo, texto) {
+  outroTexto[campo] = texto
+  form[campo] = texto
+}
+function desativarOutro(campo) {
+  outroAtivo[campo] = false
+}
+
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 
 // ── Lifecycle ──
 onMounted(() => {
@@ -332,9 +447,11 @@ function limparBloco() {
     form.queixas = false; form.queixasDesc = ''
     form.cama = 'baixa'; form.rodas = 'travadas'
     form.grades = 'parcialmente elevadas'; form.decubito = 'parcialmente elevado'
+    ;['cama','rodas','grades','decubito'].forEach(c => { outroAtivo[c] = false; outroTexto[c] = '' })
     form.dietaEnteral = false; form.dietaDesc = ''; form.dietaMl = ''
     form.infusao = false; form.infusaoSolucao = ''; form.infusaoVol = ''; form.infusaoMl = ''
     form.svd = false; form.svdDebito = ''
+    form.dispositivos.splice(0)
     form.obs = ''
   }
 }
@@ -384,6 +501,10 @@ function gerar() {
   if (form.svd) {
     const disp = form.svdDispositivo.trim() || 'SVD'
     texto += ` Desprezado débito de ${disp} no total de ${form.svdDebito.trim()}ml no dia de hoje, atualizado em balanço hídrico.`
+  }
+
+  if (form.dispositivos.length > 0) {
+    texto += ' Em uso de ' + form.dispositivos.join('; ') + '.'
   }
 
   const obs = form.obs.trim()
@@ -447,10 +568,12 @@ function novaAnotacao() {
     svd:            false,
     svdDispositivo: 'SVD',
     svdDebito:      '',
+    dispositivos:   [],
     obs:            '',
   })
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
+  ;['cama','rodas','grades','decubito'].forEach(c => { outroAtivo[c] = false; outroTexto[c] = '' })
   descartarRascunho()
 }
 </script>
@@ -559,4 +682,59 @@ function novaAnotacao() {
   cursor: pointer; padding: 2px 6px; border-radius: 4px;
 }
 .btn-remove-inf:active { background: rgba(220,38,38,0.1); }
+
+.campo-inline {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 12px;
+  font-size: 0.9rem; color: var(--text); font-family: inherit;
+  width: 100%; box-sizing: border-box; outline: none;
+}
+
+/* Dispositivos */
+.disp-lista { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.disp-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 12px; gap: 8px;
+}
+.disp-item.drag-over { border-color: var(--blue); }
+.disp-texto { flex: 1; font-size: 0.88rem; color: var(--text-dim); }
+.disp-acoes { display: flex; gap: 4px; }
+.btn-icon-sm {
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.8rem; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.btn-icon-sm:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-danger-sm { color: var(--danger); }
+.disp-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn-disp {
+  padding: 8px 12px; border-radius: var(--radius);
+  border: 1px dashed var(--border); background: none;
+  color: var(--blue); font-size: 0.82rem; font-family: inherit;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-disp:active { background: var(--bg-hover); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 1000; padding: 16px;
+}
+.modal-box {
+  background: var(--bg); border-radius: 16px 16px 0 0;
+  width: 100%; max-width: 480px; max-height: 85vh;
+  overflow-y: auto; padding-bottom: 16px;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--bg); z-index: 1;
+}
+.modal-header h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin: 0; }
+.modal-body { padding: 16px; }
+.modal-footer {
+  display: flex; gap: 10px; padding: 0 16px;
+  position: sticky; bottom: 0; background: var(--bg); padding-top: 12px;
+}
 </style>

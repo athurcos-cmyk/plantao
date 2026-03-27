@@ -3,10 +3,14 @@
     <div class="campo">
       <label>Local </label>
       <div class="radio-group vertical">
-        <label class="radio-btn" v-for="op in ['MSE','MSD','MIE','MID','jugular D','jugular E']" :key="op">
-          <input  data-testid="auto-input-modalavp-1" type="radio" v-model="d.local" :value="op"><span>{{ op }}</span>
+        <label class="radio-btn" v-for="op in locaisAVP" :key="op">
+          <input type="radio" v-model="d.local" :value="op" @change="outroLocal = false"><span>{{ op }}</span>
+        </label>
+        <label class="radio-btn">
+          <input type="radio" :checked="outroLocal" @click.prevent="outroLocal = !outroLocal; if(outroLocal) d.local = ''"><span>Outro</span>
         </label>
       </div>
+      <input v-if="outroLocal" type="text" v-model="d.local" placeholder="Descreva o local..." style="margin-top:8px">
     </div>
     <div class="campo">
       <label>Status</label>
@@ -44,5 +48,16 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 defineProps({ d: Object })
+
+const outroLocal = ref(false)
+
+const locaisAVP = [
+  'Dorso da mão D', 'Dorso da mão E',
+  'Antebraço D', 'Antebraço E',
+  'Fossa cubital D', 'Fossa cubital E',
+  'MSD', 'MSE', 'MID', 'MIE'
+]
 </script>
