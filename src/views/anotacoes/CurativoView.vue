@@ -186,7 +186,7 @@
         <!-- Oclusão (o que fecha o curativo) -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
           <label>Oclusão <span class="opc">(o que fecha o curativo — opcional)</span></label>
-          <div class="chips-wrap" style="margin-bottom:8px">
+          <div class="chips-wrap">
             <button
               v-for="m in oclusaoOpcoes"
               :key="m"
@@ -194,10 +194,10 @@
               :class="{ 'chip-on': materialSelecionado(m) }"
               @click="toggleMaterial(m)"
             >{{ m }}</button>
+            <button class="chip chip-material"
+              :class="{ 'chip-on': form.oclusaoOutro }"
+              @click="form.oclusaoOutro = !form.oclusaoOutro">Outro</button>
           </div>
-          <button class="chip chip-material"
-            :class="{ 'chip-on': form.oclusaoOutro }"
-            @click="form.oclusaoOutro = !form.oclusaoOutro">Outro</button>
           <input v-if="form.oclusaoOutro" type="text" v-model="form.oclusaoCustom"
             placeholder="Ex: Micropore, Crepom..." style="margin-top:8px">
         </div>
