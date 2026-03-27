@@ -252,7 +252,12 @@
             <button class="chip chip-sm"
               :class="{ 'chip-on': form.referencia === 'orientacao' }"
               @click="form.referencia = form.referencia === 'orientacao' ? '' : 'orientacao'">
-              Conforme orientação da(o) Enf.
+              Conforme orientação Enf.
+            </button>
+            <button class="chip chip-sm"
+              :class="{ 'chip-on': form.referencia === 'ambos' }"
+              @click="form.referencia = form.referencia === 'ambos' ? '' : 'ambos'">
+              Prescrição + orientação Enf.
             </button>
           </div>
         </div>
@@ -518,7 +523,7 @@ const form = reactive({
   condicao:       true,
   aspecto:        '',
   solucaoLimpeza: [],    // SF 0,9% | Água destilada | PHMB 0,1% | etc.
-  referencia:     '',    // 'prescricao' | 'orientacao' | ''
+  referencia:     '',    // 'prescricao' | 'orientacao' | 'ambos' | ''
   // Avaliação COREN
   tipoLesao:      '',      // LPP | ferida operatória | escoriação | úlcera venosa | etc.
   tipoLesaoCustom: '',     // texto livre para tipo de lesão customizado
@@ -908,7 +913,8 @@ function tipoLesaoTexto() {
 
 function referenciaTexto() {
   if (form.referencia === 'prescricao') return 'Conforme prescrição de enfermagem.'
-  if (form.referencia === 'orientacao') return 'Conforme orientação da(o) Enf.'
+  if (form.referencia === 'orientacao') return 'Conforme orientação Enf.'
+  if (form.referencia === 'ambos') return 'Conforme prescrição de enfermagem e orientação Enf.'
   return ''
 }
 
