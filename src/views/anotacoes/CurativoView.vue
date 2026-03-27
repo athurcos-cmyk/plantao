@@ -668,7 +668,7 @@ const aspectoChips = [
   'exsudato seroso', 'exsudato serossanguinolento',
 ]
 
-const leitoOpcoes = ['granulação', 'granulação pálido', 'epitelização', 'necrose', 'esfacelo', 'espaço morto']
+const leitoOpcoes = ['granulação', 'granulação pálida', 'hipergranulação', 'epitelização', 'esfacelo', 'fibrina', 'necrose seca', 'necrose úmida', 'espaço morto']
 
 const avaliacaoExpandida = ref(false)
 
