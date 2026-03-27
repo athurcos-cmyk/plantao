@@ -559,6 +559,8 @@ function novaAnotacao() {
   color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   gap: 6px;
+  /* reset estilos globais de .campo label */
+  font-weight: 500; text-transform: none; letter-spacing: normal; margin-bottom: 0;
 }
 .radio-btn input[type="radio"] { display: none; }
 .radio-btn:has(input:checked) {
