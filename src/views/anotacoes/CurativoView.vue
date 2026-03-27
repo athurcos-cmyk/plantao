@@ -184,6 +184,18 @@
           <small class="material-tip">Enter adiciona só nesta anotação.</small>
         </div>
 
+        <!-- Solução de limpeza -->
+        <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
+          <label>Solução de limpeza <span class="opc">(opcional)</span></label>
+          <div class="chips-wrap">
+            <button v-for="s in solucoesOpcoes" :key="s" class="chip chip-sm"
+              :class="{ 'chip-on': form.solucaoLimpeza.includes(s) }"
+              @click="toggleSolucao(s)">{{ s }}</button>
+          </div>
+          <input type="text" v-model="form.solucaoCustom"
+            placeholder="Outra solução..." style="margin-top:8px">
+        </div>
+
         <!-- Condição (não para placa) -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
           <label>Condição</label>
@@ -191,6 +203,23 @@
             <input type="checkbox" v-model="form.condicao">
             <span>Ocluído, limpo e seco externamente</span>
           </label>
+        </div>
+
+        <!-- Referência à prescrição -->
+        <div v-if="form.tipo" class="campo">
+          <label>Referência <span class="opc">(opcional)</span></label>
+          <div class="chips-wrap">
+            <button class="chip chip-sm"
+              :class="{ 'chip-on': form.referencia === 'prescricao' }"
+              @click="form.referencia = form.referencia === 'prescricao' ? '' : 'prescricao'">
+              Conforme prescrição de enfermagem
+            </button>
+            <button class="chip chip-sm"
+              :class="{ 'chip-on': form.referencia === 'orientacao' }"
+              @click="form.referencia = form.referencia === 'orientacao' ? '' : 'orientacao'">
+              Conforme orientação da(o) Enf.
+            </button>
+          </div>
         </div>
 
         <!-- ── Avaliação COREN (só curativo/troca sem dreno) ── -->
@@ -208,11 +237,13 @@
           <div class="campo">
             <label>Tipo de lesão <span class="opc">(opcional)</span></label>
             <div class="chips-wrap">
-              <button v-for="t in ['LPP', 'ferida operatória', 'escoriação']" :key="t"
+              <button v-for="t in tiposLesaoOpcoes" :key="t"
                 class="chip chip-sm"
                 :class="{ 'chip-on': form.tipoLesao === t }"
                 @click="form.tipoLesao = form.tipoLesao === t ? '' : t">{{ t }}</button>
             </div>
+            <input type="text" v-model="form.tipoLesaoCustom"
+              placeholder="Outro tipo de lesão..." style="margin-top:8px">
           </div>
 
           <!-- Tamanho -->
@@ -373,8 +404,12 @@ const form = reactive({
   materiais:      [],
   condicao:       true,
   aspecto:        '',
+  solucaoLimpeza: [],    // SF 0,9% | Água destilada | PHMB 0,1% | etc.
+  solucaoCustom:  '',    // texto livre para solução customizada
+  referencia:     '',    // 'prescricao' | 'orientacao' | ''
   // Avaliação COREN
-  tipoLesao:      '',      // LPP | ferida operatória | escoriação
+  tipoLesao:      '',      // LPP | ferida operatória | escoriação | úlcera venosa | etc.
+  tipoLesaoCustom: '',     // texto livre para tipo de lesão customizado
   largura:        '',
   comprimento:    '',
   leitoFerida:    [],      // granulação | epitelização | necrose | esfacelo...
@@ -591,10 +626,21 @@ const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
 const locaisChips = ['MSD', 'MID', 'MSE', 'MIE', 'MMII', 'MMSS', 'região abdominal', 'região sacral', 'região lombar', 'região cervical']
 
 const materiaisOpcoes = [
-  'SF 0,9%', 'Gaze', 'Rayon', 'AGE', 'Atadura',
+  'Gaze', 'Rayon', 'AGE', 'Atadura',
   'Hidrogel', 'Adaptic',
   'Placa de alginato de cálcio',
   'Placa de alginato de cálcio com prata',
+]
+
+const solucoesOpcoes = [
+  'SF 0,9%', 'Água destilada', 'PHMB 0,1%',
+  'Ringer Lactato', 'Ácido hipocloroso',
+]
+
+const tiposLesaoOpcoes = [
+  'LPP', 'ferida operatória', 'escoriação',
+  'úlcera venosa', 'úlcera diabética', 'queimadura',
+  'deiscência',
 ]
 
 const aspectoChips = [
@@ -605,6 +651,12 @@ const aspectoChips = [
 const leitoOpcoes = ['granulação', 'granulação pálido', 'epitelização', 'necrose', 'esfacelo', 'espaço morto']
 
 const avaliacaoExpandida = ref(false)
+
+function toggleSolucao(v) {
+  const i = form.solucaoLimpeza.indexOf(v)
+  if (i === -1) form.solucaoLimpeza.push(v)
+  else form.solucaoLimpeza.splice(i, 1)
+}
 
 function toggleLeitoFerida(v) {
   const i = form.leitoFerida.indexOf(v)
@@ -650,6 +702,9 @@ function localTexto() {
   return todos.slice(0, -1).join(', ') + ' e ' + todos[todos.length - 1]
 }
 
+// Materiais de oclusão (fecham o curativo por fora)
+const materiaisOclusao = ['Gaze', 'Atadura']
+
 function materiaisTexto() {
   const ordenados = []
   const add = (valor) => {
@@ -664,6 +719,19 @@ function materiaisTexto() {
   form.materiais.forEach(add)
 
   return ordenados
+}
+
+function separarMateriais() {
+  const todos = materiaisTexto()
+  const cobertura = todos.filter(m => !materiaisOclusao.some(o => _txtEq(o, m)))
+  const oclusao = todos.filter(m => materiaisOclusao.some(o => _txtEq(o, m)))
+  return { cobertura, oclusao }
+}
+
+function joinMateriais(lista) {
+  if (lista.length === 0) return ''
+  if (lista.length === 1) return lista[0]
+  return lista.slice(0, -1).join(', ') + ' e ' + lista[lista.length - 1]
 }
 
 function formatHora(h) { return h ? h.replace(':', 'h') : '' }
@@ -682,7 +750,9 @@ function limparBloco() {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; locaisTemporarios.value = []
     form.materiais = []; materiaisTemporarios.value = []
+    form.solucaoLimpeza = []; form.solucaoCustom = ''; form.referencia = ''
     form.condicao = true; form.aspecto = ''
+    form.tipoLesao = ''; form.tipoLesaoCustom = ''
   }
 }
 
@@ -699,6 +769,27 @@ function avancar() {
   passo.value++
 }
 
+// ── Helpers de texto ──
+function solucaoTexto() {
+  const sols = [...form.solucaoLimpeza]
+  if (form.solucaoCustom.trim()) sols.push(form.solucaoCustom.trim())
+  if (sols.length === 0) return ''
+  if (sols.length === 1) return sols[0]
+  return sols.slice(0, -1).join(', ') + ' e ' + sols[sols.length - 1]
+}
+
+function tipoLesaoTexto() {
+  if (form.tipoLesao) return form.tipoLesao
+  if (form.tipoLesaoCustom.trim()) return form.tipoLesaoCustom.trim()
+  return ''
+}
+
+function referenciaTexto() {
+  if (form.referencia === 'prescricao') return 'Conforme prescrição de enfermagem.'
+  if (form.referencia === 'orientacao') return 'Conforme orientação da(o) Enf.'
+  return ''
+}
+
 // ── Gerar texto ──
 function gerar() {
   erro.value = ''
@@ -710,25 +801,40 @@ function gerar() {
     : ` em ${localTexto()}`
 
   if (form.tipo === 'placa') {
-    textoGerado.value = `${hora} – Realizado troca de placa de hidrocoloide${localPart}.`
+    let texto = `${hora} – Realizado troca de placa de hidrocoloide${localPart}.`
+    const ref = referenciaTexto()
+    if (ref) texto += ` ${ref}`
+    textoGerado.value = texto
     gerado.value = true
     window.scrollTo({ top: 0, behavior: 'smooth' })
     return
   }
 
-  const mats = materiaisTexto()
+  const { cobertura, oclusao } = separarMateriais()
+  const solucao = solucaoTexto()
+  const lesaoTipo = tipoLesaoTexto()
 
   const verbo = form.tipo === 'troca' ? 'troca de curativo' : 'curativo'
-  const lesaoPart = form.tipoLesao ? ` em ${form.tipoLesao}` : ''
-  let texto = `${hora} – Realizado ${verbo}${lesaoPart}${localPart}`
+  const lesaoPart = lesaoTipo ? ` em ${lesaoTipo}` : ''
+  let texto = `${hora} – Realizado ${verbo}${lesaoPart}${localPart}.`
 
-  if (mats.length > 0) {
-    texto += `, em uso de ${mats.join(' + ')}`
+  // Limpeza (solução separada dos materiais)
+  if (solucao) {
+    texto += ` Realizado limpeza com ${solucao}.`
   }
-  texto += '.'
 
+  // Cobertura (materiais aplicados na ferida)
+  if (cobertura.length > 0) {
+    texto += ` Aplicado ${joinMateriais(cobertura)}.`
+  }
+
+  // Oclusão (o que fecha o curativo)
   if (form.condicao) {
-    texto += ' Ocluído, limpo e seco externamente.'
+    if (oclusao.length > 0) {
+      texto += ` Ocluído com ${joinMateriais(oclusao)}, limpo e seco externamente.`
+    } else {
+      texto += ' Ocluído, limpo e seco externamente.'
+    }
   }
 
   // Bloco de avaliação COREN
@@ -758,6 +864,10 @@ function gerar() {
   } else if (form.aspecto.trim()) {
     texto += ` Ferida apresentando ${form.aspecto.trim()}.`
   }
+
+  // Referência à prescrição (sempre no final)
+  const ref = referenciaTexto()
+  if (ref) texto += ` ${ref}`
 
   textoGerado.value = texto
   gerado.value = true
@@ -795,8 +905,9 @@ function novaAnotacao() {
     horario: '', nome: '', leito: '',
     tipo: '', ehDreno: false, dreno: '',
     local: [], materiais: [],
+    solucaoLimpeza: [], solucaoCustom: '', referencia: '',
     condicao: true, aspecto: '',
-    tipoLesao: '', largura: '', comprimento: '',
+    tipoLesao: '', tipoLesaoCustom: '', largura: '', comprimento: '',
     leitoFerida: [], leitoOutro: '', exsudatoQtd: '',
     perilesao: '', perilesaoOutro: '', bordas: '',
   })

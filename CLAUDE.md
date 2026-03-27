@@ -136,6 +136,8 @@ Sistema de notificações com 3 camadas de confiabilidade:
 @.claude/skills/economia-tokens.md
 @.claude/skills/criar-skill.md
 @.claude/skills/modularizacao.md
+@.claude/skills/frontend-vue.md
+@.claude/skills/backend-firebase.md
 
 ## gstack
 Skills de workflow instaladas globalmente. Use `/browse` para navegação web (nunca `mcp__claude-in-chrome__*`).
