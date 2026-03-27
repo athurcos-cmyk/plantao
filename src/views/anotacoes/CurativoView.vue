@@ -194,12 +194,19 @@
               :class="{ 'chip-on': materialSelecionado(m) }"
               @click="toggleMaterial(m)"
             >{{ m }}</button>
+            <span v-for="item in outroOclusao.items" :key="`oc-${item}`"
+              class="chip chip-material chip-has-action chip-on"
+              >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroOclusao, item)">×</button></span>
             <button class="chip chip-material"
-              :class="{ 'chip-on': form.oclusaoOutro }"
-              @click="form.oclusaoOutro = !form.oclusaoOutro">Outro</button>
+              :class="{ 'chip-on': outroOclusao.aberto }"
+              @click="toggleOutro(outroOclusao)">Outro</button>
           </div>
-          <input v-if="form.oclusaoOutro" type="text" v-model="form.oclusaoCustom"
-            placeholder="Ex: Micropore, Crepom..." style="margin-top:8px">
+          <div v-if="outroOclusao.aberto" class="outro-input-row">
+            <input type="text" v-model="outroOclusao.input"
+              placeholder="Ex: Micropore, Crepom..."
+              @keyup.enter="addOutroItem(outroOclusao)">
+            <button class="chip chip-sm chip-on" @click="addOutroItem(outroOclusao)" :disabled="!outroOclusao.input.trim()">+</button>
+          </div>
         </div>
 
         <!-- Solução de limpeza -->
@@ -209,12 +216,19 @@
             <button v-for="s in solucoesOpcoes" :key="s" class="chip chip-sm"
               :class="{ 'chip-on': form.solucaoLimpeza.includes(s) }"
               @click="toggleSolucao(s)">{{ s }}</button>
+            <span v-for="item in outroSolucao.items" :key="`sol-${item}`"
+              class="chip chip-sm chip-has-action chip-on"
+              >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroSolucao, item)">×</button></span>
             <button class="chip chip-sm"
-              :class="{ 'chip-on': form.solucaoOutro }"
-              @click="form.solucaoOutro = !form.solucaoOutro">Outro</button>
+              :class="{ 'chip-on': outroSolucao.aberto }"
+              @click="toggleOutro(outroSolucao)">Outro</button>
           </div>
-          <input v-if="form.solucaoOutro" type="text" v-model="form.solucaoCustom"
-            placeholder="Ex: Clorexidina 0,5%..." style="margin-top:8px">
+          <div v-if="outroSolucao.aberto" class="outro-input-row">
+            <input type="text" v-model="outroSolucao.input"
+              placeholder="Ex: Clorexidina 0,5%..."
+              @keyup.enter="addOutroItem(outroSolucao)">
+            <button class="chip chip-sm chip-on" @click="addOutroItem(outroSolucao)" :disabled="!outroSolucao.input.trim()">+</button>
+          </div>
         </div>
 
         <!-- Condição (não para placa) -->
@@ -293,12 +307,19 @@
               <button v-for="l in leitoOpcoes" :key="l" class="chip chip-sm"
                 :class="{ 'chip-on': form.leitoFerida.includes(l) }"
                 @click="toggleLeitoFerida(l)">{{ l }}</button>
+              <span v-for="item in outroLeito.items" :key="`lei-${item}`"
+                class="chip chip-sm chip-has-action chip-on"
+                >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroLeito, item)">×</button></span>
               <button class="chip chip-sm"
-                :class="{ 'chip-on': form.leitoFerida.includes('outro') }"
-                @click="toggleLeitoFerida('outro')">Outro</button>
+                :class="{ 'chip-on': outroLeito.aberto }"
+                @click="toggleOutro(outroLeito)">Outro</button>
             </div>
-            <input v-if="form.leitoFerida.includes('outro')" type="text" v-model="form.leitoOutro"
-              placeholder="Descreva o leito da ferida..." style="margin-top:8px">
+            <div v-if="outroLeito.aberto" class="outro-input-row">
+              <input type="text" v-model="outroLeito.input"
+                placeholder="Descreva o leito da ferida..."
+                @keyup.enter="addOutroItem(outroLeito)">
+              <button class="chip chip-sm chip-on" @click="addOutroItem(outroLeito)" :disabled="!outroLeito.input.trim()">+</button>
+            </div>
           </div>
 
           <!-- Exsudato — quantidade + aspecto -->
@@ -314,12 +335,19 @@
               <button v-for="a in aspectoChips" :key="a" class="chip chip-sm"
                 :class="{ 'chip-on': form.aspecto === a }"
                 @click="setAspecto(a)">{{ a }}</button>
+              <span v-for="item in outroAspecto.items" :key="`asp-${item}`"
+                class="chip chip-sm chip-has-action chip-on"
+                >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroAspecto, item)">×</button></span>
               <button class="chip chip-sm"
-                :class="{ 'chip-on': form.aspectoOutro }"
-                @click="form.aspectoOutro = !form.aspectoOutro">Outro</button>
+                :class="{ 'chip-on': outroAspecto.aberto }"
+                @click="toggleOutro(outroAspecto)">Outro</button>
             </div>
-            <input v-if="form.aspectoOutro" type="text" v-model="form.aspecto"
-              placeholder="Ex: exsudato fibrinoso, odor fétido..." style="margin-top:8px">
+            <div v-if="outroAspecto.aberto" class="outro-input-row">
+              <input type="text" v-model="outroAspecto.input"
+                placeholder="Ex: exsudato fibrinoso, odor fétido..."
+                @keyup.enter="addOutroItem(outroAspecto)">
+              <button class="chip chip-sm chip-on" @click="addOutroItem(outroAspecto)" :disabled="!outroAspecto.input.trim()">+</button>
+            </div>
           </div>
 
           <!-- Pele perilesão -->
@@ -330,12 +358,19 @@
                 class="chip chip-sm"
                 :class="{ 'chip-on': form.perilesao === p }"
                 @click="form.perilesao = form.perilesao === p ? '' : p">{{ p }}</button>
+              <span v-for="item in outroPerilesao.items" :key="`peri-${item}`"
+                class="chip chip-sm chip-has-action chip-on"
+                >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroPerilesao, item)">×</button></span>
               <button class="chip chip-sm"
-                :class="{ 'chip-on': form.perilesao === 'outro' }"
-                @click="form.perilesao = form.perilesao === 'outro' ? '' : 'outro'">Outro</button>
+                :class="{ 'chip-on': outroPerilesao.aberto }"
+                @click="toggleOutro(outroPerilesao)">Outro</button>
             </div>
-            <input v-if="form.perilesao === 'outro'" type="text" v-model="form.perilesaoOutro"
-              placeholder="Ex: endurecida, com bolhas..." style="margin-top:8px">
+            <div v-if="outroPerilesao.aberto" class="outro-input-row">
+              <input type="text" v-model="outroPerilesao.input"
+                placeholder="Ex: endurecida, com bolhas..."
+                @keyup.enter="addOutroItem(outroPerilesao)">
+              <button class="chip chip-sm chip-on" @click="addOutroItem(outroPerilesao)" :disabled="!outroPerilesao.input.trim()">+</button>
+            </div>
           </div>
 
           <!-- Bordas -->
@@ -346,12 +381,19 @@
                 class="chip chip-sm"
                 :class="{ 'chip-on': form.bordas === b }"
                 @click="form.bordas = form.bordas === b ? '' : b">{{ b }}</button>
+              <span v-for="item in outroBordas.items" :key="`bor-${item}`"
+                class="chip chip-sm chip-has-action chip-on"
+                >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroBordas, item)">×</button></span>
               <button class="chip chip-sm"
-                :class="{ 'chip-on': form.bordasOutro }"
-                @click="form.bordasOutro = !form.bordasOutro">Outro</button>
+                :class="{ 'chip-on': outroBordas.aberto }"
+                @click="toggleOutro(outroBordas)">Outro</button>
             </div>
-            <input v-if="form.bordasOutro" type="text" v-model="form.bordasCustom"
-              placeholder="Ex: descoladas, enroladas..." style="margin-top:8px">
+            <div v-if="outroBordas.aberto" class="outro-input-row">
+              <input type="text" v-model="outroBordas.input"
+                placeholder="Ex: descoladas, enroladas..."
+                @keyup.enter="addOutroItem(outroBordas)">
+              <button class="chip chip-sm chip-on" @click="addOutroItem(outroBordas)" :disabled="!outroBordas.input.trim()">+</button>
+            </div>
           </div>
 
         </template>
@@ -364,12 +406,19 @@
             <button v-for="a in aspectoChips" :key="a" class="chip chip-sm"
               :class="{ 'chip-on': form.aspecto === a }"
               @click="setAspecto(a)">{{ a }}</button>
+            <span v-for="item in outroAspecto.items" :key="`asp2-${item}`"
+              class="chip chip-sm chip-has-action chip-on"
+              >{{ item }}<button class="chip-del-btn" @click.stop="removeOutroItem(outroAspecto, item)">×</button></span>
             <button class="chip chip-sm"
-              :class="{ 'chip-on': form.aspectoOutro }"
-              @click="form.aspectoOutro = !form.aspectoOutro">Outro</button>
+              :class="{ 'chip-on': outroAspecto.aberto }"
+              @click="toggleOutro(outroAspecto)">Outro</button>
           </div>
-          <input v-if="form.aspectoOutro" type="text" v-model="form.aspecto"
-            placeholder="Ex: exsudato fibrinoso, odor fétido..." style="margin-top:8px">
+          <div v-if="outroAspecto.aberto" class="outro-input-row">
+            <input type="text" v-model="outroAspecto.input"
+              placeholder="Ex: exsudato fibrinoso, odor fétido..."
+              @keyup.enter="addOutroItem(outroAspecto)">
+            <button class="chip chip-sm chip-on" @click="addOutroItem(outroAspecto)" :disabled="!outroAspecto.input.trim()">+</button>
+          </div>
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -432,6 +481,30 @@ const erro             = ref('')
 const salvando         = ref(false)
 const materiaisTemporarios = ref([])
 
+// ── Chips temporários "Outro" (sem banco) ──
+const outroOclusao    = reactive({ aberto: false, input: '', items: [] })
+const outroSolucao    = reactive({ aberto: false, input: '', items: [] })
+const outroLeito      = reactive({ aberto: false, input: '', items: [] })
+const outroAspecto    = reactive({ aberto: false, input: '', items: [] })
+const outroPerilesao  = reactive({ aberto: false, input: '', items: [] })
+const outroBordas     = reactive({ aberto: false, input: '', items: [] })
+
+function toggleOutro(outro) {
+  outro.aberto = !outro.aberto
+}
+function addOutroItem(outro) {
+  const txt = outro.input.trim()
+  if (!txt || outro.items.includes(txt)) return
+  outro.items.push(txt)
+  outro.input = ''
+}
+function removeOutroItem(outro, item) {
+  outro.items = outro.items.filter(i => i !== item)
+}
+function resetOutro(outro) {
+  outro.aberto = false; outro.input = ''; outro.items = []
+}
+
 // ── Formulário ──
 const form = reactive({
   horario:        '',
@@ -445,18 +518,11 @@ const form = reactive({
   condicao:       true,
   aspecto:        '',
   solucaoLimpeza: [],    // SF 0,9% | Água destilada | PHMB 0,1% | etc.
-  solucaoCustom:  '',    // texto livre para solução customizada
-  oclusaoCustom:  '',    // texto livre para material de oclusão customizado
-  oclusaoOutro:   false, // toggle chip "Outro" oclusão
-  solucaoOutro:   false, // toggle chip "Outro" solução
-  tipoLesaoOutro: false, // toggle chip "Outro" tipo lesão
-  aspectoOutro:   false, // toggle chip "Outro" aspecto
-  bordasOutro:    false, // toggle chip "Outro" bordas
-  bordasCustom:   '',    // texto livre para bordas custom
   referencia:     '',    // 'prescricao' | 'orientacao' | ''
   // Avaliação COREN
   tipoLesao:      '',      // LPP | ferida operatória | escoriação | úlcera venosa | etc.
   tipoLesaoCustom: '',     // texto livre para tipo de lesão customizado
+  tipoLesaoOutro: false,   // toggle chip "Outro" tipo lesão
   largura:        '',
   comprimento:    '',
   leitoFerida:    [],      // granulação | epitelização | necrose | esfacelo...
@@ -777,7 +843,7 @@ function separarMateriais() {
   const todos = materiaisTexto()
   const cobertura = todos.filter(m => !oclusaoOpcoes.some(o => _txtEq(o, m)))
   const oclusao = todos.filter(m => oclusaoOpcoes.some(o => _txtEq(o, m)))
-  if (form.oclusaoCustom.trim()) oclusao.push(form.oclusaoCustom.trim())
+  outroOclusao.items.forEach(i => { if (!oclusao.includes(i)) oclusao.push(i) })
   return { cobertura, oclusao }
 }
 
@@ -803,11 +869,13 @@ function limparBloco() {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; locaisTemporarios.value = []
     form.materiais = []; materiaisTemporarios.value = []
-    form.solucaoLimpeza = []; form.solucaoCustom = ''; form.solucaoOutro = false
-    form.oclusaoCustom = ''; form.oclusaoOutro = false; form.referencia = ''
-    form.condicao = true; form.aspecto = ''; form.aspectoOutro = false
+    form.solucaoLimpeza = []; form.referencia = ''
+    form.condicao = true; form.aspecto = ''
     form.tipoLesao = ''; form.tipoLesaoCustom = ''; form.tipoLesaoOutro = false
-    form.bordas = ''; form.bordasOutro = false; form.bordasCustom = ''
+    form.bordas = ''
+    resetOutro(outroOclusao); resetOutro(outroSolucao)
+    resetOutro(outroLeito); resetOutro(outroAspecto)
+    resetOutro(outroPerilesao); resetOutro(outroBordas)
   }
 }
 
@@ -826,8 +894,7 @@ function avancar() {
 
 // ── Helpers de texto ──
 function solucaoTexto() {
-  const sols = [...form.solucaoLimpeza]
-  if (form.solucaoCustom.trim()) sols.push(form.solucaoCustom.trim())
+  const sols = [...form.solucaoLimpeza, ...outroSolucao.items]
   if (sols.length === 0) return ''
   if (sols.length === 1) return sols[0]
   return sols.slice(0, -1).join(', ') + ' e ' + sols[sols.length - 1]
@@ -901,21 +968,27 @@ function gerar() {
       texto += ` Lesão com ${partes.join(' e ')}.`
     }
 
-    if (form.leitoFerida.length) {
-      const leitos = form.leitoFerida.map(l => l === 'outro' && form.leitoOutro.trim() ? form.leitoOutro.trim() : l).filter(l => l !== 'outro')
+    if (form.leitoFerida.length || outroLeito.items.length) {
+      const leitos = [...form.leitoFerida, ...outroLeito.items]
       if (leitos.length) texto += ` Leito com tecido de ${leitos.join(', ')}.`
     }
 
     const exsudatoParts = []
     if (form.aspecto.trim())  exsudatoParts.push(form.aspecto.trim())
+    outroAspecto.items.forEach(i => exsudatoParts.push(i))
     if (form.exsudatoQtd)     exsudatoParts.push(form.exsudatoQtd)
     if (exsudatoParts.length) texto += ` ${exsudatoParts.join(', ')}.`
 
-    if (form.perilesao) {
-      const peri = form.perilesao === 'outro' ? form.perilesaoOutro.trim() : form.perilesao
-      if (peri) texto += ` Pele perilesão ${peri}.`
+    if (form.perilesao || outroPerilesao.items.length) {
+      const periParts = []
+      if (form.perilesao) periParts.push(form.perilesao)
+      outroPerilesao.items.forEach(i => periParts.push(i))
+      texto += ` Pele perilesão ${periParts.join(', ')}.`
     }
-    const bordasTxt = form.bordas || (form.bordasOutro && form.bordasCustom.trim() ? form.bordasCustom.trim() : '')
+    const bordasParts = []
+    if (form.bordas) bordasParts.push(form.bordas)
+    outroBordas.items.forEach(i => bordasParts.push(i))
+    const bordasTxt = bordasParts.join(', ')
     if (bordasTxt) texto += ` Bordas ${bordasTxt}.`
   } else if (form.aspecto.trim()) {
     texto += ` Ferida apresentando ${form.aspecto.trim()}.`
@@ -961,17 +1034,18 @@ function novaAnotacao() {
     horario: '', nome: '', leito: '',
     tipo: '', ehDreno: false, dreno: '',
     local: [], materiais: [],
-    solucaoLimpeza: [], solucaoCustom: '', solucaoOutro: false,
-    oclusaoCustom: '', oclusaoOutro: false, referencia: '',
-    condicao: true, aspecto: '', aspectoOutro: false,
+    solucaoLimpeza: [], referencia: '',
+    condicao: true, aspecto: '',
     tipoLesao: '', tipoLesaoCustom: '', tipoLesaoOutro: false,
     largura: '', comprimento: '',
-    leitoFerida: [], leitoOutro: '', exsudatoQtd: '',
-    perilesao: '', perilesaoOutro: '', bordas: '',
-    bordasOutro: false, bordasCustom: '',
+    leitoFerida: [], exsudatoQtd: '',
+    perilesao: '', bordas: '',
   })
   locaisTemporarios.value = []
   materiaisTemporarios.value = []
+  resetOutro(outroOclusao); resetOutro(outroSolucao)
+  resetOutro(outroLeito); resetOutro(outroAspecto)
+  resetOutro(outroPerilesao); resetOutro(outroBordas)
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   descartarRascunho()
@@ -979,6 +1053,18 @@ function novaAnotacao() {
 </script>
 
 <style scoped>
+.outro-input-row {
+  display: flex; gap: 8px; margin-top: 8px; align-items: center;
+}
+.outro-input-row input {
+  flex: 1;
+}
+.outro-input-row button {
+  flex-shrink: 0; min-width: 36px; height: 36px; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+
 .btn-icon {
   background: none; border: none; color: var(--text-dim);
   cursor: pointer; padding: 6px; border-radius: 8px; display: flex; align-items: center;
