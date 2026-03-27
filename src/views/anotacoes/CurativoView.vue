@@ -195,8 +195,11 @@
               @click="toggleMaterial(m)"
             >{{ m }}</button>
           </div>
-          <input type="text" v-model="form.oclusaoCustom"
-            placeholder="Outro material de oclusão..." style="margin-top:8px">
+          <button class="chip chip-material"
+            :class="{ 'chip-on': form.oclusaoOutro }"
+            @click="form.oclusaoOutro = !form.oclusaoOutro">Outro</button>
+          <input v-if="form.oclusaoOutro" type="text" v-model="form.oclusaoCustom"
+            placeholder="Ex: Micropore, Crepom..." style="margin-top:8px">
         </div>
 
         <!-- Solução de limpeza -->
@@ -206,9 +209,12 @@
             <button v-for="s in solucoesOpcoes" :key="s" class="chip chip-sm"
               :class="{ 'chip-on': form.solucaoLimpeza.includes(s) }"
               @click="toggleSolucao(s)">{{ s }}</button>
+            <button class="chip chip-sm"
+              :class="{ 'chip-on': form.solucaoOutro }"
+              @click="form.solucaoOutro = !form.solucaoOutro">Outro</button>
           </div>
-          <input type="text" v-model="form.solucaoCustom"
-            placeholder="Outra solução..." style="margin-top:8px">
+          <input v-if="form.solucaoOutro" type="text" v-model="form.solucaoCustom"
+            placeholder="Ex: Clorexidina 0,5%..." style="margin-top:8px">
         </div>
 
         <!-- Condição (não para placa) -->
@@ -256,9 +262,12 @@
                 class="chip chip-sm"
                 :class="{ 'chip-on': form.tipoLesao === t }"
                 @click="form.tipoLesao = form.tipoLesao === t ? '' : t">{{ t }}</button>
+              <button class="chip chip-sm"
+                :class="{ 'chip-on': form.tipoLesaoOutro }"
+                @click="form.tipoLesaoOutro = !form.tipoLesaoOutro">Outro</button>
             </div>
-            <input type="text" v-model="form.tipoLesaoCustom"
-              placeholder="Outro tipo de lesão..." style="margin-top:8px">
+            <input v-if="form.tipoLesaoOutro" type="text" v-model="form.tipoLesaoCustom"
+              placeholder="Ex: lesão por fricção, úlcera arterial..." style="margin-top:8px">
           </div>
 
           <!-- Tamanho -->
@@ -305,32 +314,44 @@
               <button v-for="a in aspectoChips" :key="a" class="chip chip-sm"
                 :class="{ 'chip-on': form.aspecto === a }"
                 @click="setAspecto(a)">{{ a }}</button>
+              <button class="chip chip-sm"
+                :class="{ 'chip-on': form.aspectoOutro }"
+                @click="form.aspectoOutro = !form.aspectoOutro">Outro</button>
             </div>
-            <input type="text" v-model="form.aspecto" placeholder="Ou descreva o aspecto...">
+            <input v-if="form.aspectoOutro" type="text" v-model="form.aspecto"
+              placeholder="Ex: exsudato fibrinoso, odor fétido..." style="margin-top:8px">
           </div>
 
           <!-- Pele perilesão -->
           <div class="campo">
             <label>Pele perilesão <span class="opc">(opcional)</span></label>
             <div class="chips-wrap">
-              <button v-for="p in ['íntegra', 'hiperemiada', 'macerada', 'queratose', 'outro']" :key="p"
+              <button v-for="p in perilesaoOpcoes" :key="p"
                 class="chip chip-sm"
                 :class="{ 'chip-on': form.perilesao === p }"
                 @click="form.perilesao = form.perilesao === p ? '' : p">{{ p }}</button>
+              <button class="chip chip-sm"
+                :class="{ 'chip-on': form.perilesao === 'outro' }"
+                @click="form.perilesao = form.perilesao === 'outro' ? '' : 'outro'">Outro</button>
             </div>
             <input v-if="form.perilesao === 'outro'" type="text" v-model="form.perilesaoOutro"
-              placeholder="Descreva a pele perilesão..." style="margin-top:8px">
+              placeholder="Ex: endurecida, com bolhas..." style="margin-top:8px">
           </div>
 
           <!-- Bordas -->
           <div class="campo">
             <label>Bordas <span class="opc">(opcional)</span></label>
             <div class="chips-wrap">
-              <button v-for="b in ['regular', 'irregular', 'aproximadas', 'abertas']" :key="b"
+              <button v-for="b in bordasOpcoes" :key="b"
                 class="chip chip-sm"
                 :class="{ 'chip-on': form.bordas === b }"
                 @click="form.bordas = form.bordas === b ? '' : b">{{ b }}</button>
+              <button class="chip chip-sm"
+                :class="{ 'chip-on': form.bordasOutro }"
+                @click="form.bordasOutro = !form.bordasOutro">Outro</button>
             </div>
+            <input v-if="form.bordasOutro" type="text" v-model="form.bordasCustom"
+              placeholder="Ex: descoladas, enroladas..." style="margin-top:8px">
           </div>
 
         </template>
@@ -343,8 +364,12 @@
             <button v-for="a in aspectoChips" :key="a" class="chip chip-sm"
               :class="{ 'chip-on': form.aspecto === a }"
               @click="setAspecto(a)">{{ a }}</button>
+            <button class="chip chip-sm"
+              :class="{ 'chip-on': form.aspectoOutro }"
+              @click="form.aspectoOutro = !form.aspectoOutro">Outro</button>
           </div>
-          <input type="text" v-model="form.aspecto" placeholder="Ex: exsudato seroso...">
+          <input v-if="form.aspectoOutro" type="text" v-model="form.aspecto"
+            placeholder="Ex: exsudato fibrinoso, odor fétido..." style="margin-top:8px">
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -422,6 +447,12 @@ const form = reactive({
   solucaoLimpeza: [],    // SF 0,9% | Água destilada | PHMB 0,1% | etc.
   solucaoCustom:  '',    // texto livre para solução customizada
   oclusaoCustom:  '',    // texto livre para material de oclusão customizado
+  oclusaoOutro:   false, // toggle chip "Outro" oclusão
+  solucaoOutro:   false, // toggle chip "Outro" solução
+  tipoLesaoOutro: false, // toggle chip "Outro" tipo lesão
+  aspectoOutro:   false, // toggle chip "Outro" aspecto
+  bordasOutro:    false, // toggle chip "Outro" bordas
+  bordasCustom:   '',    // texto livre para bordas custom
   referencia:     '',    // 'prescricao' | 'orientacao' | ''
   // Avaliação COREN
   tipoLesao:      '',      // LPP | ferida operatória | escoriação | úlcera venosa | etc.
@@ -668,6 +699,10 @@ const aspectoChips = [
   'exsudato seroso', 'exsudato serossanguinolento',
 ]
 
+const perilesaoOpcoes = ['íntegra', 'hiperemiada', 'macerada', 'queratose', 'descamativa', 'edemaciada', 'ressecada']
+
+const bordasOpcoes = ['regular', 'irregular', 'aproximadas', 'abertas']
+
 const leitoOpcoes = ['granulação', 'granulação pálida', 'hipergranulação', 'epitelização', 'esfacelo', 'fibrina', 'necrose seca', 'necrose úmida', 'espaço morto']
 
 const avaliacaoExpandida = ref(false)
@@ -768,9 +803,11 @@ function limparBloco() {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; locaisTemporarios.value = []
     form.materiais = []; materiaisTemporarios.value = []
-    form.solucaoLimpeza = []; form.solucaoCustom = ''; form.oclusaoCustom = ''; form.referencia = ''
-    form.condicao = true; form.aspecto = ''
-    form.tipoLesao = ''; form.tipoLesaoCustom = ''
+    form.solucaoLimpeza = []; form.solucaoCustom = ''; form.solucaoOutro = false
+    form.oclusaoCustom = ''; form.oclusaoOutro = false; form.referencia = ''
+    form.condicao = true; form.aspecto = ''; form.aspectoOutro = false
+    form.tipoLesao = ''; form.tipoLesaoCustom = ''; form.tipoLesaoOutro = false
+    form.bordas = ''; form.bordasOutro = false; form.bordasCustom = ''
   }
 }
 
@@ -878,7 +915,8 @@ function gerar() {
       const peri = form.perilesao === 'outro' ? form.perilesaoOutro.trim() : form.perilesao
       if (peri) texto += ` Pele perilesão ${peri}.`
     }
-    if (form.bordas)    texto += ` Bordas ${form.bordas}.`
+    const bordasTxt = form.bordas || (form.bordasOutro && form.bordasCustom.trim() ? form.bordasCustom.trim() : '')
+    if (bordasTxt) texto += ` Bordas ${bordasTxt}.`
   } else if (form.aspecto.trim()) {
     texto += ` Ferida apresentando ${form.aspecto.trim()}.`
   }
@@ -923,11 +961,14 @@ function novaAnotacao() {
     horario: '', nome: '', leito: '',
     tipo: '', ehDreno: false, dreno: '',
     local: [], materiais: [],
-    solucaoLimpeza: [], solucaoCustom: '', oclusaoCustom: '', referencia: '',
-    condicao: true, aspecto: '',
-    tipoLesao: '', tipoLesaoCustom: '', largura: '', comprimento: '',
+    solucaoLimpeza: [], solucaoCustom: '', solucaoOutro: false,
+    oclusaoCustom: '', oclusaoOutro: false, referencia: '',
+    condicao: true, aspecto: '', aspectoOutro: false,
+    tipoLesao: '', tipoLesaoCustom: '', tipoLesaoOutro: false,
+    largura: '', comprimento: '',
     leitoFerida: [], leitoOutro: '', exsudatoQtd: '',
     perilesao: '', perilesaoOutro: '', bordas: '',
+    bordasOutro: false, bordasCustom: '',
   })
   locaisTemporarios.value = []
   materiaisTemporarios.value = []
