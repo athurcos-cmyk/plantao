@@ -127,12 +127,12 @@
           </div>
         </div>
 
-        <!-- Materiais padrão + customizados -->
+        <!-- Cobertura (o que vai na ferida) -->
         <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
-          <label>Em uso de <span class="opc">(opcional)</span></label>
+          <label>Cobertura <span class="opc">(o que vai na ferida — opcional)</span></label>
           <div class="chips-wrap" style="margin-bottom:8px">
             <button
-              v-for="m in materiaisOpcoes"
+              v-for="m in coberturaOpcoes"
               :key="m"
               class="chip chip-material"
               :class="{ 'chip-on': materialSelecionado(m) }"
@@ -163,7 +163,7 @@
           </div>
 
           <div v-if="!adicionandoMaterial" style="margin-top:8px">
-            <button class="chip chip-add" @click="abrirAddMaterial">+ Adicionar material</button>
+            <button class="chip chip-add" @click="abrirAddMaterial">+ Adicionar cobertura</button>
           </div>
           <div v-else class="add-row" style="margin-top:8px">
             <input
@@ -176,12 +176,27 @@
               ref="refNovoMaterial"
             >
             <div class="material-actions">
-              <button class="chip chip-on" @click="salvarMaterialCustom" :disabled="!novoMaterialTxt.trim()">Salvar no banco de dados</button>
+              <button class="chip chip-on" @click="salvarMaterialCustom" :disabled="!novoMaterialTxt.trim()">Salvar no banco</button>
               <button class="chip chip-temp" @click="adicionarMaterialTemporario" :disabled="!novoMaterialTxt.trim()">Só nesta anotação</button>
               <button class="chip" @click="fecharAddMaterial">✕</button>
             </div>
           </div>
-          <small class="material-tip">Enter adiciona só nesta anotação.</small>
+        </div>
+
+        <!-- Oclusão (o que fecha o curativo) -->
+        <div v-if="form.tipo && form.tipo !== 'placa'" class="campo">
+          <label>Oclusão <span class="opc">(o que fecha o curativo — opcional)</span></label>
+          <div class="chips-wrap" style="margin-bottom:8px">
+            <button
+              v-for="m in oclusaoOpcoes"
+              :key="m"
+              class="chip chip-material"
+              :class="{ 'chip-on': materialSelecionado(m) }"
+              @click="toggleMaterial(m)"
+            >{{ m }}</button>
+          </div>
+          <input type="text" v-model="form.oclusaoCustom"
+            placeholder="Outro material de oclusão..." style="margin-top:8px">
         </div>
 
         <!-- Solução de limpeza -->
@@ -406,6 +421,7 @@ const form = reactive({
   aspecto:        '',
   solucaoLimpeza: [],    // SF 0,9% | Água destilada | PHMB 0,1% | etc.
   solucaoCustom:  '',    // texto livre para solução customizada
+  oclusaoCustom:  '',    // texto livre para material de oclusão customizado
   referencia:     '',    // 'prescricao' | 'orientacao' | ''
   // Avaliação COREN
   tipoLesao:      '',      // LPP | ferida operatória | escoriação | úlcera venosa | etc.
@@ -625,12 +641,16 @@ const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
 // ── Opções ──
 const locaisChips = ['MSD', 'MID', 'MSE', 'MIE', 'MMII', 'MMSS', 'região abdominal', 'região sacral', 'região lombar', 'região cervical']
 
-const materiaisOpcoes = [
-  'Gaze', 'Rayon', 'AGE', 'Atadura',
-  'Hidrogel', 'Adaptic',
+const coberturaOpcoes = [
+  'Rayon', 'AGE', 'Hidrogel', 'Adaptic',
   'Placa de alginato de cálcio',
   'Placa de alginato de cálcio com prata',
 ]
+
+const oclusaoOpcoes = ['Gaze', 'Atadura', 'Filme transparente']
+
+// Todos os materiais (cobertura + oclusão) para lógica interna
+const materiaisOpcoes = [...coberturaOpcoes, ...oclusaoOpcoes]
 
 const solucoesOpcoes = [
   'SF 0,9%', 'Água destilada', 'PHMB 0,1%',
@@ -702,9 +722,6 @@ function localTexto() {
   return todos.slice(0, -1).join(', ') + ' e ' + todos[todos.length - 1]
 }
 
-// Materiais de oclusão (fecham o curativo por fora)
-const materiaisOclusao = ['Gaze', 'Atadura']
-
 function materiaisTexto() {
   const ordenados = []
   const add = (valor) => {
@@ -723,8 +740,9 @@ function materiaisTexto() {
 
 function separarMateriais() {
   const todos = materiaisTexto()
-  const cobertura = todos.filter(m => !materiaisOclusao.some(o => _txtEq(o, m)))
-  const oclusao = todos.filter(m => materiaisOclusao.some(o => _txtEq(o, m)))
+  const cobertura = todos.filter(m => !oclusaoOpcoes.some(o => _txtEq(o, m)))
+  const oclusao = todos.filter(m => oclusaoOpcoes.some(o => _txtEq(o, m)))
+  if (form.oclusaoCustom.trim()) oclusao.push(form.oclusaoCustom.trim())
   return { cobertura, oclusao }
 }
 
@@ -750,7 +768,7 @@ function limparBloco() {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; locaisTemporarios.value = []
     form.materiais = []; materiaisTemporarios.value = []
-    form.solucaoLimpeza = []; form.solucaoCustom = ''; form.referencia = ''
+    form.solucaoLimpeza = []; form.solucaoCustom = ''; form.oclusaoCustom = ''; form.referencia = ''
     form.condicao = true; form.aspecto = ''
     form.tipoLesao = ''; form.tipoLesaoCustom = ''
   }
@@ -905,7 +923,7 @@ function novaAnotacao() {
     horario: '', nome: '', leito: '',
     tipo: '', ehDreno: false, dreno: '',
     local: [], materiais: [],
-    solucaoLimpeza: [], solucaoCustom: '', referencia: '',
+    solucaoLimpeza: [], solucaoCustom: '', oclusaoCustom: '', referencia: '',
     condicao: true, aspecto: '',
     tipoLesao: '', tipoLesaoCustom: '', largura: '', comprimento: '',
     leitoFerida: [], leitoOutro: '', exsudatoQtd: '',
