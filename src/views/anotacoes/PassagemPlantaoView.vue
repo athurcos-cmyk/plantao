@@ -339,7 +339,7 @@ const refeicaoOpcoes = ['café da manhã', 'almoço', 'lanche', 'janta', 'ceia']
 const camaOpcoes     = ['baixa', 'média', 'alta']
 const rodasOpcoes    = ['travadas', 'soltas']
 const gradesOpcoes   = ['totalmente elevadas', 'parcialmente elevadas', 'abaixadas']
-const decubitoOpcoes = ['parcialmente elevado', 'dorsal', 'lateral direito', 'lateral esquerdo', 'Fowler', 'semi-Fowler', 'Trendelenburg', 'leito/cama']
+const decubitoOpcoes = ['parcialmente elevado', 'dorsal', 'lateral direito', 'lateral esquerdo']
 
 // ── Campos "Outro" (mesmo padrão da AnotacaoInicial) ──
 const outroAtivo = reactive({})
