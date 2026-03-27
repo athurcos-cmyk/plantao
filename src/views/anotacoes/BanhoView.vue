@@ -132,14 +132,35 @@
         <template v-if="form.tipo === 'leito'">
           <div class="campo">
             <label>Higiene realizada</label>
-            <div class="radio-group vertical">
-              <label v-for="h in higieneOpcoes" :key="h" class="checkbox-label" :class="{ checked: form.higiene.includes(h) }">
-                <input type="checkbox" :value="h" v-model="form.higiene">
-                <span>{{ h }}</span>
-              </label>
+            <div class="chips-wrap">
+              <button
+                v-for="h in higieneOpcoes" :key="h"
+                class="chip"
+                :class="{ 'chip-on': form.higiene.includes(h) }"
+                @click="toggleHigiene(h)"
+              >{{ h }}</button>
+              <span
+                v-for="h in higieneExtras" :key="h"
+                class="chip chip-has-action"
+                :class="{ 'chip-on': form.higiene.includes(h) }"
+                @click="toggleHigiene(h)"
+              >
+                {{ h }}
+                <button class="chip-del-btn" @click.stop="removerHigieneExtra(h)">×</button>
+              </span>
+              <button class="chip" :class="{ 'chip-on': adicionandoHigiene }" @click="adicionandoHigiene = !adicionandoHigiene">Outro</button>
             </div>
-            <div style="margin-top:10px">
-              <input type="text" v-model="form.higieneOutro" placeholder="Outro tipo de higiene (ex: coto umbilical, ostomia...)">
+            <div v-if="adicionandoHigiene" class="add-row" style="margin-top:8px">
+              <input
+                class="add-input"
+                type="text"
+                v-model="novaHigieneTxt"
+                placeholder="Ex: coto umbilical, ostomia..."
+                @keyup.enter="adicionarHigieneExtra"
+                @keyup.esc="adicionandoHigiene = false"
+                ref="refNovaHigiene"
+              >
+              <button class="chip chip-on" @click="adicionarHigieneExtra" :disabled="!novaHigieneTxt.trim()">+ Adicionar</button>
             </div>
           </div>
 
@@ -245,7 +266,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
@@ -285,7 +306,6 @@ const form = reactive({
   protecaoCateter:    false,
   trocaRoupa:         false,
   higiene:            [],
-  higieneOutro:       '',
   trocaFralda:        false,
   semIntercorrencias: true,
   intercorrencia:     '',
@@ -297,6 +317,31 @@ const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
 
 // ── Opções ──
 const higieneOpcoes = ['Capilar', 'Facial', 'Corporal', 'Íntima', 'Oral']
+
+// ── Higiene extras ──
+const higieneExtras    = ref([])
+const adicionandoHigiene = ref(false)
+const novaHigieneTxt   = ref('')
+const refNovaHigiene   = ref(null)
+
+function adicionarHigieneExtra() {
+  const txt = novaHigieneTxt.value.trim()
+  if (!txt || higieneExtras.value.includes(txt)) return
+  higieneExtras.value.push(txt)
+  form.higiene.push(txt)
+  novaHigieneTxt.value = ''
+  adicionandoHigiene.value = false
+}
+
+function removerHigieneExtra(h) {
+  higieneExtras.value = higieneExtras.value.filter(x => x !== h)
+  const idx = form.higiene.indexOf(h)
+  if (idx >= 0) form.higiene.splice(idx, 1)
+}
+
+watch(adicionandoHigiene, async (v) => {
+  if (v) { await nextTick(); refNovaHigiene.value?.focus() }
+})
 
 // ── Lifecycle ──
 onMounted(() => {
@@ -333,7 +378,8 @@ function limparBloco() {
     form.cadeiraBanho = false; form.comAuxilio = false
     form.acompGenero = 'M'; form.acompNome = ''
     form.protecaoCateter = false; form.trocaRoupa = false
-    form.higiene = []; form.higieneOutro = ''; form.trocaFralda = false
+    form.higiene = []; form.trocaFralda = false
+    higieneExtras.value = []; adicionandoHigiene.value = false; novaHigieneTxt.value = ''
     form.eliminacao = ''; form.qtdDiurese = ''; form.qtdEvacuacao = ''; form.localElim = ''
     form.semIntercorrencias = true; form.intercorrencia = ''
   }
@@ -418,7 +464,9 @@ function gerar() {
     const higieneFeita = higieneOrdem
       .filter(h => form.higiene.includes(h))
       .map(h => h.toLowerCase())
-    if (form.higieneOutro.trim()) higieneFeita.push(form.higieneOutro.trim().toLowerCase())
+    higieneExtras.value
+      .filter(h => form.higiene.includes(h))
+      .forEach(h => higieneFeita.push(h.toLowerCase()))
 
     texto = `${hora} – realizado banho de leito`
     if (higieneFeita.length > 0) {
@@ -479,10 +527,11 @@ function novaAnotacao() {
     cadeiraBanho: false, comAuxilio: false,
     acompGenero: 'M', acompNome: '',
     protecaoCateter: false, trocaRoupa: false,
-    higiene: [], higieneOutro: '', trocaFralda: false,
+    higiene: [], trocaFralda: false,
     eliminacao: '', qtdDiurese: '', qtdEvacuacao: '', localElim: '',
     semIntercorrencias: true, intercorrencia: '',
   })
+  higieneExtras.value = []; adicionandoHigiene.value = false; novaHigieneTxt.value = ''
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   descartarRascunho()
@@ -525,6 +574,23 @@ function novaAnotacao() {
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
+
+.chip-has-action { padding-right: 6px; }
+.chip-del-btn {
+  background: none; border: none; cursor: pointer;
+  color: inherit; font-size: 1rem; line-height: 1;
+  padding: 0 2px; opacity: 0.7; font-family: inherit;
+}
+.chip-del-btn:hover { opacity: 1; }
+
+.add-row { display: flex; gap: 8px; align-items: center; }
+.add-input {
+  flex: 1; padding: 8px 12px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text);
+  font-family: inherit; font-size: 0.9rem; outline: none;
+}
+.add-input:focus { border-color: var(--blue); }
 
 /* ── Toggle row ── */
 .toggle-row {
