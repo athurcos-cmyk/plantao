@@ -260,6 +260,10 @@
               Prescrição + orientação Enf.
             </button>
           </div>
+          <div v-if="form.referencia === 'orientacao' || form.referencia === 'ambos'" style="margin-top:10px">
+            <input type="text" v-model="form.referenciaEnf"
+              placeholder="Nome do(a) Enf. (opcional)">
+          </div>
         </div>
 
         <!-- ── Avaliação COREN (só curativo/troca sem dreno) ── -->
@@ -524,6 +528,7 @@ const form = reactive({
   aspecto:        '',
   solucaoLimpeza: [],    // SF 0,9% | Água destilada | PHMB 0,1% | etc.
   referencia:     '',    // 'prescricao' | 'orientacao' | 'ambos' | ''
+  referenciaEnf:  '',    // nome do Enf. (quando orientacao ou ambos)
   // Avaliação COREN
   tipoLesao:      '',      // LPP | ferida operatória | escoriação | úlcera venosa | etc.
   tipoLesaoCustom: '',     // texto livre para tipo de lesão customizado
@@ -874,7 +879,7 @@ function limparBloco() {
     form.tipo = ''; form.ehDreno = false; form.dreno = ''
     form.local = []; locaisTemporarios.value = []
     form.materiais = []; materiaisTemporarios.value = []
-    form.solucaoLimpeza = []; form.referencia = ''
+    form.solucaoLimpeza = []; form.referencia = ''; form.referenciaEnf = ''
     form.condicao = true; form.aspecto = ''
     form.tipoLesao = ''; form.tipoLesaoCustom = ''; form.tipoLesaoOutro = false
     form.bordas = ''
@@ -912,9 +917,10 @@ function tipoLesaoTexto() {
 }
 
 function referenciaTexto() {
+  const enf = form.referenciaEnf.trim() ? ` ${form.referenciaEnf.trim()}` : ''
   if (form.referencia === 'prescricao') return 'Conforme prescrição de enfermagem.'
-  if (form.referencia === 'orientacao') return 'Conforme orientação Enf.'
-  if (form.referencia === 'ambos') return 'Conforme prescrição de enfermagem e orientação Enf.'
+  if (form.referencia === 'orientacao') return `Conforme orientação Enf.${enf}.`
+  if (form.referencia === 'ambos') return `Conforme prescrição de enfermagem e orientação Enf.${enf}.`
   return ''
 }
 
@@ -1040,7 +1046,7 @@ function novaAnotacao() {
     horario: '', nome: '', leito: '',
     tipo: '', ehDreno: false, dreno: '',
     local: [], materiais: [],
-    solucaoLimpeza: [], referencia: '',
+    solucaoLimpeza: [], referencia: '', referenciaEnf: '',
     condicao: true, aspecto: '',
     tipoLesao: '', tipoLesaoCustom: '', tipoLesaoOutro: false,
     largura: '', comprimento: '',
