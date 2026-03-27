@@ -217,6 +217,15 @@
           </div>
         </template>
 
+        <!-- Prescrição de enfermagem -->
+        <div v-if="form.tipo && form.tipo !== 'fralda'" class="campo">
+          <label>Prescrição <span class="opc">(opcional)</span></label>
+          <label class="checkbox-label" :class="{ checked: form.conformePrescricao }">
+            <input type="checkbox" v-model="form.conformePrescricao">
+            <span>Conforme prescrição de enfermagem</span>
+          </label>
+        </div>
+
         <!-- Intercorrências -->
         <div v-if="form.tipo" class="campo">
           <label>Intercorrências</label>
@@ -307,8 +316,9 @@ const form = reactive({
   trocaRoupa:         false,
   higiene:            [],
   trocaFralda:        false,
-  semIntercorrencias: true,
-  intercorrencia:     '',
+  semIntercorrencias:    true,
+  intercorrencia:        '',
+  conformePrescricao:    false,
 })
 
 // ── Rascunho ──
@@ -382,6 +392,7 @@ function limparBloco() {
     higieneExtras.value = []; adicionandoHigiene.value = false; novaHigieneTxt.value = ''
     form.eliminacao = ''; form.qtdDiurese = ''; form.qtdEvacuacao = ''; form.localElim = ''
     form.semIntercorrencias = true; form.intercorrencia = ''
+    form.conformePrescricao = false
   }
 }
 
@@ -420,6 +431,7 @@ function gerar() {
       const tec = form.acompGenero === 'F' ? 'Téc.ª de enfermagem' : 'Téc. de enfermagem'
       detalhes.push(`junto com ${tec} ${form.acompNome.trim()}`)
     }
+    if (form.conformePrescricao) detalhes.push('conforme prescrição de enfermagem')
     if (form.semIntercorrencias) {
       detalhes.push('sem intercorrências')
     } else {
@@ -477,6 +489,7 @@ function gerar() {
       texto += `: higiene ${lista}`
     }
 
+    if (form.conformePrescricao) texto += ', conforme prescrição de enfermagem'
     if (form.semIntercorrencias) {
       texto += ', sem intercorrências.'
     } else {
@@ -530,6 +543,7 @@ function novaAnotacao() {
     higiene: [], trocaFralda: false,
     eliminacao: '', qtdDiurese: '', qtdEvacuacao: '', localElim: '',
     semIntercorrencias: true, intercorrencia: '',
+    conformePrescricao: false,
   })
   higieneExtras.value = []; adicionandoHigiene.value = false; novaHigieneTxt.value = ''
   textoGerado.value = ''; gerado.value = false; passo.value = 1

@@ -552,21 +552,6 @@ function novaAnotacao() {
 .radio-group.horizontal { flex-direction: row; flex-wrap: wrap; }
 .radio-group.vertical { flex-direction: column; }
 
-.radio-btn {
-  display: flex; align-items: center;
-  padding: 8px 14px; border-radius: 20px;
-  border: 1px solid var(--border); background: var(--bg-card);
-  color: var(--text-dim); font-size: 0.9rem;
-  cursor: pointer; font-family: inherit; transition: all 0.15s;
-  gap: 6px;
-  /* reset estilos globais de .campo label */
-  font-weight: 500; text-transform: none; letter-spacing: normal; margin-bottom: 0;
-}
-.radio-btn input[type="radio"] { display: none; }
-.radio-btn:has(input:checked) {
-  background: var(--blue); border-color: var(--blue); color: #fff;
-}
-
 .checkbox-label {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.9rem; color: var(--text-dim); cursor: pointer;
