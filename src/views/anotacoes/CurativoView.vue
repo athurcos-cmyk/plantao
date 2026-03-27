@@ -756,8 +756,8 @@ const solucoesOpcoes = [
 
 const tiposLesaoOpcoes = [
   'LPP', 'ferida operatória', 'escoriação',
-  'úlcera venosa', 'úlcera diabética', 'queimadura',
-  'deiscência',
+  'úlcera venosa', 'úlcera arterial', 'úlcera diabética',
+  'queimadura', 'deiscência', 'lesão por fricção',
 ]
 
 const aspectoChips = [
