@@ -160,43 +160,13 @@
           <input v-if="outroAtivo.decubito" class="campo-inline" style="margin-top:8px" type="text" :value="outroTexto.decubito || ''" @input="atualizarOutro('decubito', $event.target.value)" placeholder="Descreva o decúbito...">
         </div>
 
-        <!-- Informações adicionais -->
+        <!-- Débito urinário -->
         <div class="campo">
-          <label>Informações adicionais</label>
-
-          <!-- Dieta enteral -->
-          <label class="checkbox-label" :class="{ checked: form.dietaEnteral }" style="margin-bottom:8px">
-            <input type="checkbox" v-model="form.dietaEnteral">
-            <span>Dieta enteral</span>
-          </label>
-          <div v-if="form.dietaEnteral" style="margin-top:4px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;padding-left:8px">
-            <input type="text" v-model="form.dietaDesc" placeholder="Descrição (ex: polimérica)">
-            <input type="text" v-model="form.dietaMl" placeholder="ml/h">
-          </div>
-
-          <!-- Infusão venosa -->
-          <label class="checkbox-label" :class="{ checked: form.infusao }" style="margin-bottom:8px">
-            <input type="checkbox" v-model="form.infusao" @change="onToggleInfusao">
-            <span>Infusão venosa</span>
-          </label>
-          <div v-if="form.infusao" style="margin-top:4px;margin-bottom:12px;padding-left:8px">
-            <div v-for="(inf, i) in form.infusoes" :key="i" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
-              <div style="display:flex;align-items:center;justify-content:space-between">
-                <span style="font-size:0.78rem;color:var(--text-muted);font-weight:600">INFUSÃO {{ i + 1 }}</span>
-                <button v-if="form.infusoes.length > 1" class="btn-remove-inf" @click="removeInfusao(i)">× remover</button>
-              </div>
-              <input type="text" v-model="inf.solucao" placeholder="Solução (ex: SF 0,9% 500ml)">
-              <input type="text" v-model="inf.ml" placeholder="ml/h">
-            </div>
-            <button class="btn-add-inf" @click="addInfusao">+ Adicionar infusão</button>
-          </div>
-
-          <!-- Débito urinário -->
-          <label class="checkbox-label" :class="{ checked: form.svd }" style="margin-bottom:8px">
+          <label class="checkbox-label" :class="{ checked: form.svd }">
             <input type="checkbox" v-model="form.svd">
             <span>Débito urinário</span>
           </label>
-          <div v-if="form.svd" style="margin-top:4px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;padding-left:8px">
+          <div v-if="form.svd" style="margin-top:8px;display:flex;flex-direction:column;gap:8px;padding-left:8px">
             <input type="text" v-model="form.svdDispositivo" placeholder="Dispositivo (ex: SVD, nefrostomia D)">
             <input type="text" v-model="form.svdDebito" placeholder="Débito (ml)">
           </div>
@@ -344,11 +314,6 @@ const form = reactive({
   rodas:          'travadas',
   grades:         'parcialmente elevadas',
   decubito:       'parcialmente elevado',
-  dietaEnteral:   false,
-  dietaDesc:      '',
-  dietaMl:        '',
-  infusao:        false,
-  infusoes:       [],
   svd:            false,
   svdDispositivo: 'SVD',
   svdDebito:      '',
@@ -410,17 +375,6 @@ function toggleRefeicao(r) {
   form.refeicao = form.refeicao === r ? '' : r
 }
 
-function onToggleInfusao() {
-  if (form.infusao && form.infusoes.length === 0)
-    form.infusoes.push({ solucao: '', ml: '' })
-  else if (!form.infusao)
-    form.infusoes.splice(0)
-}
-function addInfusao() { form.infusoes.push({ solucao: '', ml: '' }) }
-function removeInfusao(i) {
-  form.infusoes.splice(i, 1)
-  if (form.infusoes.length === 0) form.infusao = false
-}
 
 function formatHora(h) {
   return h ? h.replace(':', 'h') : ''
@@ -448,9 +402,7 @@ function limparBloco() {
     form.cama = 'baixa'; form.rodas = 'travadas'
     form.grades = 'parcialmente elevadas'; form.decubito = 'parcialmente elevado'
     ;['cama','rodas','grades','decubito'].forEach(c => { outroAtivo[c] = false; outroTexto[c] = '' })
-    form.dietaEnteral = false; form.dietaDesc = ''; form.dietaMl = ''
-    form.infusao = false; form.infusaoSolucao = ''; form.infusaoVol = ''; form.infusaoMl = ''
-    form.svd = false; form.svdDebito = ''
+    form.svd = false; form.svdDispositivo = 'SVD'; form.svdDebito = ''
     form.dispositivos.splice(0)
     form.obs = ''
   }
@@ -484,19 +436,6 @@ function gerar() {
     : 'sem queixas'
 
   let texto = `${hora} – ${refeicaoPart}Paciente em seu leito ${queixasPart}, Mantenho cama ${form.cama}, rodas ${form.rodas}, ${gradesDecubito()}, campainha próxima e oriento a chamar sempre que necessário.`
-
-  if (form.dietaEnteral) {
-    const desc = form.dietaDesc.trim()
-    texto += ` Recebendo dieta enteral${desc ? ' ' + desc : ''} a ${form.dietaMl.trim()}ml/h.`
-  }
-
-  if (form.infusao) {
-    for (const inf of form.infusoes) {
-      const sol = inf.solucao.trim()
-      const ml  = inf.ml.trim()
-      if (sol && ml) texto += ` Recebendo ${sol} a ${ml}ml/h.`
-    }
-  }
 
   if (form.svd) {
     const disp = form.svdDispositivo.trim() || 'SVD'
@@ -560,11 +499,6 @@ function novaAnotacao() {
     rodas:          'travadas',
     grades:         'parcialmente elevadas',
     decubito:       'parcialmente elevado',
-    dietaEnteral:   false,
-    dietaDesc:      '',
-    dietaMl:        '',
-    infusao:        false,
-    infusoes:       [],
     svd:            false,
     svdDispositivo: 'SVD',
     svdDebito:      '',
