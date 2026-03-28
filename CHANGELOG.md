@@ -6,6 +6,96 @@
 
 ---
 
+## Sessão 2026-03-28 — Auditoria de segurança + decisões de produto
+
+### Auditoria de segurança (sem código alterado)
+
+Verificação completa dos 3 pontos críticos do projeto:
+
+**Firebase Rules (`database.rules.json`):**
+- Todas as coleções exigem `auth != null` + verificação de ownership via `root.child('owners').child($code).child(auth.uid)`
+- Nenhuma regra permissiva exposta — `config/total_usuarios` é a única leitura pública (intencional, sem dado sensível)
+- `usuarios/plano` tem `.write: false` no client — só o admin SDK pode alterar
+- `feedback` tem `.read: false` — só escrita pelo dono
+- **Conclusão: regras bem configuradas, sem vazamento possível de dados de outros usuários**
+
+**Variáveis de ambiente:**
+- `.env.local` contém apenas `VITE_FCM_VAPID_KEY` — chave pública por design, pode ser exposta
+- Secrets reais (`FIREBASE_SERVICE_ACCOUNT`, `CRON_SECRET`, `GROQ_API_KEY`, `RESEND_API_KEY`) confirmados apenas no Vercel, fora do código
+- **Conclusão: sem secrets no bundle ou no repositório**
+
+**Endpoints serverless (`api/`):**
+- Todos os 9 endpoints verificam `verifyIdToken` antes de qualquer operação
+- `api/cron.js` fail-closed: `if (!secret || req.headers.authorization !== Bearer ${secret})` — bloqueia se variável ausente
+- Rate limiting em todos os endpoints sensíveis
+- **Conclusão: endpoints protegidos**
+
+**O que NÃO se aplica ao Plantão (são problemas do Supabase):**
+Anon key exposta, RLS não configurado, storage buckets abertos, `security definer` functions, chamadas REST diretas sem autenticação. O Firebase tem arquitetura fundamentalmente diferente — segurança fechada por padrão.
+
+**Única pendência real:** rotacionar CRON_SECRET no Vercel + cron-job.org (secret foi exposto em commit público). Não expõe dados de usuários — apenas permite disparar notificações FCM.
+
+### Decisões de produto
+
+**Modo lado a lado no computador (descartado):**
+- Usuário reportou dificuldade para quem não sabe dividir a tela no computador
+- Opções avaliadas: PWA instalado no desktop, botão janela flutuante, rota `/mini`
+- Decisão: deixar como está. Fluxo atual (copiar texto e colar no prontuário) resolve o problema
+
+**Aviso iOS PWA (removido do TODOS):**
+- Item "avisar sobre reinstalação de PWA se ícone sumir no iOS" avaliado
+- Decisão: não implementar, removido do backlog
+
+---
+
+## Sessão 2026-03-27 — Curativo + Banho + Passagem (melhorias clínicas)
+
+### Módulo Curativo — melhorias clínicas
+
+**Referência à prescrição expandida:**
+- 3 chips: "Conforme prescrição de enfermagem" / "Conforme orientação Enf." / "Prescrição + orientação Enf."
+- Campo de texto para nome do(a) Enf. aparece ao selecionar "orientação" ou "ambos"
+- Texto gerado: `Conforme orientação Enf. Maria Souza.` / `Conforme prescrição de enfermagem e orientação Enf. Maria Souza.`
+- "Conforme orientação da(o) Enf." → "Conforme orientação Enf." (removido da(o))
+
+**Commits:** `63c14da`, `a05077f`
+
+### Módulo Banho — higiene multi-add
+
+**Higiene realizada — chip Outro com múltiplos itens:**
+- Antes: campo de texto único `higieneOutro` (não permitia 2 itens customizados)
+- Agora: chip "Outro" abre campo de texto + botão "+ Adicionar"
+- Cada item vira chip com botão `×` para remover individualmente
+- Foco automático no input ao clicar Outro (watch + nextTick)
+- Múltiplos itens aparecem no texto gerado em ordem de adição
+- Enter adiciona, Esc fecha o campo
+- `higieneExtras` ref separado da lógica de higiene padrão
+
+**Commit:** `6869d1a`
+
+### Módulo Passagem de Plantão — correções e melhorias
+
+**Dispositivos:**
+- Sistema completo de dispositivos (mesmo da Anotação Inicial) adicionado — todos os 12 tipos (AVP, CVC, PICC, Permcath, Shilley, SNE, SNG, Pulseira, Monitor, Dreno, Curativo, Outros)
+- "Dieta enteral" e "Infusão venosa" removidos das informações adicionais (cobertos pelos dispositivos AVP/SNE)
+- Apenas "Débito urinário" mantido em informações adicionais
+- `useDispositivos.js` — composable extraído e compartilhado entre Passagem e Anotação Inicial
+
+**Decúbito:**
+- Simplificado para 4 opções: parcialmente elevado, dorsal, lateral direito, lateral esquerdo
+- Chip "Outro" com campo de texto livre (mesmo padrão da Anotação Inicial)
+
+**Visual — correção CSS global:**
+- `.radio-btn` herdava estilos de `.campo label` do style.css global (display:block, text-transform:uppercase, font-weight:600, margin-bottom:8px)
+- Corrigido com reset explícito em `.radio-btn`: font-weight:500, text-transform:none, letter-spacing:normal, margin-bottom:0
+
+**ModalAVP revertido:**
+- Locais restaurados para original: MSE, MSD, MIE, MID, jugular D, jugular E
+
+**Commits:** `5db1e49`, `69bced8`, `b987000`
+
+---
+
 ## Sessão 2026-03-26 — Divulgação + Instagram
 
 ### Lançamento público iniciado

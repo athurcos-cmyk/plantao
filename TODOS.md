@@ -2,6 +2,13 @@
 
 ## Pendentes
 
+### [ ] Terminologia clínica: limpeza asséptica vs antisséptica (P2)
+**O quê:** Enfermeira amiga do Arthur validou que o módulo de curativo precisa de distinção clara entre limpeza asséptica (SF 0,9%) e antisséptica (PHMB, hipoclorito). Texto gerado deveria refletir isso automaticamente conforme a solução escolhida.
+**Status:** Identificado em sessão 2026-03-27 — não implementado ainda.
+**Prioridade:** P2
+
+---
+
 ### [ ] Botão de broadcast mais acessível no admin
 **O quê:** Com usuários crescendo, o botão de broadcast (📢) está no header do modal mas o usuário sente que precisa descer muito para alcegar a funcionalidade.
 **Como:** Avaliar se o botão fixo no topo da tab Monitor ou um FAB no AdminView resolve.
@@ -122,13 +129,6 @@ Cada dispositivo salva token FCM separado em `fcm_tokens/{syncCode}/{deviceId}`.
 - Cancelamento via Stripe portal (self-serve)
 **Depende de:** Validação com usuárias (item acima)
 **Prioridade:** P1
-
----
-
-### [ ] Aviso iOS: reinstalar PWA se ícone sumir
-**O quê:** Pequeno aviso no onboarding ou login para usuários iOS: "Se o ícone sumir após atualização do iOS, abra o Safari, acesse plantao.net e adicione à tela novamente. Seus dados estão salvos."
-**Por quê:** iOS remove PWAs após atualização do sistema. Usuária reportou o problema.
-**Prioridade:** P2
 
 ---
 

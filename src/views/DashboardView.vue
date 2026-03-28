@@ -8,6 +8,7 @@
       </div>
       <div style="display:flex;align-items:center;gap:6px">
         <button class="btn-feedback-topo" @click="abrirFeedback" title="Enviar feedback">💬</button>
+        <button class="btn-ajuda btn-lateral" @click="abrirJanelaLateral" title="Abrir ao lado do prontuário">⊞ Ao lado</button>
         <button class="btn-ajuda" @click="tourRef?.abrirTour()" title="Ver tutorial">▶ Tutorial</button>
         <button class="btn-ajuda" @click="helpAberto = true">? Ajuda</button>
         <button class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
@@ -189,6 +190,14 @@ const {
   dispensar: dispensarPulso,
   enviar: enviarPulso,
 } = usePulso()
+
+function abrirJanelaLateral() {
+  const w = 420
+  const h = screen.availHeight
+  const left = screen.availWidth - w
+  const janela = window.open('/', 'plantao-lateral', `width=${w},height=${h},left=${left},top=0,resizable=yes`)
+  if (!janela) showToast('Permita popups para plantao.net no Chrome e tente novamente.')
+}
 
 function abrirFeedback() {
   if (!auth.syncCode) return
@@ -382,6 +391,14 @@ function navegar(tipo) {
 </script>
 
 <style scoped>
+.btn-lateral {
+  display: none;
+}
+@media (min-width: 768px) {
+  .btn-lateral {
+    display: inline-flex;
+  }
+}
 .header-logo {
   display: flex;
   align-items: center;
