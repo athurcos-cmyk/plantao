@@ -502,9 +502,9 @@ function novaAnotacao() {
     svd:            false,
     svdDispositivo: 'SVD',
     svdDebito:      '',
-    dispositivos:   [],
     obs:            '',
   })
+  form.dispositivos.splice(0)
   textoGerado.value = ''; gerado.value = false; passo.value = 1
   erro.value = ''; copiado.value = false
   ;['cama','rodas','grades','decubito'].forEach(c => { outroAtivo[c] = false; outroTexto[c] = '' })

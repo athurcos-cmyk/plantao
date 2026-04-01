@@ -507,11 +507,11 @@ export function useAnotacaoInicial() {
       mentalAlterado:false, mentalDesc:'', colaboracao:'', deambulacao:'',
       deambulaAuxilio:'', respPadrao:'', respiracao:'', oxigenioLitros:'',
       acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'',
-      dispositivos:[],
       evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'', svdAspecto:'', diureseObs:'',
       queixas:'', obsApresenta:'', fechamento:'',
       nomePaciente:'', leitoPaciente:''
     })
+    form.dispositivos.splice(0)
     _resetOutros('posicaoCama', 'rodas', 'grades', 'decubito', 'colaboracao', 'deambulacao', 'respiracao')
     passo.value = 1
     gerado.value = false
