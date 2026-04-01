@@ -108,15 +108,17 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const auth = useAuthStore()
     const code = auth.syncCode
 
+    // Otimista: remove da lista local antes — UI atualiza instantaneamente
+    const lista = pacientes.value.filter(p => p._key !== key)
+    pacientes.value = lista
+    _salvarCache(code, lista)
+
     if (!navigator.onLine) {
-      const lista = pacientes.value.filter(p => p._key !== key)
-      pacientes.value = lista
-      _salvarCache(code, lista)
       _enfileirar(code, { op: 'delete', key })
       pendentesCount.value++
       return
     }
-    await remove(dbRef(db, `pacientes/${code}/${key}`))
+    try { await remove(dbRef(db, `pacientes/${code}/${key}`)) } catch {}
   }
 
   async function adicionarPendencia(pacKey, texto) {
@@ -183,18 +185,20 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const auth = useAuthStore()
     const code = auth.syncCode
 
+    // Otimista: remove da lista local antes — UI atualiza instantaneamente
+    const lista = pacientes.value.map(p =>
+      p._key !== pacKey ? p
+        : { ...p, pendencias: p.pendencias.filter(pend => pend._key !== pendKey) }
+    )
+    pacientes.value = lista
+    _salvarCache(code, lista)
+
     if (!navigator.onLine) {
-      const lista = pacientes.value.map(p =>
-        p._key !== pacKey ? p
-          : { ...p, pendencias: p.pendencias.filter(pend => pend._key !== pendKey) }
-      )
-      pacientes.value = lista
-      _salvarCache(code, lista)
       _enfileirar(code, { op: 'deletePend', pacKey, pendKey })
       pendentesCount.value++
       return
     }
-    await remove(dbRef(db, `pacientes/${code}/${pacKey}/pendencias/${pendKey}`))
+    try { await remove(dbRef(db, `pacientes/${code}/${pacKey}/pendencias/${pendKey}`)) } catch {}
   }
 
   async function sincronizarPendentes() {
