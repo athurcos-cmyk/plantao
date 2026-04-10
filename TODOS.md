@@ -18,6 +18,21 @@
 
 ## Concluídos
 
+### [x] Fix dispositivos sumiam após "Nova anotação" (2026-04-01)
+`Object.assign(form, { dispositivos: [] })` substituía o array por um novo, quebrando a referência do composable `useDispositivos`. Corrigido com `form.dispositivos.splice(0)` em PassagemPlantaoView e useAnotacaoInicial.
+
+---
+
+### [x] Exclusão otimista de pacientes e pendências (2026-04-01)
+`pacientes.js`: `excluir()` e `excluirPendencia()` agora removem da lista local antes de chamar Firebase — UI atualiza instantaneamente.
+
+---
+
+### [x] Botão "Ao lado" no dashboard desktop (2026-04-01)
+Botão `⊞ Ao lado` visível só em tela ≥768px. Abre janela lateral 420px no lado direito da tela para uso lado a lado com o sistema hospitalar.
+
+---
+
 ### [x] Migração OneSignal → FCM nativo (v1.0)
 **Concluído:** 2026-03-23
 
