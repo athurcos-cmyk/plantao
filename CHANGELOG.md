@@ -6,6 +6,37 @@
 
 ---
 
+## Sessão 2026-04-15
+
+### Organização de contexto para Codex
+
+- Criada uma memória local do Codex em `.codex/memory/` com `MEMORY.md`, `project_status.md` e `project_overview.md`
+- `CODEX.md` foi refeito para começar com a lista fixa dos arquivos de leitura e atualização da sessão
+- A documentação do Codex agora aponta para o design doc mais recente do gstack e para o `DESIGN.md` quando a tarefa envolver UI
+- O estado real do app foi revalidado antes de documentar: Firebase Auth segue ativo, login por código usa `/api/login-by-code` com `customToken`, e a pasta `api/` tem 11 endpoints
+- Os arquivos do Claude foram preservados sem alteração; o fluxo do Codex passou a ter memória própria
+
+### Observação
+
+- Nenhuma funcionalidade do app foi alterada nesta sessão; foi uma organização de contexto e documentação operacional
+
+### Otimizações implementadas depois
+
+- Sync automático do app agora só mantém retry enquanto houver pendências reais; removido polling contínuo do root
+- Painel de sincronização do dashboard passou a reagir a eventos de sync em vez de polling a cada 2,5s
+- Clara agora envia menos contexto por mensagem e inclui só um resumo curto do histórico antigo
+- Permissão de notificações deixou de ser pedida no login; agora é solicitada apenas quando o usuário realmente define horário em uma pendência
+- Agendamento de notificações em pacientes passou a usar diff com debounce, com limpeza inicial única de tags órfãs
+- Safety net local das notificações passou a ser agendado só quando existem lembretes pendentes
+- Lógica de dispositivos foi deduplicada entre a anotação inicial e o composable compartilhado
+- Histórico e Admin ganharam renderização incremental com “Mostrar mais” para reduzir custo de listas grandes
+- Notas Livres deixaram o polling fixo de modelos e passaram a sincronizar fila só quando necessário
+- Removido texto de debug dos modelos e centralizado o fallback de cópia em telas que ainda copiavam manualmente
+- Build do Vite ganhou `manualChunks` para separar `vue-core`, `vue-router`, `pinia`, `firebase-core`, `firebase-auth`, `firebase-db`, `firebase-messaging` e `ui-effects`
+- `App.vue` passou a carregar chat, calculadora e configuração de push sob demanda para aliviar o bootstrap
+- `usePushNotificacoes.js` agora faz lazy-load de `firebase/messaging`
+- Resultado confirmado em build local: chunk principal caiu de cerca de 571 kB para cerca de 39 kB, sem warnings de chunk grande
+
 ## Sessão 2026-04-01
 
 ### Bugs corrigidos
