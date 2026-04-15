@@ -246,7 +246,6 @@ import {
   solicitarPermissaoNotificacao,
   agendarNotificacaoTarefa,
   cancelarNotificacao,
-  configurarPush,
   limparNotificacoesPorPrefixo,
   notificacoesHabilitadas,
 } from '../composables/usePushNotificacoes.js'
@@ -260,6 +259,10 @@ const auth   = useAuthStore()
 // ── Tempo relativo ──────────────────────────────────────────
 const agora = ref(Date.now())
 let timerAgora = null
+let notifSyncTimer = null
+const assinaturasPend = new Map()
+let desmontando = false
+let limpezaNotifInicialPendente = true
 
 function tempoRelativo(ts) {
   if (!ts) return ''
@@ -303,42 +306,91 @@ async function _agendarDuas(pac, pend) {
   await agendarNotificacaoTarefa(pend.horario, `⏰ Agora — ${label}`, _tagPend(pend._key))
 }
 
-async function agendarNotifPendencias() {
-  const tagsAtivas = []
+function assinaturaPend(pac, pend) {
+  return [
+    pac.nome || '',
+    pac.leito || '',
+    pend.texto || '',
+    pend.horario || '',
+    pend.feito ? '1' : '0',
+  ].join('|')
+}
 
+async function sincronizarNotifPendencias() {
+  if (desmontando) return
+  notifSyncTimer = null
+
+  const desejadas = new Map()
   for (const pac of store.pacientes) {
     for (const pend of pac.pendencias) {
       if (pend.feito || !pend.horario) continue
-      tagsAtivas.push(_tagPend(pend._key), _tagPendAviso(pend._key))
+      desejadas.set(pend._key, {
+        pac,
+        pend,
+        assinatura: assinaturaPend(pac, pend),
+      })
     }
   }
 
-  await limparNotificacoesPorPrefixo('pend-', tagsAtivas)
+  if (limpezaNotifInicialPendente) {
+    const tagsAtivas = Array.from(desejadas.keys()).flatMap((pendKey) => [
+      _tagPend(pendKey),
+      _tagPendAviso(pendKey),
+    ])
+    await limparNotificacoesPorPrefixo('pend-', tagsAtivas)
+    limpezaNotifInicialPendente = false
+  }
 
-  for (const pac of store.pacientes) {
-    for (const pend of pac.pendencias) {
-      if (pend.feito || !pend.horario) continue
-      await _agendarDuas(pac, pend)
+  for (const [pendKey, assinaturaAtual] of [...assinaturasPend.entries()]) {
+    const desejada = desejadas.get(pendKey)
+    if (!desejada || desejada.assinatura !== assinaturaAtual) {
+      await _cancelarDuas(pendKey)
+      assinaturasPend.delete(pendKey)
     }
   }
+
+  if (!notificacoesHabilitadas()) return
+
+  for (const [pendKey, item] of desejadas.entries()) {
+    if (assinaturasPend.get(pendKey) === item.assinatura) continue
+    await _agendarDuas(item.pac, item.pend)
+    assinaturasPend.set(pendKey, item.assinatura)
+  }
+}
+
+function agendarSyncNotifPendencias() {
+  if (notifSyncTimer) clearTimeout(notifSyncTimer)
+  notifSyncTimer = setTimeout(() => {
+    sincronizarNotifPendencias().catch(() => {})
+  }, 350)
+}
+
+async function garantirPermissaoNotificacao() {
+  if (notificacoesHabilitadas()) return true
+  const ok = await solicitarPermissaoNotificacao(auth.syncCode)
+  if (!ok) showToast('Horário salvo, mas a notificação precisa ser permitida no navegador.')
+  return ok
 }
 
 onMounted(async () => {
   store.iniciar()
   timerAgora = setInterval(() => { agora.value = Date.now() }, 30000)
-  await solicitarPermissaoNotificacao(auth.syncCode)
-  await configurarPush(auth.syncCode)
   // agenda após store carregar
-  setTimeout(agendarNotifPendencias, 1500)
+  setTimeout(agendarSyncNotifPendencias, 1500)
 })
 
 onUnmounted(() => {
+  desmontando = true
   store.parar()
   clearInterval(timerAgora)
+  if (notifSyncTimer) clearTimeout(notifSyncTimer)
 })
 
 // Re-agenda quando pacientes mudam (horário setado/removido)
-watch(() => store.pacientes, agendarNotifPendencias, { deep: true })
+watch(() => store.pacientes, () => {
+  if (desmontando) return
+  agendarSyncNotifPendencias()
+}, { deep: true })
 
 // nova pendência por paciente (key → texto)
 const novaPend  = reactive({})
@@ -441,6 +493,7 @@ async function executarExcluirTodos() {
   for (const pac of [...store.pacientes]) {
     for (const pend of (pac.pendencias || [])) {
       await _cancelarDuas(pend._key)
+      assinaturasPend.delete(pend._key)
     }
     await store.excluir(pac._key)
   }
@@ -451,6 +504,7 @@ async function executarExcluir() {
   try {
     for (const pend of (excluindo.value.pendencias || [])) {
       await _cancelarDuas(pend._key)
+      assinaturasPend.delete(pend._key)
     }
     await store.excluir(excluindo.value._key)
   }
@@ -475,10 +529,17 @@ async function _cancelarDuas(pendKey) {
 async function definirHorarioPend(pac, pend, horario) {
   await store.definirHorarioPendencia(pac._key, pend._key, horario)
   await _cancelarDuas(pend._key)
+  assinaturasPend.delete(pend._key)
   if (horario) {
-    // pend.horario ainda não atualizou no objeto local, passa o novo
-    await _agendarDuas(pac, { ...pend, horario })
-    showToast(`🔔 Notificação agendada para ${horario}`)
+    const permitido = await garantirPermissaoNotificacao()
+    if (permitido) {
+      const pendAtualizada = { ...pend, horario, feito: false }
+      await _agendarDuas(pac, pendAtualizada)
+      assinaturasPend.set(pend._key, assinaturaPend(pac, pendAtualizada))
+      showToast(`🔔 Notificação agendada para ${horario}`)
+    } else {
+      showToast('Horário salvo sem notificação')
+    }
   }
 }
 
@@ -487,12 +548,14 @@ async function togglePend(pac, pend) {
   await store.togglePendencia(pac._key, pend._key, pend.feito)
   if (!pend.feito && pend.horario) {
     await _cancelarDuas(pend._key)
+    assinaturasPend.delete(pend._key)
   }
 }
 
 // Excluir: cancela as duas notificações
 async function excluirPend(pac, pend) {
   if (pend.horario) await _cancelarDuas(pend._key)
+  assinaturasPend.delete(pend._key)
   await store.excluirPendencia(pac._key, pend._key)
 }
 </script>

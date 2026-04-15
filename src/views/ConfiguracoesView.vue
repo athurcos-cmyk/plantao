@@ -143,9 +143,11 @@ import {
   linkWithPopup,
 } from 'firebase/auth'
 import { googleProvider } from '../firebase.js'
+import { useCopia } from '../composables/useCopia.js'
 
 const router = useRouter()
 const auth = useAuthStore()
+const { copiar } = useCopia()
 
 const copiou = ref(false)
 const erro = ref('')
@@ -180,20 +182,12 @@ onMounted(() => {
 })
 
 async function copiarCodigo() {
-  try {
-    await navigator.clipboard.writeText(auth.syncCode)
+  const ok = await copiar(auth.syncCode)
+  if (ok) {
     copiou.value = true
     setTimeout(() => { copiou.value = false }, 2000)
-  } catch {
-    // fallback
-    const ta = document.createElement('textarea')
-    ta.value = auth.syncCode
-    document.body.appendChild(ta)
-    ta.select()
-    document.execCommand('copy')
-    document.body.removeChild(ta)
-    copiou.value = true
-    setTimeout(() => { copiou.value = false }, 2000)
+  } else {
+    erro.value = 'Erro ao copiar o código.'
   }
 }
 

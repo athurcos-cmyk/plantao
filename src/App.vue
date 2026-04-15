@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { watch, computed, onMounted, ref } from 'vue'
+import { watch, computed, onMounted, onUnmounted, ref, defineAsyncComponent } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth.js'
 import { useAnotacoesStore } from './stores/anotacoes.js'
@@ -102,11 +102,12 @@ import { useOrganizadorStore } from './stores/organizador.js'
 import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
-import { configurarPush, solicitarPermissaoNotificacao } from './composables/usePushNotificacoes.js'
 import { useChat } from './composables/useChat.js'
-import BotaoChat from './components/BotaoChat.vue'
-import ChatAssistente from './components/ChatAssistente.vue'
-import CalculadoraModal from './components/CalculadoraModal.vue'
+import { emitSyncState } from './utils/syncEvents.js'
+
+const BotaoChat = defineAsyncComponent(() => import('./components/BotaoChat.vue'))
+const ChatAssistente = defineAsyncComponent(() => import('./components/ChatAssistente.vue'))
+const CalculadoraModal = defineAsyncComponent(() => import('./components/CalculadoraModal.vue'))
 
 const { toastMsg, showToast } = useToast()
 const { isOnline } = useOnlineStatus()
@@ -122,10 +123,35 @@ const rotasSemFab = ['landing', 'login', 'pc']
 const mostrarFab  = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
+const LAST_SYNC_KEY_PREFIX = 'last_sync_'
+let syncRetryTimer = null
+let pushModulePromise = null
+
+async function configurarPushSobDemanda(syncCode) {
+  if (!syncCode) return
+  if (!pushModulePromise) {
+    pushModulePromise = import('./composables/usePushNotificacoes.js')
+  }
+  const { configurarPush } = await pushModulePromise
+  await configurarPush(syncCode)
+}
 
 const totalPendentes = computed(() =>
   (anotacoes.pendentes || 0) + (pacientes.pendentesCount || 0)
 )
+
+function persistirSyncOk() {
+  if (!auth.syncCode) return
+  const ts = Date.now()
+  try { localStorage.setItem(`${LAST_SYNC_KEY_PREFIX}${auth.syncCode}`, String(ts)) } catch {}
+  emitSyncState({
+    code: auth.syncCode,
+    source: 'app',
+    type: 'sync-ok',
+    lastSyncAt: ts,
+    totalPendencias: totalPendentes.value,
+  })
+}
 
 async function sincronizarTudo(avisarSemPendencia = false) {
   if (sincronizando.value) return
@@ -138,6 +164,7 @@ async function sincronizarTudo(avisarSemPendencia = false) {
       pacientes.sincronizarPendentes(),
     ])
     await organizador.sincronizarOrganizador()
+    persistirSyncOk()
 
     const total = (nAnot || 0) + (nPac || 0)
     if (total > 0) showToast(`${total} item${total === 1 ? '' : 'ns'} sincronizado${total === 1 ? '' : 's'} ✓`)
@@ -157,8 +184,7 @@ watch(
     if (logado) {
       anotacoes.iniciar()
       if (isOnline.value) sincronizarTudo(false)
-      configurarPush(auth.syncCode)
-      solicitarPermissaoNotificacao(auth.syncCode)
+      configurarPushSobDemanda(auth.syncCode).catch(() => {})
     } else {
       anotacoes.parar()
       pacientes.parar()
@@ -175,6 +201,26 @@ watch(isOnline, async (online) => {
     await sincronizarTudo(true)
   }
 })
+
+function limparRetrySync() {
+  if (!syncRetryTimer) return
+  clearTimeout(syncRetryTimer)
+  syncRetryTimer = null
+}
+
+function agendarRetrySync() {
+  limparRetrySync()
+  if (!isOnline.value || !auth.isLoggedIn || totalPendentes.value <= 0) return
+  const delay = document.hidden ? Math.max(SYNC_RETRY_MS * 3, 30_000) : SYNC_RETRY_MS
+  syncRetryTimer = setTimeout(async () => {
+    await sincronizarTudo(false)
+    agendarRetrySync()
+  }, delay)
+}
+
+watch([isOnline, () => auth.isLoggedIn, totalPendentes], () => {
+  agendarRetrySync()
+}, { immediate: true })
 
 // ─── PWA auto-update ───
 // registerSW retorna função updateSW() que força check + ativação do novo SW
@@ -274,13 +320,13 @@ async function instalarApp() {
 // Inicializa listener de autenticação do Firebase
 onMounted(async () => {
   await auth.initAuthListener()
+  document.addEventListener('visibilitychange', agendarRetrySync)
+  agendarRetrySync()
+})
 
-  // Retry contínuo de sync enquanto houver pendências e internet.
-  setInterval(() => {
-    if (isOnline.value && auth.isLoggedIn && totalPendentes.value > 0) {
-      sincronizarTudo(false)
-    }
-  }, SYNC_RETRY_MS)
+onUnmounted(() => {
+  limparRetrySync()
+  document.removeEventListener('visibilitychange', agendarRetrySync)
 })
 </script>
 

@@ -86,7 +86,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Erro interno do servidor.' })
   }
 
-  const { messages, syncCode } = req.body || {}
+  const { messages, summary, syncCode } = req.body || {}
   const authHeader = req.headers.authorization || ''
 
   if (!syncCode) {
@@ -120,11 +120,20 @@ export default async function handler(req, res) {
   }
 
   // Limita janela de contexto para controlar custo
-  const ultimasMensagens = messages.slice(-20)
+  const ultimasMensagens = messages.slice(-12)
+  const resumoAnterior = typeof summary === 'string'
+    ? summary.trim().slice(0, 1200)
+    : ''
 
   // Formato OpenAI-compatível (igual ao Groq usa)
   const groqMessages = [
     { role: 'system', content: SYSTEM_PROMPT },
+    ...(resumoAnterior
+      ? [{
+          role: 'system',
+          content: `Resumo curto das mensagens anteriores para preservar contexto:\n${resumoAnterior}`,
+        }]
+      : []),
     ...ultimasMensagens.map(m => ({
       role: m.role === 'assistant' ? 'assistant' : 'user',
       content: typeof m.content === 'string' ? m.content : '',

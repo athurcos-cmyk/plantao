@@ -8,6 +8,26 @@ const mensagens = ref([])
 const carregando = ref(false)
 const erro = ref('')
 let novaResposta = ref(false)
+const MAX_RECENT_MESSAGES = 10
+const MAX_SUMMARY_ITEMS = 6
+const MAX_SUMMARY_CHARS = 140
+
+function resumirHistorico(historico) {
+  if (historico.length <= MAX_RECENT_MESSAGES) return ''
+
+  return historico
+    .slice(0, -MAX_RECENT_MESSAGES)
+    .slice(-MAX_SUMMARY_ITEMS)
+    .map((msg) => {
+      const ator = msg.role === 'assistant' ? 'Clara' : 'Usuário'
+      const texto = String(msg.content || '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, MAX_SUMMARY_CHARS)
+      return `${ator}: ${texto}`
+    })
+    .join('\n')
+}
 
 export function useChat() {
   const { isOnline } = useOnlineStatus()
@@ -46,6 +66,8 @@ export function useChat() {
       const historico = mensagens.value
         .filter(m => m.role === 'user' || m.role === 'assistant')
         .map(m => ({ role: m.role, content: m.content }))
+      const summary = resumirHistorico(historico)
+      const recentes = historico.slice(-MAX_RECENT_MESSAGES)
 
       // Pega token Firebase Auth para autenticar no servidor
       let authToken = ''
@@ -62,7 +84,8 @@ export function useChat() {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          messages: historico,
+          messages: recentes,
+          summary,
           syncCode: auth.syncCode,
         }),
       })

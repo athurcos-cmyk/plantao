@@ -61,7 +61,7 @@
         {{ store.anotacoes.length === 0 ? 'Nenhuma anotação salva ainda.' : 'Nenhuma anotação encontrada.' }}
       </p>
 
-      <div v-for="anot in anotacoesFiltradas" :key="anot._key" class="anot-card">
+      <div v-for="anot in anotacoesVisiveis" :key="anot._key" class="anot-card">
         <div class="anot-header">
           <span class="anot-tipo">{{ labelTipo(anot.tipo) }}</span>
           <span class="anot-data">{{ formatData(anot.timestamp) }}</span>
@@ -112,6 +112,15 @@
           </button>
         </div>
       </div>
+
+      <button
+        v-if="anotacoesVisiveis.length < anotacoesFiltradas.length"
+        class="btn-acao btn-acao-mais"
+        style="width:100%;justify-content:center;margin-top:4px"
+        @click="visiveisCount += 40"
+      >
+        Mostrar mais
+      </button>
     </main>
 
     <div class="toast-feedback" :class="{ visivel: feedback }">{{ feedback }}</div>
@@ -143,12 +152,13 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { useAuthStore } from '../stores/auth.js'
 import { usePacientesStore } from '../stores/pacientes.js'
 import HelpModal from '../components/HelpModal.vue'
+import { useCopia } from '../composables/useCopia.js'
 
 const router = useRouter()
 const store  = useAnotacoesStore()
@@ -182,6 +192,8 @@ const confirmandoLimpar = ref(false)
 const feedback    = ref('')
 const editando    = ref(null)
 const editForm    = reactive({ nome: '', leito: '' })
+const visiveisCount = ref(40)
+const { copiar: copiarTexto } = useCopia()
 
 const tiposFiltro = [
   { v: 'todos',    l: 'Todos'         },
@@ -240,6 +252,15 @@ const anotacoesFiltradas = computed(() => {
   return lista
 })
 
+const anotacoesVisiveis = computed(() =>
+  anotacoesFiltradas.value.slice(0, visiveisCount.value)
+)
+
+watch(
+  [() => filtro.busca, () => filtro.tipo, () => store.anotacoes.length],
+  () => { visiveisCount.value = 40 }
+)
+
 function labelTipo(tipo)  { return tipoLabels[tipo] || tipo }
 function formatData(ts)   {
   return new Date(ts).toLocaleString('pt-BR', {
@@ -247,10 +268,9 @@ function formatData(ts)   {
   })
 }
 
-function copiar(texto) {
-  navigator.clipboard.writeText(texto)
-    .then(() => mostrarFeedback('Copiado!'))
-    .catch(() => mostrarFeedback('Erro ao copiar'))
+async function copiar(texto) {
+  const ok = await copiarTexto(texto)
+  mostrarFeedback(ok ? 'Copiado!' : 'Erro ao copiar')
 }
 
 function compartilhar(texto) {

@@ -170,6 +170,7 @@ import { db } from '../firebase.js'
 import { ref as dbRef, push, remove } from 'firebase/database'
 import HelpModal from '../components/HelpModal.vue'
 import TourDashboard from '../components/TourDashboard.vue'
+import { subscribeSyncState } from '../utils/syncEvents.js'
 
 const router   = useRouter()
 const pcDismissed = ref(localStorage.getItem('pc_banner_dismissed') === '1')
@@ -231,7 +232,7 @@ const pendAnotacoes = ref(0)
 const pendPacientes = ref(0)
 const pendModelos = ref(0)
 const pendOrganizador = ref(0)
-let painelTimer = null
+let pararSyncEvents = null
 
 const _queueAnotKey = code => `pendentes_${code}`
 const _queuePacKey = code => `pac_queue_${code}`
@@ -351,7 +352,10 @@ async function sincronizarAgora() {
 onMounted(() => {
   orgStore.iniciar()
   atualizarPainelSync()
-  painelTimer = setInterval(atualizarPainelSync, 2500)
+  pararSyncEvents = subscribeSyncState((event) => {
+    if (event?.code && event.code !== auth.syncCode) return
+    atualizarPainelSync()
+  })
   window.addEventListener('online', atualizarPainelSync)
   window.addEventListener('focus', atualizarPainelSync)
   // Pulso: verificar cadência com delay para não sobrepor carregamento
@@ -359,8 +363,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (painelTimer) clearInterval(painelTimer)
-  painelTimer = null
+  pararSyncEvents?.()
+  pararSyncEvents = null
   window.removeEventListener('online', atualizarPainelSync)
   window.removeEventListener('focus', atualizarPainelSync)
 })

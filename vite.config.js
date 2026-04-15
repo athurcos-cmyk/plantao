@@ -8,6 +8,48 @@ export default defineConfig({
     environment: 'node',
     globals: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+
+          if (id.includes('firebase/messaging') || id.includes('/@firebase/messaging')) {
+            return 'firebase-messaging'
+          }
+
+          if (id.includes('firebase/auth') || id.includes('/@firebase/auth')) {
+            return 'firebase-auth'
+          }
+
+          if (id.includes('firebase/database') || id.includes('/@firebase/database')) {
+            return 'firebase-db'
+          }
+
+          if (
+            id.includes('firebase/app') ||
+            id.includes('/@firebase/app') ||
+            id.includes('/@firebase/component') ||
+            id.includes('/@firebase/util') ||
+            id.includes('/idb/')
+          ) {
+            return 'firebase-core'
+          }
+
+          if (
+            id.includes('/node_modules/vue/') ||
+            id.includes('/node_modules/@vue/')
+          ) {
+            return 'vue-core'
+          }
+
+          if (id.includes('/node_modules/vue-router/')) return 'vue-router'
+          if (id.includes('/node_modules/pinia/')) return 'pinia'
+          if (id.includes('/node_modules/canvas-confetti/')) return 'ui-effects'
+        },
+      },
+    },
+  },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },

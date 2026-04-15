@@ -9,7 +9,6 @@
  */
 
 import { ref as dbRef, set, remove, get } from 'firebase/database'
-import { getMessaging, getToken } from 'firebase/messaging'
 import { app, db } from '../firebase.js'
 
 // ── Config FCM ────────────────────────────────────────────────────────────────
@@ -19,6 +18,7 @@ const TOKEN_REFRESH_MS = 12 * 60 * 60 * 1000 // 12h
 let _syncCode = null
 let _pushAtivo = false
 let _messaging = null
+let _messagingApiPromise = null
 let _lastTokenRefresh = 0
 
 // Device ID persistente por dispositivo
@@ -35,6 +35,7 @@ export function pushAtivo() { return _pushAtivo }
 
 // ── localStorage ────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'plantao_notifs_v2'
+let _safetyTimer = null
 
 function _tagKey(tag = '') {
   const safe = encodeURIComponent(String(tag || '')).replace(/\./g, '%2E')
@@ -45,19 +46,17 @@ function _getAgendadas() {
 }
 function _salvar(lista) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(lista))
+  _agendarSafetyNet()
 }
 
 // ── Mostrar notificação (app aberto) ───────────────────────────────────────────
 async function _mostrarNotificacao(body, tag) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
+  if (!('serviceWorker' in navigator)) return
   const opts = { body, icon: '/icons/icon-192.png', tag, renotify: true }
   try {
-    if ('serviceWorker' in navigator) {
-      const reg = await navigator.serviceWorker.ready
-      await reg.showNotification('⏰ Plantão', opts)
-    } else {
-      new Notification('⏰ Plantão', opts)
-    }
+    const reg = await navigator.serviceWorker.ready
+    await reg.showNotification('⏰ Plantão', opts)
   } catch (_) {}
 }
 
@@ -120,8 +119,16 @@ document.addEventListener('visibilitychange', () => {
   }
 })
 
-// Safety net: verifica a cada 60s
-setInterval(() => {
+function _agendarSafetyNet() {
+  if (_safetyTimer) {
+    clearTimeout(_safetyTimer)
+    _safetyTimer = null
+  }
+
+  if (!('Notification' in window) || Notification.permission !== 'granted') return
+  if (_getAgendadas().length === 0) return
+
+  _safetyTimer = setTimeout(() => {
   if (!('Notification' in window) || Notification.permission !== 'granted') return
   const agora = Date.now()
   const lista = _getAgendadas()
@@ -136,14 +143,27 @@ setInterval(() => {
     }
   }
   _salvar(restantes)
-}, 60_000)
+  }, 60_000)
+}
+
+_agendarSafetyNet()
 
 // ── FCM: registro de token ─────────────────────────────────────────────────────
-function _getMessagingInstance() {
-  if (!_messaging) {
-    try { _messaging = getMessaging(app) } catch (_) { return null }
+function _carregarMessagingApi() {
+  if (!_messagingApiPromise) _messagingApiPromise = import('firebase/messaging')
+  return _messagingApiPromise
+}
+
+async function _getMessagingInstance() {
+  if (_messaging) return _messaging
+
+  try {
+    const messagingApi = await _carregarMessagingApi()
+    _messaging = messagingApi.getMessaging(app)
+    return _messaging
+  } catch (_) {
+    return null
   }
-  return _messaging
 }
 
 async function _registrarFCM(syncCode) {
@@ -153,12 +173,15 @@ async function _registrarFCM(syncCode) {
   }
   if (!('serviceWorker' in navigator)) return
 
-  const messaging = _getMessagingInstance()
+  const messagingApi = await _carregarMessagingApi().catch(() => null)
+  if (!messagingApi) return
+
+  const messaging = await _getMessagingInstance()
   if (!messaging) return
 
   try {
     const reg = await navigator.serviceWorker.ready
-    const token = await getToken(messaging, {
+    const token = await messagingApi.getToken(messaging, {
       vapidKey: VAPID_KEY,
       serviceWorkerRegistration: reg,
     })

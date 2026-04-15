@@ -49,7 +49,7 @@
 
         <div v-if="usuariosFiltrados.length === 0" class="hint-vazio">Nenhum usuário encontrado.</div>
         <div v-else class="usuarios-lista">
-          <div v-for="u in usuariosFiltrados" :key="u.uid || u.syncCode" class="usuario-card">
+          <div v-for="u in usuariosVisiveis" :key="u.uid || u.syncCode" class="usuario-card">
             <div class="usuario-info">
               <div class="usuario-top">
                 <p class="usuario-nome">{{ u.nome }}</p>
@@ -78,6 +78,12 @@
             </div>
           </div>
         </div>
+        <button
+          v-if="usuariosVisiveis.length < usuariosFiltrados.length"
+          class="btn-lido"
+          style="width:100%;justify-content:center"
+          @click="usuariosVisiveisCount += 30"
+        >Mostrar mais usuários</button>
         <p v-if="erroExcluir" class="hint-erro">❌ {{ erroExcluir }}</p>
       </template>
 
@@ -85,7 +91,7 @@
       <template v-if="tabAtiva === 'feedbacks' && dadosAdmin">
         <div v-if="dadosAdmin.feedbacks.length === 0" class="hint-vazio">Nenhum feedback ainda.</div>
         <div v-else class="feedbacks-lista">
-          <div v-for="fb in dadosAdmin.feedbacks" :key="fb.id" class="feedback-card" :class="{ 'fb-lido': feedbacksLidos.has(fb.id) }">
+          <div v-for="fb in feedbacksVisiveis" :key="fb.id" class="feedback-card" :class="{ 'fb-lido': feedbacksLidos.has(fb.id) }">
             <div class="feedback-header">
               <span class="feedback-nome">{{ fb.nomeUsuario }}</span>
               <span class="feedback-data">{{ formatData(fb.timestamp) }}</span>
@@ -101,6 +107,12 @@
             </div>
           </div>
         </div>
+        <button
+          v-if="feedbacksVisiveis.length < dadosAdmin.feedbacks.length"
+          class="btn-lido"
+          style="width:100%;justify-content:center"
+          @click="feedbacksVisiveisCount += 20"
+        >Mostrar mais feedbacks</button>
       </template>
 
       <!-- ══ TAB: MÉTRICAS ══ -->
@@ -183,7 +195,7 @@
         <div class="secao-titulo" style="margin-top:20px">Histórico de Broadcasts</div>
         <div v-if="dadosAdmin.broadcasts.length === 0" class="hint-vazio">Nenhum broadcast enviado ainda.</div>
         <div v-else class="broadcasts-lista">
-          <div v-for="b in dadosAdmin.broadcasts" :key="b.id" class="broadcast-item">
+          <div v-for="b in broadcastsVisiveis" :key="b.id" class="broadcast-item">
             <div class="broadcast-header">
               <span class="broadcast-titulo">{{ b.titulo || '(sem título)' }}</span>
               <span class="broadcast-data">{{ formatDataHora(b.ts) }}</span>
@@ -196,6 +208,12 @@
             </div>
           </div>
         </div>
+        <button
+          v-if="broadcastsVisiveis.length < dadosAdmin.broadcasts.length"
+          class="btn-lido"
+          style="width:100%;justify-content:center"
+          @click="broadcastsVisiveisCount += 15"
+        >Mostrar mais broadcasts</button>
       </template>
 
     </div>
@@ -272,7 +290,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted } from 'vue'
+import { reactive, ref, computed, onMounted, watch } from 'vue'
 import { getAuth } from 'firebase/auth'
 import { db } from '../firebase.js'
 import { ref as dbRef, get } from 'firebase/database'
@@ -325,6 +343,22 @@ const usuariosFiltrados = computed(() => {
   )
 })
 
+const usuariosVisiveis = computed(() =>
+  usuariosFiltrados.value.slice(0, usuariosVisiveisCount.value)
+)
+
+const feedbacksVisiveis = computed(() =>
+  dadosAdmin.value
+    ? dadosAdmin.value.feedbacks.slice(0, feedbacksVisiveisCount.value)
+    : []
+)
+
+const broadcastsVisiveis = computed(() =>
+  dadosAdmin.value
+    ? dadosAdmin.value.broadcasts.slice(0, broadcastsVisiveisCount.value)
+    : []
+)
+
 // ── Cron atrasado (> 5 min sem rodar) ──
 const cronAtrasado = computed(() => {
   const cs = dadosAdmin.value?.cronStatus
@@ -338,6 +372,9 @@ const emailForm = reactive({ assunto: '', mensagem: '' })
 const enviandoEmail = ref(false)
 const erroEmail = ref('')
 const sucessoEmail = ref(false)
+const usuariosVisiveisCount = ref(30)
+const feedbacksVisiveisCount = ref(20)
+const broadcastsVisiveisCount = ref(15)
 
 function abrirModalEmail(u) {
   modalEmail.value = u
@@ -384,6 +421,12 @@ onMounted(async () => {
     totalUsuarios.value = null
   }
   await carregarDadosAdmin()
+})
+
+watch([busca, tabAtiva, dadosAdmin], () => {
+  usuariosVisiveisCount.value = 30
+  feedbacksVisiveisCount.value = 20
+  broadcastsVisiveisCount.value = 15
 })
 
 async function getIdToken() {

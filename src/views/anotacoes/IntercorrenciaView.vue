@@ -116,10 +116,6 @@
           </button>
         </div>
       </div>
-      <p class="modelos-debug">
-        Carregados: {{ modelos.length }} | Banco: {{ modelosBancoCount }}
-      </p>
-
       <div v-if="modelos.length > 0" class="modelos-chips-row">
         <button
           v-for="m in modelos"
@@ -256,6 +252,7 @@ import { useAuthStore } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useOnlineStatus } from '../../composables/useOnlineStatus.js'
 import { useCopia } from '../../composables/useCopia.js'
+import { emitSyncState } from '../../utils/syncEvents.js'
 
 const router          = useRouter()
 const anotacoesStore  = useAnotacoesStore()
@@ -275,7 +272,6 @@ const salvandoModelo    = ref(false)
 const modalModelos      = ref(false)
 const modalNovoModelo   = ref(false)
 const sincronizandoModelos = ref(false)
-const modelosBancoCount = ref(0)
 
 // ── Modelos ──
 const modelos             = ref([])
@@ -284,7 +280,7 @@ const novoModeloTitulo    = ref('')
 const novoModeloTexto     = ref('')
 const novoModeloTituloInput = ref(null)
 let modelosOff = null
-let syncModelosTimer = null
+let syncModelosRetryTimer = null
 
 // ── Notas ──
 const notas     = ref([])
@@ -305,9 +301,7 @@ onMounted(() => {
   iniciarModelos()
   ajustarAlturaNota()
   if (navigator.onLine) sincronizarModelosPendentes()
-  syncModelosTimer = setInterval(() => {
-    if (navigator.onLine) sincronizarModelosPendentes()
-  }, 15000)
+  agendarSyncModelos()
 })
 
 onUnmounted(() => {
@@ -315,9 +309,9 @@ onUnmounted(() => {
     modelosOff()   // unsubscribe corretamente (retorno do onValue)
     modelosOff = null
   }
-  if (syncModelosTimer) {
-    clearInterval(syncModelosTimer)
-    syncModelosTimer = null
+  if (syncModelosRetryTimer) {
+    clearTimeout(syncModelosRetryTimer)
+    syncModelosRetryTimer = null
   }
 })
 
@@ -328,7 +322,12 @@ watch(
   }
 )
 watch(isOnline, (online) => {
-  if (online) sincronizarModelosPendentes()
+  if (online) {
+    sincronizarModelosPendentes()
+  } else if (syncModelosRetryTimer) {
+    clearTimeout(syncModelosRetryTimer)
+    syncModelosRetryTimer = null
+  }
 })
 
 // ── Helpers ──
@@ -411,6 +410,13 @@ function _lerQueueModelos(code) {
 
 function _salvarQueueModelos(code, fila) {
   try { localStorage.setItem(_queueKeyModelos(code), JSON.stringify(fila || [])) } catch {}
+  emitSyncState({
+    code,
+    source: 'modelos',
+    type: 'queue-updated',
+    pendingModelos: Array.isArray(fila) ? fila.length : 0,
+  })
+  agendarSyncModelos()
 }
 
 function _enfileirarModelo(code, op) {
@@ -478,7 +484,24 @@ async function sincronizarModelosPendentes() {
   _salvarQueueModelos(code, restantes)
   _salvarCacheModelos(code, modelos.value)
   sincronizandoModelos.value = false
+  agendarSyncModelos()
   return feitos
+}
+
+function agendarSyncModelos() {
+  if (syncModelosRetryTimer) clearTimeout(syncModelosRetryTimer)
+  syncModelosRetryTimer = null
+
+  const code = _code()
+  if (!code || !navigator.onLine || sincronizandoModelos.value) return
+  if (_lerQueueModelos(code).length === 0) return
+
+  const delay = document.hidden ? 30000 : 15000
+  syncModelosRetryTimer = setTimeout(() => {
+    sincronizarModelosPendentes().catch(() => {
+      agendarSyncModelos()
+    })
+  }, delay)
 }
 
 async function iniciarModelos() {
@@ -508,7 +531,6 @@ async function iniciarModelos() {
     const snap = await get(path)
     const lista = []
     snap.forEach(child => {lista.push({ ...child.val(), _key: child.key })})
-    modelosBancoCount.value = lista.length
     const normalizada = _normalizarModelos(lista)
     modelos.value = normalizada
     carregandoModelos.value = false
@@ -521,7 +543,6 @@ async function iniciarModelos() {
   modelosOff = onValue(path, (snap) => {
     const lista = []
     snap.forEach(child => {lista.push({ ...child.val(), _key: child.key })})
-    modelosBancoCount.value = lista.length
     const normalizada = _normalizarModelos(lista)
     const pendLocais = modelos.value.filter(m => String(m._key || '').startsWith('local-'))
     const manterPend = pendLocais.filter(p => !normalizada.some(r => r._key === p._key))
