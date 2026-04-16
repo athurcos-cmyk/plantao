@@ -1,6 +1,6 @@
 # Memory Index — Plantão (Codex)
 
-> Última atualização: 2026-04-15
+> Última atualização: 2026-04-16
 
 ## Arquivos locais do Codex
 
@@ -15,7 +15,15 @@ Arquivos preservados como referência, sem edição por este fluxo:
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
 
-## Última sessão (2026-04-15)
+## Última sessão (2026-04-16)
+
+- ✅ Corrigido bootstrap inicial preso em rede fraca: auth agora sobe com cache local antes da resposta do Firebase
+- ✅ Novo util `src/utils/authSessionCache.js` centraliza persistência e limpeza da sessão local
+- ✅ `auth.js` ganhou timeout de fallback para destravar a UI mesmo quando o `onAuthStateChanged` demora
+- ✅ Testes adicionados para sessão local e limpeza de cache
+- ✅ Push para `main` concluído com a correção offline
+
+## Sessão anterior (2026-04-15)
 
 - ✅ Estrutura `.codex/memory/` criada para o Plantão
 - ✅ `CODEX.md` refeito com ordem fixa de leitura e atualização

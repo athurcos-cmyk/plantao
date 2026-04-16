@@ -37,6 +37,20 @@
 - `usePushNotificacoes.js` agora faz lazy-load de `firebase/messaging`
 - Resultado confirmado em build local: chunk principal caiu de cerca de 571 kB para cerca de 39 kB, sem warnings de chunk grande
 
+## Sessão 2026-04-16
+
+### Bootstrap offline e rede fraca
+
+- Corrigido travamento inicial em rede fraca que podia deixar o app preso na tela azul antes de renderizar a rota
+- `auth.js` agora restaura sessão local em cache logo no startup com `syncCode`, `uid`, `email` e `userName`
+- Inicialização do auth ganhou timeout de fallback para não bloquear a UI indefinidamente enquanto o Firebase responde
+- Sessão local foi centralizada em `src/utils/authSessionCache.js`
+- Adicionados testes para cache de sessão e limpeza do estado local
+
+### Observação
+
+- O app continua precisando ter sido carregado online pelo menos uma vez para funcionar totalmente offline, porque os assets do PWA precisam estar em cache
+
 ## Sessão 2026-04-01
 
 ### Bugs corrigidos

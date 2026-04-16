@@ -82,7 +82,8 @@ Estado atual do código:
 - Login Google com `signInWithPopup()` e fallback `signInWithRedirect()`
 - Login rápido por código via `/api/login-by-code`, que retorna `customToken`
 - `syncCode` continua existindo como identificador do usuário no Realtime DB
-- Sessão persistida pelo Firebase Auth, com `localStorage` só como cache auxiliar de `sync_code` e `user_name`
+- Sessão persistida pelo Firebase Auth, com `localStorage` como cache auxiliar de `sync_code`, `user_name`, `user_email` e `auth_uid`
+- Bootstrap do app depende desse cache auxiliar para destravar a UI cedo em rede fraca enquanto o Firebase Auth ainda responde
 
 ## Firebase — estrutura principal
 
@@ -119,6 +120,7 @@ Estado atual do código:
 - Push FCM precisa ser `data-only`
 - Não usar `new Notification()` para lembrar agendamento em Android
 - `useDispositivos.js` compartilha o mesmo array com views diferentes; limpar com `splice(0)`, nunca substituindo a referência
+- Offline total ainda depende de os assets do PWA já terem sido cacheados em uma carga online anterior
 - `CRON_SECRET` já apareceu em histórico público e precisa de rotação no ambiente, sem versionar valor em arquivo
 
 ## Padrão do texto gerado

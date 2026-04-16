@@ -2,7 +2,7 @@
 name: Plantão - Visão geral do projeto (Codex)
 description: Stack, estrutura de pastas, rotas, stores, composables e integrações
 type: project
-updated: 2026-04-15
+updated: 2026-04-16
 ---
 
 ## O que é
@@ -64,7 +64,8 @@ O objetivo é gerar textos padronizados, rápidos de copiar e utilizáveis mesmo
 - `syncCode` é gerado para mapear o usuário no Realtime DB
 - `uid_map/{uid}` resolve o `syncCode`
 - `owners/{syncCode}/{uid}` sustenta o isolamento por regras
-- `localStorage` é usado como cache auxiliar de `sync_code` e `user_name`
+- `localStorage` é usado como cache auxiliar de `sync_code`, `user_name`, `user_email` e `auth_uid`
+- `src/utils/authSessionCache.js` concentra a leitura e limpeza desse cache para permitir bootstrap rápido em rede fraca
 
 ## Banco de dados
 
@@ -117,3 +118,4 @@ Estruturas mais relevantes:
 - Se a tarefa envolver auth, lembrar que parte da documentação antiga ainda cita fluxo legado e precisa ser checada contra o código real
 - `src/App.vue` foi aliviado com async components para chat/calculadora e importa push sob demanda; evitar reverter isso sem necessidade
 - `src/composables/usePushNotificacoes.js` carrega `firebase/messaging` dinamicamente; se mexer em push, preservar esse lazy-load
+- `src/stores/auth.js` depende do cache local para liberar a UI cedo; se mexer no bootstrap, preservar a restauração rápida e o timeout de fallback
