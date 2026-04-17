@@ -29,7 +29,6 @@
 
       <!-- ── Formulário ── -->
       <div v-if="!gerado">
-
         <div v-if="pacientesStore.pacientes.length > 0" style="margin-bottom:16px">
           <label class="label-small">Paciente registrado</label>
           <div class="chips-scroll" style="margin-top:6px">
@@ -43,66 +42,76 @@
           </div>
         </div>
 
-        <!-- Horário -->
-        <div class="campo">
-          <label>Horário <span class="obrigatorio">*</span></label>
-          <input  data-testid="auto-input-anotacaomedicacaoview-1" type="time" v-model="form.horario">
-        </div>
-
-        <!-- Cuidados -->
-        <div class="campo">
-          <label>Identificação do paciente</label>
-          <label class="checkbox-label" :class="{ checked: form.conferencia === 'com' }">
-            <input  data-testid="auto-input-anotacaomedicacaoview-2" type="radio"
-              :checked="form.conferencia === 'com'"
-              @click="form.conferencia = form.conferencia === 'com' ? '' : 'com'">
-            <span>Conferência de identificação com paciente</span>
-          </label>
-          <label class="checkbox-label" style="margin-top:8px" :class="{ checked: form.conferencia === 'do' }">
-            <input  data-testid="auto-input-anotacaomedicacaoview-3" type="radio"
-              :checked="form.conferencia === 'do'"
-              @click="form.conferencia = form.conferencia === 'do' ? '' : 'do'">
-            <span>Conferência de identificação do paciente</span>
-          </label>
-        </div>
-
-        <!-- Orientação -->
-        <div class="campo">
-          <label class="checkbox-label" :class="{ checked: form.orienta }">
-            <input  data-testid="auto-input-anotacaomedicacaoview-4" type="checkbox" v-model="form.orienta">
-            <span>Oriento paciente sobre a medicação</span>
-          </label>
-        </div>
-
-        <!-- Conforme -->
-        <div class="campo">
-          <label>Conforme</label>
-          <label class="checkbox-label" :class="{ checked: form.conformeTipo === 'prescricao' }">
-            <input  data-testid="auto-input-anotacaomedicacaoview-5" type="radio"
-              :checked="form.conformeTipo === 'prescricao'"
-              @click="form.conformeTipo = form.conformeTipo === 'prescricao' ? '' : 'prescricao'">
-            <span>Conforme prescrição médica</span>
-          </label>
-          <div style="margin-top:8px">
-            <label class="checkbox-label" :class="{ checked: form.conformeTipo === 'orientacao' }">
-              <input  data-testid="auto-input-anotacaomedicacaoview-6" type="radio"
-                :checked="form.conformeTipo === 'orientacao'"
-                @click="form.conformeTipo = form.conformeTipo === 'orientacao' ? '' : 'orientacao'">
-              <span>Conforme orientação do</span>
-            </label>
-            <input
-               data-testid="auto-input-anotacaomedicacaoview-7" v-if="form.conformeTipo === 'orientacao'"
-              type="text"
-              class="campo-inline"
-              v-model="form.conformeNome"
-              placeholder="Nome do profissional"
-              style="margin-top:8px">
+        <section class="med-card">
+          <div class="med-section-head">
+            <span class="med-section-kicker">Preparo</span>
+            <h2 class="med-section-title">Checagem antes da administração</h2>
+            <p class="med-section-sub">Marque só o que realmente foi feito neste horário.</p>
           </div>
-        </div>
 
-        <!-- Medicamentos -->
-        <div class="campo">
-          <label>Medicamentos </label>
+          <div class="campo">
+            <label>Horário <span class="obrigatorio">*</span></label>
+            <input  data-testid="auto-input-anotacaomedicacaoview-1" type="time" v-model="form.horario">
+          </div>
+
+          <div class="campo">
+            <label>Identificação do paciente</label>
+            <label class="checkbox-label med-choice" :class="{ checked: form.conferencia === 'com' }">
+              <input  data-testid="auto-input-anotacaomedicacaoview-2" type="radio"
+                :checked="form.conferencia === 'com'"
+                @click="form.conferencia = form.conferencia === 'com' ? '' : 'com'">
+              <span>Conferência de identificação com paciente</span>
+            </label>
+            <label class="checkbox-label med-choice med-choice-spaced" :class="{ checked: form.conferencia === 'do' }">
+              <input  data-testid="auto-input-anotacaomedicacaoview-3" type="radio"
+                :checked="form.conferencia === 'do'"
+                @click="form.conferencia = form.conferencia === 'do' ? '' : 'do'">
+              <span>Conferência de identificação do paciente</span>
+            </label>
+          </div>
+
+          <div class="campo">
+            <label class="checkbox-label med-choice" :class="{ checked: form.orienta }">
+              <input  data-testid="auto-input-anotacaomedicacaoview-4" type="checkbox" v-model="form.orienta">
+              <span>Oriento paciente sobre a medicação</span>
+            </label>
+          </div>
+
+          <div class="campo" style="margin-bottom:0">
+            <label>Conforme</label>
+            <label class="checkbox-label med-choice" :class="{ checked: form.conformeTipo === 'prescricao' }">
+              <input  data-testid="auto-input-anotacaomedicacaoview-5" type="radio"
+                :checked="form.conformeTipo === 'prescricao'"
+                @click="form.conformeTipo = form.conformeTipo === 'prescricao' ? '' : 'prescricao'">
+              <span>Conforme prescrição médica</span>
+            </label>
+            <div class="med-choice-spaced">
+              <label class="checkbox-label med-choice" :class="{ checked: form.conformeTipo === 'orientacao' }">
+                <input  data-testid="auto-input-anotacaomedicacaoview-6" type="radio"
+                  :checked="form.conformeTipo === 'orientacao'"
+                  @click="form.conformeTipo = form.conformeTipo === 'orientacao' ? '' : 'orientacao'">
+                <span>Conforme orientação do</span>
+              </label>
+              <input
+                 data-testid="auto-input-anotacaomedicacaoview-7" v-if="form.conformeTipo === 'orientacao'"
+                type="text"
+                class="campo-inline"
+                v-model="form.conformeNome"
+                placeholder="Nome do profissional"
+                style="margin-top:8px">
+            </div>
+          </div>
+        </section>
+
+        <section class="med-card med-card-medicamentos">
+          <div class="med-section-head med-section-head-row">
+            <div>
+              <span class="med-section-kicker">Administração</span>
+              <h2 class="med-section-title">Medicamentos do horário</h2>
+            </div>
+            <span class="med-count">{{ form.medicamentos.length }}</span>
+          </div>
+          <p class="med-section-sub med-section-sub-tight">Adicione um ou mais medicamentos antes de gerar o texto final.</p>
 
           <p v-if="form.medicamentos.length === 0" class="lista-vazia">
             Nenhum medicamento adicionado
@@ -125,7 +134,7 @@
           <button  data-testid="auto-btn-anotacaomedicacaoview-7" class="btn-add-med" @click="abrirModal()">
             + Adicionar medicamento
           </button>
-        </div>
+        </section>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
@@ -1020,6 +1029,84 @@ function novaAnotacao() {
   border-radius: 8px;
 }
 .btn-home-logo:active { background: var(--bg-hover); }
+
+.med-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.med-card-medicamentos {
+  border-color: rgba(30, 136, 229, 0.24);
+  background: linear-gradient(180deg, rgba(30, 136, 229, 0.07), rgba(17, 29, 50, 1));
+}
+
+.med-section-head {
+  margin-bottom: 14px;
+}
+
+.med-section-head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.med-section-kicker {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.med-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.med-section-sub {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.med-section-sub-tight {
+  margin-bottom: 14px;
+}
+
+.med-count {
+  min-width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(30, 136, 229, 0.16);
+  border: 1px solid rgba(30, 136, 229, 0.28);
+  color: var(--blue);
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.med-choice {
+  background: rgba(10, 22, 40, 0.48);
+}
+
+.med-choice.checked {
+  background: rgba(30, 136, 229, 0.12);
+  color: var(--text);
+}
+
+.med-choice-spaced {
+  margin-top: 8px;
+}
 
 /* ── Lista de meds ── */
 .lista-vazia {

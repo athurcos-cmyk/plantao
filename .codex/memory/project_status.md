@@ -57,6 +57,8 @@ Design doc estratégico mais recente conhecido:
 - Build web agora usa code-splitting mais agressivo, com chunks separados para Vue, Router, Pinia e módulos do Firebase
 - Registro FCM e componentes auxiliares do shell foram movidos para carregamento sob demanda, reduzindo o custo do bootstrap
 - Bootstrap inicial de autenticação agora sobe com cache local de sessão e timeout de fallback, reduzindo risco de tela azul em rede fraca
+- Dashboard mobile foi refinado para priorizar o começo do plantão, com CTA principal para `Anotação inicial`
+- Hierarquia visual de `Medicação` e das telas em etapas foi lapidada para reduzir competição entre ação principal e secundária
 
 ## Alertas operacionais
 
@@ -67,6 +69,7 @@ Design doc estratégico mais recente conhecido:
 - Offline real continua dependendo de o PWA já ter sido carregado online ao menos uma vez para cachear assets
 - `CRON_SECRET` precisa ser rotacionado no ambiente e no cron externo
 - `config/total_usuarios` depende do sync correto com `api/init-counter.js` se houver reset de base
+- Banners PWA ficaram menos invasivos no shell, mas continuam sendo um ponto de onboarding a observar quando houver feedback real de usuários novos
 
 ## Pendentes técnicos e de produto
 

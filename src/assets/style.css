@@ -251,6 +251,17 @@ body {
 }
 .btn-secondary:active { background: var(--border); }
 
+.btn-tertiary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+}
+.btn-tertiary:active {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-dim);
+  border-color: var(--text-muted);
+}
+
 .btn-danger { background: var(--danger); color: #fff; }
 .btn-ghost {
   background: transparent;

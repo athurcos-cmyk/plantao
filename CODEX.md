@@ -123,6 +123,12 @@ Estado atual do código:
 - Offline total ainda depende de os assets do PWA já terem sido cacheados em uma carga online anterior
 - `CRON_SECRET` já apareceu em histórico público e precisa de rotação no ambiente, sem versionar valor em arquivo
 
+### Notas de UI da sessão 2026-04-16
+
+- `src/views/DashboardView.vue` foi reorganizado para foco mobile-first, com CTA principal para `Anotação inicial` e sincronização compacta
+- `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje trabalha com duas zonas visuais principais (`preparo` e `medicamentos do horário`); evitar voltar para um formulário visualmente chapado
+- `src/App.vue` usa banner PWA em formato de card flutuante menor; preservar essa abordagem menos invasiva se mexer no shell
+
 ## Padrão do texto gerado
 
 ```text

@@ -22,6 +22,10 @@ Arquivos preservados como referência, sem edição por este fluxo:
 - ✅ `auth.js` ganhou timeout de fallback para destravar a UI mesmo quando o `onAuthStateChanged` demora
 - ✅ Testes adicionados para sessão local e limpeza de cache
 - ✅ Push para `main` concluído com a correção offline
+- ✅ Dashboard mobile foi simplificado com CTA principal para `Anotação inicial` e sincronização compacta
+- ✅ `Medicação` ganhou hierarquia visual melhor com blocos separados de preparo e administração
+- ✅ `Limpar` foi rebaixado visualmente nas telas em etapas (`Anotação Inicial` e `Passagem de Plantão`)
+- ✅ Banners PWA do shell ficaram menos invasivos na primeira experiência
 
 ## Sessão anterior (2026-04-15)
 

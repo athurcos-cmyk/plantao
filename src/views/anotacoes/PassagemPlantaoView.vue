@@ -76,7 +76,7 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 20px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
@@ -205,7 +205,7 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary" @click="gerar">Gerar anotação</button>
         </div>
       </div>
@@ -560,6 +560,11 @@ function novaAnotacao() {
 
 .bloco-nav { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
 .bloco-nav .btn-primary { flex: 1; }
+.btn-limpar {
+  width: auto;
+  min-width: 96px;
+  padding: 12px 16px;
+}
 
 .rascunho-banner {
   background: var(--bg-card); border: 1px solid var(--blue);

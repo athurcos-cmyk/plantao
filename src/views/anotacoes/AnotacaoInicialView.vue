@@ -152,7 +152,7 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button  data-testid="auto-btn-anotacaoinicialview-5" class="btn btn-secondary" style="width:auto;padding:12px 20px" @click="limparBloco">Limpar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-5" class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button  data-testid="auto-btn-anotacaoinicialview-6" class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
@@ -257,7 +257,7 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button  data-testid="auto-btn-anotacaoinicialview-7" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
-          <button  data-testid="auto-btn-anotacaoinicialview-8" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-8" class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button  data-testid="auto-btn-anotacaoinicialview-9" class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
@@ -348,7 +348,7 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button  data-testid="auto-btn-anotacaoinicialview-16" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 3">← Voltar</button>
-          <button  data-testid="auto-btn-anotacaoinicialview-17" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-17" class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button  data-testid="auto-btn-anotacaoinicialview-18" class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
@@ -549,6 +549,11 @@ function selecionarPaciente(p) {
   align-items: center;
 }
 .bloco-nav .btn-primary { flex: 1 }
+.btn-limpar {
+  width: auto;
+  padding: 12px 16px;
+  min-width: 96px;
+}
 
 /* Input genérico fora de .campo */
 .campo-inline {

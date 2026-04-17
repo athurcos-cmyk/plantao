@@ -1,16 +1,11 @@
 <template>
   <div class="screen">
-    <header class="app-header">
-      <div style="width:34px"/>
+    <header class="app-header dashboard-header">
       <div class="header-logo">
         <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
         <span>Plantão</span>
       </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <button class="btn-feedback-topo" @click="abrirFeedback" title="Enviar feedback">💬</button>
-        <button class="btn-ajuda btn-lateral" @click="abrirJanelaLateral" title="Abrir ao lado do prontuário">⊞ Ao lado</button>
-        <button class="btn-ajuda" @click="tourRef?.abrirTour()" title="Ver tutorial">▶ Tutorial</button>
-        <button class="btn-ajuda" @click="helpAberto = true">? Ajuda</button>
+      <div class="header-actions">
         <button class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -25,30 +20,56 @@
       </div>
     </header>
 
-    <main class="container" style="padding-top:24px;padding-bottom:40px">
-      <div class="saudacao">
-        <p class="saudacao-hora">{{ saudacaoTexto }}</p>
-        <h2 v-if="auth.userName">{{ auth.userName }}</h2>
+    <main class="container dashboard-main">
+      <section class="hero-card">
+        <div class="saudacao">
+          <p class="saudacao-hora">{{ saudacaoTexto }}</p>
+          <h2 v-if="auth.userName">{{ auth.userName }}</h2>
+          <p class="saudacao-sub">Abra a anotação e registre isso sem perder tempo no corredor.</p>
+        </div>
+
+        <button class="hero-primary" @click="router.push({ name: 'anotacao-inicial' })">
+          <span class="hero-primary-icon">📋</span>
+          <span class="hero-primary-copy">
+            <strong>Começar com Anotação inicial</strong>
+            <span>Estado geral, dispositivos e fechamento do paciente.</span>
+          </span>
+          <span class="hero-primary-arrow">→</span>
+        </button>
+      </section>
+
+      <div class="quick-tools">
+        <button class="btn-ajuda quick-tool" @click="tourRef?.abrirTour()" title="Ver tutorial">▶ Tutorial</button>
+        <button class="btn-ajuda quick-tool" @click="helpAberto = true">? Ajuda</button>
+        <button class="btn-ajuda quick-tool" @click="abrirFeedback" title="Enviar feedback">💬 Feedback</button>
+        <button class="btn-ajuda btn-lateral quick-tool" @click="abrirJanelaLateral" title="Abrir ao lado do prontuário">⊾ Ao lado</button>
       </div>
 
       <section class="sync-card">
         <div class="sync-top">
-          <p class="sync-title">Sincronização</p>
+          <div class="sync-copy">
+            <p class="sync-title">Sincronização</p>
+            <span class="sync-status">
+              {{ totalPendencias > 0 ? `${totalPendencias} pendência${totalPendencias !== 1 ? 's' : ''}` : 'Tudo sincronizado' }}
+            </span>
+          </div>
           <span class="sync-last">{{ ultimoSyncLabel }}</span>
         </div>
-        <div class="sync-chips">
+
+        <div class="sync-row">
+          <button class="sync-link" @click="syncDetalhesAbertos = !syncDetalhesAbertos">
+            {{ syncDetalhesAbertos ? 'Ocultar detalhes' : 'Ver detalhes' }}
+          </button>
+          <button class="sync-btn" :disabled="sincronizandoAgora || !isOnline" @click="sincronizarAgora">
+            {{ sincronizandoAgora ? 'Sincronizando...' : (isOnline ? 'Tentar agora' : 'Sem internet') }}
+          </button>
+        </div>
+
+        <div v-if="syncDetalhesAbertos || totalPendencias > 0" class="sync-chips">
           <span class="sync-chip" :class="{ 'sync-chip-on': pendAnotacoes > 0 }">Anotações {{ pendAnotacoes }}</span>
           <span class="sync-chip" :class="{ 'sync-chip-on': pendPacientes > 0 }">Pacientes {{ pendPacientes }}</span>
           <span class="sync-chip" :class="{ 'sync-chip-on': pendModelos > 0 }">Modelos {{ pendModelos }}</span>
           <span class="sync-chip" :class="{ 'sync-chip-on': pendOrganizador > 0 }">Organizador {{ pendOrganizador }}</span>
-        </div>
-        <div class="sync-row">
-          <span class="sync-status">
-            {{ totalPendencias > 0 ? `${totalPendencias} pendência${totalPendencias !== 1 ? 's' : ''}` : 'Tudo sincronizado' }}
-          </span>
-          <button class="sync-btn" :disabled="sincronizandoAgora || !isOnline" @click="sincronizarAgora">
-            {{ sincronizandoAgora ? 'Sincronizando...' : (isOnline ? 'Tentar agora' : 'Sem internet') }}
-          </button>
         </div>
       </section>
 
@@ -60,14 +81,25 @@
         <button class="card-pc-fechar" @click="dispensarPc" title="Fechar">✕</button>
       </div>
 
-      <p class="secao-label">Nova anotação</p>
+      <div class="secao-head">
+        <p class="secao-label">Outras anotações</p>
+        <span class="secao-hint">Entradas rápidas do plantão</span>
+      </div>
 
       <div class="tipos-grid">
-        <button  data-testid="auto-btn-dashboardview-2" v-for="tipo in tipos" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
+        <button data-testid="auto-btn-dashboardview-2" v-for="tipo in tiposSecundarios" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
           <span class="tipo-icon">{{ tipo.icon }}</span>
-          <span class="tipo-nome">{{ tipo.nome }}</span>
+          <span class="tipo-texto">
+            <span class="tipo-nome">{{ tipo.nome }}</span>
+            <span class="tipo-desc">{{ tipo.desc }}</span>
+          </span>
           <span v-if="!tipo.rota" class="tipo-badge">em breve</span>
         </button>
+      </div>
+
+      <div class="secao-head secao-head-spaced">
+        <p class="secao-label">Atalhos do plantão</p>
+        <span class="secao-hint">Fluxos de apoio</span>
       </div>
 
       <div class="acoes-row">
@@ -75,7 +107,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
-          Histórico de anotações
+          <div class="atalho-copy">
+            <span class="atalho-titulo">Histórico</span>
+            <span class="atalho-sub">Buscar, copiar e reaproveitar anotações</span>
+          </div>
         </button>
 
         <button class="btn-pacientes" @click="router.push({ name: 'pacientes' })">
@@ -85,7 +120,10 @@
             <path d="M23 21v-2a4 4 0 00-3-3.87"/>
             <path d="M16 3.13a4 4 0 010 7.75"/>
           </svg>
-          Meus Pacientes do plantão
+          <div class="atalho-copy">
+            <span class="atalho-titulo">Meus Pacientes</span>
+            <span class="atalho-sub">Pendências e atalhos por leito</span>
+          </div>
         </button>
 
         <button class="btn-organizador" @click="router.push({ name: 'organizador' })">
@@ -103,7 +141,6 @@
         </button>
       </div>
 
-      <!-- Pulso do App — Banner de Feedback -->
       <div v-if="pulsoVisivel" class="pulso-card">
         <div class="pulso-header">
           <span class="pulso-titulo">💬 O que você acha do app?</span>
@@ -118,7 +155,7 @@
           maxlength="500"
         ></textarea>
         <div class="pulso-acoes">
-          <button class="btn btn-ghost" @click="dispensarPulso">Agora não</button>
+          <button class="btn btn-tertiary pulso-adiar" @click="dispensarPulso">Agora não</button>
           <button
             class="btn btn-primary"
             :disabled="!textoFeedback.trim() || pulsoEnviando"
@@ -127,11 +164,10 @@
         </div>
       </div>
 
-      <button class="btn-atualizar" @click="() => location.reload()">
-        🔄 Verificar atualizações
-      </button>
-
       <div class="rodape-acoes">
+        <button class="btn-atualizar" @click="() => location.reload()">
+          🔄 Verificar atualizações
+        </button>
         <button class="btn btn-ghost" @click="router.push({ name: 'configuracoes' })">
           ⚙️ Configurações
         </button>
@@ -172,16 +208,19 @@ import HelpModal from '../components/HelpModal.vue'
 import TourDashboard from '../components/TourDashboard.vue'
 import { subscribeSyncState } from '../utils/syncEvents.js'
 
-const router   = useRouter()
-const pcDismissed = ref(localStorage.getItem('pc_banner_dismissed') === '1')
-function dispensarPc() { localStorage.setItem('pc_banner_dismissed', '1'); pcDismissed.value = true }
-const pcModalAberto = ref(false)
-const auth     = useAuthStore()
+const router = useRouter()
+const auth = useAuthStore()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
 const orgStore = useOrganizadorStore()
 const { showToast } = useToast()
 const { isOnline } = useOnlineStatus()
+
+const pcDismissed = ref(localStorage.getItem('pc_banner_dismissed') === '1')
+const pcModalAberto = ref(false)
+const helpAberto = ref(false)
+const tourRef = ref(null)
+const syncDetalhesAbertos = ref(false)
 
 const {
   visivel: pulsoVisivel,
@@ -191,6 +230,11 @@ const {
   dispensar: dispensarPulso,
   enviar: enviarPulso,
 } = usePulso()
+
+function dispensarPc() {
+  localStorage.setItem('pc_banner_dismissed', '1')
+  pcDismissed.value = true
+}
 
 function abrirJanelaLateral() {
   const w = 420
@@ -205,25 +249,22 @@ function abrirFeedback() {
   pulsoVisivel.value = true
 }
 
-const helpAberto = ref(false)
-const tourRef = ref(null)
-
 const helpItens = [
   { icone: '🩺', titulo: 'Anotação Inicial', desc: 'Registre o estado do paciente: posição da cama, dispositivos, neurológico, respiratório e eliminações. Gere o texto formatado e copie para o sistema.' },
-  { icone: '📊', titulo: 'Sinais Vitais', desc: 'Registre PA, FC, FR, Tax, SpO₂ e HGT com horário. Inclui escala de dor 0–10 com chips coloridos (verde/laranja/vermelho) e conduta tomada (comunicou enfermeira, medicou, reavaliou). Texto gerado automaticamente.' },
-  { icone: '💊', titulo: 'Medicação', desc: 'Documente os medicamentos administrados com dose, via, diluição e dupla checagem. Inclui local anatômico para vias IM, SC e EV. Suporta múltiplos medicamentos no mesmo horário.' },
-  { icone: '🚑', titulo: 'Encaminhamento', desc: 'Gere a anotação de encaminhamento do paciente: destino (com chips personalizados por conta), tipo de transporte, acompanhante e dispositivos em uso.' },
-  { icone: '🧼', titulo: 'Higienização', desc: 'Registre banho de aspersão, banho de leito ou troca de fralda. Na troca de fralda, selecione o tipo de eliminação (diurese, evacuação ou ambos), a quantidade e o local — troca de roupa de cama é incluída automaticamente quando em leito.' },
-  { icone: '🩹', titulo: 'Curativo', desc: 'Documente curativo simples, troca ou troca de placa. Inclui avaliação COREN colapsável: tipo de lesão, tamanho, leito da ferida, exsudato (quantidade + aspecto), pele perilesão e bordas. Locais e materiais salvos por conta ou de uso único.' },
-  { icone: '🔄', titulo: 'Passagem de plantão', desc: 'Gere a anotação de passagem de plantão: registre refeição ofertada, queixas, posição da cama, rodas, grades e decúbito. Inclua opcionalmente dieta enteral, infusão venosa, SVD e observações livres.' },
-  { icone: '📝', titulo: 'Notas Livres', desc: 'Crie seus próprios modelos de anotação e use com um toque. Adicione horário e texto livre, acumule várias notas e gere o texto formatado. Modelos salvos por conta no Firebase. Funciona offline.' },
-  { icone: '🛏️', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantão por leito. Adicione pendências para cada um e marque conforme resolve. Aparecem como atalho nas anotações.' },
-  { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do seu turno com horários e alertas. Anote o que precisa ser passado para o próximo plantão.' },
-  { icone: '🕐', titulo: 'Histórico', desc: 'Acesse, busque, edite e compartilhe todas as anotações já geradas. Filtre por tipo ou por paciente.' },
-  { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo. Use o mesmo código e PIN no celular, tablet ou computador.' },
-  { icone: '🧮', titulo: 'Calculadora de Medicação', desc: 'FAB verde flutuante em todas as telas. Quatro abas: Dosagem (regra de três), Gotejamento (macro/microgotas, horas/minutos), Diluição (reconstituição de pó com campo de volume liofilizado — ex: Penicilina Cristalina) e Conversões (tabela de referência). Salva os últimos 5 cálculos.' },
-  { icone: '✨', titulo: 'Clara — Assistente IA', desc: 'Clara é uma IA especialista em enfermagem disponível no botão ✨ do dashboard. Use para tirar dúvidas sobre procedimentos, organização do plantão, cálculos de medicação, ou para pedir que ela redija uma anotação para você. Diga "redige a anotação de..." e ela entrega o texto pronto para copiar. As respostas são sugestões — sempre revise antes de usar.' },
-  { icone: '💬', titulo: 'Feedback', desc: 'O botão 💬 no topo do dashboard abre um campo para você enviar uma mensagem para a equipe do Plantão. Após alguns dias de uso, o app pode perguntar automaticamente o que você achou — responda para nos ajudar a melhorar.' },
+  { icone: '📊', titulo: 'Sinais Vitais', desc: 'Registre PA, FC, FR, Tax, SpO₂ e HGT com horário. Inclui escala de dor 0–10 com chips coloridos e conduta tomada. Texto gerado automaticamente.' },
+  { icone: '💊', titulo: 'Medicação', desc: 'Documente os medicamentos administrados com dose, via, diluição e dupla checagem. Suporta múltiplos medicamentos no mesmo horário.' },
+  { icone: '🚑', titulo: 'Encaminhamento', desc: 'Gere a anotação de encaminhamento do paciente: destino, tipo de transporte, acompanhante e dispositivos em uso.' },
+  { icone: '🧼', titulo: 'Higienização', desc: 'Registre banho de aspersão, banho de leito ou troca de fralda com a lógica certa para o plantão.' },
+  { icone: '🩹', titulo: 'Curativo', desc: 'Documente curativo simples, troca ou troca de placa com avaliação estruturada quando precisar.' },
+  { icone: '🔄', titulo: 'Passagem de plantão', desc: 'Gere a anotação de passagem de plantão com refeição, queixas, cama, grades, decúbito e observações.' },
+  { icone: '📝', titulo: 'Notas Livres', desc: 'Crie seus próprios modelos de anotação e use com um toque. Funciona offline.' },
+  { icone: '🛏️', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantão por leito e acompanhe pendências.' },
+  { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do turno com horários e alertas.' },
+  { icone: '🕐', titulo: 'Histórico', desc: 'Busque, edite, copie e compartilhe anotações já geradas.' },
+  { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo.' },
+  { icone: '🧮', titulo: 'Calculadora de Medicação', desc: 'Calculadora flutuante com dosagem, gotejamento, diluição e conversões.' },
+  { icone: '✨', titulo: 'Clara — Assistente IA', desc: 'Use a Clara para dúvidas de enfermagem, organização do plantão e apoio na redação de anotações.' },
+  { icone: '💬', titulo: 'Feedback', desc: 'Envie sua opinião para a equipe do Plantão para ajudar a melhorar o app.' },
 ]
 
 const sincronizandoAgora = ref(false)
@@ -298,7 +339,7 @@ async function sincronizarModelosPendentes(code) {
       } else {
         restantes.push(item)
       }
-    } catch (_) {
+    } catch {
       restantes.push(item)
     }
   }
@@ -342,7 +383,7 @@ async function sincronizarAgora() {
 
     if (total > 0 || orgAntes > 0) showToast('Sincronização concluída ✓')
     else showToast('Tudo já estava sincronizado')
-  } catch (_) {
+  } catch {
     showToast('Erro ao sincronizar')
   } finally {
     sincronizandoAgora.value = false
@@ -358,7 +399,6 @@ onMounted(() => {
   })
   window.addEventListener('online', atualizarPainelSync)
   window.addEventListener('focus', atualizarPainelSync)
-  // Pulso: verificar cadência com delay para não sobrepor carregamento
   setTimeout(verificarPulso, 2000)
 })
 
@@ -377,32 +417,34 @@ const saudacaoTexto = computed(() => {
 })
 
 const tipos = [
-  { id: 'inicial',   icon: '📋', nome: 'Anotação inicial',      rota: 'anotacao-inicial' },
-  { id: 'sv',        icon: '📊', nome: 'Sinais vitais',          rota: 'sinais-vitais'   },
-  { id: 'medicacao', icon: '💊', nome: 'Medicação',              rota: 'medicacao'   },
-  { id: 'encamin',   icon: '🚑', nome: 'Encaminhamento',         rota: 'encaminhamento' },
-  { id: 'banho',     icon: '🧼', nome: 'Higienização',            rota: 'banho' },
-  { id: 'curativo',  icon: '🩹', nome: 'Curativo',               rota: 'curativo' },
-  { id: 'passagem',  icon: '🔄', nome: 'Passagem de plantão',    rota: 'passagem' },
-  { id: 'livre',     icon: '📝', nome: 'Notas Livres',             rota: 'livre' },
+  { id: 'inicial', icon: '📋', nome: 'Anotação inicial', desc: 'Avaliação completa do paciente', rota: 'anotacao-inicial' },
+  { id: 'sv', icon: '📊', nome: 'Sinais vitais', desc: 'PA, FC, FR, temperatura e dor', rota: 'sinais-vitais' },
+  { id: 'medicacao', icon: '💊', nome: 'Medicação', desc: 'Administração e dupla checagem', rota: 'medicacao' },
+  { id: 'encamin', icon: '🚑', nome: 'Encaminhamento', desc: 'Destino, transporte e dispositivos', rota: 'encaminhamento' },
+  { id: 'banho', icon: '🧼', nome: 'Higienização', desc: 'Banho, troca e eliminações', rota: 'banho' },
+  { id: 'curativo', icon: '🩹', nome: 'Curativo', desc: 'Lesão, cobertura e evolução', rota: 'curativo' },
+  { id: 'passagem', icon: '🔄', nome: 'Passagem de plantão', desc: 'Resumo do turno e continuidade', rota: 'passagem' },
+  { id: 'livre', icon: '📝', nome: 'Notas Livres', desc: 'Modelos próprios e notas rápidas', rota: 'livre' },
 ]
+
+const tiposSecundarios = computed(() => tipos.filter(tipo => tipo.id !== 'inicial'))
 
 function navegar(tipo) {
   if (tipo.rota) router.push({ name: tipo.rota })
   else alert(tipo.nome + ' em breve!')
 }
-
 </script>
 
 <style scoped>
-.btn-lateral {
-  display: none;
+.dashboard-header {
+  padding: 14px 16px;
 }
-@media (min-width: 768px) {
-  .btn-lateral {
-    display: inline-flex;
-  }
+
+.dashboard-main {
+  padding-top: 24px;
+  padding-bottom: 40px;
 }
+
 .header-logo {
   display: flex;
   align-items: center;
@@ -411,6 +453,23 @@ function navegar(tipo) {
   font-size: 1.05rem;
   font-weight: 700;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-lateral {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .btn-lateral {
+    display: inline-flex;
+  }
+}
+
 .btn-icon {
   background: none;
   border: none;
@@ -421,77 +480,127 @@ function navegar(tipo) {
   display: flex;
   align-items: center;
 }
-.btn-icon:active { background: var(--bg-hover); }
 
-.saudacao { margin-bottom: 28px; }
-.saudacao-hora { color: var(--text-muted); font-size: 0.9rem; }
-.saudacao h2 { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-top: 2px; }
+.btn-icon:active {
+  background: var(--bg-hover);
+}
 
-.rodape-acoes {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.hero-card {
+  background: linear-gradient(180deg, rgba(30, 136, 229, 0.14), rgba(30, 136, 229, 0.05));
+  border: 1px solid rgba(30, 136, 229, 0.2);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.saudacao {
+  margin-bottom: 16px;
+}
+
+.saudacao-hora {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.saudacao h2 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 4px;
+}
+
+.saudacao-sub {
   margin-top: 10px;
-}
-.btn-pc-rodape { color: var(--text-muted); }
-
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 200; padding: 24px;
-}
-.modal-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  width: 100%; max-width: 360px;
-}
-.modal-titulo { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
-.modal-texto { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 10px; }
-.modal-url {
-  font-size: 1.3rem; font-weight: 700; color: var(--blue);
-  text-align: center; padding: 12px;
-  background: var(--bg); border-radius: var(--radius);
-  margin-bottom: 12px;
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 32ch;
 }
 
-.card-pc {
+.hero-primary {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  font-size: 0.88rem;
-  color: var(--text-muted);
+  gap: 12px;
+  background: rgba(10, 22, 40, 0.5);
+  border: 1px solid rgba(30, 136, 229, 0.28);
+  border-radius: 16px;
+  padding: 14px;
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
 }
-.card-pc-content { display: flex; align-items: center; gap: 8px; }
-.card-pc-content strong { color: var(--text); }
-.card-pc-fechar {
-  background: none; border: none; color: var(--text-muted);
-  cursor: pointer; font-size: 0.85rem; padding: 2px 4px; flex-shrink: 0;
+
+.hero-primary:active {
+  transform: scale(0.985);
+  background: rgba(10, 22, 40, 0.7);
 }
-.card-pc-fechar:hover { color: var(--text); }
+
+.hero-primary-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.hero-primary-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hero-primary-copy strong {
+  font-size: 0.98rem;
+  color: var(--text);
+}
+
+.hero-primary-copy span {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+
+.hero-primary-arrow {
+  margin-left: auto;
+  color: var(--blue);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.quick-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quick-tool {
+  min-height: 40px;
+}
 
 .sync-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
+
 .sync-top {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 10px;
 }
+
+.sync-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .sync-title {
   margin: 0;
   font-size: 0.82rem;
@@ -500,39 +609,35 @@ function navegar(tipo) {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+.sync-status {
+  font-size: 0.84rem;
+  color: var(--text);
+}
+
 .sync-last {
   font-size: 0.74rem;
   color: var(--text-muted);
+  white-space: nowrap;
 }
-.sync-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.sync-chip {
-  font-size: 0.78rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 5px 10px;
-  color: var(--text-muted);
-  background: var(--bg-input);
-}
-.sync-chip-on {
-  color: var(--blue);
-  border-color: var(--blue);
-  background: rgba(30, 136, 229, 0.08);
-}
+
 .sync-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
-.sync-status {
-  font-size: 0.8rem;
+
+.sync-link {
+  background: none;
+  border: none;
   color: var(--text-dim);
+  font-size: 0.82rem;
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
 }
+
 .sync-btn {
   border: 1px solid var(--blue);
   background: rgba(30, 136, 229, 0.1);
@@ -544,9 +649,78 @@ function navegar(tipo) {
   padding: 8px 12px;
   cursor: pointer;
 }
+
 .sync-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.sync-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.sync-chip {
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--text-muted);
+  background: var(--bg-input);
+}
+
+.sync-chip-on {
+  color: var(--blue);
+  border-color: var(--blue);
+  background: rgba(30, 136, 229, 0.08);
+}
+
+.card-pc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(17, 29, 50, 0.72);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.card-pc-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-pc-content strong {
+  color: var(--text);
+}
+
+.card-pc-fechar {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+  flex-shrink: 0;
+}
+
+.secao-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.secao-head-spaced {
+  margin-top: 24px;
 }
 
 .secao-label {
@@ -555,27 +729,61 @@ function navegar(tipo) {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 12px;
 }
 
-.tipos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.secao-hint {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.tipos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
 .tipo-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 18px 14px;
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
   transition: all 0.15s;
   text-align: left;
 }
-.tipo-card:active { background: var(--bg-hover); transform: scale(0.97); }
-.tipo-icon { font-size: 1.5rem; }
-.tipo-nome { font-size: 0.9rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+
+.tipo-card:active {
+  background: var(--bg-hover);
+  transform: scale(0.98);
+}
+
+.tipo-icon {
+  font-size: 1.45rem;
+}
+
+.tipo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tipo-nome {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.tipo-desc {
+  font-size: 0.77rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
 .tipo-badge {
   font-size: 0.62rem;
   color: var(--text-muted);
@@ -587,141 +795,128 @@ function navegar(tipo) {
   letter-spacing: 0.04em;
 }
 
-.btn-historico {
+.acoes-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: 24px;
-  padding: 14px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-dim);
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
+  flex-direction: column;
+  gap: 10px;
 }
-.btn-historico:active { background: var(--bg-hover); }
 
-.btn-pacientes {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; margin-top: 16px; padding: 14px;
-  background: var(--bg-card); border: 1px solid var(--blue);
-  border-radius: var(--radius); color: var(--blue);
-  font-family: inherit; font-size: 0.95rem; font-weight: 600;
-  cursor: pointer; transition: all 0.15s;
-}
-.btn-pacientes:active { background: var(--bg-hover); }
-
+.btn-historico,
+.btn-pacientes,
 .btn-organizador {
-  display: block; width: 100%; margin-top: 10px; padding: 14px;
-  background: var(--bg-card); border: 1px solid var(--blue);
-  border-radius: var(--radius);
-  font-family: inherit; cursor: pointer; transition: all 0.15s;
-  text-align: left;
-}
-.btn-organizador:active { background: var(--bg-hover); }
-.btn-org-inner {
-  display: flex; align-items: center; gap: 10px;
-}
-.btn-org-icon { font-size: 1.4rem; flex-shrink: 0; }
-.btn-org-info {
-  display: flex; flex-direction: column; gap: 2px;
-}
-.btn-org-titulo {
-  font-size: 0.95rem; font-weight: 600; color: var(--blue);
-}
-.btn-org-sub {
-  font-size: 0.78rem; color: var(--text-muted);
+  width: 100%;
+  margin-top: 0;
 }
 
-/* Verificar atualizações */
-.btn-atualizar {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  width: 100%; margin-top: 12px; padding: 10px;
-  background: none; border: 1px solid var(--border);
-  border-radius: var(--radius); color: var(--text-muted);
-  font-family: inherit; font-size: 0.82rem;
-  cursor: pointer; transition: all 0.15s;
-}
-.btn-atualizar:active { background: var(--bg-hover); color: var(--text); }
-
-/* Feedback button in header */
-.btn-feedback-topo {
-  background: none;
-  border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  opacity: 0.7;
-  transition: opacity 0.15s;
-}
-.btn-feedback-topo:hover { opacity: 1; }
-
-/* Primeiro Sucesso Banner */
-.banner-primeiro-sucesso {
-  background: var(--bg-card);
-  border: 1px solid var(--blue);
-  border-radius: var(--radius);
-  padding: 14px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.bps-esquerda {
+.btn-historico,
+.btn-pacientes {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1;
-  min-width: 0;
+  padding: 14px;
+  border-radius: var(--radius);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
 }
-.bps-icon { font-size: 1.4rem; flex-shrink: 0; }
-.bps-texto {
+
+.btn-historico {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.btn-historico:active,
+.btn-pacientes:active,
+.btn-organizador:active {
+  background: var(--bg-hover);
+}
+
+.btn-pacientes {
+  background: rgba(30, 136, 229, 0.08);
+  border: 1px solid rgba(30, 136, 229, 0.26);
+  color: var(--blue);
+}
+
+.atalho-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.atalho-titulo {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.atalho-sub {
+  font-size: 0.77rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.btn-organizador {
+  display: block;
+  padding: 14px;
+  background: rgba(30, 136, 229, 0.08);
+  border: 1px solid rgba(30, 136, 229, 0.26);
+  border-radius: var(--radius);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.btn-org-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-org-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.btn-org-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0;
-}
-.bps-texto strong { font-size: 0.88rem; color: var(--text); }
-.bps-texto span { font-size: 0.78rem; color: var(--text-dim); }
-.bps-cta {
-  background: var(--blue);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  flex-shrink: 0;
-  white-space: nowrap;
 }
 
-/* Pulso do App Card */
+.btn-org-titulo {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.btn-org-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
 .pulso-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  margin-top: 16px;
+  margin-top: 18px;
 }
+
 .pulso-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
 }
-.pulso-titulo { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+
+.pulso-titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
 .pulso-fechar {
   background: none;
   border: none;
@@ -732,8 +927,13 @@ function navegar(tipo) {
   border-radius: 6px;
   font-family: inherit;
 }
-.pulso-fechar:hover { color: var(--text); }
-.pulso-sub { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 10px; }
+
+.pulso-sub {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
 .pulso-input {
   width: 100%;
   background: var(--bg-input);
@@ -747,95 +947,136 @@ function navegar(tipo) {
   box-sizing: border-box;
   margin-bottom: 12px;
 }
-.pulso-input:focus { outline: none; border-color: var(--blue); }
+
+.pulso-input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
 .pulso-acoes {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
 }
 
-/* acoes-row: empilhado no mobile, 3 colunas no desktop */
-.acoes-row {
+.pulso-adiar {
+  width: auto;
+  min-height: 44px;
+}
+
+.rodape-acoes {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 16px;
-}
-.acoes-row .btn-historico,
-.acoes-row .btn-pacientes,
-.acoes-row .btn-organizador {
-  margin-top: 0;
-  width: 100%;
+  gap: 8px;
+  margin-top: 14px;
 }
 
-/* ── Desktop layout ──────────────────────────────────────────── */
+.btn-atualizar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-atualizar:active {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.btn-pc-rodape {
+  color: var(--text-muted);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.modal-titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.modal-texto {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.modal-url {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--blue);
+  text-align: center;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
 @media (min-width: 768px) {
-  /* Header mais largo */
   .app-header {
     max-width: 100%;
-    padding: 0 32px;
+    padding: 14px 32px;
   }
 
-  /* Container central mais largo */
   .container {
     max-width: 960px !important;
     padding-left: 32px !important;
     padding-right: 32px !important;
   }
 
-  /* Saudação */
-  .saudacao {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-bottom: 24px;
+  .hero-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+    align-items: end;
+    gap: 18px;
   }
-  .saudacao-hora { font-size: 1rem; }
-  .saudacao h2 { font-size: 1.6rem; margin-top: 0; }
 
-  /* 4 colunas nos cards de anotação */
   .tipos-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
   }
-  .tipo-card {
-    padding: 20px 16px;
-  }
 
-  /* 3 colunas nas ações */
   .acoes-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
-    margin-top: 20px;
   }
 
-  /* Histórico em destaque no desktop */
-  .acoes-row .btn-historico {
-    background: rgba(30, 136, 229, 0.08);
-    border-color: var(--blue);
-    color: var(--blue);
-    font-size: 1rem;
-    padding: 18px 14px;
-  }
-  .acoes-row .btn-historico:hover {
-    background: rgba(30, 136, 229, 0.15);
+  .rodape-acoes {
+    flex-direction: row;
+    align-items: center;
   }
 
-  /* Pacientes e Organizador com altura mínima igual */
-  .acoes-row .btn-pacientes,
-  .acoes-row .btn-organizador {
-    padding: 18px 14px;
-  }
-
-  /* Sync card mais compacto */
-  .sync-card {
-    padding: 14px 16px;
-  }
-
-  /* Botões de fundo menos proeminentes */
-  .btn-atualizar {
-    max-width: 280px;
+  .rodape-acoes > * {
+    flex: 1;
   }
 }
 </style>

@@ -366,11 +366,13 @@ onUnmounted(() => {
 
 .install-bar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(460px, calc(100% - 20px));
   background: #1e3a5f;
-  border-top: 1px solid #4a90d9;
+  border: 1px solid #4a90d9;
+  border-radius: 16px;
   color: #e8f4fd;
   font-size: 0.85rem;
   font-weight: 500;
@@ -379,6 +381,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
 }
 .install-icon { font-size: 1.2rem; flex-shrink: 0; }
 .install-texto {
@@ -426,15 +429,17 @@ onUnmounted(() => {
 .install-bar-enter-active,
 .install-bar-leave-active { transition: transform 0.3s ease; }
 .install-bar-enter-from,
-.install-bar-leave-to     { transform: translateY(100%); }
+.install-bar-leave-to     { transform: translate(-50%, 140%); }
 
 .safari-bar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(460px, calc(100% - 20px));
   background: #0d2137;
-  border-top: 1px solid #2196f3;
+  border: 1px solid #2196f3;
+  border-radius: 16px;
   color: #b3d9f7;
   font-size: 0.85rem;
   font-weight: 500;
@@ -443,6 +448,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
 }
 .safari-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
 .safari-bar-texto { flex: 1; }
@@ -460,7 +466,7 @@ onUnmounted(() => {
 .safari-bar-enter-active,
 .safari-bar-leave-active { transition: transform 0.3s ease; }
 .safari-bar-enter-from,
-.safari-bar-leave-to     { transform: translateY(100%); }
+.safari-bar-leave-to     { transform: translate(-50%, 140%); }
 
 /* ── Modal tutorial Safari ── */
 .modal-overlay {
@@ -554,11 +560,13 @@ onUnmounted(() => {
 
 .ios-bar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(460px, calc(100% - 20px));
   background: #0d2137;
-  border-top: 1px solid var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 16px;
   color: #b3d9f7;
   font-size: 0.85rem;
   font-weight: 500;
@@ -567,6 +575,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
 }
 .ios-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
 .ios-bar-texto { flex: 1; }
@@ -589,7 +598,7 @@ onUnmounted(() => {
 .ios-bar-enter-active,
 .ios-bar-leave-active { transition: transform 0.3s ease; }
 .ios-bar-enter-from,
-.ios-bar-leave-to     { transform: translateY(100%); }
+.ios-bar-leave-to     { transform: translate(-50%, 140%); }
 
 .update-bar {
   position: fixed;

@@ -117,5 +117,8 @@ Estruturas mais relevantes:
 - Se a tarefa envolver produto ou rollout, ler o design doc gstack mais recente
 - Se a tarefa envolver auth, lembrar que parte da documentação antiga ainda cita fluxo legado e precisa ser checada contra o código real
 - `src/App.vue` foi aliviado com async components para chat/calculadora e importa push sob demanda; evitar reverter isso sem necessidade
+- `src/App.vue` também concentra os banners de instalação PWA; o formato atual foi compactado para card flutuante, então qualquer ajuste futuro deve preservar esse comportamento menos invasivo
 - `src/composables/usePushNotificacoes.js` carrega `firebase/messaging` dinamicamente; se mexer em push, preservar esse lazy-load
 - `src/stores/auth.js` depende do cache local para liberar a UI cedo; se mexer no bootstrap, preservar a restauração rápida e o timeout de fallback
+- `src/views/DashboardView.vue` foi reorganizado para foco mobile-first: hero principal, sync compacto e grade secundária de anotações
+- `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje tem duas zonas visuais principais (`preparo` e `medicamentos do horário`); preservar essa hierarquia se evoluir a tela

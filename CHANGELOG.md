@@ -51,6 +51,14 @@
 
 - O app continua precisando ter sido carregado online pelo menos uma vez para funcionar totalmente offline, porque os assets do PWA precisam estar em cache
 
+### Revisão de UI/UX mobile
+
+- Dashboard foi reestruturado para dar foco ao começo do plantão: hero para `Anotação inicial`, header mais simples e ferramentas secundárias em uma faixa própria
+- Card de sincronização ficou mais compacto, com resumo visível e detalhes expansíveis sob demanda
+- `Anotação Inicial` e `Passagem de Plantão` rebaixaram visualmente o botão `Limpar`, reduzindo competição com a ação principal
+- `Medicação` ganhou seções separadas para preparo/checagem e para os medicamentos do horário, com hierarquia mais clara
+- Banners de instalação PWA do shell passaram a usar formato flutuante mais compacto em vez de ocupar toda a largura
+
 ## Sessão 2026-04-01
 
 ### Bugs corrigidos
