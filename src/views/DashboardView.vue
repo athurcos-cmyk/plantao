@@ -21,28 +21,18 @@
     </header>
 
     <main class="container dashboard-main">
-      <section class="hero-card">
+      <div class="dashboard-top">
         <div class="saudacao">
           <p class="saudacao-hora">{{ saudacaoTexto }}</p>
           <h2 v-if="auth.userName">{{ auth.userName }}</h2>
-          <p class="saudacao-sub">Abra a anotação e registre isso sem perder tempo no corredor.</p>
         </div>
 
-        <button class="hero-primary" @click="router.push({ name: 'anotacao-inicial' })">
-          <span class="hero-primary-icon">📋</span>
-          <span class="hero-primary-copy">
-            <strong>Começar com Anotação inicial</strong>
-            <span>Estado geral, dispositivos e fechamento do paciente.</span>
-          </span>
-          <span class="hero-primary-arrow">→</span>
-        </button>
-      </section>
-
-      <div class="quick-tools">
-        <button class="btn-ajuda quick-tool" @click="tourRef?.abrirTour()" title="Ver tutorial">▶ Tutorial</button>
-        <button class="btn-ajuda quick-tool" @click="helpAberto = true">? Ajuda</button>
-        <button class="btn-ajuda quick-tool" @click="abrirFeedback" title="Enviar feedback">💬 Feedback</button>
-        <button class="btn-ajuda btn-lateral quick-tool" @click="abrirJanelaLateral" title="Abrir ao lado do prontuário">⊾ Ao lado</button>
+        <div class="quick-tools">
+          <button class="btn-ajuda quick-tool" @click="tourRef?.abrirTour()" title="Ver tutorial">▶ Tutorial</button>
+          <button class="btn-ajuda quick-tool" @click="helpAberto = true">? Ajuda</button>
+          <button class="btn-ajuda quick-tool" @click="abrirFeedback" title="Enviar feedback">💬</button>
+          <button class="btn-ajuda btn-lateral quick-tool" @click="abrirJanelaLateral" title="Abrir ao lado do prontuário">⊾ Ao lado</button>
+        </div>
       </div>
 
       <section class="sync-card">
@@ -82,16 +72,16 @@
       </div>
 
       <div class="secao-head">
-        <p class="secao-label">Outras anotações</p>
-        <span class="secao-hint">Entradas rápidas do plantão</span>
+        <p class="secao-label">Anotações</p>
+        <span class="secao-hint">Mais usadas primeiro</span>
       </div>
 
       <div class="tipos-grid">
-        <button data-testid="auto-btn-dashboardview-2" v-for="tipo in tiposSecundarios" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
+        <button data-testid="auto-btn-dashboardview-2" v-for="tipo in tiposDashboard" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
           <span class="tipo-icon">{{ tipo.icon }}</span>
           <span class="tipo-texto">
             <span class="tipo-nome">{{ tipo.nome }}</span>
-            <span class="tipo-desc">{{ tipo.desc }}</span>
+            <span v-if="tipo.meta" class="tipo-meta">{{ tipo.meta }}</span>
           </span>
           <span v-if="!tipo.rota" class="tipo-badge">em breve</span>
         </button>
@@ -417,17 +407,17 @@ const saudacaoTexto = computed(() => {
 })
 
 const tipos = [
-  { id: 'inicial', icon: '📋', nome: 'Anotação inicial', desc: 'Avaliação completa do paciente', rota: 'anotacao-inicial' },
-  { id: 'sv', icon: '📊', nome: 'Sinais vitais', desc: 'PA, FC, FR, temperatura e dor', rota: 'sinais-vitais' },
-  { id: 'medicacao', icon: '💊', nome: 'Medicação', desc: 'Administração e dupla checagem', rota: 'medicacao' },
-  { id: 'encamin', icon: '🚑', nome: 'Encaminhamento', desc: 'Destino, transporte e dispositivos', rota: 'encaminhamento' },
-  { id: 'banho', icon: '🧼', nome: 'Higienização', desc: 'Banho, troca e eliminações', rota: 'banho' },
-  { id: 'curativo', icon: '🩹', nome: 'Curativo', desc: 'Lesão, cobertura e evolução', rota: 'curativo' },
-  { id: 'passagem', icon: '🔄', nome: 'Passagem de plantão', desc: 'Resumo do turno e continuidade', rota: 'passagem' },
-  { id: 'livre', icon: '📝', nome: 'Notas Livres', desc: 'Modelos próprios e notas rápidas', rota: 'livre' },
+  { id: 'sv', icon: '📊', nome: 'Sinais vitais', meta: 'rápido', rota: 'sinais-vitais' },
+  { id: 'medicacao', icon: '💊', nome: 'Medicação', meta: 'rápido', rota: 'medicacao' },
+  { id: 'livre', icon: '📝', nome: 'Notas Livres', meta: 'rápido', rota: 'livre' },
+  { id: 'passagem', icon: '🔄', nome: 'Passagem', meta: 'turno', rota: 'passagem' },
+  { id: 'encamin', icon: '🚑', nome: 'Encaminhamento', meta: 'apoio', rota: 'encaminhamento' },
+  { id: 'banho', icon: '🧼', nome: 'Higienização', meta: 'apoio', rota: 'banho' },
+  { id: 'curativo', icon: '🩹', nome: 'Curativo', meta: 'apoio', rota: 'curativo' },
+  { id: 'inicial', icon: '📋', nome: 'Anotação inicial', meta: '1x por plantão', rota: 'anotacao-inicial' },
 ]
 
-const tiposSecundarios = computed(() => tipos.filter(tipo => tipo.id !== 'inicial'))
+const tiposDashboard = computed(() => tipos)
 
 function navegar(tipo) {
   if (tipo.rota) router.push({ name: tipo.rota })
@@ -441,8 +431,16 @@ function navegar(tipo) {
 }
 
 .dashboard-main {
-  padding-top: 24px;
+  padding-top: 16px;
   padding-bottom: 40px;
+}
+
+.dashboard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .header-logo {
@@ -494,97 +492,38 @@ function navegar(tipo) {
 }
 
 .saudacao {
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .saudacao-hora {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .saudacao h2 {
-  font-size: 1.55rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--text);
-  margin-top: 4px;
-}
-
-.saudacao-sub {
-  margin-top: 10px;
-  color: var(--text-dim);
-  font-size: 0.92rem;
-  line-height: 1.45;
-  max-width: 32ch;
-}
-
-.hero-primary {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(10, 22, 40, 0.5);
-  border: 1px solid rgba(30, 136, 229, 0.28);
-  border-radius: 16px;
-  padding: 14px;
-  color: var(--text);
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s;
-}
-
-.hero-primary:active {
-  transform: scale(0.985);
-  background: rgba(10, 22, 40, 0.7);
-}
-
-.hero-primary-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.hero-primary-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.hero-primary-copy strong {
-  font-size: 0.98rem;
-  color: var(--text);
-}
-
-.hero-primary-copy span {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  line-height: 1.35;
-}
-
-.hero-primary-arrow {
-  margin-left: auto;
-  color: var(--blue);
-  font-size: 1.1rem;
-  font-weight: 700;
+  margin-top: 2px;
 }
 
 .quick-tools {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
-  margin-bottom: 16px;
 }
 
 .quick-tool {
-  min-height: 40px;
+  min-height: 34px;
+  padding: 4px 8px;
 }
 
 .sync-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 14px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
 }
 
 .sync-top {
@@ -592,7 +531,7 @@ function navegar(tipo) {
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .sync-copy {
@@ -611,7 +550,7 @@ function navegar(tipo) {
 }
 
 .sync-status {
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   color: var(--text);
 }
 
@@ -632,7 +571,7 @@ function navegar(tipo) {
   background: none;
   border: none;
   color: var(--text-dim);
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-family: inherit;
   padding: 0;
   cursor: pointer;
@@ -642,11 +581,11 @@ function navegar(tipo) {
   border: 1px solid var(--blue);
   background: rgba(30, 136, 229, 0.1);
   color: var(--blue);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
   font-family: inherit;
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   cursor: pointer;
 }
 
@@ -686,7 +625,7 @@ function navegar(tipo) {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px 14px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   font-size: 0.88rem;
   color: var(--text-muted);
 }
@@ -716,11 +655,11 @@ function navegar(tipo) {
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .secao-head-spaced {
-  margin-top: 24px;
+  margin-top: 18px;
 }
 
 .secao-label {
@@ -739,21 +678,22 @@ function navegar(tipo) {
 .tipos-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .tipo-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px 14px;
+  border-radius: 12px;
+  padding: 12px 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   transition: all 0.15s;
   text-align: left;
+  min-height: 72px;
 }
 
 .tipo-card:active {
@@ -762,26 +702,32 @@ function navegar(tipo) {
 }
 
 .tipo-icon {
-  font-size: 1.45rem;
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .tipo-texto {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  min-width: 0;
 }
 
 .tipo-nome {
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--text);
   line-height: 1.2;
 }
 
-.tipo-desc {
-  font-size: 0.77rem;
+.tipo-meta {
+  font-size: 0.69rem;
   color: var(--text-muted);
-  line-height: 1.35;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .tipo-badge {
@@ -813,7 +759,7 @@ function navegar(tipo) {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px;
+  padding: 12px;
   border-radius: var(--radius);
   font-family: inherit;
   cursor: pointer;
@@ -846,20 +792,20 @@ function navegar(tipo) {
 }
 
 .atalho-titulo {
-  font-size: 0.94rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: inherit;
 }
 
 .atalho-sub {
-  font-size: 0.77rem;
+  font-size: 0.73rem;
   color: var(--text-muted);
   line-height: 1.35;
 }
 
 .btn-organizador {
   display: block;
-  padding: 14px;
+  padding: 12px;
   background: rgba(30, 136, 229, 0.08);
   border: 1px solid rgba(30, 136, 229, 0.26);
   border-radius: var(--radius);
@@ -1052,16 +998,13 @@ function navegar(tipo) {
     padding-right: 32px !important;
   }
 
-  .hero-card {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
-    align-items: end;
-    gap: 18px;
-  }
-
   .tipos-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+  }
+
+  .tipo-card {
+    min-height: 84px;
   }
 
   .acoes-row {
