@@ -1,3 +1,5 @@
+import { formatarRotuloMedicacaoRapida } from '../utils/medicacao.js'
+
 /**
  * Lista base de medicamentos para autocomplete.
  * ~300 medicamentos cobrindo as principais especialidades hospitalares brasileiras.
@@ -660,6 +662,114 @@ export const medicamentosBase = [
   .filter((m, i, arr) => arr.indexOf(m) === i)   // remove duplicatas
   .sort((a, b) => a.localeCompare(b, 'pt-BR'))
 
+export const medicamentosCatalogo = [
+  { nome: 'dipirona', presets: [
+    { dose: '500', unidade: 'mg', via: 'VO' },
+    { dose: '1', unidade: 'g', via: 'VO' },
+    { dose: '1', unidade: 'g', via: 'EV' },
+  ]},
+  { nome: 'paracetamol', presets: [
+    { dose: '500', unidade: 'mg', via: 'VO' },
+    { dose: '750', unidade: 'mg', via: 'VO' },
+    { dose: '1', unidade: 'g', via: 'EV' },
+  ]},
+  { nome: 'omeprazol', presets: [
+    { dose: '20', unidade: 'mg', via: 'VO' },
+    { dose: '40', unidade: 'mg', via: 'VO' },
+    { dose: '40', unidade: 'mg', via: 'EV', evDiluicao: true, evVolume: '10', evSolucao: 'agua' },
+  ]},
+  { nome: 'furosemida', presets: [
+    { dose: '20', unidade: 'mg', via: 'EV' },
+    { dose: '40', unidade: 'mg', via: 'EV' },
+    { dose: '40', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'enoxaparina', presets: [
+    { dose: '40', unidade: 'mg', via: 'SC' },
+    { dose: '60', unidade: 'mg', via: 'SC' },
+  ]},
+  { nome: 'heparina', presets: [
+    { dose: '5000', unidade: 'UI', via: 'SC' },
+    { dose: '5000', unidade: 'UI', via: 'EV' },
+  ]},
+  { nome: 'metoclopramida', presets: [
+    { dose: '10', unidade: 'mg', via: 'EV' },
+    { dose: '10', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'bromoprida', presets: [
+    { dose: '10', unidade: 'mg', via: 'EV' },
+    { dose: '10', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'ondansetrona', presets: [
+    { dose: '4', unidade: 'mg', via: 'EV' },
+    { dose: '8', unidade: 'mg', via: 'EV' },
+  ]},
+  { nome: 'ceftriaxona', presets: [
+    { dose: '1', unidade: 'g', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+    { dose: '2', unidade: 'g', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+  ]},
+  { nome: 'cefepima', presets: [
+    { dose: '1', unidade: 'g', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+    { dose: '2', unidade: 'g', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+  ]},
+  { nome: 'meropeném', presets: [
+    { dose: '1', unidade: 'g', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+  ]},
+  { nome: 'vancomicina', presets: [
+    { dose: '500', unidade: 'mg', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+    { dose: '1', unidade: 'g', via: 'EV', evDiluicao: true, evVolume: '250', evSolucao: 'SF' },
+  ]},
+  { nome: 'hidrocortisona', presets: [
+    { dose: '100', unidade: 'mg', via: 'EV' },
+    { dose: '500', unidade: 'mg', via: 'EV' },
+  ]},
+  { nome: 'dexametasona', presets: [
+    { dose: '4', unidade: 'mg', via: 'EV' },
+    { dose: '10', unidade: 'mg', via: 'EV' },
+    { dose: '4', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'losartana', presets: [
+    { dose: '25', unidade: 'mg', via: 'VO' },
+    { dose: '50', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'captopril', presets: [
+    { dose: '25', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'anlodipino', presets: [
+    { dose: '5', unidade: 'mg', via: 'VO' },
+    { dose: '10', unidade: 'mg', via: 'VO' },
+  ]},
+  { nome: 'metronidazol', presets: [
+    { dose: '500', unidade: 'mg', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+  ]},
+  { nome: 'clindamicina', presets: [
+    { dose: '600', unidade: 'mg', via: 'EV', evDiluicao: true, evVolume: '100', evSolucao: 'SF' },
+  ]},
+]
+
+const catalogoPorNome = new Map(
+  medicamentosCatalogo.map((item) => [item.nome.toLowerCase(), item])
+)
+
+function normalizarNome(texto) {
+  return String(texto || '').trim().toLowerCase()
+}
+
+export function obterCatalogoMedicacao(nome) {
+  return catalogoPorNome.get(normalizarNome(nome)) || null
+}
+
+export function listarPresetsCatalogo(nome) {
+  const catalogo = obterCatalogoMedicacao(nome)
+  if (!catalogo) return []
+
+  return catalogo.presets.map((preset) => ({
+    tipo: 'catalogo',
+    nome: catalogo.nome,
+    med: { nome: catalogo.nome, ...preset },
+    rotulo: formatarRotuloMedicacaoRapida({ nome: catalogo.nome, ...preset }),
+  }))
+}
+
 /**
  * Retorna sugestões filtradas por texto digitado.
  * Busca no início do nome (maior prioridade) e depois no meio.
@@ -682,4 +792,61 @@ export function sugerirMedicamentos(texto, historico = [], limite = 7) {
   const contem   = medicamentosBase.filter(m => !m.startsWith(q) && m.includes(q) && !doHistorico.includes(m))
 
   return [...doHistorico, ...comecam, ...contem].slice(0, limite)
+}
+
+export function sugerirMedicamentosDetalhados(texto, historico = [], limite = 8) {
+  if (!texto || texto.trim().length < 2) return []
+
+  const q = normalizarNome(texto)
+  const usados = new Set()
+  const resultados = []
+
+  historico
+    .filter((item) => normalizarNome(item.nome).includes(q))
+    .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
+    .forEach((item) => {
+      const chave = `hist:${item.nome}:${item.dose}:${item.via}:${item.unidade}:${item.oftOlho || ''}`
+      if (usados.has(chave) || resultados.length >= limite) return
+      usados.add(chave)
+      resultados.push({
+        tipo: 'hist',
+        nome: item.nome,
+        med: item,
+        rotulo: formatarRotuloMedicacaoRapida(item),
+      })
+    })
+
+  medicamentosCatalogo
+    .filter((item) => normalizarNome(item.nome).includes(q))
+    .forEach((item) => {
+      item.presets.forEach((preset) => {
+        if (resultados.length >= limite) return
+        const med = { nome: item.nome, ...preset }
+        const chave = `catalogo:${item.nome}:${preset.dose}:${preset.via}:${preset.unidade}`
+        if (usados.has(chave)) return
+        usados.add(chave)
+        resultados.push({
+          tipo: 'catalogo',
+          nome: item.nome,
+          med,
+          rotulo: formatarRotuloMedicacaoRapida(med),
+        })
+      })
+    })
+
+  const nomesSimples = sugerirMedicamentos(texto, historico.map((item) => item.nome), limite)
+  nomesSimples.forEach((nome) => {
+    if (resultados.length >= limite) return
+    const chave = `base:${nome}`
+    if (usados.has(chave)) return
+    usados.add(chave)
+    resultados.push({
+      tipo: 'base',
+      nome,
+      med: { nome },
+      rotulo: nome,
+    })
+  })
+
+  return resultados.slice(0, limite)
 }

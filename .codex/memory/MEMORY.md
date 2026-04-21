@@ -1,55 +1,47 @@
-# Memory Index — Plantão (Codex)
+# Memory Index - Plantao (Codex)
 
-> Última atualização: 2026-04-16
+> Ultima atualizacao: 2026-04-21
 
 ## Arquivos locais do Codex
 
-- [project_status.md](project_status.md) — status do app, alertas operacionais, pendências e negócio
-- [project_overview.md](project_overview.md) — stack, estrutura, rotas, stores, composables e integrações
+- [project_status.md](project_status.md) - status do app, alertas operacionais, pendencias e negocio
+- [project_overview.md](project_overview.md) - stack, estrutura, rotas, stores, composables e integracoes
 
 ## Fontes herdadas do Claude
 
-Arquivos preservados como referência, sem edição por este fluxo:
+Arquivos preservados como referencia, sem edicao por este fluxo:
 
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
 
-## Última sessão (2026-04-16)
+## Ultima sessao (2026-04-21)
 
-- ✅ Corrigido bootstrap inicial preso em rede fraca: auth agora sobe com cache local antes da resposta do Firebase
-- ✅ Novo util `src/utils/authSessionCache.js` centraliza persistência e limpeza da sessão local
-- ✅ `auth.js` ganhou timeout de fallback para destravar a UI mesmo quando o `onAuthStateChanged` demora
-- ✅ Testes adicionados para sessão local e limpeza de cache
-- ✅ Push para `main` concluído com a correção offline
-- ✅ Dashboard mobile foi simplificado com CTA principal para `Anotação inicial` e sincronização compacta
-- ✅ `Medicação` ganhou hierarquia visual melhor com blocos separados de preparo e administração
-- ✅ `Limpar` foi rebaixado visualmente nas telas em etapas (`Anotação Inicial` e `Passagem de Plantão`)
-- ✅ Banners PWA do shell ficaram menos invasivos na primeira experiência
+- Tela de `Medicacao` ganhou fluxo rapido completo com `Salvar e adicionar proxima`
+- Historico de medicacao agora mescla cache local e Firebase com deduplicacao por esquema completo
+- Adicionados chips de `Presets rapidos` e `Ultimos usados` para lancar medicacoes com um toque
+- Usuario pode salvar presets proprios a partir dos itens ja adicionados
+- Catalogo de medicacoes foi enriquecido com vias, doses e alguns esquemas EV comuns para autocomplete detalhado
+- Modal ficou mais leve para caso comum e manteve `Recusa` sempre visivel
+- EV passou a ser guiado entre `Direto` e `Diluido`, abrindo solucao e volume quando necessario
+- Testes passaram com 56 testes e o build de producao tambem passou
 
-## Sessão anterior (2026-04-15)
+## Sessao anterior (2026-04-16)
 
-- ✅ Estrutura `.codex/memory/` criada para o Plantão
-- ✅ `CODEX.md` refeito com ordem fixa de leitura e atualização
-- ✅ Estado real do código conferido antes de documentar: Firebase Auth ativo, login por código via `/api/login-by-code`, 11 endpoints serverless
-- ✅ Referência ao design doc mais recente do gstack fixada na documentação do Codex
-- ✅ Arquivos do Claude mantidos sem alteração
-- ✅ Polling principal reduzido: dashboard passou para eventos e sync automático só roda quando há pendências
-- ✅ Clara otimizada com contexto recente + resumo curto do histórico
-- ✅ Notificações agora pedem permissão sob demanda e usam diff com debounce nas pendências
-- ✅ Lógica de dispositivos consolidada em util compartilhado
-- ✅ Histórico/Admin renderizam listas grandes em lotes
-- ✅ Bundle inicial do app foi reduzido com `manualChunks`, async components no shell e lazy-load de `firebase/messaging`
+- Corrigido bootstrap inicial preso em rede fraca com cache local de sessao
+- `auth.js` ganhou timeout de fallback para destravar a UI mesmo quando o Firebase demora
+- `Medicacao` ja tinha ganho separacao visual entre preparo e administracao
+- Dashboard mobile e shell PWA foram refinados visualmente
 
-## Estado herdado da sessão anterior registrada no projeto (2026-04-01)
+## Sessao anterior registrada no projeto (2026-04-01)
 
-- Fix de `useDispositivos` para não quebrar referência do array após "Nova anotação"
-- Exclusão otimista em pacientes e pendências
-- Botão desktop `⊞ Ao lado` no dashboard
-- Auditoria de segurança confirmada
-- Pendência crítica mantida: rotacionar `CRON_SECRET`
+- Fix de `useDispositivos` para nao quebrar referencia do array apos `Nova anotacao`
+- Exclusao otimista em pacientes e pendencias
+- Botao desktop `Ao lado` no dashboard
+- Auditoria de seguranca confirmada
+- Pendencia critica mantida: rotacionar `CRON_SECRET`
 
-## Leitura obrigatória no início de cada sessão
+## Leitura obrigatoria no inicio de cada sessao
 
 1. `CHANGELOG.md`
 2. `TODOS.md`

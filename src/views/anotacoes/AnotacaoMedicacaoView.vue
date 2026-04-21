@@ -113,6 +113,38 @@
           </div>
           <p class="med-section-sub med-section-sub-tight">Adicione um ou mais medicamentos antes de gerar o texto final.</p>
 
+          <div v-if="presetsRapidos.length || historicoRapido.length" class="med-quick-stack">
+            <div v-if="presetsRapidos.length" class="med-quick-block">
+              <div class="med-quick-head">
+                <span class="med-quick-title">Presets rápidos</span>
+                <span class="med-quick-note">1 toque</span>
+              </div>
+              <div class="chips-scroll med-quick-scroll">
+                <button
+                  v-for="preset in presetsRapidos"
+                  :key="'preset-' + criarChaveMedicacao(preset)"
+                  class="chip chip-quick"
+                  @click="adicionarMedicacaoRapida(preset, 'preset')"
+                >{{ formatarRotuloMedicacaoRapida(preset) }}</button>
+              </div>
+            </div>
+
+            <div v-if="historicoRapido.length" class="med-quick-block">
+              <div class="med-quick-head">
+                <span class="med-quick-title">Últimos usados</span>
+                <span class="med-quick-note">sem reabrir modal</span>
+              </div>
+              <div class="chips-scroll med-quick-scroll">
+                <button
+                  v-for="hist in historicoRapido"
+                  :key="'hist-' + criarChaveMedicacao(hist)"
+                  class="chip"
+                  @click="adicionarMedicacaoRapida(hist, 'historico')"
+                >{{ formatarRotuloMedicacaoRapida(hist) }}</button>
+              </div>
+            </div>
+          </div>
+
           <p v-if="form.medicamentos.length === 0" class="lista-vazia">
             Nenhum medicamento adicionado
           </p>
@@ -125,6 +157,12 @@
                 <span v-if="med.dupla" class="badge-dupla">dupla ✓</span>
               </div>
               <div class="med-item-acoes">
+                <button
+                  class="btn-icon-sm"
+                  :class="{ 'btn-favorite-on': ehPreset(med) }"
+                  @click="alternarPreset(med)"
+                  :title="ehPreset(med) ? 'Remover preset' : 'Salvar preset'"
+                >{{ ehPreset(med) ? '★' : '☆' }}</button>
                 <button  data-testid="auto-btn-anotacaomedicacaoview-5" class="btn-icon-sm" @click="editarMed(i)" title="Editar">✏</button>
                 <button  data-testid="auto-btn-anotacaomedicacaoview-6" class="btn-icon-sm btn-danger-sm" @click="removerMed(i)" title="Remover">✕</button>
               </div>
@@ -215,16 +253,28 @@
               <div v-if="mostrarSug && sugestoes.length" class="autocomplete-dropdown">
                 <button
                    data-testid="auto-btn-anotacaomedicacaoview-15" v-for="sug in sugestoes"
-                  :key="sug.nome + sug.tipo"
+                  :key="sug.nome + sug.tipo + formatarBadgeSugestao(sug.med)"
                   class="autocomplete-item"
                   @mousedown.prevent="selecionarSugestao(sug)">
                   <span class="autocomplete-nome">{{ sug.nome }}</span>
-                  <span v-if="sug.tipo === 'hist'" class="autocomplete-badge">
-                    {{ sug.med.dose }}{{ sug.med.via === 'OFT' ? 'Gts' : sug.med.unidade }} · {{ sug.med.via }}
+                  <span v-if="sug.tipo !== 'base'" class="autocomplete-badge">
+                    {{ formatarBadgeSugestao(sug.med) }}
                   </span>
                   <span v-else class="autocomplete-hint">💊</span>
                 </button>
               </div>
+            </div>
+          </div>
+
+          <div v-if="presetsCatalogoNome.length" class="campo">
+            <label>Modelos comuns para {{ modal.d.nome }}</label>
+            <div class="chips-wrap">
+              <button
+                v-for="preset in presetsCatalogoNome"
+                :key="'catalogo-' + preset.rotulo"
+                class="chip chip-sm"
+                @click="aplicarTemplateNoModal(preset.med)"
+              >{{ formatarBadgeSugestao(preset.med) }}</button>
             </div>
           </div>
 
@@ -299,11 +349,24 @@
 
           <!-- EV: com ou sem diluição -->
           <div v-if="modal.d.via === 'EV'" class="campo">
-            <label class="checkbox-label" :class="{ checked: modal.d.evDiluicao }">
-              <input  data-testid="auto-input-anotacaomedicacaoview-13" type="checkbox" v-model="modal.d.evDiluicao">
-              <span>Com diluição</span>
-            </label>
-            <p v-if="!modal.d.evDiluicao" class="hint-text">Sem diluição = administrado direto EV</p>
+            <label>Modo EV</label>
+            <div class="chips-wrap">
+              <button
+                data-testid="auto-btn-anotacaomedicacaoview-19"
+                class="chip"
+                :class="{ ativo: !modal.d.evDiluicao }"
+                @click="selecionarModoEv(false)"
+              >Direto</button>
+              <button
+                data-testid="auto-btn-anotacaomedicacaoview-20"
+                class="chip"
+                :class="{ ativo: modal.d.evDiluicao }"
+                @click="selecionarModoEv(true)"
+              >Diluído</button>
+            </div>
+            <p class="hint-text">
+              {{ modal.d.evDiluicao ? 'Ao escolher EV diluído, informe solução e volume.' : 'Sem diluição = administrado direto EV.' }}
+            </p>
           </div>
 
           <!-- EV: campos de diluição -->
@@ -320,13 +383,13 @@
             <div class="campo">
               <label>Solução </label>
               <div class="chips-wrap">
-                <button  data-testid="auto-btn-anotacaomedicacaoview-19" class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
-                <button  data-testid="auto-btn-anotacaomedicacaoview-20" class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
-                <button  data-testid="auto-btn-anotacaomedicacaoview-21" class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
-                <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip" :class="{ ativo: modal.d.evSolucao === 'outra' }" @click="modal.d.evSolucao = 'outra'">Outra</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-21" class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-23" class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-24" class="chip" :class="{ ativo: modal.d.evSolucao === 'outra' }" @click="modal.d.evSolucao = 'outra'">Outra</button>
               </div>
               <input v-if="modal.d.evSolucao === 'outra'"
-                data-testid="auto-input-anotacaomedicacaoview-21"
+                data-testid="auto-input-anotacaomedicacaoview-22"
                 type="text"
                 v-model="modal.d.evSolucaoCustom"
                 placeholder="Ex: glicose 50%, ringer lactato..."
@@ -341,7 +404,7 @@
 
             <div class="campo">
               <label class="checkbox-label" :class="{ checked: modal.d.evBic }">
-                <input  data-testid="auto-input-anotacaomedicacaoview-15" type="checkbox" v-model="modal.d.evBic">
+                <input  data-testid="auto-input-anotacaomedicacaoview-15" type="checkbox" :checked="modal.d.evBic" @change="alternarBic($event.target.checked)">
                 <span>BIC (Bomba de Infusão Contínua)</span>
               </label>
               <p v-if="modal.d.evBic" class="hint-text">Informe tempo, velocidade ou ambos</p>
@@ -375,57 +438,66 @@
 
           </template>
 
-          <!-- Dupla checagem -->
-          <div v-if="modal.d.via !== 'Recusa'" class="campo">
-            <label class="checkbox-label" :class="{ checked: modal.d.dupla }">
-              <input  data-testid="auto-input-anotacaomedicacaoview-18" type="checkbox" v-model="modal.d.dupla">
-              <span>Dupla checagem</span>
-            </label>
-            <div v-if="modal.d.dupla" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
-              <select data-testid="auto-input-anotacaomedicacaoview-19" v-model="modal.d.duplaCargo" class="campo-inline">
-                <option value="téc. de enfermagem">Téc. de enfermagem</option>
-                <option value="enf.">Enf.</option>
-              </select>
-              <div class="autocomplete-wrap">
-                <input
-                   data-testid="auto-input-anotacaomedicacaoview-20" type="text"
-                  :value="modal.d.duplaNome"
-                  @input="onDuplaNomeInput($event.target.value)"
-                  @focus="onDuplaNomeInput(modal.d.duplaNome)"
-                  @blur="fecharDuplaSug"
-                  placeholder="Nome do profissional *"
-                  autocomplete="off">
-                <div v-if="mostrarDuplaSug && duplaSugestoes.length" class="autocomplete-dropdown">
-                  <button
-                    v-for="nome in duplaSugestoes" :key="nome"
-                    class="autocomplete-item"
-                    @mousedown.prevent="selecionarDuplaSug(nome)">
-                    <span class="autocomplete-nome">{{ nome }}</span>
-                  </button>
+          <div v-if="modal.d.via !== 'Recusa'" class="campo campo-avancado">
+            <button class="btn-avancado" @click="modal.avancado = !modal.avancado">
+              {{ modal.avancado ? 'Ocultar detalhes' : 'Mais detalhes' }}
+            </button>
+            <p class="hint-text">Dupla checagem e lote ficam fora do fluxo rápido.</p>
+          </div>
+
+          <template v-if="modal.avancado && modal.d.via !== 'Recusa'">
+            <!-- Dupla checagem -->
+            <div class="campo">
+              <label class="checkbox-label" :class="{ checked: modal.d.dupla }">
+                <input  data-testid="auto-input-anotacaomedicacaoview-18" type="checkbox" v-model="modal.d.dupla">
+                <span>Dupla checagem</span>
+              </label>
+              <div v-if="modal.d.dupla" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+                <select data-testid="auto-input-anotacaomedicacaoview-19" v-model="modal.d.duplaCargo" class="campo-inline">
+                  <option value="téc. de enfermagem">Téc. de enfermagem</option>
+                  <option value="enf.">Enf.</option>
+                </select>
+                <div class="autocomplete-wrap">
+                  <input
+                     data-testid="auto-input-anotacaomedicacaoview-20" type="text"
+                    :value="modal.d.duplaNome"
+                    @input="onDuplaNomeInput($event.target.value)"
+                    @focus="onDuplaNomeInput(modal.d.duplaNome)"
+                    @blur="fecharDuplaSug"
+                    placeholder="Nome do profissional *"
+                    autocomplete="off">
+                  <div v-if="mostrarDuplaSug && duplaSugestoes.length" class="autocomplete-dropdown">
+                    <button
+                      v-for="nome in duplaSugestoes" :key="nome"
+                      class="autocomplete-item"
+                      @mousedown.prevent="selecionarDuplaSug(nome)">
+                      <span class="autocomplete-nome">{{ nome }}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Lote / Validade -->
-          <div v-if="modal.d.via !== 'Recusa'" class="campo">
-            <label class="checkbox-label" :class="{ checked: modal.d.loteAtivo }">
-              <input type="checkbox" v-model="modal.d.loteAtivo">
-              <span>Informar lote / validade</span>
-            </label>
-            <div v-if="modal.d.loteAtivo" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
-              <input type="number" v-model="modal.d.loteFrasco" class="campo-inline"
-                placeholder="Nº do frasco (opcional — ex: 1, 2, 3)" min="1" step="1">
-              <input type="text" v-model="modal.d.lote" class="campo-inline"
-                placeholder="Número do lote *">
-              <input type="text" v-model="modal.d.loteFabricacao" class="campo-inline"
-                placeholder="Fabricação (ex: 10/2024) *">
-              <input type="text" v-model="modal.d.loteValidade" class="campo-inline"
-                placeholder="Validade (ex: 09/2026) *">
-              <input type="text" v-model="modal.d.loteMarca" class="campo-inline"
-                placeholder="Marca *">
+            <!-- Lote / Validade -->
+            <div class="campo">
+              <label class="checkbox-label" :class="{ checked: modal.d.loteAtivo }">
+                <input type="checkbox" v-model="modal.d.loteAtivo">
+                <span>Informar lote / validade</span>
+              </label>
+              <div v-if="modal.d.loteAtivo" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+                <input type="number" v-model="modal.d.loteFrasco" class="campo-inline"
+                  placeholder="Nº do frasco (opcional — ex: 1, 2, 3)" min="1" step="1">
+                <input type="text" v-model="modal.d.lote" class="campo-inline"
+                  placeholder="Número do lote *">
+                <input type="text" v-model="modal.d.loteFabricacao" class="campo-inline"
+                  placeholder="Fabricação (ex: 10/2024) *">
+                <input type="text" v-model="modal.d.loteValidade" class="campo-inline"
+                  placeholder="Validade (ex: 09/2026) *">
+                <input type="text" v-model="modal.d.loteMarca" class="campo-inline"
+                  placeholder="Marca *">
+              </div>
             </div>
-          </div>
+          </template>
 
         </div>
 
@@ -433,8 +505,15 @@
 
         <div class="modal-footer">
           <button  data-testid="auto-btn-anotacaomedicacaoview-24" class="btn btn-secondary" style="flex:1" @click="fecharModal">Cancelar</button>
-          <button  data-testid="auto-btn-anotacaomedicacaoview-25" class="btn btn-primary" style="flex:2" @click="confirmarMed">
-            {{ modal.editIdx !== null ? 'Salvar alterações' : 'Adicionar' }}
+          <button
+            v-if="modal.editIdx === null"
+            data-testid="auto-btn-anotacaomedicacaoview-25"
+            class="btn btn-secondary"
+            style="flex:1.2"
+            @click="confirmarMed()"
+          >Adicionar</button>
+          <button  data-testid="auto-btn-anotacaomedicacaoview-26" class="btn btn-primary" style="flex:2" @click="confirmarMed({ continuar: modal.editIdx === null })">
+            {{ modal.editIdx !== null ? 'Salvar alterações' : 'Salvar e adicionar próxima' }}
           </button>
         </div>
 
@@ -445,7 +524,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { useToast }          from '../../composables/useToast.js'
@@ -453,7 +532,21 @@ import { useRascunho }       from '../../composables/useRascunho.js'
 import { useAuthStore }      from '../../stores/auth.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useCopia }          from '../../composables/useCopia.js'
-import { sugerirMedicamentos } from '../../data/medicamentos.js'
+import { sugerirMedicamentosDetalhados, listarPresetsCatalogo } from '../../data/medicamentos.js'
+import {
+  MEDICACAO_HISTORY_MAX,
+  MEDICACAO_PRESETS_MAX,
+  criarColecaoMedicacaoVazia,
+  normalizarColecaoMedicacao,
+  mesclarColecoesMedicacao,
+  inserirNaColecaoMedicacao,
+  removerDaColecaoMedicacao,
+  criarChaveMedicacao,
+  formatarRotuloMedicacaoRapida,
+  prepararProximaMedicacao,
+  gerarTextoMedicacao,
+  extrairTemplateMedicacao,
+} from '../../utils/medicacao.js'
 import { db } from '../../firebase.js'
 import { ref as dbRef, get, set } from 'firebase/database'
 
@@ -470,32 +563,103 @@ function selecionarPaciente(p) {
 }
 
 // ── Histórico de medicamentos (Firebase + localStorage como cache) ────────────
-const HIST_MAX       = 20
 const historicoCache = ref([])   // fonte de verdade em memória
 
 function histKeyLS() {
   return `med_historico_${auth.syncCode || 'guest'}`
 }
+const historicoPayload = ref(criarColecaoMedicacaoVazia())
+const presetsCache     = ref([])
+const presetsPayload   = ref(criarColecaoMedicacaoVazia())
+const presetsRapidos   = computed(() => presetsCache.value.slice(0, 6))
+const presetKeys       = computed(() => new Set(presetsCache.value.map((item) => criarChaveMedicacao(item))))
+const historicoRapido  = computed(() =>
+  historicoCache.value
+    .filter((item) => !presetKeys.value.has(criarChaveMedicacao(item)))
+    .slice(0, 6)
+)
+
 function histPathFB() {
   return `med_historico/${auth.syncCode}`
 }
+function presetsKeyLS() {
+  return `med_presets_${auth.syncCode || 'guest'}`
+}
+function presetsPathFB() {
+  return `med_presets/${auth.syncCode}`
+}
 
-function _lerLS() {
-  try { return JSON.parse(localStorage.getItem(histKeyLS()) || '[]') }
-  catch { return [] }
+function _lerLS(chave, limite) {
+  try { return normalizarColecaoMedicacao(JSON.parse(localStorage.getItem(chave) || 'null'), limite) }
+  catch { return criarColecaoMedicacaoVazia() }
 }
-function _gravarLS(lista) {
-  localStorage.setItem(histKeyLS(), JSON.stringify(lista))
+function _gravarLS(chave, colecao) {
+  localStorage.setItem(chave, JSON.stringify(colecao))
 }
-async function _gravarFB(lista) {
+async function _gravarFB(caminho, colecao) {
   if (!auth.syncCode) return
-  try { await set(dbRef(db, histPathFB()), lista) }
+  try { await set(dbRef(db, caminho), colecao) }
   catch { /* silencioso — localStorage já foi atualizado */ }
 }
 
 // Carrega histórico: localStorage imediato + Firebase em background
+function _colecoesIguais(a, b, limite) {
+  return JSON.stringify(normalizarColecaoMedicacao(a, limite)) === JSON.stringify(normalizarColecaoMedicacao(b, limite))
+}
+
+async function _sincronizarColecao({ keyLS, pathFB, payloadRef, itemsRef, limite }) {
+  const local = _lerLS(keyLS, limite)
+  payloadRef.value = local
+  itemsRef.value = local.items
+
+  if (!auth.syncCode) return
+
+  try {
+    const snap = await get(dbRef(db, pathFB))
+    const remoto = snap.exists()
+      ? normalizarColecaoMedicacao(snap.val(), limite)
+      : criarColecaoMedicacaoVazia()
+
+    const mesclado = mesclarColecoesMedicacao(local, remoto, limite)
+    payloadRef.value = mesclado
+    itemsRef.value = mesclado.items
+    _gravarLS(keyLS, mesclado)
+
+    if (!_colecoesIguais(mesclado, remoto, limite)) {
+      _gravarFB(pathFB, mesclado)
+    }
+  } catch { /* fica com localStorage */ }
+}
+
+function _persistirHistorico() {
+  _gravarLS(histKeyLS(), historicoPayload.value)
+  _gravarFB(histPathFB(), historicoPayload.value)
+}
+
+function _persistirPresets() {
+  _gravarLS(presetsKeyLS(), presetsPayload.value)
+  _gravarFB(presetsPathFB(), presetsPayload.value)
+}
+
 onMounted(async () => {
   pacientesStore.iniciar()
+  await Promise.all([
+    _sincronizarColecao({
+      keyLS: histKeyLS(),
+      pathFB: histPathFB(),
+      payloadRef: historicoPayload,
+      itemsRef: historicoCache,
+      limite: MEDICACAO_HISTORY_MAX,
+    }),
+    _sincronizarColecao({
+      keyLS: presetsKeyLS(),
+      pathFB: presetsPathFB(),
+      payloadRef: presetsPayload,
+      itemsRef: presetsCache,
+      limite: MEDICACAO_PRESETS_MAX,
+    }),
+  ])
+  return
   historicoCache.value = _lerLS()          // instantâneo
   if (!auth.syncCode) return
   try {
@@ -511,6 +675,11 @@ onMounted(async () => {
 })
 
 function adicionarAoHistorico(med) {
+  if (!extrairTemplateMedicacao(med)) return
+  historicoPayload.value = inserirNaColecaoMedicacao(historicoPayload.value, med, MEDICACAO_HISTORY_MAX)
+  historicoCache.value = historicoPayload.value.items
+  _persistirHistorico()
+  return
   const hist = [...historicoCache.value]
   const idx  = hist.findIndex(h => h.nome === med.nome && h.dose === med.dose && h.via === med.via)
   if (idx !== -1) hist.splice(idx, 1)
@@ -522,8 +691,74 @@ function adicionarAoHistorico(med) {
 }
 
 // ── Autocomplete state ────────────────────────────────────────────────────────
+function ehPreset(med) {
+  const chave = criarChaveMedicacao(med)
+  return Boolean(chave && presetKeys.value.has(chave))
+}
+
+function alternarPreset(med) {
+  const chave = criarChaveMedicacao(med)
+  if (!chave) return
+
+  if (presetKeys.value.has(chave)) {
+    presetsPayload.value = removerDaColecaoMedicacao(presetsPayload.value, chave)
+    presetsCache.value = presetsPayload.value.items
+    _persistirPresets()
+    showToast('Preset removido')
+    return
+  }
+
+  presetsPayload.value = inserirNaColecaoMedicacao(presetsPayload.value, med, MEDICACAO_PRESETS_MAX)
+  presetsCache.value = presetsPayload.value.items
+  _persistirPresets()
+  showToast('Preset salvo')
+}
+
+function _marcarPresetUsado(med) {
+  if (!ehPreset(med)) return
+  presetsPayload.value = inserirNaColecaoMedicacao(presetsPayload.value, med, MEDICACAO_PRESETS_MAX)
+  presetsCache.value = presetsPayload.value.items
+  _persistirPresets()
+}
+
+function adicionarMedicacaoRapida(med, origem = 'historico') {
+  const template = extrairTemplateMedicacao(med)
+  if (!template) return
+
+  const novo = { ...medVazio(), ...template }
+  form.medicamentos.push(novo)
+  adicionarAoHistorico(novo)
+  if (origem === 'preset') _marcarPresetUsado(novo)
+  showToast('Medicamento adicionado')
+}
+
 const sugestoes  = ref([])
 const mostrarSug = ref(false)
+const presetsCatalogoNome = computed(() =>
+  modal.d?.nome?.trim()?.length >= 2 ? listarPresetsCatalogo(modal.d.nome).slice(0, 4) : []
+)
+
+function formatarBadgeSugestao(med) {
+  if (!med?.via) return 'Nome'
+  if (med.via === 'DERM') return 'DERM'
+
+  const dose = med.dose
+    ? `${med.dose}${med.via === 'OFT' ? 'Gts' : med.unidade || ''}`
+    : ''
+
+  let via = med.via
+  if (med.via === 'OFT') via = `OFT ${med.oftOlho || ''}`.trim()
+  if (med.via === 'EV' && med.evBic) via = 'EV BIC'
+  else if (med.via === 'EV' && med.evDiluicao) via = 'EV diluído'
+
+  return [dose, via].filter(Boolean).join(' · ')
+}
+
+function aplicarTemplateNoModal(med) {
+  modal.d = { ...medVazio(), ...med }
+  modal.erro = ''
+  modal.avancado = Boolean(modal.d.dupla || modal.d.loteAtivo)
+}
 
 function onNomeInput(val) {
   modal.d.nome = val
@@ -532,23 +767,15 @@ function onNomeInput(val) {
     mostrarSug.value = false
     return
   }
-  const hist      = historicoCache.value
-  const nomesHist = hist.map(h => h.nome)
-  const resultados = sugerirMedicamentos(val, nomesHist, 8)
-  sugestoes.value = resultados.map(nome => {
-    const histItem = hist.find(h => h.nome === nome)
-    return histItem
-      ? { tipo: 'hist', nome, med: histItem }
-      : { tipo: 'base', nome }
-  })
+  sugestoes.value = sugerirMedicamentosDetalhados(val, historicoCache.value, 8)
   mostrarSug.value = sugestoes.value.length > 0
 }
 
 function selecionarSugestao(sug) {
-  if (sug.tipo === 'hist') {
-    Object.assign(modal.d, { ...sug.med })
-  } else {
+  if (sug.tipo === 'base') {
     modal.d.nome = sug.nome
+  } else {
+    aplicarTemplateNoModal(sug.med)
   }
   sugestoes.value  = []
   mostrarSug.value = false
@@ -674,6 +901,7 @@ const modal = reactive({
   aberto:  false,
   editIdx: null,
   erro:    '',
+  avancado: false,
   d:       medVazio()
 })
 
@@ -681,6 +909,7 @@ function abrirModal() {
   modal.d       = medVazio()
   modal.editIdx = null
   modal.erro    = ''
+  modal.avancado = false
   modal.aberto  = true
 }
 
@@ -688,20 +917,56 @@ function editarMed(i) {
   modal.d       = { ...form.medicamentos[i] }
   modal.editIdx = i
   modal.erro    = ''
+  modal.avancado = Boolean(modal.d.dupla || modal.d.loteAtivo)
   modal.aberto  = true
 }
 
 function fecharModal() {
   modal.aberto = false
+  modal.erro = ''
+  mostrarSug.value = false
+  sugestoes.value = []
 }
 
 function selecionarVia(v) {
   modal.d.via = v
-  modal.d.localAnatomico = ''
   if (v === 'OFT') modal.d.unidade = 'Gts'
+  else if (modal.d.unidade === 'Gts') modal.d.unidade = 'mg'
+
+  if (v !== 'EV') {
+    modal.d.evDiluicao = false
+    modal.d.evVolume = ''
+    modal.d.evSolucao = 'SF'
+    modal.d.evSolucaoCustom = ''
+    modal.d.evBic = false
+    modal.d.evTempoH = ''
+    modal.d.evTempoMin = ''
+    modal.d.evVelocidade = ''
+  }
+  if (v !== 'OFT') modal.d.oftOlho = ''
+  if (!['IM', 'SC'].includes(v)) modal.d.localAnatomico = ''
+  if (v !== 'Recusa') modal.d.recusaNome = ''
 }
 
-function confirmarMed() {
+function selecionarModoEv(comDiluicao) {
+  modal.d.evDiluicao = comDiluicao
+  if (!comDiluicao) {
+    modal.d.evVolume = ''
+    modal.d.evSolucao = 'SF'
+    modal.d.evSolucaoCustom = ''
+  }
+}
+
+function alternarBic(ativo) {
+  modal.d.evBic = ativo
+  if (!ativo) {
+    modal.d.evTempoH = ''
+    modal.d.evTempoMin = ''
+    modal.d.evVelocidade = ''
+  }
+}
+
+function confirmarMed({ continuar = false } = {}) {
   modal.erro = ''
   const d = modal.d
 
@@ -721,6 +986,9 @@ function confirmarMed() {
   if (d.via === 'EV' && d.evDiluicao) {
     if (!d.evVolume)  { modal.erro = 'Informe o volume';    return }
     if (!d.evSolucao) { modal.erro = 'Selecione a solução'; return }
+    if (d.evSolucao === 'outra' && !String(d.evSolucaoCustom).trim()) {
+      modal.erro = 'Descreva a solução utilizada'; return
+    }
   }
   if (d.via === 'EV' && d.evBic && !d.evTempoH && !d.evTempoMin && !d.evVelocidade) {
     modal.erro = 'BIC requer ao menos tempo ou velocidade (ml/h)'; return
@@ -737,7 +1005,52 @@ function confirmarMed() {
     if (!d.loteMarca.trim())     { modal.erro = 'Informe a marca'; return }
   }
 
-  const med = { ...d, nome: d.nome.trim() }
+  const med = {
+    ...d,
+    nome: d.nome.trim(),
+    dose: String(d.dose ?? '').trim(),
+    recusaNome: String(d.recusaNome || '').trim(),
+    duplaNome: String(d.duplaNome || '').trim(),
+    lote: String(d.lote || '').trim(),
+    loteFabricacao: String(d.loteFabricacao || '').trim(),
+    loteValidade: String(d.loteValidade || '').trim(),
+    loteMarca: String(d.loteMarca || '').trim(),
+  }
+
+  if (med.via !== 'EV') {
+    med.evDiluicao = false
+    med.evVolume = ''
+    med.evSolucao = 'SF'
+    med.evSolucaoCustom = ''
+    med.evBic = false
+    med.evTempoH = ''
+    med.evTempoMin = ''
+    med.evVelocidade = ''
+  }
+  if (!med.evDiluicao) {
+    med.evVolume = ''
+    med.evSolucao = 'SF'
+    med.evSolucaoCustom = ''
+  }
+  if (!med.evBic) {
+    med.evTempoH = ''
+    med.evTempoMin = ''
+    med.evVelocidade = ''
+  }
+  if (med.via !== 'OFT') med.oftOlho = ''
+  if (!['IM', 'SC'].includes(med.via)) med.localAnatomico = ''
+  if (med.via !== 'Recusa') med.recusaNome = ''
+  if (!med.dupla) {
+    med.duplaCargo = 'téc. de enfermagem'
+    med.duplaNome = ''
+  }
+  if (!med.loteAtivo) {
+    med.loteFrasco = ''
+    med.lote = ''
+    med.loteFabricacao = ''
+    med.loteValidade = ''
+    med.loteMarca = ''
+  }
 
   if (modal.editIdx !== null) {
     form.medicamentos[modal.editIdx] = med
@@ -746,7 +1059,17 @@ function confirmarMed() {
   }
 
   adicionarAoHistorico(med)
+  if (ehPreset(med)) _marcarPresetUsado(med)
   if (med.dupla && med.duplaNome.trim()) _salvarDuplaNome(med.duplaNome.trim())
+  if (continuar && modal.editIdx === null) {
+    modal.d = { ...medVazio(), ...prepararProximaMedicacao(med) }
+    modal.erro = ''
+    modal.avancado = false
+    sugestoes.value = []
+    mostrarSug.value = false
+    showToast('Medicamento salvo. Pronto para a próxima.')
+    return
+  }
   fecharModal()
 }
 
@@ -869,6 +1192,9 @@ function gerar() {
     erro.value = 'Informe o horário.'
     return
   }
+  textoGerado.value = gerarTextoMedicacao(form)
+  gerado.value      = true
+  return
 
   const h = form.horario.replace(':', 'h')
 
@@ -1043,6 +1369,48 @@ function novaAnotacao() {
   background: linear-gradient(180deg, rgba(30, 136, 229, 0.07), rgba(17, 29, 50, 1));
 }
 
+.med-quick-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.med-quick-block {
+  background: rgba(10, 22, 40, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.med-quick-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.med-quick-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.med-quick-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.med-quick-scroll {
+  margin-top: 0;
+}
+
+.chip-quick {
+  border-color: rgba(30, 136, 229, 0.35);
+  background: rgba(30, 136, 229, 0.12);
+}
+
 .med-section-head {
   margin-bottom: 14px;
 }
@@ -1182,6 +1550,11 @@ function novaAnotacao() {
 }
 .btn-icon-sm:active { background: var(--bg-hover); }
 .btn-danger-sm:active { color: var(--danger); border-color: var(--danger); }
+
+.btn-favorite-on {
+  color: #f4c95d;
+  border-color: rgba(244, 201, 93, 0.4);
+}
 
 /* ── Botão adicionar medicamento ── */
 .btn-add-med {
@@ -1360,6 +1733,26 @@ select.campo-inline {
   gap: 10px;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.campo-avancado {
+  margin-top: 2px;
+}
+
+.btn-avancado {
+  width: 100%;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn-avancado:active {
+  background: rgba(255, 255, 255, 0.07);
 }
 
 /* ── Autocomplete ── */
