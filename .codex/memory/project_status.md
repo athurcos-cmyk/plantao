@@ -32,6 +32,7 @@ Design doc estrategico mais recente conhecido:
 - Anotacao Inicial com dispositivos, campos configuraveis e fluxo de poltrona
 - Sinais Vitais com dor 0-10 e conduta
 - Medicacao com multiplos itens, autocomplete detalhado, historico robusto, presets rapidos, `Salvar e adicionar proxima` e dupla checagem
+- Tela de medicacao com hierarquia visual revista: painel de resumo do horario, atalhos de paciente separados e cards de itens mais claros para leitura rapida no plantao
 - Encaminhamento com destinos customizados
 - Banho com higiene multi-add e item Outro
 - Curativo com avaliacao COREN, locais/materiais no Firebase e referencia expandida
@@ -60,6 +61,7 @@ Design doc estrategico mais recente conhecido:
 - Historico da tela de medicacao agora mescla local + Firebase, com deduplicacao por esquema completo para reduzir sumicos e duplicacoes
 - `src/data/medicamentos.js` agora funciona como catalogo enriquecido de sugestoes com vias, doses e alguns esquemas EV comuns
 - A tela de medicacao passou a oferecer quick add por historico/preset e fluxo `Salvar e adicionar proxima` para montar o horario com menos toques
+- A mesma tela agora tambem usa um layout mais dirigido ao horario: hero-resumo, secoes mais nitidas e bloco final de geracao destacado
 
 ## Alertas operacionais
 

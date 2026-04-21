@@ -18,6 +18,7 @@
 - Modal ficou mais rapido para caso comum: detalhes como dupla checagem e lote foram rebaixados para um bloco secundario, sem esconder `Recusa`
 - EV ficou mais guiado com distincao direta entre `Direto` e `Diluido`; ao escolher diluicao, o app abre solucao e volume
 - Geracao de texto foi ajustada e testada para preservar via explicita em cada medicamento do texto final
+- Tela de medicacao ganhou novo layout visual com painel-resumo do horario, atalhos de paciente mais claros, lista de itens mais legivel e bloco final de geracao melhor destacado
 
 ### Validacao
 
