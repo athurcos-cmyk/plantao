@@ -29,45 +29,8 @@
 
       <!-- ── Formulário ── -->
       <div v-if="!gerado">
-        <section class="med-hero">
-          <div class="med-hero-head">
-            <div class="med-flow-head">
-              <span class="med-hero-kicker">Plantao</span>
-              <h1 class="med-hero-title">Medicacao do horario</h1>
-            </div>
-            <span class="med-hero-status">{{ resumoFluxo }}</span>
-          </div>
-          <p class="med-hero-sub">Monte o horario, confirme o preparo e va adicionando os itens sem perder o ritmo do plantao.</p>
-
-          <div class="med-hero-grid">
-            <div class="med-hero-stat med-hero-stat-accent">
-              <span class="med-hero-label">Horario</span>
-              <strong>{{ horarioLabel }}</strong>
-              <small>{{ form.horario ? 'Pronto para lancar este horario.' : 'Defina antes de gerar o texto.' }}</small>
-            </div>
-
-            <div class="med-hero-stat">
-              <span class="med-hero-label">Itens</span>
-              <strong>{{ form.medicamentos.length }}</strong>
-              <small>{{ resumoItens }}</small>
-            </div>
-
-            <div class="med-hero-stat med-hero-stat-wide">
-              <span class="med-hero-label">Paciente</span>
-              <strong>{{ pacienteLabel }}</strong>
-              <small>{{ pacientesStore.pacientes.length ? 'Use os atalhos abaixo para puxar nome e leito.' : 'Campo opcional nesta etapa.' }}</small>
-            </div>
-          </div>
-        </section>
-        <section v-if="pacientesStore.pacientes.length > 0" class="med-card med-card-paciente">
-          <div class="med-inline-head">
-            <div class="med-flow-head">
-              <span class="med-section-kicker">Paciente</span>
-              <h2 class="med-section-title">Atalhos do plantao</h2>
-            </div>
-            <span class="med-inline-note">{{ form.nomePaciente ? 'Selecionado' : 'Opcional' }}</span>
-          </div>
-          <p class="med-section-sub med-section-sub-tight">Toque em um paciente ja cadastrado para preencher nome e leito sem digitar tudo de novo.</p>
+        <div v-if="pacientesStore.pacientes.length > 0" style="margin-bottom:16px">
+          <label class="label-small">Paciente registrado</label>
           <div class="chips-scroll" style="margin-top:6px">
             <button
               v-for="p in pacientesStore.pacientes"
@@ -77,17 +40,13 @@
               @click="selecionarPaciente(p)"
             >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
           </div>
-        </section>
+        </div>
 
         <section class="med-card">
           <div class="med-section-head">
-            <span class="med-step-badge">1</span>
             <span class="med-section-kicker">Preparo</span>
             <h2 class="med-section-title">Checagem antes da administração</h2>
             <p class="med-section-sub">Marque só o que realmente foi feito neste horário.</p>
-          </div>
-          <div class="med-inline-note-row">
-            <span class="med-inline-note">{{ form.horario ? 'Horario definido' : 'Comece por aqui' }}</span>
           </div>
 
           <div class="campo">
@@ -145,25 +104,18 @@
         </section>
 
         <section class="med-card med-card-medicamentos">
-          <div class="med-section-head med-section-head-row med-section-head-split">
+          <div class="med-section-head med-section-head-row">
             <div>
               <span class="med-section-kicker">Administração</span>
               <h2 class="med-section-title">Medicamentos do horário</h2>
             </div>
-            <span class="med-count">{{ form.medicamentos.length }}</span>
           </div>
           <p class="med-section-sub med-section-sub-tight">Adicione um ou mais medicamentos antes de gerar o texto final.</p>
-          <div class="med-summary-strip">
-            <span class="med-summary-pill med-summary-pill-accent">{{ horarioLabel }}</span>
-            <span class="med-summary-pill">{{ resumoItens }}</span>
-            <span v-if="totalDuplas" class="med-summary-pill">{{ totalDuplas }} dupla(s)</span>
-          </div>
 
           <div v-if="presetsRapidos.length || historicoRapido.length" class="med-quick-stack">
             <div v-if="presetsRapidos.length" class="med-quick-block">
               <div class="med-quick-head">
                 <span class="med-quick-title">Presets rápidos</span>
-                <span class="med-quick-note">1 toque</span>
               </div>
               <div class="chips-scroll med-quick-scroll">
                 <button
@@ -178,7 +130,6 @@
             <div v-if="historicoRapido.length" class="med-quick-block">
               <div class="med-quick-head">
                 <span class="med-quick-title">Últimos usados</span>
-                <span class="med-quick-note">sem reabrir modal</span>
               </div>
               <div class="chips-scroll med-quick-scroll">
                 <button
@@ -192,22 +143,19 @@
           </div>
 
           <p v-if="form.medicamentos.length === 0" class="lista-vazia">
-            Nenhum medicamento adicionado ainda. Use os chips rapidos ou abra o modal para montar o horario.
+            Nenhum medicamento adicionado
           </p>
 
           <div v-else class="med-lista">
             <div v-for="(med, i) in form.medicamentos" :key="i" class="med-item">
-              <div class="med-item-main">
-                <span class="med-item-order">{{ String(i + 1).padStart(2, '0') }}</span>
-                <div class="med-item-info">
-                  <span class="med-nome">{{ med.nome }}</span>
-                  <span class="med-detalhe">{{ resumirMed(med) }}</span>
-                  <div class="med-item-tags">
-                    <span v-if="ehPreset(med)" class="med-meta-chip med-meta-chip-warm">preset</span>
-                    <span v-if="med.dupla" class="med-meta-chip">dupla</span>
-                    <span v-if="med.loteAtivo" class="med-meta-chip">lote</span>
-                    <span v-if="med.via === 'Recusa'" class="med-meta-chip med-meta-chip-danger">recusa</span>
-                  </div>
+              <div class="med-item-info">
+                <span class="med-nome">{{ med.nome }}</span>
+                <span class="med-detalhe">{{ resumirMed(med) }}</span>
+                <div class="med-item-tags">
+                  <span v-if="ehPreset(med)" class="med-meta-chip med-meta-chip-warm">preset</span>
+                  <span v-if="med.dupla" class="med-meta-chip">dupla</span>
+                  <span v-if="med.loteAtivo" class="med-meta-chip">lote</span>
+                  <span v-if="med.via === 'Recusa'" class="med-meta-chip med-meta-chip-danger">recusa</span>
                 </div>
               </div>
               <div class="med-item-acoes">
@@ -224,22 +172,15 @@
           </div>
 
           <button  data-testid="auto-btn-anotacaomedicacaoview-7" class="btn-add-med" @click="abrirModal()">
-            + Novo medicamento
+            + Adicionar medicamento
           </button>
         </section>
 
-        <div class="med-submit-box">
-          <div class="med-submit-copy">
-            <span class="med-submit-kicker">Saida final</span>
-            <p class="med-submit-text">{{ resumoFluxoLongo }}</p>
-          </div>
+        <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
-          <p v-if="erro" class="erro-msg">{{ erro }}</p>
-
-          <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">
-            Gerar texto
-          </button>
-        </div>
+        <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">
+          Gerar texto
+        </button>
 
       </div>
 
@@ -913,35 +854,6 @@ const form = reactive({
   leitoPaciente: ''
 })
 
-const horarioLabel = computed(() => form.horario ? form.horario.replace(':', 'h') : 'Horario nao definido')
-const totalAdministrados = computed(() => form.medicamentos.filter((med) => med.via !== 'Recusa').length)
-const totalRecusas = computed(() => form.medicamentos.filter((med) => med.via === 'Recusa').length)
-const totalDuplas = computed(() => form.medicamentos.filter((med) => med.dupla).length)
-const pacienteLabel = computed(() => {
-  const nome = form.nomePaciente.trim()
-  const leito = form.leitoPaciente.trim()
-  if (!nome) return 'Paciente nao informado'
-  return leito ? `${leito} · ${nome}` : nome
-})
-const resumoItens = computed(() => {
-  if (!form.medicamentos.length) return 'Nenhum item no horario'
-  if (totalRecusas.value && totalAdministrados.value) {
-    return `${totalAdministrados.value} administrado(s) e ${totalRecusas.value} recusa(s)`
-  }
-  if (totalRecusas.value) return `${totalRecusas.value} recusa(s)`
-  return `${totalAdministrados.value} administrado(s)`
-})
-const resumoFluxo = computed(() => {
-  if (!form.horario) return 'Defina o horario'
-  if (!form.medicamentos.length) return 'Adicione os itens'
-  return 'Pronto para gerar'
-})
-const resumoFluxoLongo = computed(() => {
-  if (!form.horario) return 'Defina o horario para o texto final sair com o padrao correto.'
-  if (!form.medicamentos.length) return 'Depois do preparo, adicione pelo menos um medicamento para gerar a anotacao.'
-  return `${form.medicamentos.length} item(ns) montado(s). Revise e gere o texto final deste horario.`
-})
-
 // ── Rascunho ──────────────────────────────────────────────────────────────
 const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
   useRascunho(
@@ -1446,103 +1358,6 @@ function novaAnotacao() {
 }
 .btn-home-logo:active { background: var(--bg-hover); }
 
-.med-hero {
-  margin-bottom: 16px;
-  padding: 18px 16px;
-  border: 1px solid rgba(30, 136, 229, 0.2);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at top left, rgba(30, 136, 229, 0.16), transparent 42%),
-    linear-gradient(180deg, rgba(17, 29, 50, 0.98), rgba(10, 22, 40, 0.96));
-}
-
-.med-hero-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.med-hero-kicker {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(234, 238, 243, 0.74);
-  margin-bottom: 6px;
-}
-
-.med-hero-title {
-  font-size: 1.28rem;
-  line-height: 1.1;
-  color: var(--text);
-}
-
-.med-hero-status {
-  flex-shrink: 0;
-  padding: 7px 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(30, 136, 229, 0.26);
-  background: rgba(30, 136, 229, 0.12);
-  color: var(--blue);
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.med-hero-sub {
-  margin-top: 10px;
-  color: var(--text-dim);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.med-hero-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.med-hero-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 82px;
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(9, 18, 34, 0.48);
-}
-
-.med-hero-stat-accent {
-  border-color: rgba(30, 136, 229, 0.22);
-  background: rgba(30, 136, 229, 0.12);
-}
-
-.med-hero-stat-wide {
-  grid-column: 1 / -1;
-}
-
-.med-hero-label {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.med-hero-stat strong {
-  color: var(--text);
-  font-size: 1rem;
-  line-height: 1.2;
-}
-
-.med-hero-stat small {
-  color: var(--text-dim);
-  font-size: 0.78rem;
-  line-height: 1.35;
-}
-
 .med-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -1554,17 +1369,6 @@ function novaAnotacao() {
 .med-card-medicamentos {
   border-color: rgba(30, 136, 229, 0.24);
   background: linear-gradient(180deg, rgba(30, 136, 229, 0.07), rgba(17, 29, 50, 1));
-}
-
-.med-card-paciente {
-  background: linear-gradient(180deg, rgba(17, 29, 50, 1), rgba(12, 23, 38, 0.94));
-}
-
-.med-inline-head,
-.med-flow-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
 }
 
 .med-quick-stack {
@@ -1595,11 +1399,6 @@ function novaAnotacao() {
   color: var(--text);
 }
 
-.med-quick-note {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-}
-
 .med-quick-scroll {
   margin-top: 0;
 }
@@ -1611,13 +1410,6 @@ function novaAnotacao() {
 
 .med-section-head {
   margin-bottom: 14px;
-}
-
-.med-section-head-split {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
 }
 
 .med-section-head-row {
@@ -1654,65 +1446,6 @@ function novaAnotacao() {
   margin-bottom: 14px;
 }
 
-.med-inline-note-row {
-  margin-bottom: 14px;
-}
-
-.med-inline-note {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-dim);
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.med-step-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text);
-  font-size: 0.82rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.med-step-badge-blue {
-  background: rgba(30, 136, 229, 0.16);
-  color: var(--blue);
-}
-
-.med-count-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-.med-count {
-  min-width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background: rgba(30, 136, 229, 0.16);
-  border: 1px solid rgba(30, 136, 229, 0.28);
-  color: var(--blue);
-  font-size: 0.82rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .med-choice {
   background: rgba(10, 22, 40, 0.48);
 }
@@ -1726,39 +1459,11 @@ function novaAnotacao() {
   margin-top: 8px;
 }
 
-.med-summary-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.med-summary-pill {
-  padding: 7px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-dim);
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.med-summary-pill-accent {
-  border-color: rgba(30, 136, 229, 0.24);
-  background: rgba(30, 136, 229, 0.12);
-  color: var(--blue);
-}
-
 /* ── Lista de meds ── */
 .lista-vazia {
-  color: var(--text-dim);
+  color: var(--text-muted);
   font-size: 0.88rem;
   margin-bottom: 12px;
-  padding: 14px;
-  border: 1px dashed rgba(255, 255, 255, 0.09);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  line-height: 1.5;
 }
 
 .med-lista {
@@ -1770,36 +1475,12 @@ function novaAnotacao() {
 
 .med-item {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
   background: rgba(10, 22, 40, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 14px;
-  padding: 12px;
-}
-
-.med-item-main {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
-}
-
-.med-item-order {
-  min-width: 34px;
-  height: 34px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(30, 136, 229, 0.14);
-  border: 1px solid rgba(30, 136, 229, 0.22);
-  color: var(--blue);
-  font-size: 0.8rem;
-  font-weight: 700;
-  flex-shrink: 0;
+  border-radius: var(--radius);
+  padding: 10px 12px;
 }
 
 .med-item-info {
@@ -1811,16 +1492,17 @@ function novaAnotacao() {
 }
 
 .med-nome {
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--text);
-  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .med-detalhe {
   font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.45;
 }
 
 .med-item-tags {
@@ -1858,8 +1540,7 @@ function novaAnotacao() {
 
 .med-item-acoes {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
@@ -1899,34 +1580,6 @@ function novaAnotacao() {
 .btn-add-med:active {
   background: var(--bg-hover);
   border-style: solid;
-}
-
-.med-submit-box {
-  margin-top: 10px;
-  padding: 14px;
-  border-radius: 16px;
-  border: 1px solid rgba(30, 136, 229, 0.18);
-  background: linear-gradient(180deg, rgba(30, 136, 229, 0.06), rgba(17, 29, 50, 0.96));
-}
-
-.med-submit-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.med-submit-kicker {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  color: var(--text-muted);
-}
-
-.med-submit-text {
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: var(--text-dim);
 }
 
 /* ── Chips ── */
