@@ -20,6 +20,13 @@
 - Geracao de texto foi ajustada e testada para preservar via explicita em cada medicamento do texto final
 - Tela de medicacao ganhou novo layout visual com painel-resumo do horario, atalhos de paciente mais claros, lista de itens mais legivel e bloco final de geracao melhor destacado
 
+### Medicacao: ajuste apos uso real no plantao
+
+- Revisao no uso real mostrou que o painel-resumo e microcopys extras atrasavam o fluxo em vez de ajudar
+- A tela voltou para um formato mais enxuto, cortando resumo no topo, estados redundantes e explicacoes que empurravam `Adicionar medicamento` para baixo
+- Foram mantidos apenas os aceleradores que provaram valor no uso real: `Ultimos usados`, presets, favoritar e `Salvar e adicionar proxima`
+- O aprendizado registrado para frente e: na tela de medicacao, priorizar menos leitura, menos scroll e menos toque, mesmo que a hierarquia visual fique mais simples
+
 ### Validacao
 
 - `npm test` passou com 56 testes
@@ -69,3 +76,99 @@
 - Dashboard desktop ganhou botao `Ao lado`
 - Auditoria de seguranca confirmou protecao adequada em Firebase Rules e endpoints
 - Pendencia mantida: rotacionar `CRON_SECRET`
+
+---
+
+## Marco de 2026 reconstruido
+
+> Bloco reconstituido a partir de `TODOS.md` e da memoria do Claude em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\`.
+
+## Sessao 2026-03-28
+
+### Auditoria e decisoes de backlog
+
+- Auditoria de seguranca completa refeita em Firebase Rules, `.env` e endpoints, com confirmacao de que a arquitetura estava protegida e sem risco de vazamento entre usuarios
+- Aviso de PWA para iOS foi removido do backlog por decisao de produto
+- Ficou reforcado como pendencia operacional principal: rotacionar `CRON_SECRET` no Vercel e no cron externo
+- Tambem ficou registrada a leitura de que atrasos de notificacao no Android vinham mais da latencia do FCM e da rede hospitalar do que de bug local
+
+## Sessao 2026-03-26
+
+### Lancamento publico e validacao de linguagem
+
+- App foi lancado publicamente com divulgacao em Instagram, WhatsApp e grupos de Facebook
+- `@plantao.app` entrou no ar com posts e anuncio em carrossel para validar captacao real
+- Politica de privacidade e termos receberam validacao final de linguagem inclusiva
+- Trocas de texto migraram de `enfermeiro` para `profissional de enfermagem` nos documentos publicos
+- Feedback de enfermeira sobre formalidade das anotacoes foi registrado, mas a decisao foi manter o app mais pratico e menos academico por enquanto
+
+### Contexto de gstack
+
+- Doc de GTM em `Thurcos-main-design-20260326-gtm.md` reforcou a tese de distribuicao com Facebook grupos primeiro, WhatsApp como amplificador e Instagram em segunda etapa
+- O mesmo doc registrou como diferencial central do produto a mobilidade offline em ambiente hospitalar caotico, e nao apenas o texto pronto
+- Tambem ficou documentada ali a orientacao de so ligar paywall depois de preencher as 100 vagas gratuitas e observar engajamento real
+
+## Sessao 2026-03-25
+
+### Admin, LGPD e operacao interna
+
+- Admin dashboard foi expandido para tabs de `Usuarios`, `Feedbacks`, `Metricas` e `Monitor`
+- Painel admin ganhou busca, badge de atividade, email individual, leitura de feedbacks e visibilidade de tokens FCM por usuario
+- Broadcast admin foi consolidado com melhor rastreio de erros e depois movido para modal no header para ficar sempre acessivel
+- `api/admin-data.js`, `api/admin-delete-user.js` e `api/admin-email-user.js` entraram na operacao dessa fase
+- Onboarding foi removido do app
+- `privacidade.html` e `termos.html` foram revisados para LGPD, com base legal, DPO, transferencia internacional e disclaimer da Clara
+- Ajustes legais adicionais garantiram revogacao via `contato@plantao.net` e ampliaram o publico descrito para incluir auxiliares de enfermagem
+
+## Sessao 2026-03-23
+
+### Push, conta, desktop e comunicacao
+
+- Migracao de push saiu de OneSignal para FCM nativo com novo `usePushNotificacoes.js`, novo `firebase-messaging-sw.js` e cron adaptado
+- Exclusao de conta ficou robusta com `api/delete-account.js`, limpeza completa de paths de dados e protecao contra re-cadastro Google acidental em conta deletada
+- Sistema de notificacoes foi blindado com arquitetura em 3 camadas: `setTimeout` preciso, cron FCM e safety net por `setInterval`
+- Dashboard ganhou layout desktop responsivo
+- Admin broadcast foi entregue com push e email para todos os usuarios cadastrados
+- Fix operacional confirmou que parte dos problemas de push vinham do `cron-job.org` desabilitado, nao de falha estrutural do codigo
+- Branding publico deixou de usar `tecnico de enfermagem`
+
+### Contexto de gstack
+
+- Doc estrategico `Thurcos-main-design-20260323-205359.md` consolidou a virada de produto para ferramenta individual paga, com foco em habito de uso antes de monetizacao
+- Nessa mesma discussao ficou mais claro o papel do checklist clinico como principal valor do app, acima de “app bonito” ou de features sociais
+
+## Sessao 2026-03-22
+
+### Auth, dominio, landing e features de v1
+
+- Migracao completa de `syncCode + PIN` para Firebase Auth com email/senha e Google
+- Login rapido por codigo passou a existir via endpoint serverless para resolver email no backend
+- Dominio `plantao.net` foi conectado ao Vercel, Firebase Auth e Google OAuth
+- Landing page foi reescrita com hero focado na dor, FAQ, prova de valor e CTA mais forte
+- Sistema de emails transacionais com voz do fundador entrou no ar com `welcome`, `feedback`, `day3` e `goodbye`
+- Notificacao FCM multi-dispositivo passou a salvar tokens por device em `fcm_tokens/{syncCode}/{deviceId}`
+- Anotacao Inicial ganhou campos configuraveis, opcao `Outro` e localizacao `Poltrona`
+- Backend recebeu endurecimento com `CRON_SECRET` obrigatorio, rate limit no chat e no login por codigo e respostas mais seguras
+- Ficou registrado que a configuracao do Resend em producao ainda dependia de chave e verificacao de dominio
+
+## Sessao 2026-03-21
+
+### Base de design e calculadora
+
+- `DESIGN.md` foi criado para formalizar o design system do app
+- Tokens como `--warning`, `--info`, raios e variacoes de cor foram adicionados ao tema
+- LoginView ganhou aviso de modo privado para Safari/iOS
+- Calculadora de medicacao recebeu historico local dos ultimos calculos
+- Calculadora ganhou aba de diluicao de medicamentos em po, com registro explicito do cuidado clinico sobre volume de deslocamento do po liofilizado
+
+### Contexto de gstack
+
+- Doc `Thurcos-main-design-20260321-223914.md` registrou a calculadora como um segundo motivo de abrir o app durante o plantao, com FAB acessivel de qualquer tela e foco total em uso offline
+- Auditoria visual em `.gstack/design-reports/design-audit-meuplantao-2026-03-21.md` confirmou boa aderencia ao design system, corrigiu pontos como touch target baixo no `PcView` e bug de rota no onboarding
+- Essa auditoria tambem marcou a linguagem visual do produto como precisa, clinica e sem “AI slop”, o que ajuda a contextualizar varias decisoes de UI daquele periodo
+
+## Contexto de marco ainda visivel em outros arquivos
+
+- `TODOS.md` segue sendo a fonte mais detalhada das entregas e pendencias de marco
+- `DESIGN.md` preserva decisoes visuais formalizadas em `2026-03-21`
+- A memoria do Claude ainda guarda o contexto de lancamento, estrategia e feedback clinico dessa fase
