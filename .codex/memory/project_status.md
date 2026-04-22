@@ -62,6 +62,7 @@ Design doc estrategico mais recente conhecido:
 - `src/data/medicamentos.js` agora funciona como catalogo enriquecido de sugestoes com vias, doses e alguns esquemas EV comuns
 - A tela de medicacao passou a oferecer quick add por historico/preset e fluxo `Salvar e adicionar proxima` para montar o horario com menos toques
 - A mesma tela foi reajustada depois do uso real: remover resumo, estados obvios e textos explicativos trouxe a experiencia de volta para um fluxo mais rapido
+- O template reaproveitavel de medicacao passou a manter tambem dados de lote, sem transformar lote diferente em chave nova do historico
 
 ## Alertas operacionais
 

@@ -26,6 +26,7 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - EV passou a ser guiado entre `Direto` e `Diluido`, abrindo solucao e volume quando necessario
 - Depois de validar no plantao real, a tela de `Medicacao` voltou a um formato mais enxuto: sem painel-resumo, sem microcopy redundante e com `Adicionar medicamento` mais direto
 - Fica registrado como regra de produto: nessa tela, manter so o que acelera de verdade (`Ultimos usados`, presets, favoritos e `Salvar e adicionar proxima`)
+- Historico reaproveitavel da `Medicacao` agora mantem tambem os dados de lote, para nao perder frasco, lote, fabricacao, validade e marca ao repetir medicamentos semelhantes
 - Testes passaram com 56 testes e o build de producao tambem passou
 
 ## Sessao anterior (2026-04-16)

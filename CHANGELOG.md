@@ -26,6 +26,7 @@
 - A tela voltou para um formato mais enxuto, cortando resumo no topo, estados redundantes e explicacoes que empurravam `Adicionar medicamento` para baixo
 - Foram mantidos apenas os aceleradores que provaram valor no uso real: `Ultimos usados`, presets, favoritar e `Salvar e adicionar proxima`
 - O aprendizado registrado para frente e: na tela de medicacao, priorizar menos leitura, menos scroll e menos toque, mesmo que a hierarquia visual fique mais simples
+- Historico e presets de medicacao agora preservam tambem dados de lote reaproveitaveis, como frasco, numero do lote, fabricacao, validade e marca, sem quebrar a deduplicacao pelo esquema clinico principal
 
 ### Validacao
 

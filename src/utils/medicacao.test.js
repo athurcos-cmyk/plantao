@@ -4,6 +4,7 @@ import {
   mesclarColecoesMedicacao,
   prepararProximaMedicacao,
   gerarTextoMedicacao,
+  extrairTemplateMedicacao,
 } from './medicacao.js'
 
 describe('medicacao storage', () => {
@@ -52,6 +53,34 @@ describe('medicacao storage', () => {
     }, 10)
 
     expect(colecao.items).toHaveLength(2)
+  })
+
+  it('preserva dados de lote no template reaproveitavel sem criar chave nova por lote', () => {
+    const template = extrairTemplateMedicacao({
+      nome: 'imunoglobulina',
+      dose: '5',
+      unidade: 'g',
+      via: 'EV',
+      evDiluicao: true,
+      evVolume: '100',
+      evSolucao: 'SF',
+      loteAtivo: true,
+      loteFrasco: '2',
+      lote: 'ABC123',
+      loteFabricacao: '10/2024',
+      loteValidade: '10/2026',
+      loteMarca: 'CSL Behring',
+    })
+
+    expect(template).toMatchObject({
+      nome: 'imunoglobulina',
+      loteAtivo: true,
+      loteFrasco: '2',
+      lote: 'ABC123',
+      loteFabricacao: '10/2024',
+      loteValidade: '10/2026',
+      loteMarca: 'CSL Behring',
+    })
   })
 })
 

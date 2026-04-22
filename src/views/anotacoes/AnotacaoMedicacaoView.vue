@@ -113,20 +113,6 @@
           <p class="med-section-sub med-section-sub-tight">Adicione um ou mais medicamentos antes de gerar o texto final.</p>
 
           <div v-if="presetsRapidos.length || historicoRapido.length" class="med-quick-stack">
-            <div v-if="presetsRapidos.length" class="med-quick-block">
-              <div class="med-quick-head">
-                <span class="med-quick-title">Presets rápidos</span>
-              </div>
-              <div class="chips-scroll med-quick-scroll">
-                <button
-                  v-for="preset in presetsRapidos"
-                  :key="'preset-' + criarChaveMedicacao(preset)"
-                  class="chip chip-quick"
-                  @click="adicionarMedicacaoRapida(preset, 'preset')"
-                >{{ formatarRotuloMedicacaoRapida(preset) }}</button>
-              </div>
-            </div>
-
             <div v-if="historicoRapido.length" class="med-quick-block">
               <div class="med-quick-head">
                 <span class="med-quick-title">Últimos usados</span>
@@ -138,6 +124,20 @@
                   class="chip"
                   @click="adicionarMedicacaoRapida(hist, 'historico')"
                 >{{ formatarRotuloMedicacaoRapida(hist) }}</button>
+              </div>
+            </div>
+
+            <div v-if="presetsRapidos.length" class="med-quick-block">
+              <div class="med-quick-head">
+                <span class="med-quick-title">Presets rápidos</span>
+              </div>
+              <div class="chips-scroll med-quick-scroll">
+                <button
+                  v-for="preset in presetsRapidos"
+                  :key="'preset-' + criarChaveMedicacao(preset)"
+                  class="chip chip-quick"
+                  @click="adicionarMedicacaoRapida(preset, 'preset')"
+                >{{ formatarRotuloMedicacaoRapida(preset) }}</button>
               </div>
             </div>
           </div>
@@ -245,6 +245,7 @@
             <label>Nome do medicamento </label>
             <div class="autocomplete-wrap">
               <input
+                 ref="nomeMedicamentoInput"
                  data-testid="auto-input-anotacaomedicacaoview-10" type="text"
                 :value="modal.d.nome"
                 @input="onNomeInput($event.target.value)"
@@ -526,7 +527,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, onMounted, computed } from 'vue'
+import { reactive, ref, onMounted, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { useToast }          from '../../composables/useToast.js'
@@ -558,10 +559,18 @@ const auth     = useAuthStore()
 const { showToast } = useToast()
 const { copiar: _copiar } = useCopia()
 const pacientesStore = usePacientesStore()
+const nomeMedicamentoInput = ref(null)
 
 function selecionarPaciente(p) {
   form.nomePaciente = p.nome
   form.leitoPaciente = p.leito || ''
+}
+
+function focarNomeMedicamento() {
+  nextTick(() => {
+    nomeMedicamentoInput.value?.focus?.()
+    nomeMedicamentoInput.value?.select?.()
+  })
 }
 
 // ── Histórico de medicamentos (Firebase + localStorage como cache) ────────────
@@ -913,6 +922,7 @@ function abrirModal() {
   modal.erro    = ''
   modal.avancado = false
   modal.aberto  = true
+  focarNomeMedicamento()
 }
 
 function editarMed(i) {
@@ -921,6 +931,7 @@ function editarMed(i) {
   modal.erro    = ''
   modal.avancado = Boolean(modal.d.dupla || modal.d.loteAtivo)
   modal.aberto  = true
+  focarNomeMedicamento()
 }
 
 function fecharModal() {
@@ -1070,6 +1081,7 @@ function confirmarMed({ continuar = false } = {}) {
     sugestoes.value = []
     mostrarSug.value = false
     showToast('Medicamento salvo. Pronto para a próxima.')
+    focarNomeMedicamento()
     return
   }
   fecharModal()
@@ -1561,6 +1573,8 @@ function novaAnotacao() {
 .btn-favorite-on {
   color: #f4c95d;
   border-color: rgba(244, 201, 93, 0.4);
+  background: rgba(244, 201, 93, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(244, 201, 93, 0.14);
 }
 
 /* ── Botão adicionar medicamento ── */

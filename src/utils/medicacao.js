@@ -106,6 +106,12 @@ export function extrairTemplateMedicacao(med) {
     evTempoMin: via === 'EV' && med.evBic ? String(med.evTempoMin || '').trim() : '',
     evVelocidade: via === 'EV' && med.evBic ? String(med.evVelocidade || '').trim() : '',
     localAnatomico: ['IM', 'SC'].includes(via) ? String(med.localAnatomico || '').trim() : '',
+    loteAtivo: Boolean(med.loteAtivo),
+    loteFrasco: med.loteAtivo ? String(med.loteFrasco || '').trim() : '',
+    lote: med.loteAtivo ? String(med.lote || '').trim() : '',
+    loteFabricacao: med.loteAtivo ? String(med.loteFabricacao || '').trim() : '',
+    loteValidade: med.loteAtivo ? String(med.loteValidade || '').trim() : '',
+    loteMarca: med.loteAtivo ? String(med.loteMarca || '').trim() : '',
   }
 }
 
