@@ -746,8 +746,74 @@ export const medicamentosCatalogo = [
   ]},
 ]
 
+const VIAS_COMUNS_CATALOGO = {
+  'dipirona': ['VO', 'EV'],
+  'paracetamol': ['VO', 'EV'],
+  'omeprazol': ['VO', 'EV'],
+  'furosemida': ['VO', 'EV'],
+  'enoxaparina': ['SC'],
+  'heparina': ['SC', 'EV'],
+  'metoclopramida': ['VO', 'EV'],
+  'bromoprida': ['VO', 'EV'],
+  'ondansetrona': ['VO', 'EV'],
+  'ceftriaxona': ['EV', 'IM'],
+  'cefepima': ['EV', 'IM'],
+  'meropeném': ['EV'],
+  'vancomicina': ['EV'],
+  'hidrocortisona': ['EV', 'IM'],
+  'dexametasona': ['VO', 'EV', 'IM'],
+  'losartana': ['VO', 'SNE'],
+  'captopril': ['VO'],
+  'anlodipino': ['VO'],
+  'metronidazol': ['VO', 'EV'],
+  'clindamicina': ['VO', 'EV'],
+  'ácido acetilsalicílico': ['VO', 'SNE'],
+  'clopidogrel': ['VO', 'SNE'],
+  'lactulose': ['VO', 'SNE'],
+  'insulina regular': ['SC', 'EV'],
+  'insulina NPH': ['SC'],
+  'glicose 50%': ['EV'],
+  'tramadol': ['VO', 'EV', 'IM'],
+  'morfina': ['VO', 'EV', 'SC'],
+  'fentanil': ['EV'],
+  'amicacina': ['EV', 'IM'],
+  'gentamicina': ['EV', 'IM'],
+  'azitromicina': ['VO', 'EV'],
+  'claritromicina': ['VO', 'EV'],
+  'piperacilina + tazobactam': ['EV'],
+  'ampicilina': ['EV', 'IM'],
+  'ampicilina + sulbactam': ['EV', 'IM'],
+  'oxacilina': ['EV'],
+  'fluconazol': ['VO', 'EV'],
+  'aciclovir': ['VO', 'EV'],
+  'haloperidol': ['VO', 'IM'],
+  'diazepam': ['VO', 'EV'],
+  'midazolam': ['EV', 'IM'],
+  'digoxina': ['VO', 'EV'],
+  'amiodarona': ['VO', 'EV'],
+  'hidralazina': ['VO', 'EV'],
+  'espironolactona': ['VO', 'SNE'],
+  'manitol': ['EV'],
+  'noradrenalina': ['EV'],
+  'dobutamina': ['EV'],
+  'dopamina': ['EV'],
+  'nitroglicerina': ['Sublingual', 'EV'],
+  'ranitidina': ['VO', 'EV'],
+  'famotidina': ['VO', 'EV'],
+  'glucagon': ['SC', 'IM', 'EV'],
+  'naloxona': ['EV', 'IM'],
+  'fitomenadiona': ['IM', 'EV'],
+}
+
+const LIMITE_ATALHOS_CATALOGO = 4
 const catalogoPorNome = new Map(
   medicamentosCatalogo.map((item) => [item.nome.toLowerCase(), item])
+)
+const nomesCatalogo = Array.from(
+  new Set([
+    ...medicamentosCatalogo.map((item) => item.nome),
+    ...Object.keys(VIAS_COMUNS_CATALOGO),
+  ])
 )
 
 function normalizarNome(texto) {
@@ -755,19 +821,53 @@ function normalizarNome(texto) {
 }
 
 export function obterCatalogoMedicacao(nome) {
-  return catalogoPorNome.get(normalizarNome(nome)) || null
+  const nomeNormalizado = normalizarNome(nome)
+  const base = catalogoPorNome.get(nomeNormalizado) || null
+  const viasComuns = Array.from(new Set([
+    ...(base?.presets?.map((preset) => preset.via).filter(Boolean) || []),
+    ...(VIAS_COMUNS_CATALOGO[nomeNormalizado] || []),
+  ]))
+
+  if (!base && !viasComuns.length) return null
+
+  return {
+    nome: base?.nome || nomeNormalizado,
+    presets: base?.presets || [],
+    viasComuns,
+  }
 }
 
-export function listarPresetsCatalogo(nome) {
+export function listarPresetsCatalogo(nome, limite = LIMITE_ATALHOS_CATALOGO) {
   const catalogo = obterCatalogoMedicacao(nome)
   if (!catalogo) return []
 
-  return catalogo.presets.map((preset) => ({
-    tipo: 'catalogo',
-    nome: catalogo.nome,
-    med: { nome: catalogo.nome, ...preset },
-    rotulo: formatarRotuloMedicacaoRapida({ nome: catalogo.nome, ...preset }),
-  }))
+  const itens = []
+  const viasCobertas = new Set()
+
+  catalogo.presets.forEach((preset) => {
+    if (itens.length >= limite) return
+    viasCobertas.add(preset.via)
+    const med = { nome: catalogo.nome, ...preset }
+    itens.push({
+      tipo: 'catalogo',
+      nome: catalogo.nome,
+      med,
+      rotulo: formatarRotuloMedicacaoRapida(med),
+    })
+  })
+
+  catalogo.viasComuns.forEach((via) => {
+    if (itens.length >= limite || viasCobertas.has(via)) return
+    const med = { nome: catalogo.nome, via }
+    itens.push({
+      tipo: 'catalogo',
+      nome: catalogo.nome,
+      med,
+      rotulo: formatarRotuloMedicacaoRapida(med),
+    })
+  })
+
+  return itens
 }
 
 /**
@@ -816,21 +916,16 @@ export function sugerirMedicamentosDetalhados(texto, historico = [], limite = 8)
       })
     })
 
-  medicamentosCatalogo
-    .filter((item) => normalizarNome(item.nome).includes(q))
-    .forEach((item) => {
-      item.presets.forEach((preset) => {
+  nomesCatalogo
+    .filter((nome) => normalizarNome(nome).includes(q))
+    .forEach((nome) => {
+      listarPresetsCatalogo(nome, LIMITE_ATALHOS_CATALOGO).forEach((item) => {
         if (resultados.length >= limite) return
-        const med = { nome: item.nome, ...preset }
-        const chave = `catalogo:${item.nome}:${preset.dose}:${preset.via}:${preset.unidade}`
+        const med = item.med
+        const chave = `catalogo:${item.nome}:${med.dose || ''}:${med.via || ''}:${med.unidade || ''}:${med.oftOlho || ''}`
         if (usados.has(chave)) return
         usados.add(chave)
-        resultados.push({
-          tipo: 'catalogo',
-          nome: item.nome,
-          med,
-          rotulo: formatarRotuloMedicacaoRapida(med),
-        })
+        resultados.push(item)
       })
     })
 

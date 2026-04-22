@@ -141,6 +141,9 @@
               </div>
             </div>
           </div>
+          <p v-if="presetsRapidos.length || historicoRapido.length" class="med-quick-warning">
+            Atalho rápido: sempre confira prescrição e apresentação antes de confirmar.
+          </p>
 
           <p v-if="form.medicamentos.length === 0" class="lista-vazia">
             Nenhum medicamento adicionado
@@ -279,6 +282,7 @@
                 @click="aplicarTemplateNoModal(preset.med)"
               >{{ formatarBadgeSugestao(preset.med) }}</button>
             </div>
+            <p class="hint-text">Sugestão rápida: confirme prescrição e apresentação antes de salvar.</p>
           </div>
 
           <!-- Via -->
@@ -582,12 +586,13 @@ function histKeyLS() {
 const historicoPayload = ref(criarColecaoMedicacaoVazia())
 const presetsCache     = ref([])
 const presetsPayload   = ref(criarColecaoMedicacaoVazia())
+const MAX_HISTORICO_RAPIDO = 10
 const presetsRapidos   = computed(() => presetsCache.value.slice(0, 6))
 const presetKeys       = computed(() => new Set(presetsCache.value.map((item) => criarChaveMedicacao(item))))
 const historicoRapido  = computed(() =>
   historicoCache.value
     .filter((item) => !presetKeys.value.has(criarChaveMedicacao(item)))
-    .slice(0, 6)
+    .slice(0, MAX_HISTORICO_RAPIDO)
 )
 
 function histPathFB() {
@@ -1413,6 +1418,12 @@ function novaAnotacao() {
 
 .med-quick-scroll {
   margin-top: 0;
+}
+
+.med-quick-warning {
+  margin: -2px 0 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
 }
 
 .chip-quick {

@@ -31,7 +31,7 @@ O objetivo e gerar textos padronizados, rapidos de copiar e utilizaveis mesmo qu
 - `src/stores/` - `auth.js`, `anotacoes.js`, `pacientes.js`, `organizador.js`
 - `src/composables/` - `useAnotacaoInicial.js`, `useCalculadora.js`, `useChat.js`, `useClara.js`, `useCopia.js`, `useDispositivos.js`, `useOnlineStatus.js`, `usePulso.js`, `usePushNotificacoes.js`, `useRascunho.js`, `useToast.js`
 - `src/utils/` - `gerarTextoInicial.js`, `dispositivos.js`, `medicacao.js`, `syncEvents.js`
-- `src/data/medicamentos.js` - catalogo base e presets enriquecidos para autocomplete/quick add da tela de medicacao
+- `src/data/medicamentos.js` - catalogo base com vias comuns e presets enriquecidos para autocomplete/quick add da tela de medicacao
 - `src/views/` - telas gerais, marketing, auth, admin e configuracoes
 - `src/views/anotacoes/` - views especificas de anotacao
 - `api/` - funcoes serverless da Vercel
@@ -125,4 +125,5 @@ Estruturas mais relevantes:
 - `src/stores/auth.js` depende do cache local para liberar a UI cedo; se mexer no bootstrap, preservar a restauracao rapida e o timeout de fallback
 - `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje tem duas zonas visuais principais (`preparo` e `medicamentos do horario`), quick add por historico/preset, catalogo detalhado e fluxo `Salvar e adicionar proxima`; preservar essa hierarquia se evoluir a tela
 - Aprendizado importante dessa view: evitar resumos grandes, estados obvios e microcopy em excesso; na medicacao, a melhor UX ate agora foi a mais enxuta e direta para chegar rapido em `Adicionar medicamento`
+- Nos avisos de quick add/modelos, manter texto curto e operacional; a versao atual fala so de `prescricao` e `apresentacao`
 - `src/utils/medicacao.js` preserva dados de lote dentro do template reaproveitavel da medicacao, mas continua deduplicando o historico pela chave clinica principal em vez de criar um item novo para cada lote

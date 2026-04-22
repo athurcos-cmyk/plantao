@@ -60,8 +60,10 @@ Design doc estrategico mais recente conhecido:
 - Bootstrap inicial de autenticacao agora sobe com cache local de sessao e timeout de fallback, reduzindo risco de tela azul em rede fraca
 - Historico da tela de medicacao agora mescla local + Firebase, com deduplicacao por esquema completo para reduzir sumicos e duplicacoes
 - `src/data/medicamentos.js` agora funciona como catalogo enriquecido de sugestoes com vias, doses e alguns esquemas EV comuns
+- O catalogo de medicacao foi ampliado para sugerir tambem `vias comuns` em muitos remedios, sem tentar fechar dose/diluicao para tudo
 - A tela de medicacao passou a oferecer quick add por historico/preset e fluxo `Salvar e adicionar proxima` para montar o horario com menos toques
 - A mesma tela foi reajustada depois do uso real: remover resumo, estados obvios e textos explicativos trouxe a experiencia de volta para um fluxo mais rapido
+- Avisos dos atalhos rapidos ficaram curtos e focados em `prescricao` e `apresentacao`; evitar termos extras que adicionem leitura sem ganho real
 - O template reaproveitavel de medicacao passou a manter tambem dados de lote, sem transformar lote diferente em chave nova do historico
 
 ## Alertas operacionais

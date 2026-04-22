@@ -27,10 +27,12 @@
 - Foram mantidos apenas os aceleradores que provaram valor no uso real: `Ultimos usados`, presets, favoritar e `Salvar e adicionar proxima`
 - O aprendizado registrado para frente e: na tela de medicacao, priorizar menos leitura, menos scroll e menos toque, mesmo que a hierarquia visual fique mais simples
 - Historico e presets de medicacao agora preservam tambem dados de lote reaproveitaveis, como frasco, numero do lote, fabricacao, validade e marca, sem quebrar a deduplicacao pelo esquema clinico principal
+- Catalogo de medicacao foi ampliado com `vias comuns` para varios medicamentos, mantendo presets completos so nos itens mais previsiveis e limitando os atalhos a no maximo 4 por remedio
+- Avisos de atalho rapido foram encurtados depois do uso real: manter so `prescricao` e `apresentacao`, sem adicionar leitura extra desnecessaria
 
 ### Validacao
 
-- `npm test` passou com 56 testes
+- `npm test` passou com 60 testes
 - `npm run build` passou
 
 ## Sessao 2026-04-16
