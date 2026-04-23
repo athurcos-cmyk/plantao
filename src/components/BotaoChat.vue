@@ -15,7 +15,7 @@ const { aberto, novaResposta, toggleChat } = useChat()
 <style scoped>
 .botao-chat {
   position: fixed;
-  bottom: 24px;
+  bottom: 94px;
   right: 18px;
   z-index: 900;
   width: 52px;
@@ -45,5 +45,11 @@ const { aberto, novaResposta, toggleChat } = useChat()
   background: #e57373;
   border-radius: 50%;
   border: 2px solid #0a1628;
+}
+
+@media (min-width: 768px) {
+  .botao-chat {
+    bottom: 24px;
+  }
 }
 </style>

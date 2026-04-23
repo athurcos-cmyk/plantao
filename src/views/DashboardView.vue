@@ -724,20 +724,20 @@ function navegar(tipo) {
 
 .sync-btn {
   width: auto;
-  min-width: 126px;
-  min-height: 38px;
-  padding: 0 14px;
+  min-width: 114px;
+  min-height: 34px;
+  padding: 0 12px;
   border: 1px solid rgba(91, 173, 255, 0.9);
-  border-radius: 14px;
+  border-radius: 10px;
   background: linear-gradient(180deg, #2f90ff, #1e6fe9);
   color: #fff;
   font-family: inherit;
-  font-size: 0.86rem;
+  font-size: 0.79rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 6px;
   cursor: pointer;
   box-shadow: 0 14px 24px rgba(30, 111, 233, 0.22);
 }
@@ -1137,9 +1137,11 @@ function navegar(tipo) {
   }
 
   .sync-btn {
-    min-width: 116px;
-    font-size: 0.81rem;
-    padding: 0 11px;
+    min-width: 106px;
+    min-height: 32px;
+    font-size: 0.74rem;
+    padding: 0 9px;
+    border-radius: 9px;
   }
 
   .tipos-grid {
@@ -1197,6 +1199,8 @@ function navegar(tipo) {
     min-width: 190px;
     padding: 0 18px;
     font-size: 0.92rem;
+    min-height: 40px;
+    border-radius: 12px;
   }
 
   .tipos-grid {
