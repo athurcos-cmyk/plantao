@@ -433,9 +433,9 @@ const syncDescription = computed(() => {
 })
 
 const syncButtonLabel = computed(() => {
-  if (sincronizandoAgora.value) return 'Sincronizando...'
+  if (sincronizandoAgora.value) return 'Sincronizando'
   if (!isOnline.value) return 'Sem internet'
-  return 'Sincronizar agora'
+  return 'Sincronizar'
 })
 
 const syncBadgeClass = computed(() => {
@@ -742,22 +742,23 @@ function navegar(tipo) {
 
 .sync-btn {
   width: auto;
-  min-width: 114px;
-  min-height: 34px;
-  padding: 0 12px;
+  min-width: 0;
+  min-height: 30px;
+  padding: 0 10px;
   border: 1px solid rgba(91, 173, 255, 0.9);
-  border-radius: 10px;
+  border-radius: 8px;
   background: linear-gradient(180deg, #2f90ff, #1e6fe9);
   color: #fff;
   font-family: inherit;
-  font-size: 0.79rem;
+  font-size: 0.72rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
-  box-shadow: 0 14px 24px rgba(30, 111, 233, 0.22);
+  box-shadow: 0 8px 16px rgba(30, 111, 233, 0.18);
+  white-space: nowrap;
 }
 
 .sync-btn:disabled {
@@ -1155,11 +1156,10 @@ function navegar(tipo) {
   }
 
   .sync-btn {
-    min-width: 106px;
-    min-height: 32px;
-    font-size: 0.74rem;
-    padding: 0 9px;
-    border-radius: 9px;
+    min-height: 28px;
+    font-size: 0.68rem;
+    padding: 0 8px;
+    border-radius: 8px;
   }
 
   .tipos-grid {
@@ -1214,11 +1214,11 @@ function navegar(tipo) {
   }
 
   .sync-btn {
-    min-width: 190px;
-    padding: 0 18px;
-    font-size: 0.92rem;
-    min-height: 40px;
-    border-radius: 12px;
+    min-width: 154px;
+    padding: 0 14px;
+    font-size: 0.84rem;
+    min-height: 36px;
+    border-radius: 10px;
   }
 
   .tipos-grid {
