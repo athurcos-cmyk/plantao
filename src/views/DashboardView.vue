@@ -57,11 +57,15 @@
         <div class="sync-copy">
           <p class="sync-title">{{ syncTitle }}</p>
           <p class="sync-subtitle">{{ syncDescription }}</p>
-          <div v-if="totalPendencias > 0" class="sync-chips">
+          <button class="sync-link" @click="syncDetalhesAbertos = !syncDetalhesAbertos">
+            {{ syncDetalhesAbertos ? 'Ocultar detalhes' : 'Ver detalhes' }}
+          </button>
+          <div v-if="totalPendencias > 0 || syncDetalhesAbertos" class="sync-chips">
             <span v-if="pendAnotacoes > 0" class="sync-chip">Anotações {{ pendAnotacoes }}</span>
             <span v-if="pendPacientes > 0" class="sync-chip">Pacientes {{ pendPacientes }}</span>
             <span v-if="pendModelos > 0" class="sync-chip">Modelos {{ pendModelos }}</span>
             <span v-if="pendOrganizador > 0" class="sync-chip">Organizador {{ pendOrganizador }}</span>
+            <span v-if="totalPendencias === 0" class="sync-chip">Tudo sincronizado</span>
           </div>
         </div>
 
@@ -279,6 +283,7 @@ const pcModalAberto = ref(false)
 const helpAberto = ref(false)
 const tourRef = ref(null)
 const anotacoesSection = ref(null)
+const syncDetalhesAbertos = ref(false)
 
 const {
   visivel: pulsoVisivel,
@@ -700,6 +705,19 @@ function navegar(tipo) {
   color: #a9b7d8;
   font-size: 0.84rem;
   line-height: 1.35;
+}
+
+.sync-link {
+  margin-top: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #7fc0ff;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
 }
 
 .sync-chips {
