@@ -2,139 +2,156 @@
   <div class="screen">
     <header class="app-header dashboard-header">
       <div class="header-logo">
-        <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" style="border-radius:6px;display:block" />
+        <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" class="header-logo-mark" />
         <span>Plantão</span>
       </div>
+
       <div class="header-actions">
         <button class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+            <path d="M4 12a8 8 0 0 1 8-8" />
           </svg>
         </button>
         <button class="btn-icon" @click="router.push({ name: 'configuracoes' })" title="Configurações">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
         </button>
       </div>
     </header>
 
     <main class="container dashboard-main">
-      <div class="dashboard-top">
-        <div class="saudacao">
-          <p class="saudacao-hora">{{ saudacaoTexto }}</p>
-          <h2 v-if="auth.userName">{{ auth.userName }}</h2>
+      <section class="hero-card">
+        <div class="hero-copy">
+          <p class="hero-greeting">{{ saudacaoTexto }}</p>
+          <h1 class="hero-name">{{ auth.userName || 'Profissional' }}</h1>
+          <p class="hero-subtitle">Seu painel do plantão de hoje.</p>
         </div>
 
-        <div class="quick-tools">
-          <button class="btn-ajuda quick-tool" @click="tourRef?.abrirTour()" title="Ver tutorial">▶ Tutorial</button>
-          <button class="btn-ajuda quick-tool" @click="helpAberto = true">? Ajuda</button>
-          <button class="btn-ajuda quick-tool" @click="abrirFeedback" title="Enviar feedback">💬</button>
-          <button class="btn-ajuda btn-lateral quick-tool" @click="abrirJanelaLateral" title="Abrir ao lado do prontuário">⊾ Ao lado</button>
-        </div>
-      </div>
-
-      <section class="sync-card">
-        <div class="sync-top">
-          <div class="sync-copy">
-            <p class="sync-title">Sincronização</p>
-            <span class="sync-status">
-              {{ totalPendencias > 0 ? `${totalPendencias} pendência${totalPendencias !== 1 ? 's' : ''}` : 'Tudo sincronizado' }}
-            </span>
-          </div>
-          <span class="sync-last">{{ ultimoSyncLabel }}</span>
-        </div>
-
-        <div class="sync-row">
-          <button class="sync-link" @click="syncDetalhesAbertos = !syncDetalhesAbertos">
-            {{ syncDetalhesAbertos ? 'Ocultar detalhes' : 'Ver detalhes' }}
-          </button>
-          <button class="sync-btn" :disabled="sincronizandoAgora || !isOnline" @click="sincronizarAgora">
-            {{ sincronizandoAgora ? 'Sincronizando...' : (isOnline ? 'Tentar agora' : 'Sem internet') }}
-          </button>
-        </div>
-
-        <div v-if="syncDetalhesAbertos || totalPendencias > 0" class="sync-chips">
-          <span class="sync-chip" :class="{ 'sync-chip-on': pendAnotacoes > 0 }">Anotações {{ pendAnotacoes }}</span>
-          <span class="sync-chip" :class="{ 'sync-chip-on': pendPacientes > 0 }">Pacientes {{ pendPacientes }}</span>
-          <span class="sync-chip" :class="{ 'sync-chip-on': pendModelos > 0 }">Modelos {{ pendModelos }}</span>
-          <span class="sync-chip" :class="{ 'sync-chip-on': pendOrganizador > 0 }">Organizador {{ pendOrganizador }}</span>
-        </div>
+        <img class="hero-illustration" :src="heroIllustration" alt="Profissional de enfermagem" />
       </section>
 
-      <div v-if="!pcDismissed" class="card-pc">
-        <div class="card-pc-content">
-          <span>💻</span>
-          <span>Acesse também no computador — abra o Chrome e digite <strong>plantao.net</strong></span>
+      <section class="sync-card">
+        <div class="sync-status-badge" :class="syncBadgeClass">
+          <svg v-if="totalPendencias === 0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8.5 12.5 2.2 2.2 4.8-5.2" />
+          </svg>
+          <svg v-else width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M12 3a9 9 0 1 0 8.48 12" />
+            <path d="M12 7v5l3 2" />
+            <path d="M17 3v4h4" />
+          </svg>
         </div>
-        <button class="card-pc-fechar" @click="dispensarPc" title="Fechar">✕</button>
+
+        <div class="sync-copy">
+          <p class="sync-title">{{ syncTitle }}</p>
+          <p class="sync-subtitle">{{ syncDescription }}</p>
+          <div v-if="totalPendencias > 0" class="sync-chips">
+            <span v-if="pendAnotacoes > 0" class="sync-chip">Anotações {{ pendAnotacoes }}</span>
+            <span v-if="pendPacientes > 0" class="sync-chip">Pacientes {{ pendPacientes }}</span>
+            <span v-if="pendModelos > 0" class="sync-chip">Modelos {{ pendModelos }}</span>
+            <span v-if="pendOrganizador > 0" class="sync-chip">Organizador {{ pendOrganizador }}</span>
+          </div>
+        </div>
+
+        <button class="sync-btn" :disabled="sincronizandoAgora || !isOnline" @click="sincronizarAgora">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 12a9 9 0 0 0-15.5-6.36" />
+            <path d="M3 4v5h5" />
+            <path d="M3 12a9 9 0 0 0 15.5 6.36" />
+            <path d="M21 20v-5h-5" />
+          </svg>
+          <span>{{ syncButtonLabel }}</span>
+        </button>
+      </section>
+
+      <div class="utility-row">
+        <button class="utility-chip" @click="tourRef?.abrirTour()">Tutorial</button>
+        <button class="utility-chip" @click="helpAberto = true">Ajuda</button>
+        <button class="utility-chip" @click="abrirFeedback">Feedback</button>
+        <button class="utility-chip" @click="abrirJanelaLateral">Ao lado</button>
+        <button class="utility-chip" @click="pcModalAberto = true">No computador</button>
       </div>
 
-      <div class="secao-head">
-        <p class="secao-label">Anotações</p>
-        <span class="secao-hint">Mais usadas primeiro</span>
+      <div class="section-head">
+        <h2 class="section-title">Anotações</h2>
+        <span class="section-link">Acesso rápido</span>
       </div>
 
       <div class="tipos-grid">
-        <button data-testid="auto-btn-dashboardview-2" v-for="tipo in tiposDashboard" :key="tipo.id" class="tipo-card" @click="navegar(tipo)">
-          <span class="tipo-icon">{{ tipo.icon }}</span>
-          <span class="tipo-texto">
-            <span class="tipo-nome">{{ tipo.nome }}</span>
-            <span v-if="tipo.meta" class="tipo-meta">{{ tipo.meta }}</span>
+        <button
+          v-for="tipo in tiposDashboard"
+          :key="tipo.id"
+          data-testid="auto-btn-dashboardview-2"
+          class="tipo-card"
+          @click="navegar(tipo)"
+        >
+          <span class="tipo-icon">
+            <img class="tipo-icon-img" :src="tipo.icon" :alt="tipo.nome" />
           </span>
-          <span v-if="!tipo.rota" class="tipo-badge">em breve</span>
+          <span class="tipo-nome">{{ tipo.nome }}</span>
+          <span v-if="tipo.meta" class="tipo-meta">{{ tipo.meta }}</span>
         </button>
       </div>
 
-      <div class="secao-head secao-head-spaced">
-        <p class="secao-label">Atalhos do plantão</p>
-        <span class="secao-hint">Fluxos de apoio</span>
+      <div class="section-head section-head-spaced">
+        <h2 class="section-title">Atalhos do plantão</h2>
       </div>
 
-      <div class="acoes-row">
-        <button data-testid="auto-btn-dashboardview-3" class="btn-historico" @click="router.push({ name: 'historico' })">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-          </svg>
-          <div class="atalho-copy">
-            <span class="atalho-titulo">Histórico</span>
+      <div class="atalhos-list">
+        <button data-testid="auto-btn-dashboardview-3" class="atalho-card" @click="router.push({ name: 'historico' })">
+          <span class="atalho-icon">
+            <img class="atalho-icon-img" :src="iconHistorico" alt="Histórico" />
+          </span>
+          <span class="atalho-copy">
+            <span class="atalho-title">Histórico</span>
             <span class="atalho-sub">Buscar, copiar e reaproveitar anotações</span>
-          </div>
+          </span>
+          <span class="atalho-arrow">›</span>
         </button>
 
-        <button class="btn-pacientes" @click="router.push({ name: 'pacientes' })">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-            <path d="M16 3.13a4 4 0 010 7.75"/>
-          </svg>
-          <div class="atalho-copy">
-            <span class="atalho-titulo">Meus Pacientes</span>
+        <button class="atalho-card" @click="router.push({ name: 'pacientes' })">
+          <span class="atalho-icon">
+            <img class="atalho-icon-img" :src="iconPacientes" alt="Meus Pacientes" />
+          </span>
+          <span class="atalho-copy">
+            <span class="atalho-title">Meus Pacientes</span>
             <span class="atalho-sub">Pendências e atalhos por leito</span>
-          </div>
+          </span>
+          <span class="atalho-arrow">›</span>
         </button>
 
-        <button class="btn-organizador" @click="router.push({ name: 'organizador' })">
-          <div class="btn-org-inner">
-            <span class="btn-org-icon">📋</span>
-            <div class="btn-org-info">
-              <span class="btn-org-titulo">Organizador do Plantão</span>
-              <span class="btn-org-sub" v-if="!orgStore.plantao">Nenhum plantão ativo</span>
-              <span class="btn-org-sub" v-else>
-                {{ orgStore.plantao.tarefas.filter(t => t.feito).length }}/{{ orgStore.plantao.tarefas.length }} tarefas
-                · {{ orgStore.plantao.tarefas.filter(t => !t.feito).length }} pendente{{ orgStore.plantao.tarefas.filter(t => !t.feito).length !== 1 ? 's' : '' }}
-              </span>
-            </div>
-          </div>
+        <button class="atalho-card" @click="router.push({ name: 'organizador' })">
+          <span class="atalho-icon">
+            <img class="atalho-icon-img" :src="iconOrganizador" alt="Organizador do Plantão" />
+          </span>
+          <span class="atalho-copy">
+            <span class="atalho-title">Organizador do plantão</span>
+            <span class="atalho-sub">{{ organizadorResumo }}</span>
+          </span>
+          <span class="atalho-arrow">›</span>
+        </button>
+
+        <button class="atalho-card" @click="router.push({ name: 'configuracoes' })">
+          <span class="atalho-icon">
+            <img class="atalho-icon-img" :src="iconConfiguracao" alt="Configurações" />
+          </span>
+          <span class="atalho-copy">
+            <span class="atalho-title">Configurações</span>
+            <span class="atalho-sub">Preferências, conta e integrações</span>
+          </span>
+          <span class="atalho-arrow">›</span>
         </button>
       </div>
 
       <div v-if="pulsoVisivel" class="pulso-card">
         <div class="pulso-header">
-          <span class="pulso-titulo">💬 O que você acha do app?</span>
-          <button class="pulso-fechar" @click="dispensarPulso">✕</button>
+          <span class="pulso-title">O que você acha do app?</span>
+          <button class="pulso-close" @click="dispensarPulso">×</button>
         </div>
         <p class="pulso-sub">Sua opinião ajuda a melhorar o Plantão.</p>
         <textarea
@@ -144,35 +161,21 @@
           rows="3"
           maxlength="500"
         ></textarea>
-        <div class="pulso-acoes">
-          <button class="btn btn-tertiary pulso-adiar" @click="dispensarPulso">Agora não</button>
-          <button
-            class="btn btn-primary"
-            :disabled="!textoFeedback.trim() || pulsoEnviando"
-            @click="enviarPulso"
-          >{{ pulsoEnviando ? 'Enviando...' : 'Enviar' }}</button>
+        <div class="pulso-actions">
+          <button class="btn btn-tertiary pulso-later" @click="dispensarPulso">Agora não</button>
+          <button class="btn btn-primary" :disabled="!textoFeedback.trim() || pulsoEnviando" @click="enviarPulso">
+            {{ pulsoEnviando ? 'Enviando...' : 'Enviar' }}
+          </button>
         </div>
-      </div>
-
-      <div class="rodape-acoes">
-        <button class="btn-atualizar" @click="() => location.reload()">
-          🔄 Verificar atualizações
-        </button>
-        <button class="btn btn-ghost" @click="router.push({ name: 'configuracoes' })">
-          ⚙️ Configurações
-        </button>
-        <button class="btn btn-ghost btn-pc-rodape" @click="pcModalAberto = true">
-          💻 Acessar no computador
-        </button>
       </div>
 
       <div v-if="pcModalAberto" class="modal-overlay" @click.self="pcModalAberto = false">
         <div class="modal-box">
-          <p class="modal-titulo">💻 Como acessar no computador</p>
-          <p class="modal-texto">Abra o <strong>Google Chrome</strong> ou qualquer navegador no seu computador e acesse:</p>
+          <p class="modal-title">Como acessar no computador</p>
+          <p class="modal-text">Abra o Google Chrome ou qualquer navegador no seu computador e acesse:</p>
           <p class="modal-url">plantao.net</p>
-          <p class="modal-texto">Faça login com a mesma conta — suas anotações já estarão lá.</p>
-          <button class="btn btn-primary" style="width:100%;margin-top:8px" @click="pcModalAberto = false">Entendi</button>
+          <p class="modal-text">Faça login com a mesma conta — suas anotações já estarão lá.</p>
+          <button class="btn btn-primary modal-btn" @click="pcModalAberto = false">Entendi</button>
         </div>
       </div>
     </main>
@@ -197,6 +200,19 @@ import { ref as dbRef, push, remove } from 'firebase/database'
 import HelpModal from '../components/HelpModal.vue'
 import TourDashboard from '../components/TourDashboard.vue'
 import { subscribeSyncState } from '../utils/syncEvents.js'
+import iconSv from '../assets/dashboard-icons-png/sinais-vitais.png'
+import iconMedicacao from '../assets/dashboard-icons-png/medicacao.png'
+import iconLivre from '../assets/dashboard-icons-png/notas-lives.png'
+import iconPassagem from '../assets/dashboard-icons-png/passagem.png'
+import iconEncaminhamento from '../assets/dashboard-icons-png/encaminhamento.png'
+import iconHigienizacao from '../assets/dashboard-icons-png/higienizacao.png'
+import iconCurativo from '../assets/dashboard-icons-png/curativo.png'
+import iconInicial from '../assets/dashboard-icons-png/anotacao-inicial.png'
+import iconHistorico from '../assets/dashboard-icons-png/historico.png'
+import iconPacientes from '../assets/dashboard-icons-png/meus-paciente.png'
+import iconOrganizador from '../assets/dashboard-icons-png/organizador-plantao.png'
+import iconConfiguracao from '../assets/dashboard-icons-png/configuracao.png'
+import heroIllustration from '../assets/dashboard-icons-png/ilustracao.png'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -206,11 +222,9 @@ const orgStore = useOrganizadorStore()
 const { showToast } = useToast()
 const { isOnline } = useOnlineStatus()
 
-const pcDismissed = ref(localStorage.getItem('pc_banner_dismissed') === '1')
 const pcModalAberto = ref(false)
 const helpAberto = ref(false)
 const tourRef = ref(null)
-const syncDetalhesAbertos = ref(false)
 
 const {
   visivel: pulsoVisivel,
@@ -220,11 +234,6 @@ const {
   dispensar: dispensarPulso,
   enviar: enviarPulso,
 } = usePulso()
-
-function dispensarPc() {
-  localStorage.setItem('pc_banner_dismissed', '1')
-  pcDismissed.value = true
-}
 
 function abrirJanelaLateral() {
   const w = 420
@@ -342,9 +351,37 @@ const totalPendencias = computed(() =>
   pendAnotacoes.value + pendPacientes.value + pendModelos.value + pendOrganizador.value
 )
 
-const ultimoSyncLabel = computed(() => {
-  if (!ultimoSyncAt.value) return 'Nunca sincronizado'
-  return `Último: ${new Date(ultimoSyncAt.value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+const syncTitle = computed(() => {
+  if (!isOnline.value && totalPendencias.value > 0) return 'Sincronização pendente'
+  if (totalPendencias.value > 0) return 'Sincronização pendente'
+  return 'Sincronização em dia'
+})
+
+const syncDescription = computed(() => {
+  if (totalPendencias.value > 0) {
+    return `${totalPendencias.value} item${totalPendencias.value !== 1 ? 's' : ''} aguardando envio`
+  }
+  if (!ultimoSyncAt.value) return 'Ainda sem registro de sincronização'
+  return `Última atualização ${new Date(ultimoSyncAt.value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+})
+
+const syncButtonLabel = computed(() => {
+  if (sincronizandoAgora.value) return 'Sincronizando...'
+  if (!isOnline.value) return 'Sem internet'
+  return 'Sincronizar agora'
+})
+
+const syncBadgeClass = computed(() => {
+  if (totalPendencias.value > 0) return 'sync-status-pending'
+  return 'sync-status-ok'
+})
+
+const organizadorResumo = computed(() => {
+  if (!orgStore.plantao) return 'Nenhum plantão ativo'
+  const tarefas = orgStore.plantao.tarefas || []
+  const feitas = tarefas.filter(t => t.feito).length
+  const pendentes = tarefas.filter(t => !t.feito).length
+  return `${feitas}/${tarefas.length} tarefas • ${pendentes} pendente${pendentes !== 1 ? 's' : ''}`
 })
 
 async function sincronizarAgora() {
@@ -407,21 +444,20 @@ const saudacaoTexto = computed(() => {
 })
 
 const tipos = [
-  { id: 'sv', icon: '📊', nome: 'Sinais vitais', meta: 'rápido', rota: 'sinais-vitais' },
-  { id: 'medicacao', icon: '💊', nome: 'Medicação', meta: 'rápido', rota: 'medicacao' },
-  { id: 'livre', icon: '📝', nome: 'Notas Livres', meta: 'rápido', rota: 'livre' },
-  { id: 'passagem', icon: '🔄', nome: 'Passagem', meta: 'turno', rota: 'passagem' },
-  { id: 'encamin', icon: '🚑', nome: 'Encaminhamento', meta: 'apoio', rota: 'encaminhamento' },
-  { id: 'banho', icon: '🧼', nome: 'Higienização', meta: 'apoio', rota: 'banho' },
-  { id: 'curativo', icon: '🩹', nome: 'Curativo', meta: 'apoio', rota: 'curativo' },
-  { id: 'inicial', icon: '📋', nome: 'Anotação inicial', meta: '1x por plantão', rota: 'anotacao-inicial' },
+  { id: 'sv', icon: iconSv, nome: 'Sinais vitais', meta: 'Rápido', rota: 'sinais-vitais' },
+  { id: 'medicacao', icon: iconMedicacao, nome: 'Medicação', meta: 'Rápido', rota: 'medicacao' },
+  { id: 'livre', icon: iconLivre, nome: 'Notas livres', meta: 'Rápido', rota: 'livre' },
+  { id: 'passagem', icon: iconPassagem, nome: 'Passagem de plantão', meta: 'Turno', rota: 'passagem' },
+  { id: 'encamin', icon: iconEncaminhamento, nome: 'Encaminhamento', meta: 'Apoio', rota: 'encaminhamento' },
+  { id: 'banho', icon: iconHigienizacao, nome: 'Higienização', meta: 'Apoio', rota: 'banho' },
+  { id: 'curativo', icon: iconCurativo, nome: 'Curativo', meta: 'Apoio', rota: 'curativo' },
+  { id: 'inicial', icon: iconInicial, nome: 'Anotação inicial', meta: '1x por plantão', rota: 'anotacao-inicial' },
 ]
 
 const tiposDashboard = computed(() => tipos)
 
 function navegar(tipo) {
   if (tipo.rota) router.push({ name: tipo.rota })
-  else alert(tipo.nome + ' em breve!')
 }
 </script>
 
@@ -431,167 +467,141 @@ function navegar(tipo) {
 }
 
 .dashboard-main {
-  padding-top: 16px;
+  padding-top: 14px;
   padding-bottom: 40px;
-}
-
-.dashboard-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
 }
 
 .header-logo {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--blue);
+  gap: 10px;
+  color: #f6f8ff;
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 800;
+}
+
+.header-logo-mark {
+  border-radius: 8px;
+  display: block;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.btn-lateral {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .btn-lateral {
-    display: inline-flex;
-  }
-}
-
-.btn-icon {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-}
-
-.btn-icon:active {
-  background: var(--bg-hover);
-}
-
-.hero-card {
-  background: linear-gradient(180deg, rgba(30, 136, 229, 0.14), rgba(30, 136, 229, 0.05));
-  border: 1px solid rgba(30, 136, 229, 0.2);
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 14px;
-}
-
-.saudacao {
-  margin-bottom: 0;
-}
-
-.saudacao-hora {
-  color: var(--text-muted);
-  font-size: 0.82rem;
-}
-
-.saudacao h2 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-top: 2px;
-}
-
-.quick-tools {
-  display: flex;
-  flex-wrap: nowrap;
   gap: 8px;
 }
 
-.quick-tool {
-  min-height: 34px;
-  padding: 4px 8px;
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(145, 166, 212, 0.16);
+  background: rgba(14, 31, 60, 0.7);
+  color: #a8b7de;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.btn-icon:active {
+  transform: scale(0.97);
+}
+
+.hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 4px 8px;
+}
+
+.hero-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.hero-greeting {
+  margin: 0 0 4px;
+  color: #b8c5e6;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.hero-name {
+  margin: 0;
+  color: #f7f9ff;
+  font-size: 2.2rem;
+  line-height: 0.94;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.hero-subtitle {
+  margin: 10px 0 0;
+  color: #a5b4d6;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.hero-illustration {
+  width: 136px;
+  max-width: 38%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));
 }
 
 .sync-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(20, 41, 77, 0.92), rgba(17, 34, 66, 0.98));
+  border: 1px solid rgba(125, 148, 197, 0.18);
+  border-radius: 20px;
+  padding: 16px;
   margin-bottom: 12px;
+  box-shadow: 0 18px 38px rgba(4, 10, 22, 0.22);
 }
 
-.sync-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 8px;
+.sync-status-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  grid-row: span 2;
+}
+
+.sync-status-ok {
+  background: rgba(45, 165, 103, 0.14);
+  color: #59de8d;
+}
+
+.sync-status-pending {
+  background: rgba(255, 189, 74, 0.14);
+  color: #ffcb69;
 }
 
 .sync-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  min-width: 0;
 }
 
 .sync-title {
   margin: 0;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: #f7f9ff;
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
-.sync-status {
-  font-size: 0.78rem;
-  color: var(--text);
-}
-
-.sync-last {
-  font-size: 0.74rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.sync-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.sync-link {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  font-size: 0.76rem;
-  font-family: inherit;
-  padding: 0;
-  cursor: pointer;
-}
-
-.sync-btn {
-  border: 1px solid var(--blue);
-  background: rgba(30, 136, 229, 0.1);
-  color: var(--blue);
-  font-size: 0.76rem;
-  font-weight: 700;
-  font-family: inherit;
-  border-radius: 10px;
-  padding: 7px 10px;
-  cursor: pointer;
-}
-
-.sync-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.sync-subtitle {
+  margin: 4px 0 0;
+  color: #a9b7d8;
+  font-size: 0.92rem;
+  line-height: 1.35;
 }
 
 .sync-chips {
@@ -602,351 +612,282 @@ function navegar(tipo) {
 }
 
 .sync-chip {
-  font-size: 0.78rem;
-  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
   border-radius: 999px;
-  padding: 5px 10px;
-  color: var(--text-muted);
-  background: var(--bg-input);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #d5def5;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
-.sync-chip-on {
-  color: var(--blue);
-  border-color: var(--blue);
-  background: rgba(30, 136, 229, 0.08);
-}
-
-.card-pc {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  background: rgba(17, 29, 50, 0.72);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  margin-bottom: 12px;
-  font-size: 0.88rem;
-  color: var(--text-muted);
-}
-
-.card-pc-content {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card-pc-content strong {
-  color: var(--text);
-}
-
-.card-pc-fechar {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.85rem;
-  padding: 2px 4px;
-  flex-shrink: 0;
-}
-
-.secao-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.secao-head-spaced {
-  margin-top: 18px;
-}
-
-.secao-label {
-  font-size: 0.75rem;
+.sync-btn {
+  grid-column: 2;
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(91, 173, 255, 0.9);
+  border-radius: 15px;
+  background: linear-gradient(180deg, #2f90ff, #1e6fe9);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 14px 24px rgba(30, 111, 233, 0.22);
 }
 
-.secao-hint {
-  font-size: 0.76rem;
-  color: var(--text-muted);
+.sync-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.utility-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.utility-chip {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 148, 197, 0.14);
+  background: rgba(15, 31, 58, 0.75);
+  color: #a8b7de;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-head-spaced {
+  margin-top: 24px;
+}
+
+.section-title {
+  margin: 0;
+  color: #f5f8ff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.section-link {
+  color: #3690ff;
+  font-size: 0.98rem;
+  font-weight: 600;
 }
 
 .tipos-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
 .tipo-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 12px;
+  min-width: 0;
+  min-height: 146px;
+  padding: 14px 10px 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(124, 147, 194, 0.14);
+  background: linear-gradient(180deg, rgba(24, 44, 79, 0.98), rgba(19, 36, 68, 0.98));
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
   cursor: pointer;
-  transition: all 0.15s;
-  text-align: left;
-  min-height: 72px;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  box-shadow: 0 14px 28px rgba(5, 12, 25, 0.16);
 }
 
 .tipo-card:active {
-  background: var(--bg-hover);
   transform: scale(0.98);
 }
 
 .tipo-icon {
-  font-size: 1.2rem;
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: 2px;
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.tipo-texto {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+.tipo-icon-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 10px 18px rgba(8, 16, 34, 0.24));
 }
 
 .tipo-nome {
+  color: #f7f9ff;
   font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.2;
+  line-height: 1.15;
+  font-weight: 700;
+  text-wrap: balance;
 }
 
 .tipo-meta {
-  font-size: 0.69rem;
-  color: var(--text-muted);
-  line-height: 1.25;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: #9aacd1;
+  font-size: 0.72rem;
+  line-height: 1.2;
 }
 
-.tipo-badge {
-  font-size: 0.62rem;
-  color: var(--text-muted);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 2px 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.acoes-row {
+.atalhos-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.btn-historico,
-.btn-pacientes,
-.btn-organizador {
+.atalho-card {
   width: 100%;
-  margin-top: 0;
-}
-
-.btn-historico,
-.btn-pacientes {
-  display: flex;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(124, 147, 194, 0.14);
+  background: linear-gradient(180deg, rgba(23, 43, 78, 0.96), rgba(18, 35, 67, 0.98));
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border-radius: var(--radius);
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.15s;
+  gap: 12px;
   text-align: left;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(5, 12, 25, 0.14);
 }
 
-.btn-historico {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
+.atalho-icon {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-historico:active,
-.btn-pacientes:active,
-.btn-organizador:active {
-  background: var(--bg-hover);
-}
-
-.btn-pacientes {
-  background: rgba(30, 136, 229, 0.08);
-  border: 1px solid rgba(30, 136, 229, 0.26);
-  color: var(--blue);
+.atalho-icon-img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
 }
 
 .atalho-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.atalho-titulo {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: inherit;
-}
-
-.atalho-sub {
-  font-size: 0.73rem;
-  color: var(--text-muted);
-  line-height: 1.35;
-}
-
-.btn-organizador {
-  display: block;
-  padding: 12px;
-  background: rgba(30, 136, 229, 0.08);
-  border: 1px solid rgba(30, 136, 229, 0.26);
-  border-radius: var(--radius);
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-
-.btn-org-inner {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.btn-org-icon {
-  font-size: 1.4rem;
-  flex-shrink: 0;
-}
-
-.btn-org-info {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.btn-org-titulo {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--blue);
+.atalho-title {
+  color: #f7f9ff;
+  font-size: 0.98rem;
+  font-weight: 700;
 }
 
-.btn-org-sub {
-  font-size: 0.78rem;
-  color: var(--text-muted);
+.atalho-sub {
+  color: #9eadd0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.atalho-arrow {
+  color: #9aacd1;
+  font-size: 1.8rem;
+  line-height: 1;
 }
 
 .pulso-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  margin-top: 20px;
+  background: linear-gradient(180deg, rgba(23, 43, 78, 0.96), rgba(18, 35, 67, 0.98));
+  border: 1px solid rgba(124, 147, 194, 0.14);
+  border-radius: 18px;
   padding: 16px;
-  margin-top: 18px;
 }
 
 .pulso-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.pulso-titulo {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.pulso-fechar {
-  background: none;
-  border: none;
-  color: var(--text-muted);
+.pulso-title {
+  color: #f7f9ff;
   font-size: 1rem;
+  font-weight: 700;
+}
+
+.pulso-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #9aacd1;
+  font-size: 1.1rem;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 6px;
-  font-family: inherit;
 }
 
 .pulso-sub {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  margin-bottom: 10px;
+  margin: 0 0 10px;
+  color: #9eadd0;
+  font-size: 0.86rem;
 }
 
 .pulso-input {
   width: 100%;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text);
+  min-height: 100px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(124, 147, 194, 0.14);
+  background: rgba(7, 16, 32, 0.48);
+  color: #f7f9ff;
   font-family: inherit;
-  font-size: 0.9rem;
-  padding: 10px;
+  font-size: 0.92rem;
   resize: none;
   box-sizing: border-box;
-  margin-bottom: 12px;
 }
 
 .pulso-input:focus {
   outline: none;
-  border-color: var(--blue);
+  border-color: rgba(78, 149, 255, 0.72);
 }
 
-.pulso-acoes {
+.pulso-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  margin-top: 12px;
 }
 
-.pulso-adiar {
+.pulso-later {
   width: auto;
   min-height: 44px;
-}
-
-.rodape-acoes {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.btn-atualizar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 10px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.btn-atualizar:active {
-  background: var(--bg-hover);
-  color: var(--text);
-}
-
-.btn-pc-rodape {
-  color: var(--text-muted);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.58);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -955,35 +896,66 @@ function navegar(tipo) {
 }
 
 .modal-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
   width: 100%;
   max-width: 360px;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(124, 147, 194, 0.18);
+  background: #102142;
 }
 
-.modal-titulo {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 14px;
+.modal-title {
+  margin: 0 0 14px;
+  color: #f7f9ff;
+  font-size: 1.14rem;
+  font-weight: 800;
 }
 
-.modal-texto {
+.modal-text {
+  margin: 0 0 10px;
+  color: #aab7d8;
   font-size: 0.92rem;
-  color: var(--text-muted);
-  margin-bottom: 10px;
+  line-height: 1.45;
 }
 
 .modal-url {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--blue);
-  text-align: center;
+  margin: 0 0 12px;
   padding: 12px;
-  background: var(--bg);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #4f9cff;
+  font-size: 1.35rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.modal-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (max-width: 390px) {
+  .hero-name {
+    font-size: 1.95rem;
+  }
+
+  .hero-illustration {
+    width: 118px;
+  }
+
+  .tipos-grid {
+    gap: 6px;
+  }
+
+  .tipo-card {
+    min-height: 138px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .tipo-nome {
+    font-size: 0.8rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -998,28 +970,40 @@ function navegar(tipo) {
     padding-right: 32px !important;
   }
 
+  .hero-card {
+    padding-top: 20px;
+  }
+
+  .hero-name {
+    font-size: 2.8rem;
+  }
+
+  .hero-illustration {
+    width: 188px;
+  }
+
+  .sync-card {
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+  }
+
+  .sync-status-badge {
+    grid-row: auto;
+  }
+
+  .sync-btn {
+    grid-column: auto;
+    width: auto;
+    min-width: 220px;
+    padding: 0 22px;
+  }
+
   .tipos-grid {
-    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
   }
 
   .tipo-card {
-    min-height: 84px;
-  }
-
-  .acoes-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-  }
-
-  .rodape-acoes {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .rodape-acoes > * {
-    flex: 1;
+    min-height: 172px;
   }
 }
 </style>
