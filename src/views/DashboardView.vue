@@ -43,11 +43,11 @@
 
       <section class="sync-card">
         <div class="sync-status-badge" :class="syncBadgeClass">
-          <svg v-if="totalPendencias === 0" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <svg v-if="totalPendencias === 0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <circle cx="12" cy="12" r="9" />
             <path d="m8.5 12.5 2.2 2.2 4.8-5.2" />
           </svg>
-          <svg v-else width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <path d="M12 3a9 9 0 1 0 8.48 12" />
             <path d="M12 7v5l3 2" />
             <path d="M17 3v4h4" />
@@ -66,7 +66,7 @@
         </div>
 
         <button class="sync-btn" :disabled="sincronizandoAgora || !isOnline" @click="sincronizarAgora">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M21 12a9 9 0 0 0-15.5-6.36" />
             <path d="M3 4v5h5" />
             <path d="M3 12a9 9 0 0 0 15.5 6.36" />
@@ -81,95 +81,101 @@
         <button class="utility-chip" @click="pcModalAberto = true">No computador</button>
       </div>
 
-      <div class="section-head">
-        <h2 class="section-title">Anotações</h2>
-        <span class="section-link">Acesso rápido</span>
-      </div>
-
-      <div class="tipos-grid">
-        <button
-          v-for="tipo in tiposDashboard"
-          :key="tipo.id"
-          data-testid="auto-btn-dashboardview-2"
-          class="tipo-card"
-          @click="navegar(tipo)"
-        >
-          <span class="tipo-icon">
-            <img class="tipo-icon-img" :src="tipo.icon" :alt="tipo.nome" />
-          </span>
-          <span class="tipo-nome">{{ tipo.nome }}</span>
-          <span v-if="tipo.meta" class="tipo-meta">{{ tipo.meta }}</span>
-        </button>
-      </div>
-
-      <div class="section-head section-head-spaced">
-        <h2 class="section-title">Atalhos do plantão</h2>
-      </div>
-
-      <div class="atalhos-list">
-        <button data-testid="auto-btn-dashboardview-3" class="atalho-card" @click="router.push({ name: 'historico' })">
-          <span class="atalho-icon">
-            <img class="atalho-icon-img" :src="iconHistorico" alt="Histórico" />
-          </span>
-          <span class="atalho-copy">
-            <span class="atalho-title">Histórico</span>
-            <span class="atalho-sub">Buscar, copiar e reaproveitar anotações</span>
-          </span>
-          <span class="atalho-arrow">›</span>
-        </button>
-
-        <button class="atalho-card" @click="router.push({ name: 'pacientes' })">
-          <span class="atalho-icon">
-            <img class="atalho-icon-img" :src="iconPacientes" alt="Meus Pacientes" />
-          </span>
-          <span class="atalho-copy">
-            <span class="atalho-title">Meus Pacientes</span>
-            <span class="atalho-sub">Pendências e atalhos por leito</span>
-          </span>
-          <span class="atalho-arrow">›</span>
-        </button>
-
-        <button class="atalho-card" @click="router.push({ name: 'organizador' })">
-          <span class="atalho-icon">
-            <img class="atalho-icon-img" :src="iconOrganizador" alt="Organizador do Plantão" />
-          </span>
-          <span class="atalho-copy">
-            <span class="atalho-title">Organizador do plantão</span>
-            <span class="atalho-sub">{{ organizadorResumo }}</span>
-          </span>
-          <span class="atalho-arrow">›</span>
-        </button>
-
-        <button class="atalho-card" @click="router.push({ name: 'configuracoes' })">
-          <span class="atalho-icon">
-            <img class="atalho-icon-img" :src="iconConfiguracao" alt="Configurações" />
-          </span>
-          <span class="atalho-copy">
-            <span class="atalho-title">Configurações</span>
-            <span class="atalho-sub">Preferências, conta e integrações</span>
-          </span>
-          <span class="atalho-arrow">›</span>
-        </button>
-      </div>
-
-      <div v-if="pulsoVisivel" class="pulso-card">
-        <div class="pulso-header">
-          <span class="pulso-title">O que você acha do app?</span>
-          <button class="pulso-close" @click="dispensarPulso">×</button>
+      <section ref="anotacoesSection" class="dashboard-section">
+        <div class="section-head">
+          <h2 class="section-title">Anotações</h2>
+          <span class="section-link">Acesso rápido</span>
         </div>
-        <p class="pulso-sub">Sua opinião ajuda a melhorar o Plantão.</p>
-        <textarea
-          v-model="textoFeedback"
-          class="pulso-input"
-          placeholder="Escreva o que quiser — erros, sugestões, elogios..."
-          rows="3"
-          maxlength="500"
-        ></textarea>
-        <div class="pulso-actions">
-          <button class="btn btn-tertiary pulso-later" @click="dispensarPulso">Agora não</button>
-          <button class="btn btn-primary" :disabled="!textoFeedback.trim() || pulsoEnviando" @click="enviarPulso">
-            {{ pulsoEnviando ? 'Enviando...' : 'Enviar' }}
+
+        <div class="tipos-grid">
+          <button
+            v-for="tipo in tiposDashboard"
+            :key="tipo.id"
+            data-testid="auto-btn-dashboardview-2"
+            :class="['tipo-card', `tipo-card-${tipo.id}`]"
+            @click="navegar(tipo)"
+          >
+            <span class="tipo-icon">
+              <img class="tipo-icon-img" :src="tipo.icon" :alt="tipo.nome" />
+            </span>
+            <span class="tipo-nome">{{ tipo.nome }}</span>
+            <span v-if="tipo.meta" class="tipo-meta">{{ tipo.meta }}</span>
           </button>
+        </div>
+      </section>
+
+      <section class="dashboard-section">
+        <div class="section-head section-head-spaced">
+          <h2 class="section-title">Atalhos do plantão</h2>
+        </div>
+
+        <div class="atalhos-list">
+          <button data-testid="auto-btn-dashboardview-3" class="atalho-card" @click="router.push({ name: 'historico' })">
+            <span class="atalho-icon">
+              <img class="atalho-icon-img" :src="iconHistorico" alt="Histórico" />
+            </span>
+            <span class="atalho-copy">
+              <span class="atalho-title">Histórico</span>
+              <span class="atalho-sub">Buscar, copiar e reaproveitar anotações</span>
+            </span>
+            <span class="atalho-arrow">›</span>
+          </button>
+
+          <button class="atalho-card" @click="router.push({ name: 'pacientes' })">
+            <span class="atalho-icon">
+              <img class="atalho-icon-img" :src="iconPacientes" alt="Meus Pacientes" />
+            </span>
+            <span class="atalho-copy">
+              <span class="atalho-title">Meus Pacientes</span>
+              <span class="atalho-sub">Pendências e atalhos por leito</span>
+            </span>
+            <span class="atalho-arrow">›</span>
+          </button>
+
+          <button class="atalho-card" @click="router.push({ name: 'organizador' })">
+            <span class="atalho-icon">
+              <img class="atalho-icon-img" :src="iconOrganizador" alt="Organizador do Plantão" />
+            </span>
+            <span class="atalho-copy">
+              <span class="atalho-title">Organizador do plantão</span>
+              <span class="atalho-sub">{{ organizadorResumo }}</span>
+            </span>
+            <span class="atalho-arrow">›</span>
+          </button>
+
+          <button class="atalho-card" @click="router.push({ name: 'configuracoes' })">
+            <span class="atalho-icon">
+              <img class="atalho-icon-img" :src="iconConfiguracao" alt="Configurações" />
+            </span>
+            <span class="atalho-copy">
+              <span class="atalho-title">Configurações</span>
+              <span class="atalho-sub">Preferências, conta e integrações</span>
+            </span>
+            <span class="atalho-arrow">›</span>
+          </button>
+        </div>
+      </section>
+
+      <div v-if="pulsoVisivel" class="feedback-overlay" @click.self="dispensarPulso">
+        <div class="feedback-modal">
+          <div class="pulso-header">
+            <span class="pulso-title">O que você acha do app?</span>
+            <button class="pulso-close" @click="dispensarPulso">×</button>
+          </div>
+          <p class="pulso-sub">Sua opinião ajuda a melhorar o Plantão.</p>
+          <textarea
+            v-model="textoFeedback"
+            class="pulso-input"
+            placeholder="Escreva o que quiser — erros, sugestões, elogios..."
+            rows="4"
+            maxlength="500"
+          ></textarea>
+          <div class="pulso-actions">
+            <button class="btn btn-tertiary pulso-later" @click="dispensarPulso">Agora não</button>
+            <button class="btn btn-primary" :disabled="!textoFeedback.trim() || pulsoEnviando" @click="enviarPulso">
+              {{ pulsoEnviando ? 'Enviando...' : 'Enviar' }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -183,6 +189,49 @@
         </div>
       </div>
     </main>
+
+    <nav class="bottom-nav">
+      <button class="bottom-nav-item bottom-nav-item-on" @click="irParaInicio">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M3 10.5 12 3l9 7.5" />
+          <path d="M5 9.5V21h14V9.5" />
+        </svg>
+        <span>Início</span>
+      </button>
+      <button class="bottom-nav-item" @click="router.push({ name: 'pacientes' })">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="9" cy="8" r="3" />
+          <circle cx="17" cy="9" r="2.5" />
+          <path d="M4 19c0-2.8 2.6-5 5.8-5s5.8 2.2 5.8 5" />
+          <path d="M14.5 18c.3-1.8 1.9-3.2 4-3.2 1.2 0 2.3.4 3.1 1.1" />
+        </svg>
+        <span>Pacientes</span>
+      </button>
+      <button class="bottom-nav-item" @click="scrollParaAnotacoes">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M4 20h4l10-10-4-4L4 16v4Z" />
+          <path d="m13 7 4 4" />
+        </svg>
+        <span>Anotações</span>
+      </button>
+      <button class="bottom-nav-item" @click="router.push({ name: 'organizador' })">
+        <span v-if="tarefasPendentes > 0" class="bottom-nav-badge">{{ tarefasPendentes }}</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="5" y="4" width="14" height="16" rx="2" />
+          <path d="M9 9h6" />
+          <path d="M9 13h6" />
+          <path d="m9 17 1.5 1.5L15 14" />
+        </svg>
+        <span>Tarefas</span>
+      </button>
+      <button class="bottom-nav-item" @click="router.push({ name: 'configuracoes' })">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="8" r="3" />
+          <path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" />
+        </svg>
+        <span>Perfil</span>
+      </button>
+    </nav>
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Plantão" :itens="helpItens" />
     <TourDashboard ref="tourRef" />
@@ -229,6 +278,7 @@ const { isOnline } = useOnlineStatus()
 const pcModalAberto = ref(false)
 const helpAberto = ref(false)
 const tourRef = ref(null)
+const anotacoesSection = ref(null)
 
 const {
   visivel: pulsoVisivel,
@@ -250,6 +300,14 @@ function abrirJanelaLateral() {
 function abrirFeedback() {
   if (!auth.syncCode) return
   pulsoVisivel.value = true
+}
+
+function scrollParaAnotacoes() {
+  anotacoesSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function irParaInicio() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const helpItens = [
@@ -388,6 +446,11 @@ const organizadorResumo = computed(() => {
   return `${feitas}/${tarefas.length} tarefas • ${pendentes} pendente${pendentes !== 1 ? 's' : ''}`
 })
 
+const tarefasPendentes = computed(() => {
+  if (!orgStore.plantao) return 0
+  return (orgStore.plantao.tarefas || []).filter(t => !t.feito).length
+})
+
 async function sincronizarAgora() {
   if (sincronizandoAgora.value) return
   if (!isOnline.value) {
@@ -472,7 +535,7 @@ function navegar(tipo) {
 
 .dashboard-main {
   padding-top: 14px;
-  padding-bottom: 40px;
+  padding-bottom: 104px;
 }
 
 .header-brand {
@@ -557,11 +620,6 @@ function navegar(tipo) {
   flex: 1;
 }
 
-.hero-copy {
-  min-width: 0;
-  flex: 1;
-}
-
 .hero-greeting {
   margin: 0 0 4px;
   color: #b8c5e6;
@@ -608,8 +666,8 @@ function navegar(tipo) {
 }
 
 .sync-status-badge {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -633,7 +691,7 @@ function navegar(tipo) {
 .sync-title {
   margin: 0;
   color: #f7f9ff;
-  font-size: 1rem;
+  font-size: 0.98rem;
   font-weight: 800;
 }
 
@@ -648,37 +706,38 @@ function navegar(tipo) {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .sync-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
+  min-height: 26px;
   padding: 0 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: #d5def5;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
 }
 
 .sync-btn {
   width: auto;
-  min-width: 148px;
-  min-height: 42px;
+  min-width: 126px;
+  min-height: 38px;
+  padding: 0 14px;
   border: 1px solid rgba(91, 173, 255, 0.9);
   border-radius: 14px;
   background: linear-gradient(180deg, #2f90ff, #1e6fe9);
   color: #fff;
   font-family: inherit;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
   cursor: pointer;
   box-shadow: 0 14px 24px rgba(30, 111, 233, 0.22);
 }
@@ -707,6 +766,10 @@ function navegar(tipo) {
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.dashboard-section {
+  position: relative;
 }
 
 .section-head {
@@ -785,6 +848,11 @@ function navegar(tipo) {
   line-height: 1.15;
   font-weight: 700;
   text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.tipo-card-encamin .tipo-nome {
+  font-size: 0.78rem;
 }
 
 .tipo-meta {
@@ -854,12 +922,26 @@ function navegar(tipo) {
   line-height: 1;
 }
 
-.pulso-card {
-  margin-top: 20px;
-  background: linear-gradient(180deg, rgba(23, 43, 78, 0.96), rgba(18, 35, 67, 0.98));
+.feedback-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 8, 18, 0.5);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 240;
+  padding: 20px;
+}
+
+.feedback-modal {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(180deg, rgba(23, 43, 78, 0.98), rgba(18, 35, 67, 0.99));
   border: 1px solid rgba(124, 147, 194, 0.14);
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.34);
 }
 
 .pulso-header {
@@ -895,7 +977,7 @@ function navegar(tipo) {
 
 .pulso-input {
   width: 100%;
-  min-height: 100px;
+  min-height: 110px;
   padding: 12px;
   border-radius: 14px;
   border: 1px solid rgba(124, 147, 194, 0.14);
@@ -974,6 +1056,64 @@ function navegar(tipo) {
   margin-top: 8px;
 }
 
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(92vw, 360px);
+  padding: 8px 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(124, 147, 194, 0.14);
+  background: rgba(14, 31, 60, 0.94);
+  backdrop-filter: blur(14px);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  z-index: 220;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+}
+
+.bottom-nav-item {
+  position: relative;
+  min-height: 54px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: #8ea3d4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bottom-nav-item-on {
+  background: rgba(255, 255, 255, 0.05);
+  color: #7fc0ff;
+}
+
+.bottom-nav-badge {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ff6a67;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
 @media (max-width: 390px) {
   .dashboard-header {
     align-items: flex-start;
@@ -993,7 +1133,13 @@ function navegar(tipo) {
   }
 
   .hero-illustration {
-    width: 88px;
+    width: 84px;
+  }
+
+  .sync-btn {
+    min-width: 116px;
+    font-size: 0.81rem;
+    padding: 0 11px;
   }
 
   .tipos-grid {
@@ -1009,6 +1155,10 @@ function navegar(tipo) {
   .tipo-nome {
     font-size: 0.8rem;
   }
+
+  .tipo-card-encamin .tipo-nome {
+    font-size: 0.72rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1021,6 +1171,10 @@ function navegar(tipo) {
     max-width: 960px !important;
     padding-left: 32px !important;
     padding-right: 32px !important;
+  }
+
+  .dashboard-main {
+    padding-bottom: 40px;
   }
 
   .hero-card {
@@ -1040,8 +1194,9 @@ function navegar(tipo) {
   }
 
   .sync-btn {
-    min-width: 220px;
-    padding: 0 22px;
+    min-width: 190px;
+    padding: 0 18px;
+    font-size: 0.92rem;
   }
 
   .tipos-grid {
@@ -1050,6 +1205,10 @@ function navegar(tipo) {
 
   .tipo-card {
     min-height: 172px;
+  }
+
+  .bottom-nav {
+    display: none;
   }
 }
 </style>
