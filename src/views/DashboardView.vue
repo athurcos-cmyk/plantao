@@ -81,8 +81,7 @@
       </section>
 
       <div class="utility-row">
-        <button class="utility-chip" @click="abrirJanelaLateral">Ao lado</button>
-        <button class="utility-chip" @click="pcModalAberto = true">No computador</button>
+        <button class="utility-chip" @click="pcModalAberto = true">💻 Como acessar no computador</button>
       </div>
 
       <section ref="anotacoesSection" class="dashboard-section">
