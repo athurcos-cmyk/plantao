@@ -2,7 +2,7 @@
 name: Plantao - Visao geral do projeto (Codex)
 description: Stack, estrutura de pastas, rotas, stores, composables e integracoes
 type: project
-updated: 2026-04-21
+updated: 2026-04-23
 ---
 
 ## O que e
@@ -34,6 +34,7 @@ O objetivo e gerar textos padronizados, rapidos de copiar e utilizaveis mesmo qu
 - `src/data/medicamentos.js` - catalogo base com vias comuns e presets enriquecidos para autocomplete/quick add da tela de medicacao
 - `src/views/` - telas gerais, marketing, auth, admin e configuracoes
 - `src/views/anotacoes/` - views especificas de anotacao
+- `src/components/BotaoChat.vue` - botao flutuante da Clara, com ajuste de posicionamento no mobile por causa do rodape fixo
 - `api/` - funcoes serverless da Vercel
 - `public/` - icones, assets estaticos e service worker relacionado ao PWA
 
@@ -123,6 +124,9 @@ Estruturas mais relevantes:
 - `src/App.vue` tambem concentra os banners de instalacao PWA; o formato atual foi compactado para card flutuante, entao qualquer ajuste futuro deve preservar esse comportamento menos invasivo
 - `src/composables/usePushNotificacoes.js` carrega `firebase/messaging` dinamicamente; se mexer em push, preservar esse lazy-load
 - `src/stores/auth.js` depende do cache local para liberar a UI cedo; se mexer no bootstrap, preservar a restauracao rapida e o timeout de fallback
+- `src/views/DashboardView.vue` passou a concentrar a nova home mobile: topo com ilustracao, sync card compacto, grid 4x no celular, feedback modal, rodape fixo tipo app e atalhos ilustrados
+- `src/views/DashboardView.vue` tambem guarda um aprendizado forte de produto: manter a primeira dobra leve, sem voltar a crescer o card de sincronizacao nem encher a home de microcopy
+- `src/assets/dashboard-icons-png/` e agora a pasta fonte dos icones ilustrados usados no dashboard; manter assets leves e transparentes
 - `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje tem duas zonas visuais principais (`preparo` e `medicamentos do horario`), quick add por historico/preset, catalogo detalhado e fluxo `Salvar e adicionar proxima`; preservar essa hierarquia se evoluir a tela
 - Aprendizado importante dessa view: evitar resumos grandes, estados obvios e microcopy em excesso; na medicacao, a melhor UX ate agora foi a mais enxuta e direta para chegar rapido em `Adicionar medicamento`
 - Nos avisos de quick add/modelos, manter texto curto e operacional; a versao atual fala so de `prescricao` e `apresentacao`

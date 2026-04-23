@@ -1,6 +1,6 @@
 # Memory Index - Plantao (Codex)
 
-> Ultima atualizacao: 2026-04-21
+> Ultima atualizacao: 2026-04-23
 
 ## Arquivos locais do Codex
 
@@ -15,7 +15,22 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
 
-## Ultima sessao (2026-04-21)
+## Ultima sessao (2026-04-23)
+
+- Dashboard entrou numa nova fase visual: topo com saudacao + ilustracao, cards ilustrados em PNG e atalhos com mais cara de app de verdade
+- Os PNGs finais do dashboard precisam continuar transparentes e otimizados; arte com fundo branco piora muito o topo e os cards
+- O card de sincronizacao foi reduzido varias vezes depois de feedback real no celular; o estado atual privilegia compactacao, `Ver detalhes` e CTA pequeno
+- `Feedback` agora abre como modal central com blur, em vez de aparecer inline la embaixo
+- Dashboard mobile ganhou rodape fixo estilo app com `Inicio`, `Pacientes`, `Anotacoes`, `Tarefas` e `Perfil`
+- Botao da Clara foi reposicionado acima do rodape fixo no mobile para nao colidir com a navegacao
+- Aprendizado importante: na home, visual premium ajuda, mas qualquer excesso na dobra principal e percebido imediatamente como atrito
+- Para a grade de `Anotacoes`, manter `4 cards por linha` funcionou melhor do que voltar para `2 colunas grandes`
+- `Encaminhamento` exigiu ajuste proprio de tipografia; a solucao foi tratar esse card especificamente sem desmontar a grade toda
+- Abaixo do sync ficou so o atalho `Como acessar no computador`; `Ao lado` saiu da primeira dobra
+- Regra de colaboracao alinhada com o usuario: para ajustes diretos e incrementais, seguir ate commit/push sem ficar pedindo confirmacao a cada micro-etapa
+- Testes passaram com 60 testes e o build de producao tambem passou
+
+## Sessao anterior (2026-04-21)
 
 - Tela de `Medicacao` ganhou fluxo rapido completo com `Salvar e adicionar proxima`
 - Historico de medicacao agora mescla cache local e Firebase com deduplicacao por esquema completo

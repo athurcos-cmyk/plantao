@@ -6,6 +6,34 @@
 
 ---
 
+## Sessao 2026-04-23
+
+### Dashboard: redesign visual guiado por uso real
+
+- Dashboard foi redesenhado com linguagem mais proxima do mock aprovado: topo com saudacao, ilustracao, cards mais premium e hierarquia mais clara entre `Anotacoes` e `Atalhos do plantao`
+- Emojis antigos da home foram substituidos por PNGs ilustrados do dashboard, com versoes transparentes otimizadas para o bundle
+- Icone do app em `public/icons/` tambem foi atualizado para acompanhar a nova identidade visual
+- `Atalhos do plantao` passaram a usar os icones ilustrados tambem, incluindo `Configuracoes`
+- `Feedback` saiu do fluxo inline e virou modal central com blur de fundo
+- Home ganhou rodape fixo estilo app no mobile, com atalhos para `Inicio`, `Pacientes`, `Anotacoes`, `Tarefas` e `Perfil`
+- Botao da Clara foi reposicionado para nao colidir com o rodape fixo no mobile
+- Card de sincronizacao foi redesenhado varias vezes ate ficar mais compacto, com `Ver detalhes` restaurado e CTA bem menor
+- Atalho `Ao lado` foi removido da dobra principal; abaixo do sync ficou apenas `Como acessar no computador`
+
+### Aprendizados de UX confirmados na pratica
+
+- Na home, visual bonito ajuda muito na percepcao do produto, mas qualquer excesso na primeira dobra atrapalha rapido
+- Topo com ilustracao faz sentido, desde que a arte esteja em PNG transparente e em tamanho controlado
+- O card de sincronizacao nao deve competir com a acao principal do plantao; ele funciona melhor como status util, nao como hero secundario
+- Para dashboard mobile, manter `4 cards por linha` funcionou melhor do que voltar para `2 colunas grandes`
+- O card de `Encaminhamento` precisou de ajuste especifico de tipografia; a melhor solucao foi corrigir o texto sem desfazer a grade
+- Sempre que um ajuste for claro e incremental, seguir direto ate commit/push sem ficar pedindo confirmacao a cada passo
+
+### Validacao
+
+- `npm test` passou com 60 testes
+- `npm run build` passou
+
 ## Sessao 2026-04-21
 
 ### Medicacao: fluxo rapido completo

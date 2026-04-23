@@ -2,7 +2,7 @@
 name: Plantao - Status do projeto (Codex)
 description: Status do app, alertas operacionais, pendencias tecnicas e contexto de negocio
 type: project
-updated: 2026-04-21
+updated: 2026-04-23
 ---
 
 ## Status geral
@@ -44,6 +44,7 @@ Design doc estrategico mais recente conhecido:
 - Clara via Groq
 - Emails transacionais via Resend
 - PWA offline-first instalavel
+- Dashboard mobile redesenhado com cards ilustrados, feedback modal e rodape fixo tipo app
 
 ## Estado tecnico atual confirmado no codigo
 
@@ -65,6 +66,10 @@ Design doc estrategico mais recente conhecido:
 - A mesma tela foi reajustada depois do uso real: remover resumo, estados obvios e textos explicativos trouxe a experiencia de volta para um fluxo mais rapido
 - Avisos dos atalhos rapidos ficaram curtos e focados em `prescricao` e `apresentacao`; evitar termos extras que adicionem leitura sem ganho real
 - O template reaproveitavel de medicacao passou a manter tambem dados de lote, sem transformar lote diferente em chave nova do historico
+- Dashboard agora usa PNGs ilustrados otimizados em `src/assets/dashboard-icons-png/`, com icone do app atualizado em `public/icons/`
+- Home foi refinada com saudacao + ilustracao, card de sincronizacao mais compacto, `Ver detalhes` restaurado e CTA de sync reduzido no mobile
+- `Feedback` da dashboard virou modal central com blur e o mobile ganhou rodape fixo estilo app
+- O botao da Clara foi movido para cima no mobile para nao colidir com o rodape fixo
 
 ## Alertas operacionais
 
@@ -75,6 +80,7 @@ Design doc estrategico mais recente conhecido:
 - Offline real continua dependendo de o PWA ja ter sido carregado online ao menos uma vez para cachear assets
 - `CRON_SECRET` precisa ser rotacionado no ambiente e no cron externo
 - `config/total_usuarios` depende do sync correto com `api/init-counter.js` se houver reset de base
+- Qualquer nova arte do dashboard precisa continuar em PNG transparente; assets com fundo branco quebram o topo e pioram bastante a percepcao visual
 
 ## Pendentes tecnicos e de produto
 
@@ -83,6 +89,7 @@ Design doc estrategico mais recente conhecido:
 - [ ] Implementar paywall mensal so depois de sinais fortes de uso recorrente
 - [ ] Avaliar Resend Batch API quando a base crescer
 - [ ] Revisar qualquer documentacao antiga que ainda descreva auth legado
+- [ ] Continuar lapidando a home mobile apenas com ajustes cirurgicos; evitar voltar a crescer a primeira dobra com microcopy ou CTA exagerado
 
 ## Conformidade e posicionamento
 
