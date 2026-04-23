@@ -1,9 +1,16 @@
 <template>
   <div class="screen">
     <header class="app-header dashboard-header">
-      <div class="header-logo">
+      <div class="header-brand">
         <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" class="header-logo-mark" />
-        <span>Plantão</span>
+        <div class="header-brand-copy">
+          <span class="header-brand-title">Plantão</span>
+          <div class="header-shortcuts">
+            <button class="header-chip" @click="tourRef?.abrirTour()">Tutorial</button>
+            <button class="header-chip" @click="helpAberto = true">Ajuda</button>
+            <button class="header-chip" @click="abrirFeedback">Feedback</button>
+          </div>
+        </div>
       </div>
 
       <div class="header-actions">
@@ -70,9 +77,6 @@
       </section>
 
       <div class="utility-row">
-        <button class="utility-chip" @click="tourRef?.abrirTour()">Tutorial</button>
-        <button class="utility-chip" @click="helpAberto = true">Ajuda</button>
-        <button class="utility-chip" @click="abrirFeedback">Feedback</button>
         <button class="utility-chip" @click="abrirJanelaLateral">Ao lado</button>
         <button class="utility-chip" @click="pcModalAberto = true">No computador</button>
       </div>
@@ -471,13 +475,43 @@ function navegar(tipo) {
   padding-bottom: 40px;
 }
 
-.header-logo {
+.header-brand {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+}
+
+.header-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.header-brand-title {
   color: #f6f8ff;
   font-size: 1.05rem;
   font-weight: 800;
+}
+
+.header-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.header-chip {
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 148, 197, 0.14);
+  background: rgba(15, 31, 58, 0.75);
+  color: #a8b7de;
+  font-family: inherit;
+  font-size: 0.66rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .header-logo-mark {
@@ -488,12 +522,13 @@ function navegar(tipo) {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .btn-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
   border: 1px solid rgba(145, 166, 212, 0.16);
   background: rgba(14, 31, 60, 0.7);
@@ -514,7 +549,12 @@ function navegar(tipo) {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 14px 4px 8px;
+  padding: 10px 2px 6px;
+}
+
+.hero-copy {
+  min-width: 0;
+  flex: 1;
 }
 
 .hero-copy {
@@ -539,41 +579,41 @@ function navegar(tipo) {
 }
 
 .hero-subtitle {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: #a5b4d6;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.4;
 }
 
 .hero-illustration {
-  width: 136px;
-  max-width: 38%;
+  width: 96px;
+  max-width: 34%;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.28));
+  flex-shrink: 0;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.18));
 }
 
 .sync-card {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
   align-items: center;
   background: linear-gradient(180deg, rgba(20, 41, 77, 0.92), rgba(17, 34, 66, 0.98));
   border: 1px solid rgba(125, 148, 197, 0.18);
-  border-radius: 20px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 18px 38px rgba(4, 10, 22, 0.22);
+  border-radius: 18px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 12px 24px rgba(4, 10, 22, 0.18);
 }
 
 .sync-status-badge {
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  grid-row: span 2;
 }
 
 .sync-status-ok {
@@ -593,14 +633,14 @@ function navegar(tipo) {
 .sync-title {
   margin: 0;
   color: #f7f9ff;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
 }
 
 .sync-subtitle {
   margin: 4px 0 0;
   color: #a9b7d8;
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   line-height: 1.35;
 }
 
@@ -625,15 +665,15 @@ function navegar(tipo) {
 }
 
 .sync-btn {
-  grid-column: 2;
-  width: 100%;
-  min-height: 48px;
+  width: auto;
+  min-width: 148px;
+  min-height: 42px;
   border: 1px solid rgba(91, 173, 255, 0.9);
-  border-radius: 15px;
+  border-radius: 14px;
   background: linear-gradient(180deg, #2f90ff, #1e6fe9);
   color: #fff;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -653,12 +693,12 @@ function navegar(tipo) {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .utility-chip {
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 30px;
+  padding: 0 11px;
   border-radius: 999px;
   border: 1px solid rgba(125, 148, 197, 0.14);
   background: rgba(15, 31, 58, 0.75);
@@ -935,12 +975,25 @@ function navegar(tipo) {
 }
 
 @media (max-width: 390px) {
+  .dashboard-header {
+    align-items: flex-start;
+  }
+
+  .header-brand-title {
+    font-size: 0.98rem;
+  }
+
+  .header-chip {
+    font-size: 0.62rem;
+    padding: 0 7px;
+  }
+
   .hero-name {
     font-size: 1.95rem;
   }
 
   .hero-illustration {
-    width: 118px;
+    width: 88px;
   }
 
   .tipos-grid {
@@ -971,7 +1024,7 @@ function navegar(tipo) {
   }
 
   .hero-card {
-    padding-top: 20px;
+    padding-top: 18px;
   }
 
   .hero-name {
@@ -979,21 +1032,14 @@ function navegar(tipo) {
   }
 
   .hero-illustration {
-    width: 188px;
+    width: 140px;
   }
 
   .sync-card {
-    grid-template-columns: auto 1fr auto;
-    gap: 18px;
-  }
-
-  .sync-status-badge {
-    grid-row: auto;
+    gap: 16px;
   }
 
   .sync-btn {
-    grid-column: auto;
-    width: auto;
     min-width: 220px;
     padding: 0 22px;
   }
