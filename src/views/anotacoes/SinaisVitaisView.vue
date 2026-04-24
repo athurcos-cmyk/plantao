@@ -60,12 +60,6 @@
           <label class="section-eyebrow">Horário <span class="obrigatorio">*</span></label>
           <div class="time-shell">
             <input data-testid="auto-input-sinaisvitaisview-1" type="time" v-model="form.horario">
-            <div class="time-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7v5l3 2" />
-              </svg>
-            </div>
           </div>
         </section>
 
@@ -204,21 +198,6 @@
                 >{{ n - 1 }}</button>
               </div>
             </div>
-
-            <div class="campo sv-subcampo">
-              <label>Conduta</label>
-              <div class="chips-wrap conduta-row">
-                <button class="chip" :class="{ 'chip-on': form.dorConduta.includes('comunicado') }" @click="toggleConduta('comunicado')">Comunicado à enfermeira</button>
-                <button class="chip" :class="{ 'chip-on': form.dorConduta.includes('medicado') }" @click="toggleConduta('medicado')">Medicação administrada</button>
-                <button class="chip" :class="{ 'chip-on': form.dorConduta.includes('reavaliado') }" @click="toggleConduta('reavaliado')">Reavaliado</button>
-              </div>
-
-              <div class="details-stack">
-                <input v-if="form.dorConduta.includes('comunicado')" type="text" v-model="form.dorCondutaEnf" placeholder="Nome da enfermeira">
-                <input v-if="form.dorConduta.includes('medicado')" type="text" v-model="form.dorCondutaMed" placeholder="Ex: item 3 da prescrição médica, EV">
-                <input v-if="form.dorConduta.includes('reavaliado')" type="text" v-model="form.dorCondutaReav" placeholder="Ex: nível 2 após 20 min">
-              </div>
-            </div>
           </template>
         </section>
 
@@ -347,21 +326,11 @@ const form = reactive({
   algias: '',
   dorDesc: '',
   dorEscala: null,
-  dorConduta: [],
-  dorCondutaEnf: '',
-  dorCondutaMed: '',
-  dorCondutaReav: '',
   comunicado: false,
   comunicadoNome: '',
   nomePaciente: '',
   leitoPaciente: '',
 })
-
-function toggleConduta(v) {
-  const i = form.dorConduta.indexOf(v)
-  if (i === -1) form.dorConduta.push(v)
-  else form.dorConduta.splice(i, 1)
-}
 
 const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
   useRascunho(
@@ -392,28 +361,7 @@ function gerar() {
     const partes = []
     if (form.dorDesc.trim()) partes.push(form.dorDesc.trim())
     if (form.dorEscala !== null) partes.push(`nível ${form.dorEscala}/10 na escala de dor`)
-    const dorBase = partes.length ? `, refere dor: ${partes.join(', ')}` : ', refere dor'
-
-    const condutas = []
-    if (form.dorConduta.includes('comunicado') && form.dorCondutaEnf.trim()) {
-      condutas.push(`Comunicado à enfermeira ${form.dorCondutaEnf.trim()}`)
-    } else if (form.dorConduta.includes('comunicado')) {
-      condutas.push('Comunicado à enfermeira')
-    }
-
-    if (form.dorConduta.includes('medicado') && form.dorCondutaMed.trim()) {
-      condutas.push(`Administrado ${form.dorCondutaMed.trim()}, conforme prescrição médica`)
-    } else if (form.dorConduta.includes('medicado')) {
-      condutas.push('Administrado medicamento conforme prescrição médica')
-    }
-
-    if (form.dorConduta.includes('reavaliado') && form.dorCondutaReav.trim()) {
-      condutas.push(`Reavaliado – ${form.dorCondutaReav.trim()}`)
-    } else if (form.dorConduta.includes('reavaliado')) {
-      condutas.push('Reavaliado')
-    }
-
-    algiasText = dorBase + (condutas.length ? `. ${condutas.join('. ')}` : '')
+    algiasText = partes.length ? `, refere dor: ${partes.join(', ')}` : ', refere dor'
   }
 
   const sv = []
@@ -492,10 +440,6 @@ function novaAfericao() {
     algias: '',
     dorDesc: '',
     dorEscala: null,
-    dorConduta: [],
-    dorCondutaEnf: '',
-    dorCondutaMed: '',
-    dorCondutaReav: '',
     comunicado: false,
     comunicadoNome: '',
   })
@@ -648,7 +592,7 @@ function novaAfericao() {
 .time-shell input {
   width: 100%;
   min-height: 64px;
-  padding-right: 56px;
+  padding-right: 16px;
   background: linear-gradient(180deg, rgba(23, 37, 67, 0.96), rgba(18, 30, 56, 0.98));
   border: 1px solid rgba(67, 93, 141, 0.5);
   border-radius: 18px;
@@ -656,15 +600,6 @@ function novaAfericao() {
   font-size: 1.16rem;
   font-family: inherit;
   outline: none;
-}
-
-.time-icon {
-  position: absolute;
-  inset: 0 18px 0 auto;
-  display: inline-flex;
-  align-items: center;
-  color: #8fa3cf;
-  pointer-events: none;
 }
 
 .vitals-grid {
@@ -876,8 +811,7 @@ function novaAfericao() {
   box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.14);
 }
 
-.chips-wrap,
-.conduta-row {
+.chips-wrap {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -914,13 +848,15 @@ function novaAfericao() {
 }
 
 .escala-dor {
-  display: grid;
-  grid-template-columns: repeat(11, minmax(0, 1fr));
-  gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .chip-escala {
-  min-width: 0;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
   padding: 0;
   justify-content: center;
   border-radius: 12px;
@@ -1088,10 +1024,13 @@ function novaAfericao() {
   }
 
   .escala-dor {
-    gap: 5px;
+    gap: 7px;
   }
 
   .chip-escala {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
     font-size: 0.82rem;
   }
 
