@@ -6,8 +6,7 @@
       </Transition>
     </RouterView>
   </div>
-  <BotaoChat v-if="mostrarChatFab" />
-  <ChatAssistente v-if="mostrarFab" />
+  <ChatAssistente v-if="mostrarChatDashboard" />
   <CalculadoraModal v-if="mostrarFab" />
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
@@ -105,7 +104,6 @@ import { useOnlineStatus } from './composables/useOnlineStatus.js'
 import { useChat } from './composables/useChat.js'
 import { emitSyncState } from './utils/syncEvents.js'
 
-const BotaoChat = defineAsyncComponent(() => import('./components/BotaoChat.vue'))
 const ChatAssistente = defineAsyncComponent(() => import('./components/ChatAssistente.vue'))
 const CalculadoraModal = defineAsyncComponent(() => import('./components/CalculadoraModal.vue'))
 
@@ -121,7 +119,7 @@ const router     = useRouter()
 const route      = useRoute()
 const rotasSemFab = ['landing', 'login', 'pc']
 const mostrarFab = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
-const mostrarChatFab = computed(() => mostrarFab.value && route.name !== 'dashboard')
+const mostrarChatDashboard = computed(() => mostrarFab.value && route.name === 'dashboard')
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
 const LAST_SYNC_KEY_PREFIX = 'last_sync_'
