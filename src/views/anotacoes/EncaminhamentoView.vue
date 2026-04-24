@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <header class="app-header">
+  <div class="screen encaminhamento-screen">
+    <header class="app-header encaminhamento-header">
       <button class="btn-icon" @click="voltarOuSair">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
@@ -14,12 +14,12 @@
     </header>
 
     <!-- Barra de progresso -->
-    <div v-if="!gerado" class="progress-wrap">
+    <div v-if="!gerado" class="progress-wrap encaminhamento-progress">
       <div class="progress-fill" :style="{ width: (passo / 3 * 100) + '%' }"></div>
       <span class="progress-label">Bloco {{ passo }} de 3</span>
     </div>
 
-    <main class="container" style="padding-top:20px;padding-bottom:40px">
+    <main class="container encaminhamento-page">
 
       <!-- Banner de rascunho -->
       <div v-if="temRascunho && !gerado" class="rascunho-banner">
@@ -31,7 +31,30 @@
       </div>
 
       <!-- ═══ BLOCO 1 — Identificação ═══ -->
-      <div v-if="!gerado && passo === 1">
+      <section v-if="!gerado && pacientesStore.pacientes.length > 0" class="paciente-atalho">
+        <label>Paciente registrado</label>
+        <div class="chips-scroll">
+          <button
+            v-for="p in pacientesStore.pacientes"
+            :key="p._key"
+            class="chip"
+            :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
+            @click="selecionarPaciente(p)"
+          >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
+        </div>
+      </section>
+
+      <section v-if="!gerado" class="module-hero">
+        <div class="module-hero-icon">
+          <img :src="iconEncaminhamento" alt="Encaminhamento" />
+        </div>
+        <div class="module-hero-copy">
+          <h1>Encaminhamento</h1>
+          <p>Registre saída, retorno, transporte e dispositivos com clareza.</p>
+        </div>
+      </section>
+
+      <div v-if="!gerado && passo === 1" class="encaminhamento-card">
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
@@ -57,38 +80,16 @@
           </div>
         </div>
 
-        <div v-if="pacientesStore.pacientes.length > 0" class="campo">
-          <label>Paciente registrado</label>
-          <div class="chips-wrap">
-            <button
-              v-for="p in pacientesStore.pacientes"
-              :key="p._key"
-              class="chip"
-              :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
-              @click="selecionarPaciente(p)"
-            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Nome do paciente <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.nome" placeholder="Ex: João da Silva">
-        </div>
-
-        <div class="campo">
-          <label>Leito <span class="opc">(opcional)</span></label>
-          <input type="text" v-model="form.leito" placeholder="Ex: 4B">
-        </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 20px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
 
       <!-- ═══ BLOCO 2 — Destino/Origem e Transporte ═══ -->
-      <div v-if="!gerado && passo === 2">
+      <div v-if="!gerado && passo === 2" class="encaminhamento-card">
         <h2 class="bloco-titulo">{{ form.tipo === 'retorno' ? 'Origem e Transporte' : 'Destino e Transporte' }}</h2>
 
         <!-- Destino (apenas Encaminhamento) -->
@@ -187,13 +188,13 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
 
       <!-- ═══ BLOCO 3 — Acompanhante e Dispositivos ═══ -->
-      <div v-if="!gerado && passo === 3">
+      <div v-if="!gerado && passo === 3" class="encaminhamento-card">
         <h2 class="bloco-titulo">Acompanhante e Dispositivos</h2>
 
         <div class="campo">
@@ -427,32 +428,26 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 2">← Voltar</button>
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary btn-generate" @click="gerar"><IconGenerateNote />Gerar anotação</button>
         </div>
       </div>
 
       <!-- ═══ RESULTADO ═══ -->
-      <div v-if="gerado">
-        <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
-
-        <button class="btn-copy" @click="copiar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          {{ copiado ? 'Copiado!' : 'Copiar texto' }}
-        </button>
-
-        <div class="nav-row">
-          <button class="btn btn-secondary" style="flex:1" @click="salvar" :disabled="salvando">
-            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-          </button>
-          <button class="btn btn-secondary" style="flex:1" @click="novaAnotacao">Nova anotação</button>
-        </div>
-
-        <button class="btn btn-secondary" style="width:100%;margin-top:10px" @click="gerado = false; passo = 3">← Editar</button>
-      </div>
+      <ResultadoAnotacao
+        v-if="gerado"
+        :icon="iconEncaminhamento"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nome"
+        v-model:leitoPaciente="form.leito"
+        :salvando="salvando"
+        label-nova="Novo encaminhamento"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAnotacao"
+        @editar="gerado = false; passo = 3"
+      />
 
     </main>
   </div>
@@ -467,6 +462,8 @@ import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
 import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao from '../../components/ResultadoAnotacao.vue'
+import iconEncaminhamento from '../../assets/dashboard-icons-png/encaminhamento.png'
 import { db } from '../../firebase.js'
 import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 import { useAuthStore } from '../../stores/auth.js'
@@ -476,7 +473,7 @@ const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
 const authStore      = useAuthStore()
 const { showToast }  = useToast()
-const { copiado, copiar: _copiar } = useCopia()
+const { copiar: _copiar } = useCopia()
 // ── Estado ──
 const passo       = ref(1)
 const gerado      = ref(false)
@@ -734,6 +731,11 @@ onUnmounted(() => {
 
 // ── Helpers ──
 function selecionarPaciente(p) {
+  if (form.nome === p.nome && form.leito === (p.leito || '')) {
+    form.nome = ''
+    form.leito = ''
+    return
+  }
   form.nome  = p.nome
   form.leito = p.leito || ''
 }
@@ -761,7 +763,7 @@ function voltarOuSair() {
 function limparBloco() {
   erro.value = ''
   if (passo.value === 1) {
-    form.horario = ''; form.nome = ''; form.leito = ''
+    form.horario = ''
   } else if (passo.value === 2) {
     form.destino = ''; form.transporte = ''; form.transporteOutro = ''
     form.motivo = ''; form.condicao = ''
@@ -775,10 +777,6 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (passo.value === 1 && !form.nome.trim()) {
-    erro.value = 'Informe o nome do paciente.'
-    return
-  }
   if (passo.value === 1 && !form.horario) {
     erro.value = 'Informe o horário.'
     return
@@ -943,6 +941,16 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
+async function compartilhar() {
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: textoGerado.value })
+      return
+    } catch {}
+  }
+  await copiar()
+}
+
 
 // ── Salvar ──
 async function salvar() {
@@ -972,7 +980,7 @@ function novaAnotacao() {
   })
   limparDispositivos()
   textoGerado.value = ''; gerado.value = false; passo.value = 1
-  erro.value = ''; copiado.value = false
+  erro.value = ''
   descartarRascunho()
 }
 </script>
@@ -1090,4 +1098,183 @@ function novaAnotacao() {
 .btn-copy:active { background: var(--bg-hover); }
 .nav-row { display: flex; gap: 10px; margin-top: 8px; }
 .erro-msg { color: var(--danger); font-size: 0.82rem; margin-top: 6px; }
+
+.encaminhamento-screen {
+  background:
+    radial-gradient(circle at top left, rgba(55, 145, 236, 0.16), transparent 34%),
+    linear-gradient(180deg, #071426 0%, #0b1628 42%, #08111f 100%);
+  min-height: 100vh;
+}
+
+.encaminhamento-header {
+  border-bottom: 1px solid rgba(78, 118, 180, 0.24);
+  background: rgba(7, 18, 34, 0.82);
+  backdrop-filter: blur(16px);
+}
+
+.encaminhamento-page {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.encaminhamento-progress {
+  background: rgba(45, 72, 116, 0.55);
+}
+
+.encaminhamento-progress .progress-fill {
+  background: linear-gradient(90deg, #42b7ff, #6f8cff);
+  box-shadow: 0 0 18px rgba(66, 183, 255, 0.42);
+}
+
+.paciente-atalho {
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(62, 96, 149, 0.52);
+  background: linear-gradient(180deg, rgba(17, 33, 62, 0.92), rgba(12, 25, 47, 0.96));
+  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
+}
+
+.paciente-atalho label {
+  display: block;
+  color: #9fb2d8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.paciente-atalho .chips-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.module-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(77, 137, 219, 0.44);
+  background:
+    radial-gradient(circle at top left, rgba(47, 160, 255, 0.2), transparent 42%),
+    linear-gradient(180deg, rgba(18, 38, 72, 0.98), rgba(12, 26, 50, 0.98));
+  box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
+}
+
+.module-hero-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(114, 183, 255, 0.4);
+  background: radial-gradient(circle at top, rgba(79, 191, 255, 0.36), rgba(42, 95, 178, 0.44));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.module-hero-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.module-hero-copy h1 {
+  margin: 0;
+  color: #f5f8ff;
+  font-size: 1.75rem;
+  line-height: 1.02;
+  font-weight: 850;
+}
+
+.module-hero-copy p {
+  margin: 8px 0 0;
+  color: #9fb2d8;
+  font-size: 0.96rem;
+  line-height: 1.35;
+}
+
+.encaminhamento-card {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(55, 85, 133, 0.55);
+  background:
+    linear-gradient(180deg, rgba(18, 34, 64, 0.97), rgba(13, 27, 52, 0.98));
+  box-shadow: 0 16px 32px rgba(3, 10, 22, 0.22);
+}
+
+.encaminhamento-card + .encaminhamento-card {
+  margin-top: 14px;
+}
+
+.bloco-titulo {
+  color: #f3f7ff;
+  border-bottom-color: rgba(69, 105, 162, 0.5);
+  font-size: 1.22rem;
+}
+
+.chip {
+  min-height: 42px;
+  border-radius: 14px;
+  border-color: rgba(75, 107, 158, 0.58);
+  background: rgba(15, 30, 57, 0.9);
+  color: #c2d0ea;
+}
+
+.chip-on {
+  border-color: rgba(91, 174, 255, 0.88);
+  background: linear-gradient(180deg, #2e8df0, #1f67c9);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(36, 117, 221, 0.26);
+}
+
+.chip-add {
+  border-color: rgba(77, 165, 255, 0.65);
+  color: #7bc4ff;
+  background: rgba(37, 117, 205, 0.12);
+}
+
+.disp-card {
+  border-color: rgba(64, 95, 145, 0.56);
+  background: linear-gradient(180deg, rgba(15, 31, 59, 0.94), rgba(12, 25, 48, 0.98));
+}
+
+.btn-generate {
+  min-height: 58px;
+  border-radius: 18px;
+  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+}
+
+.btn-limpar {
+  width: auto;
+  padding: 12px 18px;
+}
+
+@media (max-width: 380px) {
+  .module-hero {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .module-hero-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .module-hero-icon img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .module-hero-copy h1 {
+    font-size: 1.45rem;
+  }
+}
 </style>

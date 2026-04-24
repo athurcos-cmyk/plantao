@@ -171,6 +171,16 @@ ativo: color blue
 inativo: color text-muted
 ```
 
+### Telas de anotacao premium
+```
+module-hero           - card escuro com PNG do modulo, titulo curto e subtitulo operacional
+ResultadoAnotacao.vue - padrao de tela final para revisar/copiar/salvar texto gerado
+listas auxiliares     - quando podem crescer, usar busca + altura maxima + rolagem interna
+modelos de texto      - uma linha por item no fluxo principal; previews longos ficam fora do caminho critico
+```
+
+Regra de hierarquia: a acao principal do modulo deve aparecer antes de bibliotecas auxiliares. Em `Notas Livres`, `Gerar anotacao` fica antes da lista de modelos, porque modelos aceleram a escrita, mas nao devem empurrar o fechamento da anotacao para baixo.
+
 ## Acessibilidade
 - Touch targets mínimos: 44px height (botões ghost, nav items), 52px (btn-primary)
 - Contraste: texto (#EAEEF3) sobre bg-card (#111d32) → ratio ≈ 11:1 ✓
@@ -207,3 +217,5 @@ App é exclusivamente mobile. Comportamento em telas maiores:
 | 2026-03-21 | Adicionado --info #29B6F6                      | Token complementar ao warning para estados informativos |
 | 2026-03-21 | Spacing base 8px formalizado                   | Já era o padrão implícito no código — documentado explicitamente |
 | 2026-03-21 | Touch targets: 44px mínimo / 52px ações principais | Uso com luvas e sob pressão em ambiente hospitalar |
+| 2026-04-24 | Resultado padronizado em `ResultadoAnotacao.vue` | Evita cada modulo terminar com uma tela diferente depois de gerar texto |
+| 2026-04-24 | Modelos de `Notas Livres` em lista compacta pesquisavel | Muitos modelos precisam de busca e rolagem interna sem alongar o fluxo principal |

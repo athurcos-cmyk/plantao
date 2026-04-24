@@ -129,6 +129,13 @@ Estado atual do código:
 - `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje trabalha com duas zonas visuais principais (`preparo` e `medicamentos do horário`); evitar voltar para um formulário visualmente chapado
 - `src/App.vue` usa banner PWA em formato de card flutuante menor; preservar essa abordagem menos invasiva se mexer no shell
 
+### Notas de UI da sessao 2026-04-24
+
+- `src/views/anotacoes/IntercorrenciaView.vue` (`Notas Livres`) ja esta no padrao premium, com hero ilustrado, cards escuros e resultado final via `ResultadoAnotacao.vue`
+- Em `Notas Livres`, manter `Gerar anotacao` antes da biblioteca de modelos; a lista de modelos deve ser apoio, nao o fim obrigatorio do fluxo
+- Modelos de `Notas Livres` usam busca, favoritos persistidos e rolagem interna; evitar voltar para previews longos de duas linhas no fluxo principal
+- `ResultadoAnotacao.vue` e o padrao desejado para o final dos modulos de anotacao que geram texto
+
 ## Padrão do texto gerado
 
 ```text

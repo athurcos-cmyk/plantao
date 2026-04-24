@@ -1,6 +1,6 @@
 # Memory Index - Plantao (Codex)
 
-> Ultima atualizacao: 2026-04-23
+> Ultima atualizacao: 2026-04-24
 
 ## Arquivos locais do Codex
 
@@ -15,7 +15,19 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
 
-## Ultima sessao (2026-04-23)
+## Ultima sessao (2026-04-24)
+
+- `Notas Livres` foi fechada como o quarto modulo no padrao premium, depois de `Dashboard`, `Sinais Vitais` e `Medicacao`
+- A tela ganhou hero com PNG proprio, fundo premium, cards mais profundos e resultado final via `ResultadoAnotacao.vue`
+- O limite de `400` caracteres do texto dos modelos foi removido; modelos longos de uso real agora podem ser salvos
+- A biblioteca de modelos ganhou busca por titulo/texto, favoritos persistidos no Firebase e suporte offline para favoritar/remover favorito
+- A primeira versao da lista de modelos, com titulo + preview de duas linhas, ficou grande demais para uso de plantao
+- Decisao final: modelos aparecem em linhas compactas de uma linha, com estrela, busca e rolagem interna
+- O botao `Gerar anotacao` fica antes dos modelos, porque modelos sao aceleradores e nao devem empurrar a acao principal para o fim da tela
+- O modal `Gerenciar modelos` tambem ganhou busca propria
+- `npm test` passou com 60 testes e `npm run build` passou
+
+## Sessao anterior (2026-04-23)
 
 - Dashboard entrou numa nova fase visual: topo com saudacao + ilustracao, cards ilustrados em PNG e atalhos com mais cara de app de verdade
 - Os PNGs finais do dashboard precisam continuar transparentes e otimizados; arte com fundo branco piora muito o topo e os cards

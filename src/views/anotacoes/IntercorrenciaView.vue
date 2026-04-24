@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <header class="app-header">
+  <div class="screen livre-screen">
+    <header class="app-header livre-header">
       <button class="btn-icon" @click="router.push({ name: 'dashboard' })">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
@@ -14,42 +14,32 @@
     </header>
 
     <!-- ═══ FORMULÁRIO ═══ -->
-    <main v-if="!gerado" class="container" style="padding-top:20px;padding-bottom:160px">
+    <main v-if="!gerado" class="container livre-page">
 
-      <div class="page-header">
-        <span class="page-icon">📝</span>
-        <div>
-          <h2 class="page-titulo">Notas Livres</h2>
-          <p class="page-sub">Seus modelos de anotação, do jeito que você usa</p>
+      <section v-if="pacientesStore.pacientes.length > 0" class="paciente-atalho">
+        <label>Paciente registrado</label>
+        <div class="chips-scroll">
+          <button
+            v-for="p in pacientesStore.pacientes"
+            :key="p._key"
+            class="chip"
+            :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
+            @click="selecionarPaciente(p)"
+          >{{ p.leito ? p.leito + ' Â· ' : '' }}{{ p.nome }}</button>
         </div>
-      </div>
+      </section>
+
+      <section class="module-hero">
+        <div class="module-hero-icon">
+          <img :src="iconLivre" alt="Notas Livres" />
+        </div>
+        <div class="module-hero-copy">
+          <h1>Notas Livres</h1>
+          <p>Monte anotações rápidas com seus modelos de plantão.</p>
+        </div>
+      </section>
 
       <!-- ── Paciente ── -->
-      <div class="card-secao">
-        <div v-if="pacientesStore.pacientes.length > 0" class="campo">
-          <label>Paciente registrado</label>
-          <div class="chips-scroll">
-            <button
-              v-for="p in pacientesStore.pacientes"
-              :key="p._key"
-              class="chip"
-              :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
-              @click="selecionarPaciente(p)"
-            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Nome do paciente <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.nome" placeholder="Ex: João da Silva">
-        </div>
-
-        <div class="campo" style="margin-bottom:0">
-          <label>Leito <span class="opc">(opcional)</span></label>
-          <input type="text" v-model="form.leito" placeholder="Ex: 4B">
-        </div>
-      </div>
-
       <!-- ── Adicionar Nota ── -->
       <div class="secao-header" style="margin-top:20px">
         <span class="secao-label-lg">Notas</span>
@@ -97,6 +87,9 @@
         </div>
       </div>
 
+      <p v-if="erro" class="erro-msg">{{ erro }}</p>
+      <button class="btn btn-primary btn-generate livre-submit-btn" @click="gerar"><IconGenerateNote />Gerar anotação</button>
+
       <!-- ── Meus Modelos (parte inferior) ── -->
       <div class="secao-header" style="margin-top:16px">
         <span class="secao-label-lg">Modelos</span>
@@ -116,45 +109,82 @@
           </button>
         </div>
       </div>
-      <div v-if="modelos.length > 0" class="modelos-chips-row">
-        <button
-          v-for="m in modelos"
-          :key="m._key"
-          class="chip-modelo"
-          :class="{ 'chip-modelo-on': modeloSelecionadoKey === m._key }"
-          @click="selecionarModelo(m)"
-        >{{ m.titulo }}</button>
+      <div v-if="modelos.length > 0" class="modelos-library">
+        <div class="modelo-search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+          </svg>
+          <input
+            v-model="modeloBusca"
+            type="search"
+            placeholder="Buscar modelo"
+          >
+        </div>
+
+        <div v-if="modelosFavoritos.length > 0 && !modeloBusca.trim()" class="modelos-favoritos">
+          <span class="modelos-subtitle">Favoritos</span>
+          <div class="modelos-fav-row">
+            <button
+              v-for="m in modelosFavoritos"
+              :key="m._key"
+              class="modelo-fav-chip"
+              :class="{ 'modelo-fav-chip-on': modeloSelecionadoKey === m._key }"
+              @click="selecionarModelo(m)"
+            >{{ m.titulo }}</button>
+          </div>
+        </div>
+
+        <div v-if="modelosFiltrados.length > 0" class="modelos-lista">
+          <div
+            v-for="m in modelosFiltrados"
+            :key="m._key"
+            class="modelo-list-item"
+            :class="{ 'modelo-list-item-on': modeloSelecionadoKey === m._key }"
+          >
+            <button class="modelo-main-btn" @click="selecionarModelo(m)">
+              <span class="modelo-title">{{ m.titulo }}</span>
+            </button>
+            <button
+              class="modelo-fav-btn"
+              :class="{ 'modelo-fav-btn-on': m.favorito }"
+              :title="m.favorito ? 'Remover dos favoritos' : 'Favoritar'"
+              @click="alternarFavorito(m)"
+            >
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 3.5l2.6 5.28 5.82.85-4.21 4.1.99 5.79L12 16.78l-5.2 2.74.99-5.79-4.21-4.1 5.82-.85L12 3.5Z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div v-else class="modelos-vazio-row">
+          <span>Nenhum modelo encontrado.</span>
+          <button class="btn-link" @click="modeloBusca = ''">limpar busca</button>
+        </div>
       </div>
       <div v-else class="modelos-vazio-row">
         <span>Nenhum modelo —</span>
         <button class="btn-link" @click="abrirModalNovoModelo">criar agora</button>
       </div>
 
-      <p v-if="erro" class="erro-msg">{{ erro }}</p>
-      <button class="btn btn-primary btn-generate" style="margin-top:20px" @click="gerar"><IconGenerateNote />Gerar anotação</button>
-
     </main>
 
     <!-- ═══ RESULTADO ═══ -->
-    <main v-if="gerado" class="container" style="padding-top:20px;padding-bottom:40px">
-      <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
-
-      <button class="btn-copy" @click="copiar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="9" y="9" width="13" height="13" rx="2"/>
-          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-        </svg>
-        {{ copiado ? 'Copiado!' : 'Copiar texto' }}
-      </button>
-
-      <div class="nav-row">
-        <button class="btn btn-secondary" style="flex:1" @click="salvar" :disabled="salvando">
-          {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-        </button>
-        <button class="btn btn-secondary" style="flex:1" @click="novaAnotacao">Nova anotação</button>
-      </div>
-
-      <button class="btn btn-secondary" style="width:100%;margin-top:10px" @click="gerado = false">← Editar</button>
+    <main v-if="gerado" class="container livre-page resultado-page">
+      <ResultadoAnotacao
+        :icon="iconLivre"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nome"
+        v-model:leitoPaciente="form.leito"
+        :salvando="salvando"
+        label-nova="Nova nota"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAnotacao"
+        @editar="gerado = false"
+      />
     </main>
 
     <!-- ═══ MODAL: Gerenciar Modelos ═══ -->
@@ -171,14 +201,38 @@
         </div>
 
         <div class="modal-modelos-body">
+          <div v-if="modelos.length > 0" class="modelo-search-wrap modal-search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7"/>
+              <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+            </svg>
+            <input
+              v-model="modeloBuscaModal"
+              type="search"
+              placeholder="Buscar modelo"
+            >
+          </div>
 
           <!-- Lista completa -->
-          <div v-if="modelos.length > 0" class="modal-lista">
-            <div v-for="m in modelos" :key="m._key" class="modal-modelo-item">
+          <div v-if="modelosGerenciamentoFiltrados.length > 0" class="modal-lista">
+            <div v-for="m in modelosGerenciamentoFiltrados" :key="m._key" class="modal-modelo-item">
+              <button
+                class="modelo-fav-btn modal-fav-btn"
+                :class="{ 'modelo-fav-btn-on': m.favorito }"
+                :title="m.favorito ? 'Remover dos favoritos' : 'Favoritar'"
+                @click="alternarFavorito(m)"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 3.5l2.6 5.28 5.82.85-4.21 4.1.99 5.79L12 16.78l-5.2 2.74.99-5.79-4.21-4.1 5.82-.85L12 3.5Z"/>
+                </svg>
+              </button>
               <span class="modal-modelo-txt">{{ m.titulo }}</span>
               <button class="btn-del-modal" @click="deletarModelo(m._key)" title="Remover">×</button>
             </div>
           </div>
+          <p v-else-if="modelos.length > 0" class="modal-vazio">
+            Nenhum modelo encontrado.
+          </p>
           <p v-else-if="!carregandoModelos" class="modal-vazio">
             Nenhum modelo ainda. Crie o primeiro em "Novo".
           </p>
@@ -221,7 +275,6 @@
             <textarea
               v-model="novoModeloTexto"
               rows="4"
-              maxlength="400"
               placeholder="Ex: Paciente em seu leito, banho no leito realizado sem intercorrências."
             ></textarea>
           </div>
@@ -245,7 +298,7 @@
 import { ref, reactive, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { db } from '../../firebase.js'
-import { ref as dbRef, push, remove, onValue, get } from 'firebase/database'
+import { ref as dbRef, push, remove, onValue, get, update } from 'firebase/database'
 import { useAnotacoesStore } from '../../stores/anotacoes.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useAuthStore } from '../../stores/auth.js'
@@ -253,6 +306,8 @@ import { useToast } from '../../composables/useToast.js'
 import { useOnlineStatus } from '../../composables/useOnlineStatus.js'
 import { useCopia } from '../../composables/useCopia.js'
 import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao from '../../components/ResultadoAnotacao.vue'
+import iconLivre from '../../assets/dashboard-icons-png/notas-lives.png'
 import { emitSyncState } from '../../utils/syncEvents.js'
 
 const router          = useRouter()
@@ -277,6 +332,8 @@ const sincronizandoModelos = ref(false)
 // ── Modelos ──
 const modelos             = ref([])
 const modeloSelecionadoKey = ref('')
+const modeloBusca          = ref('')
+const modeloBuscaModal     = ref('')
 const novoModeloTitulo    = ref('')
 const novoModeloTexto     = ref('')
 const novoModeloTituloInput = ref(null)
@@ -291,6 +348,22 @@ const notaTextoEl = ref(null)
 const podeSalvarModelo = computed(() =>
   novoModeloTitulo.value.trim().length > 0 && novoModeloTexto.value.trim().length > 0
 )
+const modelosOrdenados = computed(() => _ordenarModelos(modelos.value))
+const modelosFavoritos = computed(() => modelosOrdenados.value.filter(m => m.favorito).slice(0, 6))
+const modelosFiltrados = computed(() => {
+  const termo = modeloBusca.value.trim().toLowerCase()
+  if (!termo) return modelosOrdenados.value
+  return modelosOrdenados.value.filter(m =>
+    [m.titulo, m.texto].some(v => String(v || '').toLowerCase().includes(termo))
+  )
+})
+const modelosGerenciamentoFiltrados = computed(() => {
+  const termo = modeloBuscaModal.value.trim().toLowerCase()
+  if (!termo) return modelosOrdenados.value
+  return modelosOrdenados.value.filter(m =>
+    [m.titulo, m.texto].some(v => String(v || '').toLowerCase().includes(termo))
+  )
+})
 
 // ── Form ──
 const form = reactive({ nome: '', leito: '' })
@@ -377,11 +450,18 @@ function _normalizarModelos(lista) {
         texto,
         titulo,
         criadoEm,
+        favorito: !!m.favorito,
       }
     })
 
-  arr.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0))
-  return arr
+  return _ordenarModelos(arr)
+}
+
+function _ordenarModelos(lista) {
+  return [...(lista || [])].sort((a, b) => {
+    if (!!a.favorito !== !!b.favorito) return a.favorito ? -1 : 1
+    return (b.criadoEm || 0) - (a.criadoEm || 0)
+  })
 }
 
 function _salvarCacheModelos(code, lista) {
@@ -426,13 +506,30 @@ function _enfileirarModelo(code, op) {
   // Se apagar um item que ainda está só no add local, cancela ambas operações.
   if (op.op === 'delete') {
     const tinhaAdd = fila.some(item => item.op === 'add' && item.key === op.key)
-    const semAdd = fila.filter(item => !(item.op === 'add' && item.key === op.key))
+    const semAdd = fila.filter(item => item.key !== op.key)
     if (tinhaAdd) {
       _salvarQueueModelos(code, semAdd)
       return
     }
     semAdd.push(op)
     _salvarQueueModelos(code, semAdd)
+    return
+  }
+
+  if (op.op === 'update') {
+    const idxAdd = fila.findIndex(item => item.op === 'add' && item.key === op.key)
+    if (idxAdd >= 0) {
+      fila[idxAdd] = {
+        ...fila[idxAdd],
+        data: { ...(fila[idxAdd].data || {}), ...(op.data || {}) },
+      }
+      _salvarQueueModelos(code, fila)
+      return
+    }
+
+    const semUpdateDuplicado = fila.filter(item => !(item.op === 'update' && item.key === op.key))
+    semUpdateDuplicado.push(op)
+    _salvarQueueModelos(code, semUpdateDuplicado)
     return
   }
 
@@ -473,6 +570,14 @@ async function sincronizarModelosPendentes() {
           continue
         }
         await remove(dbRef(db, `livres/${code}/modelos/${real}`))
+        feitos++
+      } else if (item.op === 'update') {
+        const real = keyMap[item.key] || item.key
+        if (String(real).startsWith('local-')) {
+          restantes.push(item)
+          continue
+        }
+        await update(dbRef(db, `livres/${code}/modelos/${real}`), item.data || {})
         feitos++
       } else {
         restantes.push(item)
@@ -554,6 +659,11 @@ async function iniciarModelos() {
 }
 
 function selecionarPaciente(p) {
+  if (form.nome === p.nome && form.leito === (p.leito || '')) {
+    form.nome = ''
+    form.leito = ''
+    return
+  }
   form.nome  = p.nome
   form.leito = p.leito || ''
 }
@@ -561,11 +671,13 @@ function selecionarPaciente(p) {
 // ── Modal de modelos ──
 async function abrirModalModelos() {
   modalModelos.value = true
+  modeloBuscaModal.value = ''
   await iniciarModelos()
 }
 
 function fecharModalModelos() {
   modalModelos.value = false
+  modeloBuscaModal.value = ''
 }
 
 function limparFormModelo() {
@@ -684,8 +796,6 @@ function removerNota(i) {
 // ── Gerar ──
 function gerar() {
   erro.value = ''
-  if (!form.nome.trim()) { erro.value = 'Informe o nome do paciente.'; return }
-
   const linhas = notas.value.map(n => {
     let t = n.texto.charAt(0).toUpperCase() + n.texto.slice(1)
     if (!/[.!?]$/.test(t)) t += '.'
@@ -702,6 +812,41 @@ async function copiar() {
   const ok = await _copiar(textoGerado.value)
   if (ok) showToast('Texto copiado!')
   else showToast('Erro ao copiar')
+}
+
+function compartilhar() {
+  const texto = textoGerado.value
+  if (navigator.share) {
+    navigator.share({ text: texto }).catch(() => {})
+  } else {
+    const url = `https://wa.me/?text=${encodeURIComponent(texto)}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+}
+
+async function alternarFavorito(modelo) {
+  const code = _code()
+  if (!code || !modelo?._key) { showToast('Sessão inválida'); return }
+
+  const favorito = !modelo.favorito
+  modelos.value = _normalizarModelos(modelos.value.map(m =>
+    m._key === modelo._key ? { ...m, favorito } : m
+  ))
+  _salvarCacheModelos(code, modelos.value)
+
+  try {
+    if (!navigator.onLine || String(modelo._key).startsWith('local-')) {
+      _enfileirarModelo(code, { op: 'update', key: modelo._key, data: { favorito } })
+      showToast(favorito ? 'Modelo favoritado offline' : 'Favorito removido offline')
+      return
+    }
+
+    await update(dbRef(db, `livres/${code}/modelos/${modelo._key}`), { favorito })
+    showToast(favorito ? 'Modelo favoritado' : 'Favorito removido')
+  } catch {
+    _enfileirarModelo(code, { op: 'update', key: modelo._key, data: { favorito } })
+    showToast('Sem conexão estável - alteração em fila')
+  }
 }
 
 // ── Salvar ──
@@ -985,6 +1130,609 @@ watch(notaTexto, (txt) => {
 .modal-vazio {
   font-size: 0.83rem; color: var(--text-muted); line-height: 1.5;
   margin-bottom: 14px; padding: 4px 0;
+}
+
+/* Premium upgrade */
+.livre-screen {
+  background:
+    radial-gradient(circle at top right, rgba(39, 116, 231, 0.14), transparent 28%),
+    linear-gradient(180deg, #091429 0%, #0a1628 100%);
+}
+
+.livre-header {
+  background: rgba(8, 18, 36, 0.82);
+  border-bottom-color: rgba(60, 86, 131, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+.livre-page {
+  padding-top: 20px;
+  padding-bottom: 160px;
+}
+
+.resultado-page {
+  padding-bottom: 40px;
+}
+
+.btn-home-logo {
+  color: #eef4ff;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
+.module-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 112px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(70, 132, 230, 0.42);
+  background:
+    radial-gradient(circle at top left, rgba(44, 117, 235, 0.2), transparent 42%),
+    linear-gradient(180deg, rgba(17, 34, 66, 0.98), rgba(14, 28, 54, 0.98));
+  box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
+}
+
+.paciente-atalho {
+  margin-bottom: 14px;
+}
+
+.paciente-atalho label {
+  display: block;
+  color: #9fb4d9;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.module-hero::after {
+  content: "";
+  position: absolute;
+  right: -34px;
+  top: 14px;
+  width: 132px;
+  height: 132px;
+  border: 1px solid rgba(112, 171, 255, 0.1);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(67, 137, 255, 0.14), transparent 64%);
+  pointer-events: none;
+}
+
+.module-hero-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 20px;
+  background: radial-gradient(circle at top, rgba(71, 140, 255, 0.38), rgba(39, 88, 170, 0.5));
+  border: 1px solid rgba(104, 161, 255, 0.38);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.module-hero-icon img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.module-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.module-hero-copy h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #f5f8ff;
+}
+
+.module-hero-copy p {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #9aabd0;
+}
+
+.livre-card,
+.nota-composer,
+.modal-modelos {
+  border-radius: 22px;
+  border: 1px solid rgba(53, 82, 129, 0.5);
+  background: linear-gradient(180deg, rgba(19, 35, 66, 0.97), rgba(15, 28, 54, 0.98));
+  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.2);
+}
+
+.livre-card {
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.campo label {
+  display: block;
+  color: #9aabd0;
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.campo input,
+.campo textarea {
+  width: 100%;
+  min-height: 56px;
+  box-sizing: border-box;
+  background: rgba(18, 33, 60, 0.9);
+  border: 1px solid rgba(60, 86, 131, 0.58);
+  border-radius: 16px;
+  color: #eff4ff;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0 16px;
+  outline: none;
+}
+
+.campo textarea {
+  min-height: 112px;
+  padding-top: 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  border-color: rgba(87, 157, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.14);
+}
+
+.chips-scroll {
+  gap: 8px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(20, 35, 63, 0.88);
+  border: 1px solid rgba(58, 84, 128, 0.6);
+  color: #8ea3d4;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.chip-on {
+  background: linear-gradient(180deg, #2f93ff, #1e71ea);
+  border-color: rgba(108, 182, 255, 0.84);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(30, 100, 230, 0.22);
+}
+
+.secao-header {
+  margin: 22px 0 12px;
+}
+
+.secao-label-lg {
+  color: #9aabd0;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+}
+
+.badge-count {
+  background: rgba(58, 84, 128, 0.7);
+  color: #d5e3ff;
+}
+
+.badge-count.azul {
+  background: linear-gradient(180deg, #2f93ff, #1e71ea);
+}
+
+.modelos-acoes {
+  gap: 8px;
+}
+
+.btn-gerenciar,
+.btn-novo-modelo-topo {
+  min-height: 34px;
+  border-radius: 14px;
+  font-weight: 700;
+}
+
+.btn-gerenciar {
+  background: rgba(18, 33, 60, 0.76);
+  border-color: rgba(60, 86, 131, 0.58);
+  color: #9aabd0;
+}
+
+.btn-novo-modelo-topo {
+  background: linear-gradient(180deg, #2f93ff, #1e71ea);
+  border-color: rgba(108, 182, 255, 0.84);
+  box-shadow: 0 10px 20px rgba(28, 101, 214, 0.2);
+}
+
+.nota-composer {
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.nota-composer-row {
+  align-items: stretch;
+  padding: 6px;
+}
+
+.nc-hora {
+  width: 104px;
+  min-height: 64px;
+  padding: 0 10px;
+  border-radius: 16px;
+  background: rgba(10, 22, 40, 0.56);
+  color: #75bdff;
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.nc-divider {
+  display: none;
+}
+
+.nc-texto {
+  min-height: 64px;
+  padding: 17px 14px;
+  border-radius: 16px;
+  background: rgba(10, 22, 40, 0.36);
+  color: #eef4ff;
+  font-size: 1rem;
+}
+
+.nc-texto::placeholder {
+  color: #7184ac;
+}
+
+.nc-footer {
+  padding: 0 12px 12px;
+}
+
+.nc-hint {
+  color: #7386ad;
+}
+
+.nc-btn-add {
+  min-height: 38px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #2f93ff, #1e71ea);
+  font-weight: 800;
+  box-shadow: 0 10px 20px rgba(28, 101, 214, 0.2);
+}
+
+.nc-btn-add:disabled {
+  background: rgba(58, 84, 128, 0.5);
+  color: #8a9abc;
+  box-shadow: none;
+}
+
+.timeline {
+  margin: 4px 0 8px;
+}
+
+.timeline-content {
+  border-radius: 16px;
+  border: 1px solid rgba(53, 82, 129, 0.5);
+  background: linear-gradient(180deg, rgba(19, 35, 66, 0.92), rgba(15, 28, 54, 0.94));
+  box-shadow: 0 10px 20px rgba(3, 10, 22, 0.15);
+}
+
+.timeline-hora {
+  color: #75bdff;
+  font-weight: 800;
+}
+
+.timeline-dot {
+  background: #2f93ff;
+  box-shadow: 0 0 0 4px rgba(47, 147, 255, 0.18);
+}
+
+.timeline-line {
+  background: rgba(60, 86, 131, 0.58);
+}
+
+.timeline-texto {
+  color: #dce8ff;
+}
+
+.btn-del-nota,
+.btn-del-modal,
+.btn-fechar-modal {
+  color: #91a5cf;
+}
+
+.chip-modelo {
+  max-width: 180px;
+  min-height: 40px;
+  border-radius: 14px;
+  background: rgba(20, 35, 63, 0.88);
+  border: 1px solid rgba(58, 84, 128, 0.6);
+  color: #aabce4;
+  font-weight: 700;
+}
+
+.chip-modelo-on {
+  background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
+  border-color: rgba(80, 160, 255, 0.72);
+  color: #a8d4ff;
+  box-shadow: 0 8px 18px rgba(30, 100, 230, 0.18);
+}
+
+.modelos-vazio-row {
+  color: #9aabd0;
+  min-height: 40px;
+  padding: 0 2px;
+}
+
+.modelos-library {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modelo-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: rgba(18, 33, 60, 0.82);
+  color: #8ea3d4;
+}
+
+.modelo-search-wrap input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #eef4ff;
+  font-family: inherit;
+  font-size: 0.96rem;
+}
+
+.modelo-search-wrap input::placeholder {
+  color: #7184ac;
+}
+
+.modelos-favoritos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modelos-subtitle {
+  color: #9aabd0;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.modelos-fav-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.modelos-fav-row::-webkit-scrollbar {
+  display: none;
+}
+
+.modelo-fav-chip {
+  flex: 0 0 auto;
+  max-width: 180px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(89, 132, 198, 0.5);
+  background: rgba(20, 35, 63, 0.88);
+  color: #d7e4ff;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modelo-fav-chip-on {
+  background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
+  border-color: rgba(108, 182, 255, 0.84);
+  color: #fff;
+}
+
+.modelos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(117, 189, 255, 0.45) transparent;
+}
+
+.modelos-lista::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modelos-lista::-webkit-scrollbar-thumb {
+  background: rgba(117, 189, 255, 0.45);
+  border-radius: 999px;
+}
+
+.modelo-list-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  align-items: stretch;
+  min-height: 48px;
+  border-radius: 15px;
+  border: 1px solid rgba(53, 82, 129, 0.5);
+  background: linear-gradient(180deg, rgba(19, 35, 66, 0.92), rgba(15, 28, 54, 0.94));
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(3, 10, 22, 0.12);
+}
+
+.modelo-list-item-on {
+  border-color: rgba(108, 182, 255, 0.78);
+  box-shadow: 0 10px 22px rgba(28, 101, 214, 0.22);
+}
+
+.modelo-main-btn {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 14px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+}
+
+.modelo-title {
+  color: #f2f7ff;
+  font-size: 0.96rem;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modelo-fav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-left: 1px solid rgba(53, 82, 129, 0.42);
+  background: rgba(10, 22, 40, 0.34);
+  color: #52698f;
+  font-family: inherit;
+}
+
+.modelo-fav-btn-on {
+  color: #f6c85f;
+  background: rgba(246, 200, 95, 0.1);
+}
+
+.btn-link {
+  color: #75bdff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.livre-submit-btn {
+  margin-top: 18px;
+  margin-bottom: 18px;
+  min-height: 62px;
+  border-radius: 18px;
+  font-size: 1.06rem;
+  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+}
+
+.modal-overlay {
+  background: rgba(2, 8, 18, 0.68);
+  backdrop-filter: blur(12px);
+}
+
+.modal-modelos {
+  border-radius: 24px 24px 0 0;
+  border-color: rgba(70, 132, 230, 0.34);
+}
+
+.modal-modelos-header,
+.modal-modelos-footer {
+  border-color: rgba(60, 86, 131, 0.42);
+}
+
+.modal-modelos-header h3 {
+  color: #f5f8ff;
+}
+
+.modal-modelo-item {
+  border-radius: 16px;
+  background: rgba(10, 22, 40, 0.58);
+  border-color: rgba(60, 86, 131, 0.44);
+}
+
+.modal-modelo-txt {
+  color: #dce8ff;
+}
+
+.modal-fav-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(60, 86, 131, 0.44);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.modal-search-wrap {
+  margin-bottom: 12px;
+  min-height: 44px;
+}
+
+.erro-msg {
+  color: #ff8f8f;
+  font-size: 0.94rem;
+  margin: 10px 0 0;
+}
+
+@media (max-width: 390px) {
+  .livre-page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .module-hero {
+    padding: 16px;
+  }
+
+  .module-hero-copy h1 {
+    font-size: 1.65rem;
+  }
+
+  .module-hero-copy p {
+    font-size: 0.94rem;
+  }
+
+  .nota-composer-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nc-hora {
+    width: 100%;
+  }
+
+  .nc-footer {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nc-btn-add {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 </style>

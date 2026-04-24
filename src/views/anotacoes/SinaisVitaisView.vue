@@ -265,6 +265,11 @@ const { copiar: _copiar } = useCopia()
 onMounted(() => pacientesStore.iniciar())
 
 function selecionarPaciente(p) {
+  if (form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '')) {
+    form.nomePaciente = ''
+    form.leitoPaciente = ''
+    return
+  }
   form.nomePaciente = p.nome
   form.leitoPaciente = p.leito || ''
 }

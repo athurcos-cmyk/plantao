@@ -2,7 +2,7 @@
 name: Plantao - Status do projeto (Codex)
 description: Status do app, alertas operacionais, pendencias tecnicas e contexto de negocio
 type: project
-updated: 2026-04-23
+updated: 2026-04-24
 ---
 
 ## Status geral
@@ -39,6 +39,7 @@ Design doc estrategico mais recente conhecido:
 - Curativo com avaliacao COREN, locais/materiais no Firebase e referencia expandida
 - Passagem de Plantao com `useDispositivos.js`, decubito e debito urinario
 - Intercorrencia/Livre com modelos salvos
+- Notas Livres com visual premium, modelos pesquisaveis, favoritos persistidos e lista compacta com rolagem interna
 - Historico, pacientes, organizador e dashboard
 - Admin dashboard com tabs, broadcast e monitor
 - Calculadora de medicacao com testes Vitest
@@ -72,6 +73,8 @@ Design doc estrategico mais recente conhecido:
 - `Feedback` da dashboard virou modal central com blur e o mobile ganhou rodape fixo estilo app
 - O botao da Clara foi movido para cima no mobile para nao colidir com o rodape fixo
 - `Sinais Vitais` agora força teclado numerico/decimal nos campos de medida no mobile, mas `Localizacao da dor` foi mantida como texto livre depois de feedback real de uso
+- `Notas Livres` agora usa `ResultadoAnotacao.vue` no texto pronto, removeu limite curto de caracteres dos modelos e trata modelos como biblioteca auxiliar compacta com busca/favoritos
+- Em `Notas Livres`, manter `Gerar anotacao` antes da biblioteca de modelos; listas de modelos grandes devem rolar internamente para nao alongar o fluxo principal
 
 ## Alertas operacionais
 
@@ -92,7 +95,7 @@ Design doc estrategico mais recente conhecido:
 - [ ] Avaliar Resend Batch API quando a base crescer
 - [ ] Revisar qualquer documentacao antiga que ainda descreva auth legado
 - [ ] Continuar lapidando a home mobile apenas com ajustes cirurgicos; evitar voltar a crescer a primeira dobra com microcopy ou CTA exagerado
-- [ ] Propagar a nova linguagem premium da dashboard para os modulos principais de anotacao, sempre priorizando rapidez, pouco scroll e pouco ruido visual
+- [ ] Propagar a nova linguagem premium da dashboard para os modulos restantes de anotacao, sempre priorizando rapidez, pouco scroll e pouco ruido visual
 
 ## Conformidade e posicionamento
 

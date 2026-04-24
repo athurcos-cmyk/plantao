@@ -2,7 +2,7 @@
 name: Plantao - Visao geral do projeto (Codex)
 description: Stack, estrutura de pastas, rotas, stores, composables e integracoes
 type: project
-updated: 2026-04-23
+updated: 2026-04-24
 ---
 
 ## O que e
@@ -34,6 +34,7 @@ O objetivo e gerar textos padronizados, rapidos de copiar e utilizaveis mesmo qu
 - `src/data/medicamentos.js` - catalogo base com vias comuns e presets enriquecidos para autocomplete/quick add da tela de medicacao
 - `src/views/` - telas gerais, marketing, auth, admin e configuracoes
 - `src/views/anotacoes/` - views especificas de anotacao
+- `src/components/ResultadoAnotacao.vue` - componente compartilhado do estado final de texto pronto para modulos de anotacao
 - `src/components/BotaoChat.vue` - botao flutuante da Clara, com ajuste de posicionamento no mobile por causa do rodape fixo
 - `api/` - funcoes serverless da Vercel
 - `public/` - icones, assets estaticos e service worker relacionado ao PWA
@@ -133,3 +134,6 @@ Estruturas mais relevantes:
 - Nos avisos de quick add/modelos, manter texto curto e operacional; a versao atual fala so de `prescricao` e `apresentacao`
 - `src/utils/medicacao.js` preserva dados de lote dentro do template reaproveitavel da medicacao, mas continua deduplicando o historico pela chave clinica principal em vez de criar um item novo para cada lote
 - `src/views/anotacoes/SinaisVitaisView.vue` usa teclado numerico/decimal nos campos de medida para mobile, mas `Localizacao da dor` deve permanecer como texto livre, nao como chips
+- `src/views/anotacoes/IntercorrenciaView.vue` e a tela de `Notas Livres`; manter a biblioteca de modelos compacta, pesquisavel, com favoritos e rolagem interna
+- Em `Notas Livres`, `Gerar anotacao` deve ficar antes dos modelos. Modelos sao aceleradores, nao o ultimo passo obrigatorio do fluxo
+- Modelos de `Notas Livres` ficam em `livres/{syncCode}/modelos`; favoritos sao salvos no proprio modelo e tambem entram na fila offline de update

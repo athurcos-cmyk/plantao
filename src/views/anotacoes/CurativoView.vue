@@ -812,6 +812,11 @@ onUnmounted(() => {
 
 // ── Helpers ──
 function selecionarPaciente(p) {
+  if (form.nome === p.nome && form.leito === (p.leito || '')) {
+    form.nome = ''
+    form.leito = ''
+    return
+  }
   form.nome  = p.nome
   form.leito = p.leito || ''
 }

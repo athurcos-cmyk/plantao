@@ -557,6 +557,11 @@ const pacientesStore = usePacientesStore()
 const nomeMedicamentoInput = ref(null)
 
 function selecionarPaciente(p) {
+  if (form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '')) {
+    form.nomePaciente = ''
+    form.leitoPaciente = ''
+    return
+  }
   form.nomePaciente = p.nome
   form.leitoPaciente = p.leito || ''
 }

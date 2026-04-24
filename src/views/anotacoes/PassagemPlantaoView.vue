@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <header class="app-header">
+  <div class="screen passagem-screen">
+    <header class="app-header passagem-header">
       <button class="btn-icon" @click="voltarOuSair">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
@@ -13,12 +13,12 @@
       <div style="width:34px"/>
     </header>
 
-    <div v-if="!gerado" class="progress-wrap">
+    <div v-if="!gerado" class="progress-wrap passagem-progress">
       <div class="progress-fill" :style="{ width: (passo / 2 * 100) + '%' }"></div>
       <span class="progress-label">Bloco {{ passo }} de 2</span>
     </div>
 
-    <main class="container" style="padding-top:20px;padding-bottom:40px">
+    <main class="container passagem-page">
 
       <!-- Banner rascunho -->
       <div v-if="temRascunho && !gerado" class="rascunho-banner">
@@ -30,35 +30,35 @@
       </div>
 
       <!-- ═══ BLOCO 1 — Identificação ═══ -->
-      <div v-if="!gerado && passo === 1">
+      <section v-if="!gerado && pacientesStore.pacientes.length > 0" class="paciente-atalho">
+        <label>Paciente registrado</label>
+        <div class="chips-scroll">
+          <button
+            v-for="p in pacientesStore.pacientes"
+            :key="p._key"
+            class="chip"
+            :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
+            @click="selecionarPaciente(p)"
+          >{{ p.leito ? p.leito + ' Â· ' : '' }}{{ p.nome }}</button>
+        </div>
+      </section>
+
+      <section v-if="!gerado" class="module-hero">
+        <div class="module-hero-icon">
+          <img :src="iconPassagem" alt="Passagem de plantão" />
+        </div>
+        <div class="module-hero-copy">
+          <h1>Passagem de plantão</h1>
+          <p>Organize o estado do paciente para entregar o cuidado.</p>
+        </div>
+      </section>
+
+      <div v-if="!gerado && passo === 1" class="passagem-card">
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
           <label>Horário <span class="obrigatorio">*</span></label>
           <input type="time" v-model="form.horario">
-        </div>
-
-        <div v-if="pacientesStore.pacientes.length > 0" class="campo">
-          <label>Paciente registrado</label>
-          <div class="chips-wrap">
-            <button
-              v-for="p in pacientesStore.pacientes"
-              :key="p._key"
-              class="chip"
-              :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
-              @click="selecionarPaciente(p)"
-            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Nome do paciente <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.nome" placeholder="Ex: João da Silva">
-        </div>
-
-        <div class="campo">
-          <label>Leito <span class="opc">(opcional)</span></label>
-          <input type="text" v-model="form.leito" placeholder="Ex: 4B">
         </div>
 
         <div class="campo">
@@ -82,30 +82,19 @@
       </div>
 
       <!-- ═══ BLOCO 2 — Condições ═══ -->
-      <div v-if="!gerado && passo === 2">
+      <div v-if="!gerado && passo === 2" class="passagem-card passagem-card-condicoes">
         <h2 class="bloco-titulo">Condições</h2>
-
-        <!-- Queixas -->
-        <div class="campo">
-          <label class="checkbox-label" :class="{ checked: form.queixas }">
-            <input type="checkbox" v-model="form.queixas">
-            <span>Paciente com queixas</span>
-          </label>
-          <div v-if="form.queixas" style="margin-top:10px">
-            <input type="text" v-model="form.queixasDesc" placeholder="Descreva as queixas...">
-          </div>
-        </div>
 
         <!-- Cama -->
         <div class="campo">
           <label>Posição da cama</label>
           <div class="radio-group horizontal">
-            <label v-for="op in camaOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.cama" @change="desativarOutro('cama')">
+            <label v-for="op in camaOpcoes" :key="op" class="radio-btn" :class="{ 'radio-on': form.cama === op && !outroAtivo.cama }">
+              <input type="radio" :value="op" :checked="form.cama === op && !outroAtivo.cama" @click.prevent="toggleOpcao('cama', op)">
               <span>{{ cap(op) }}</span>
             </label>
-            <label class="radio-btn">
-              <input type="radio" :checked="outroAtivo.cama" @click.prevent="outroAtivo.cama ? desativarOutro('cama') : selecionarOutro('cama')">
+            <label class="radio-btn" :class="{ 'radio-on': outroAtivo.cama }">
+              <input type="radio" :checked="outroAtivo.cama" @click.prevent="toggleOutro('cama')">
               <span>Outro</span>
             </label>
           </div>
@@ -116,12 +105,12 @@
         <div class="campo">
           <label>Rodas</label>
           <div class="radio-group horizontal">
-            <label v-for="op in rodasOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.rodas" @change="desativarOutro('rodas')">
+            <label v-for="op in rodasOpcoes" :key="op" class="radio-btn" :class="{ 'radio-on': form.rodas === op && !outroAtivo.rodas }">
+              <input type="radio" :value="op" :checked="form.rodas === op && !outroAtivo.rodas" @click.prevent="toggleOpcao('rodas', op)">
               <span>{{ cap(op) }}</span>
             </label>
-            <label class="radio-btn">
-              <input type="radio" :checked="outroAtivo.rodas" @click.prevent="outroAtivo.rodas ? desativarOutro('rodas') : selecionarOutro('rodas')">
+            <label class="radio-btn" :class="{ 'radio-on': outroAtivo.rodas }">
+              <input type="radio" :checked="outroAtivo.rodas" @click.prevent="toggleOutro('rodas')">
               <span>Outro</span>
             </label>
           </div>
@@ -132,12 +121,12 @@
         <div class="campo">
           <label>Grades</label>
           <div class="radio-group vertical">
-            <label v-for="op in gradesOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.grades" @change="desativarOutro('grades')">
+            <label v-for="op in gradesOpcoes" :key="op" class="radio-btn" :class="{ 'radio-on': form.grades === op && !outroAtivo.grades }">
+              <input type="radio" :value="op" :checked="form.grades === op && !outroAtivo.grades" @click.prevent="toggleOpcao('grades', op)">
               <span>{{ cap(op) }}</span>
             </label>
-            <label class="radio-btn">
-              <input type="radio" :checked="outroAtivo.grades" @click.prevent="outroAtivo.grades ? desativarOutro('grades') : selecionarOutro('grades')">
+            <label class="radio-btn" :class="{ 'radio-on': outroAtivo.grades }">
+              <input type="radio" :checked="outroAtivo.grades" @click.prevent="toggleOutro('grades')">
               <span>Outro</span>
             </label>
           </div>
@@ -148,12 +137,12 @@
         <div class="campo">
           <label>Decúbito</label>
           <div class="radio-group vertical">
-            <label v-for="op in decubitoOpcoes" :key="op" class="radio-btn">
-              <input type="radio" :value="op" v-model="form.decubito" @change="desativarOutro('decubito')">
+            <label v-for="op in decubitoOpcoes" :key="op" class="radio-btn" :class="{ 'radio-on': form.decubito === op && !outroAtivo.decubito }">
+              <input type="radio" :value="op" :checked="form.decubito === op && !outroAtivo.decubito" @click.prevent="toggleOpcao('decubito', op)">
               <span>{{ cap(op) }}</span>
             </label>
-            <label class="radio-btn">
-              <input type="radio" :checked="outroAtivo.decubito" @click.prevent="outroAtivo.decubito ? desativarOutro('decubito') : selecionarOutro('decubito')">
+            <label class="radio-btn" :class="{ 'radio-on': outroAtivo.decubito }">
+              <input type="radio" :checked="outroAtivo.decubito" @click.prevent="toggleOutro('decubito')">
               <span>Outro</span>
             </label>
           </div>
@@ -211,26 +200,22 @@
       </div>
 
       <!-- ═══ RESULTADO ═══ -->
-      <div v-if="gerado">
-        <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
+      <ResultadoAnotacao
+        v-if="gerado"
+        :icon="iconPassagem"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nome"
+        v-model:leitoPaciente="form.leito"
+        :salvando="salvando"
+        label-nova="Nova passagem"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAnotacao"
+        @editar="gerado = false; passo = 2"
+      />
 
-        <button class="btn-copy" @click="copiar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          {{ copiado ? 'Copiado!' : 'Copiar texto' }}
-        </button>
 
-        <div class="nav-row">
-          <button class="btn btn-secondary" style="flex:1" @click="salvar" :disabled="salvando">
-            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-          </button>
-          <button class="btn btn-secondary" style="flex:1" @click="novaAnotacao">Nova anotação</button>
-        </div>
-
-        <button class="btn btn-secondary" style="width:100%;margin-top:10px" @click="gerado = false; passo = 2">← Editar</button>
-      </div>
 
     </main>
 
@@ -269,6 +254,8 @@ import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
 import { useDispositivos } from '../../composables/useDispositivos.js'
 import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao from '../../components/ResultadoAnotacao.vue'
+import iconPassagem from '../../assets/dashboard-icons-png/passagem.png'
 import ModalAVP from '../../components/modais/ModalAVP.vue'
 import ModalCVC from '../../components/modais/ModalCVC.vue'
 import ModalPICC from '../../components/modais/ModalPICC.vue'
@@ -309,8 +296,6 @@ const form = reactive({
   nome:           '',
   leito:          '',
   refeicao:       '',
-  queixas:        false,
-  queixasDesc:    '',
   cama:           'baixa',
   rodas:          'travadas',
   grades:         'parcialmente elevadas',
@@ -350,24 +335,46 @@ function selecionarOutro(campo) {
   outroAtivo[campo] = true
   form[campo] = outroTexto[campo] || ''
 }
+
+function toggleOpcao(campo, valor) {
+  if (form[campo] === valor && !outroAtivo[campo]) {
+    form[campo] = ''
+    return
+  }
+  outroAtivo[campo] = false
+  form[campo] = valor
+}
+
+function toggleOutro(campo) {
+  if (outroAtivo[campo]) {
+    outroAtivo[campo] = false
+    form[campo] = ''
+    return
+  }
+  selecionarOutro(campo)
+}
+
 function atualizarOutro(campo, texto) {
   outroTexto[campo] = texto
   form[campo] = texto
-}
-function desativarOutro(campo) {
-  outroAtivo[campo] = false
 }
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 
 // ── Lifecycle ──
 onMounted(() => {
+  window.scrollTo({ top: 0 })
   pacientesStore.iniciar()
   iniciarRascunho()
 })
 
 // ── Helpers ──
 function selecionarPaciente(p) {
+  if (form.nome === p.nome && form.leito === (p.leito || '')) {
+    form.nome = ''
+    form.leito = ''
+    return
+  }
   form.nome  = p.nome
   form.leito = p.leito || ''
 }
@@ -382,24 +389,38 @@ function formatHora(h) {
 }
 
 function gradesDecubito() {
+  if (!form.grades && !form.decubito) return ''
+  if (!form.grades) return 'decúbito ' + form.decubito
+  if (!form.decubito) return 'grades ' + form.grades
   if (form.grades === 'parcialmente elevadas' && form.decubito === 'parcialmente elevado') {
     return 'grades e decúbito parcialmente elevados'
   }
   return 'grades ' + form.grades + ' e decúbito ' + form.decubito
 }
 
+function montarCondicoes() {
+  return [
+    form.cama ? 'cama ' + form.cama : '',
+    form.rodas ? 'rodas ' + form.rodas : '',
+    gradesDecubito(),
+  ].filter(Boolean)
+}
+
 // ── Navegação ──
 function voltarOuSair() {
-  if (passo.value > 1 && !gerado.value) { passo.value--; return }
+  if (passo.value > 1 && !gerado.value) {
+    passo.value--
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
   router.push({ name: 'dashboard' })
 }
 
 function limparBloco() {
   erro.value = ''
   if (passo.value === 1) {
-    form.horario = ''; form.nome = ''; form.leito = ''; form.refeicao = ''
+    form.horario = ''; form.refeicao = ''
   } else {
-    form.queixas = false; form.queixasDesc = ''
     form.cama = 'baixa'; form.rodas = 'travadas'
     form.grades = 'parcialmente elevadas'; form.decubito = 'parcialmente elevado'
     ;['cama','rodas','grades','decubito'].forEach(c => { outroAtivo[c] = false; outroTexto[c] = '' })
@@ -411,15 +432,12 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (!form.nome.trim()) {
-    erro.value = 'Informe o nome do paciente.'
-    return
-  }
   if (!form.horario) {
     erro.value = 'Informe o horário.'
     return
   }
   passo.value++
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 // ── Gerar texto ──
@@ -432,11 +450,13 @@ function gerar() {
     ? 'Ofertado ' + form.refeicao + '. '
     : ''
 
-  const queixasPart = form.queixas
-    ? 'referindo ' + form.queixasDesc.trim()
-    : 'sem queixas'
-
-  let texto = `${hora} – ${refeicaoPart}Paciente em seu leito ${queixasPart}, Mantenho cama ${form.cama}, rodas ${form.rodas}, ${gradesDecubito()}, campainha próxima e oriento a chamar sempre que necessário.`
+  const condicoes = montarCondicoes()
+  let texto = `${hora} – ${refeicaoPart}Paciente em seu leito.`
+  if (condicoes.length > 0) {
+    texto += ` Mantenho ${condicoes.join(', ')}, campainha próxima e oriento a chamar sempre que necessário.`
+  } else {
+    texto += ' Campainha próxima e oriento a chamar sempre que necessário.'
+  }
 
   if (form.svd) {
     const disp = form.svdDispositivo.trim() || 'SVD'
@@ -469,6 +489,16 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
+function compartilhar() {
+  const texto = textoGerado.value
+  if (navigator.share) {
+    navigator.share({ text: texto }).catch(() => {})
+  } else {
+    const url = `https://wa.me/?text=${encodeURIComponent(texto)}`
+    window.open(url, '_blank')
+  }
+}
+
 
 // ── Salvar ──
 async function salvar() {
@@ -494,8 +524,6 @@ function novaAnotacao() {
     nome:           '',
     leito:          '',
     refeicao:       '',
-    queixas:        false,
-    queixasDesc:    '',
     cama:           'baixa',
     rodas:          'travadas',
     grades:         'parcialmente elevadas',
@@ -663,5 +691,352 @@ function novaAnotacao() {
 .modal-footer {
   display: flex; gap: 10px; padding: 0 16px;
   position: sticky; bottom: 0; background: var(--bg); padding-top: 12px;
+}
+
+.passagem-screen {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
+    linear-gradient(180deg, #071426 0%, #081425 42%, #07111f 100%);
+}
+
+.passagem-header {
+  background: rgba(8, 20, 37, 0.92);
+  border-bottom: 1px solid rgba(71, 119, 194, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.passagem-page {
+  padding-top: 18px;
+  padding-bottom: 42px;
+}
+
+.passagem-progress {
+  height: 6px;
+  background: rgba(50, 76, 118, 0.5);
+}
+
+.passagem-progress .progress-fill {
+  background: linear-gradient(90deg, #2f8cff, #51b5ff);
+  box-shadow: 0 0 22px rgba(57, 143, 255, 0.44);
+}
+
+.passagem-progress .progress-label {
+  top: 10px;
+  color: #7f95bb;
+  font-weight: 700;
+}
+
+.module-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 20px;
+  border: 1px solid rgba(80, 142, 232, 0.36);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(48, 134, 255, 0.2), transparent 42%),
+    linear-gradient(180deg, rgba(17, 34, 65, 0.98), rgba(12, 26, 50, 0.98));
+  box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
+  overflow: hidden;
+}
+
+.paciente-atalho {
+  margin-bottom: 14px;
+}
+
+.paciente-atalho label {
+  display: block;
+  color: #9fb4d9;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.paciente-atalho .chips-scroll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.module-hero-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  border: 1px solid rgba(117, 176, 255, 0.4);
+  background: radial-gradient(circle at top, rgba(84, 157, 255, 0.36), rgba(31, 88, 174, 0.48));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.module-hero-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.module-hero-copy h1 {
+  margin: 0;
+  font-size: 1.72rem;
+  line-height: 1.05;
+  color: #f5f8ff;
+  font-weight: 850;
+}
+
+.module-hero-copy p {
+  margin: 8px 0 0;
+  color: #9fb0d2;
+  font-size: 0.96rem;
+  line-height: 1.35;
+}
+
+.passagem-card {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(54, 86, 137, 0.55);
+  background:
+    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+  box-shadow: 0 16px 34px rgba(2, 8, 18, 0.2);
+}
+
+.passagem-card + .passagem-card {
+  margin-top: 16px;
+}
+
+.passagem-card .bloco-titulo {
+  margin: 0 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(77, 110, 165, 0.35);
+  color: #f3f7ff;
+  font-size: 1.28rem;
+  letter-spacing: 0;
+}
+
+.passagem-card .campo {
+  margin-bottom: 16px;
+}
+
+.passagem-card label:not(.radio-btn):not(.checkbox-label) {
+  color: #9fb4d9;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.passagem-card input[type="text"],
+.passagem-card input[type="time"],
+.passagem-card .campo-inline {
+  min-height: 52px;
+  background: rgba(18, 33, 60, 0.96);
+  border: 1px solid rgba(66, 98, 150, 0.62);
+  border-radius: 15px;
+  color: #eef4ff;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.passagem-card input:focus,
+.passagem-card .campo-inline:focus {
+  border-color: rgba(89, 157, 255, 0.82);
+  box-shadow: 0 0 0 3px rgba(47, 140, 255, 0.14);
+  background: rgba(20, 38, 70, 0.98);
+}
+
+.passagem-card input::placeholder {
+  color: rgba(169, 184, 213, 0.62);
+}
+
+.chips-wrap {
+  gap: 9px;
+}
+
+.chip,
+.btn-disp {
+  min-height: 38px;
+  border-color: rgba(75, 113, 174, 0.58);
+  background: rgba(18, 35, 66, 0.92);
+  color: #aabbe0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.chip-on {
+  border-color: rgba(94, 166, 255, 0.9);
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(32, 116, 225, 0.24);
+}
+
+.radio-btn {
+  min-height: auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.radio-btn span {
+  min-height: 46px;
+  border-radius: 15px;
+  border: 1px solid rgba(62, 94, 148, 0.55);
+  background: rgba(17, 33, 62, 0.82);
+  color: #b9c8e6;
+  padding: 10px 14px;
+}
+
+.radio-btn input:checked + span,
+.radio-btn.radio-on span {
+  border-color: rgba(86, 159, 255, 0.88);
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(31, 111, 214, 0.22);
+}
+
+.checkbox-label {
+  min-height: 46px;
+  border-radius: 15px;
+  border: 1px solid rgba(62, 94, 148, 0.55);
+  background: rgba(17, 33, 62, 0.82);
+  color: #b9c8e6;
+  padding: 10px 12px;
+}
+
+.checkbox-label.checked {
+  border-color: rgba(86, 159, 255, 0.88);
+  background: linear-gradient(135deg, rgba(37, 105, 211, 0.92), rgba(36, 141, 229, 0.82));
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(31, 111, 214, 0.22);
+}
+
+.radio-btn input,
+.checkbox-label input {
+  accent-color: #58a6ff;
+}
+
+.disp-lista {
+  gap: 8px;
+}
+
+.disp-item {
+  border-color: rgba(68, 101, 157, 0.58);
+  background: rgba(15, 31, 58, 0.94);
+  border-radius: 16px;
+}
+
+.disp-texto {
+  color: #d6e2f8;
+}
+
+.btn-icon-sm {
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 9px;
+  background: rgba(26, 45, 80, 0.84);
+}
+
+.btn-disp {
+  border-style: dashed;
+  border-radius: 14px;
+  color: #78b6ff;
+  font-weight: 700;
+}
+
+.btn-disp:active {
+  background: rgba(42, 118, 224, 0.18);
+}
+
+.bloco-nav {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.bloco-nav .btn {
+  min-height: 52px;
+  border-radius: 16px;
+}
+
+.bloco-nav .btn-primary,
+.btn-generate {
+  box-shadow: 0 16px 30px rgba(35, 111, 225, 0.28);
+}
+
+.rascunho-banner {
+  border-color: rgba(78, 147, 255, 0.55);
+  background: linear-gradient(180deg, rgba(20, 42, 78, 0.96), rgba(14, 28, 53, 0.98));
+  border-radius: 18px;
+}
+
+.modal-overlay {
+  background: rgba(1, 8, 18, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.modal-box {
+  background:
+    radial-gradient(circle at top left, rgba(50, 128, 238, 0.12), transparent 36%),
+    linear-gradient(180deg, #10203d, #0b172c);
+  border: 1px solid rgba(76, 121, 190, 0.45);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -20px 42px rgba(0, 0, 0, 0.35);
+}
+
+.modal-header,
+.modal-footer {
+  background: rgba(12, 25, 48, 0.95);
+  border-color: rgba(68, 101, 157, 0.46);
+}
+
+.modal-body {
+  padding: 18px 16px 96px;
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(68, 101, 157, 0.46);
+  padding-bottom: 16px;
+}
+
+.modal-header h3 {
+  color: #f4f7ff;
+  font-size: 1.08rem;
+}
+
+@media (max-width: 390px) {
+  .passagem-page {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .module-hero {
+    padding: 18px;
+    gap: 13px;
+  }
+
+  .module-hero-copy h1 {
+    font-size: 1.48rem;
+  }
+
+  .module-hero-copy p {
+    font-size: 0.9rem;
+  }
+
+  .passagem-card {
+    padding: 16px;
+  }
+
+  .bloco-nav {
+    flex-wrap: wrap;
+  }
+
+  .bloco-nav .btn-primary,
+  .bloco-nav .btn-generate {
+    flex-basis: 100%;
+  }
 }
 </style>
