@@ -1,12 +1,55 @@
 <template>
-  <div :style="!isOnline ? 'padding-bottom: 44px' : ''">
+  <div :class="['app-shell', { 'app-shell-with-nav': mostrarBottomNav, 'app-shell-offline': !isOnline }]">
     <RouterView v-slot="{ Component }">
       <Transition name="page-fade" mode="out-in">
         <component :is="Component" :key="$route.name" />
       </Transition>
     </RouterView>
   </div>
-  <ChatAssistente v-if="mostrarChatDashboard" />
+  <nav v-if="mostrarBottomNav" class="bottom-nav">
+    <button :class="['bottom-nav-item', { 'bottom-nav-item-on': route.name === 'dashboard' }]" @click="irParaInicio">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M3 10.5 12 3l9 7.5" />
+        <path d="M5 9.5V21h14V9.5" />
+      </svg>
+      <span>Início</span>
+    </button>
+    <button :class="['bottom-nav-item', { 'bottom-nav-item-on': route.name === 'pacientes' }]" @click="router.push({ name: 'pacientes' })">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="9" cy="8" r="3" />
+        <circle cx="17" cy="9" r="2.5" />
+        <path d="M4 19c0-2.8 2.6-5 5.8-5s5.8 2.2 5.8 5" />
+        <path d="M14.5 18c.3-1.8 1.9-3.2 4-3.2 1.2 0 2.3.4 3.1 1.1" />
+      </svg>
+      <span>Pacientes</span>
+    </button>
+    <button :class="['bottom-nav-item', { 'bottom-nav-item-on': chatAberto }]" @click="toggleChat">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M7 17.5H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3v-3Z" />
+        <path d="M8 10h8" />
+        <path d="M8 13h5" />
+      </svg>
+      <span>Clara</span>
+    </button>
+    <button :class="['bottom-nav-item', { 'bottom-nav-item-on': route.name === 'organizador' }]" @click="router.push({ name: 'organizador' })">
+      <span v-if="tarefasPendentes > 0" class="bottom-nav-badge">{{ tarefasPendentes }}</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <rect x="5" y="4" width="14" height="16" rx="2" />
+        <path d="M9 9h6" />
+        <path d="M9 13h6" />
+        <path d="m9 17 1.5 1.5L15 14" />
+      </svg>
+      <span>Tarefas</span>
+    </button>
+    <button :class="['bottom-nav-item', { 'bottom-nav-item-on': route.name === 'configuracoes' }]" @click="router.push({ name: 'configuracoes' })">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="12" cy="8" r="3" />
+        <path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" />
+      </svg>
+      <span>Perfil</span>
+    </button>
+  </nav>
+  <ChatAssistente v-if="mostrarBottomNav" />
   <CalculadoraModal v-if="mostrarFab" />
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
@@ -114,12 +157,13 @@ const auth        = useAuthStore()
 const anotacoes   = useAnotacoesStore()
 const pacientes   = usePacientesStore()
 const organizador = useOrganizadorStore()
-const { limparConversa } = useChat()
+const { limparConversa, aberto: chatAberto, toggleChat } = useChat()
 const router     = useRouter()
 const route      = useRoute()
 const rotasSemFab = ['landing', 'login', 'pc']
+const rotasComBottomNav = ['dashboard', 'historico', 'pacientes', 'organizador', 'configuracoes']
 const mostrarFab = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
-const mostrarChatDashboard = computed(() => mostrarFab.value && route.name === 'dashboard')
+const mostrarBottomNav = computed(() => auth.isLoggedIn && rotasComBottomNav.includes(route.name))
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
 const LAST_SYNC_KEY_PREFIX = 'last_sync_'
@@ -138,6 +182,19 @@ async function configurarPushSobDemanda(syncCode) {
 const totalPendentes = computed(() =>
   (anotacoes.pendentes || 0) + (pacientes.pendentesCount || 0)
 )
+
+const tarefasPendentes = computed(() => {
+  if (!organizador.plantao) return 0
+  return (organizador.plantao.tarefas || []).filter((t) => !t.feito).length
+})
+
+function irParaInicio() {
+  if (route.name === 'dashboard') {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+  router.push({ name: 'dashboard' })
+}
 
 function persistirSyncOk() {
   if (!auth.syncCode) return
@@ -220,6 +277,10 @@ function agendarRetrySync() {
 watch([isOnline, () => auth.isLoggedIn, totalPendentes], () => {
   agendarRetrySync()
 }, { immediate: true })
+
+watch(mostrarBottomNav, (visivel) => {
+  if (!visivel && chatAberto.value) toggleChat()
+})
 
 // ─── PWA auto-update ───
 // registerSW retorna função updateSW() que força check + ativação do novo SW
@@ -330,6 +391,76 @@ onUnmounted(() => {
 </script>
 
 <style>
+.app-shell-with-nav {
+  padding-bottom: 108px;
+}
+
+.app-shell-offline {
+  padding-bottom: 44px;
+}
+
+.app-shell-with-nav.app-shell-offline {
+  padding-bottom: 152px;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(92vw, 360px);
+  padding: 8px 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(124, 147, 194, 0.14);
+  background: rgba(14, 31, 60, 0.94);
+  backdrop-filter: blur(14px);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  z-index: 220;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+}
+
+.bottom-nav-item {
+  position: relative;
+  min-height: 54px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: #8ea3d4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bottom-nav-item-on {
+  background: rgba(255, 255, 255, 0.05);
+  color: #7fc0ff;
+}
+
+.bottom-nav-badge {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #ff6a67;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
 .offline-bar {
   position: fixed;
   bottom: 0;
@@ -637,4 +768,16 @@ onUnmounted(() => {
 .page-fade-leave-active { transition: opacity 0.1s ease; }
 .page-fade-enter-from,
 .page-fade-leave-to     { opacity: 0; }
+
+@media (min-width: 768px) {
+  .app-shell-with-nav,
+  .app-shell-offline,
+  .app-shell-with-nav.app-shell-offline {
+    padding-bottom: 0;
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+}
 </style>

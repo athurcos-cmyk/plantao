@@ -193,50 +193,6 @@
       </div>
     </main>
 
-    <nav class="bottom-nav">
-      <button class="bottom-nav-item bottom-nav-item-on" @click="irParaInicio">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M3 10.5 12 3l9 7.5" />
-          <path d="M5 9.5V21h14V9.5" />
-        </svg>
-        <span>Início</span>
-      </button>
-      <button class="bottom-nav-item" @click="router.push({ name: 'pacientes' })">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <circle cx="9" cy="8" r="3" />
-          <circle cx="17" cy="9" r="2.5" />
-          <path d="M4 19c0-2.8 2.6-5 5.8-5s5.8 2.2 5.8 5" />
-          <path d="M14.5 18c.3-1.8 1.9-3.2 4-3.2 1.2 0 2.3.4 3.1 1.1" />
-        </svg>
-        <span>Pacientes</span>
-      </button>
-      <button :class="['bottom-nav-item', { 'bottom-nav-item-on': chatAberto }]" @click="toggleChat">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M7 17.5H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3v-3Z" />
-          <path d="M8 10h8" />
-          <path d="M8 13h5" />
-        </svg>
-        <span>Clara</span>
-      </button>
-      <button class="bottom-nav-item" @click="router.push({ name: 'organizador' })">
-        <span v-if="tarefasPendentes > 0" class="bottom-nav-badge">{{ tarefasPendentes }}</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <rect x="5" y="4" width="14" height="16" rx="2" />
-          <path d="M9 9h6" />
-          <path d="M9 13h6" />
-          <path d="m9 17 1.5 1.5L15 14" />
-        </svg>
-        <span>Tarefas</span>
-      </button>
-      <button class="bottom-nav-item" @click="router.push({ name: 'configuracoes' })">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <circle cx="12" cy="8" r="3" />
-          <path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" />
-        </svg>
-        <span>Perfil</span>
-      </button>
-    </nav>
-
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Plantão" :itens="helpItens" />
     <TourDashboard ref="tourRef" />
   </div>
@@ -252,7 +208,6 @@ import { usePacientesStore } from '../stores/pacientes.js'
 import { useOrganizadorStore } from '../stores/organizador.js'
 import { useToast } from '../composables/useToast.js'
 import { useOnlineStatus } from '../composables/useOnlineStatus.js'
-import { useChat } from '../composables/useChat.js'
 import { db } from '../firebase.js'
 import { ref as dbRef, push, remove } from 'firebase/database'
 import HelpModal from '../components/HelpModal.vue'
@@ -279,7 +234,6 @@ const pacientesStore = usePacientesStore()
 const orgStore = useOrganizadorStore()
 const { showToast } = useToast()
 const { isOnline } = useOnlineStatus()
-const { aberto: chatAberto, toggleChat } = useChat()
 
 const pcModalAberto = ref(false)
 const helpAberto = ref(false)
@@ -306,10 +260,6 @@ function abrirJanelaLateral() {
 function abrirFeedback() {
   if (!auth.syncCode) return
   pulsoVisivel.value = true
-}
-
-function irParaInicio() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const helpItens = [
@@ -448,11 +398,6 @@ const organizadorResumo = computed(() => {
   return `${feitas}/${tarefas.length} tarefas • ${pendentes} pendente${pendentes !== 1 ? 's' : ''}`
 })
 
-const tarefasPendentes = computed(() => {
-  if (!orgStore.plantao) return 0
-  return (orgStore.plantao.tarefas || []).filter(t => !t.feito).length
-})
-
 async function sincronizarAgora() {
   if (sincronizandoAgora.value) return
   if (!isOnline.value) {
@@ -537,7 +482,7 @@ function navegar(tipo) {
 
 .dashboard-main {
   padding-top: 14px;
-  padding-bottom: 104px;
+  padding-bottom: 28px;
 }
 
 .header-brand {
@@ -1081,64 +1026,6 @@ function navegar(tipo) {
   margin-top: 8px;
 }
 
-.bottom-nav {
-  position: fixed;
-  left: 50%;
-  bottom: max(12px, env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  width: min(92vw, 360px);
-  padding: 8px 10px;
-  border-radius: 18px;
-  border: 1px solid rgba(124, 147, 194, 0.14);
-  background: rgba(14, 31, 60, 0.94);
-  backdrop-filter: blur(14px);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
-  z-index: 220;
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
-}
-
-.bottom-nav-item {
-  position: relative;
-  min-height: 54px;
-  border: none;
-  border-radius: 14px;
-  background: transparent;
-  color: #8ea3d4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-family: inherit;
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.bottom-nav-item-on {
-  background: rgba(255, 255, 255, 0.05);
-  color: #7fc0ff;
-}
-
-.bottom-nav-badge {
-  position: absolute;
-  top: 4px;
-  right: 10px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #ff6a67;
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.62rem;
-  font-weight: 800;
-}
-
 @media (max-width: 390px) {
   .dashboard-header {
     align-items: flex-start;
@@ -1249,10 +1136,6 @@ function navegar(tipo) {
 
   .tipo-card {
     min-height: 172px;
-  }
-
-  .bottom-nav {
-    display: none;
   }
 }
 </style>
