@@ -29,6 +29,7 @@
 - O card de `Encaminhamento` precisou de ajuste especifico de tipografia; a melhor solucao foi corrigir o texto sem desfazer a grade
 - Sempre que um ajuste for claro e incremental, seguir direto ate commit/push sem ficar pedindo confirmacao a cada passo
 - Em `Sinais Vitais`, campos numericos devem chamar teclado numerico no mobile, mas `Localizacao da dor` continua melhor como texto livre; a tentativa com chips foi revertida
+- A direcao visual futura do app ficou consolidada: usar a nova dashboard como referencia de linguagem premium para os outros modulos, sem abrir mao de velocidade operacional
 
 ### Validacao
 

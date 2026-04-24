@@ -127,6 +127,7 @@ Estruturas mais relevantes:
 - `src/views/DashboardView.vue` passou a concentrar a nova home mobile: topo com ilustracao, sync card compacto, grid 4x no celular, feedback modal, rodape fixo tipo app e atalhos ilustrados
 - `src/views/DashboardView.vue` tambem guarda um aprendizado forte de produto: manter a primeira dobra leve, sem voltar a crescer o card de sincronizacao nem encher a home de microcopy
 - `src/assets/dashboard-icons-png/` e agora a pasta fonte dos icones ilustrados usados no dashboard; manter assets leves e transparentes
+- A direcao visual atual do projeto e usar a dashboard como referencia de linguagem premium para os outros modulos, desde que cada tela preserve leitura rapida, pouco atrito e foco operacional
 - `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje tem duas zonas visuais principais (`preparo` e `medicamentos do horario`), quick add por historico/preset, catalogo detalhado e fluxo `Salvar e adicionar proxima`; preservar essa hierarquia se evoluir a tela
 - Aprendizado importante dessa view: evitar resumos grandes, estados obvios e microcopy em excesso; na medicacao, a melhor UX ate agora foi a mais enxuta e direta para chegar rapido em `Adicionar medicamento`
 - Nos avisos de quick add/modelos, manter texto curto e operacional; a versao atual fala so de `prescricao` e `apresentacao`

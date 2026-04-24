@@ -29,6 +29,7 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - Abaixo do sync ficou so o atalho `Como acessar no computador`; `Ao lado` saiu da primeira dobra
 - Regra de colaboracao alinhada com o usuario: para ajustes diretos e incrementais, seguir ate commit/push sem ficar pedindo confirmacao a cada micro-etapa
 - Em `Sinais Vitais`, teclado numerico nos campos de medida faz sentido, mas `Localizacao da dor` deve continuar como texto livre; a tentativa com chips foi revertida
+- Direcao de produto para as proximas sessoes: levar as outras telas principais (`Sinais Vitais`, `Medicacao`, `Anotacao Inicial` e demais modulos) para a mesma linguagem visual premium do dashboard, mas sem sacrificar rapidez, dobra principal e fluxo operacional
 - Testes passaram com 60 testes e o build de producao tambem passou
 
 ## Sessao anterior (2026-04-21)

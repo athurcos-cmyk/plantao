@@ -23,6 +23,7 @@ Esse numero nao deve ser tratado como dado em tempo real sem nova verificacao.
 - Modelo desejado continua sendo mensal, sem plano anual
 - B2B hospitalar foi descartado no curto prazo
 - A principal tese do produto continua sendo mobilidade offline em ambiente hospitalar caotico
+- Direcao atual de UX/UI: elevar o app inteiro para um visual mais premium e mais consistente com a nova dashboard, sem transformar as telas em vitrines visuais lentas ou cheias de leitura
 
 Design doc estrategico mais recente conhecido:
 `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\Thurcos-main-design-20260326-gtm.md`
@@ -91,6 +92,7 @@ Design doc estrategico mais recente conhecido:
 - [ ] Avaliar Resend Batch API quando a base crescer
 - [ ] Revisar qualquer documentacao antiga que ainda descreva auth legado
 - [ ] Continuar lapidando a home mobile apenas com ajustes cirurgicos; evitar voltar a crescer a primeira dobra com microcopy ou CTA exagerado
+- [ ] Propagar a nova linguagem premium da dashboard para os modulos principais de anotacao, sempre priorizando rapidez, pouco scroll e pouco ruido visual
 
 ## Conformidade e posicionamento
 
