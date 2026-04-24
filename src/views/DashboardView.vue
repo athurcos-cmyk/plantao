@@ -2,9 +2,9 @@
   <div class="screen">
     <header class="app-header dashboard-header">
       <div class="header-brand">
-        <img src="/icons/icon-512.png" width="28" height="28" alt="PlantÃ£o" class="header-logo-mark" />
+        <img src="/icons/icon-512.png" width="28" height="28" alt="Plantão" class="header-logo-mark" />
         <div class="header-brand-copy">
-          <span class="header-brand-title">PlantÃ£o</span>
+          <span class="header-brand-title">Plantão</span>
           <div class="header-shortcuts">
             <button class="header-chip" @click="tourRef?.abrirTour()">Tutorial</button>
             <button class="header-chip" @click="helpAberto = true">Ajuda</button>
@@ -14,14 +14,14 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-icon" @click="router.push({ name: 'historico' })" title="HistÃ³rico">
+        <button class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="9" />
             <path d="M12 7v5l3 2" />
             <path d="M4 12a8 8 0 0 1 8-8" />
           </svg>
         </button>
-        <button class="btn-icon" @click="router.push({ name: 'configuracoes' })" title="ConfiguraÃ§Ãµes">
+        <button class="btn-icon" @click="router.push({ name: 'configuracoes' })" title="Configurações">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3" />
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -35,7 +35,7 @@
         <div class="hero-copy">
           <p class="hero-greeting">{{ saudacaoTexto }}</p>
           <h1 class="hero-name">{{ auth.userName || 'Profissional' }}</h1>
-          <p class="hero-subtitle">Seu painel do plantÃ£o de hoje.</p>
+          <p class="hero-subtitle">Seu painel do plantão de hoje.</p>
         </div>
 
         <img class="hero-illustration" :src="heroIllustration" alt="Profissional de enfermagem" />
@@ -61,7 +61,7 @@
             {{ syncDetalhesAbertos ? 'Ocultar detalhes' : 'Ver detalhes' }}
           </button>
           <div v-if="totalPendencias > 0 || syncDetalhesAbertos" class="sync-chips">
-            <span v-if="pendAnotacoes > 0" class="sync-chip">AnotaÃ§Ãµes {{ pendAnotacoes }}</span>
+            <span v-if="pendAnotacoes > 0" class="sync-chip">Anotações {{ pendAnotacoes }}</span>
             <span v-if="pendPacientes > 0" class="sync-chip">Pacientes {{ pendPacientes }}</span>
             <span v-if="pendModelos > 0" class="sync-chip">Modelos {{ pendModelos }}</span>
             <span v-if="pendOrganizador > 0" class="sync-chip">Organizador {{ pendOrganizador }}</span>
@@ -86,8 +86,8 @@
 
       <section class="dashboard-section">
         <div class="section-head">
-          <h2 class="section-title">AnotaÃ§Ãµes</h2>
-          <span class="section-link">Acesso rÃ¡pido</span>
+          <h2 class="section-title">Anotações</h2>
+          <span class="section-link">Acesso rápido</span>
         </div>
 
         <div class="tipos-grid">
@@ -109,19 +109,19 @@
 
       <section class="dashboard-section">
         <div class="section-head section-head-spaced">
-          <h2 class="section-title">Atalhos do plantÃ£o</h2>
+          <h2 class="section-title">Atalhos do plantão</h2>
         </div>
 
         <div class="atalhos-list">
           <button data-testid="auto-btn-dashboardview-3" class="atalho-card" @click="router.push({ name: 'historico' })">
             <span class="atalho-icon">
-              <img class="atalho-icon-img" :src="iconHistorico" alt="HistÃ³rico" />
+              <img class="atalho-icon-img" :src="iconHistorico" alt="Histórico" />
             </span>
             <span class="atalho-copy">
-              <span class="atalho-title">HistÃ³rico</span>
-              <span class="atalho-sub">Buscar, copiar e reaproveitar anotaÃ§Ãµes</span>
+              <span class="atalho-title">Histórico</span>
+              <span class="atalho-sub">Buscar, copiar e reaproveitar anotações</span>
             </span>
-            <span class="atalho-arrow">â€º</span>
+            <span class="atalho-arrow">›</span>
           </button>
 
           <button class="atalho-card" @click="router.push({ name: 'pacientes' })">
@@ -130,31 +130,31 @@
             </span>
             <span class="atalho-copy">
               <span class="atalho-title">Meus Pacientes</span>
-              <span class="atalho-sub">PendÃªncias e atalhos por leito</span>
+              <span class="atalho-sub">Pendências e atalhos por leito</span>
             </span>
-            <span class="atalho-arrow">â€º</span>
+            <span class="atalho-arrow">›</span>
           </button>
 
           <button class="atalho-card" @click="router.push({ name: 'organizador' })">
             <span class="atalho-icon">
-              <img class="atalho-icon-img" :src="iconOrganizador" alt="Organizador do PlantÃ£o" />
+              <img class="atalho-icon-img" :src="iconOrganizador" alt="Organizador do Plantão" />
             </span>
             <span class="atalho-copy">
-              <span class="atalho-title">Organizador do plantÃ£o</span>
+              <span class="atalho-title">Organizador do plantão</span>
               <span class="atalho-sub">{{ organizadorResumo }}</span>
             </span>
-            <span class="atalho-arrow">â€º</span>
+            <span class="atalho-arrow">›</span>
           </button>
 
           <button class="atalho-card" @click="router.push({ name: 'configuracoes' })">
             <span class="atalho-icon">
-              <img class="atalho-icon-img" :src="iconConfiguracao" alt="ConfiguraÃ§Ãµes" />
+              <img class="atalho-icon-img" :src="iconConfiguracao" alt="Configurações" />
             </span>
             <span class="atalho-copy">
-              <span class="atalho-title">ConfiguraÃ§Ãµes</span>
-              <span class="atalho-sub">PreferÃªncias, conta e integraÃ§Ãµes</span>
+              <span class="atalho-title">Configurações</span>
+              <span class="atalho-sub">Preferências, conta e integrações</span>
             </span>
-            <span class="atalho-arrow">â€º</span>
+            <span class="atalho-arrow">›</span>
           </button>
         </div>
       </section>
@@ -162,19 +162,19 @@
       <div v-if="pulsoVisivel" class="feedback-overlay" @click.self="dispensarPulso">
         <div class="feedback-modal">
           <div class="pulso-header">
-            <span class="pulso-title">O que vocÃª acha do app?</span>
-            <button class="pulso-close" @click="dispensarPulso">Ã—</button>
+            <span class="pulso-title">O que você acha do app?</span>
+            <button class="pulso-close" @click="dispensarPulso">×</button>
           </div>
-          <p class="pulso-sub">Sua opiniÃ£o ajuda a melhorar o PlantÃ£o.</p>
+          <p class="pulso-sub">Sua opinião ajuda a melhorar o Plantão.</p>
           <textarea
             v-model="textoFeedback"
             class="pulso-input"
-            placeholder="Escreva o que quiser â€” erros, sugestÃµes, elogios..."
+            placeholder="Escreva o que quiser - erros, sugestões, elogios..."
             rows="4"
             maxlength="500"
           ></textarea>
           <div class="pulso-actions">
-            <button class="btn btn-tertiary pulso-later" @click="dispensarPulso">Agora nÃ£o</button>
+            <button class="btn btn-tertiary pulso-later" @click="dispensarPulso">Agora não</button>
             <button class="btn btn-primary" :disabled="!textoFeedback.trim() || pulsoEnviando" @click="enviarPulso">
               {{ pulsoEnviando ? 'Enviando...' : 'Enviar' }}
             </button>
@@ -187,7 +187,7 @@
           <p class="modal-title">Como acessar no computador</p>
           <p class="modal-text">Abra o Google Chrome ou qualquer navegador no seu computador e acesse:</p>
           <p class="modal-url">plantao.net</p>
-          <p class="modal-text">FaÃ§a login com a mesma conta â€” suas anotaÃ§Ãµes jÃ¡ estarÃ£o lÃ¡.</p>
+          <p class="modal-text">Faça login com a mesma conta - suas anotações já estarão lá.</p>
           <button class="btn btn-primary modal-btn" @click="pcModalAberto = false">Entendi</button>
         </div>
       </div>
@@ -199,7 +199,7 @@
           <path d="M3 10.5 12 3l9 7.5" />
           <path d="M5 9.5V21h14V9.5" />
         </svg>
-        <span>InÃ­cio</span>
+        <span>Início</span>
       </button>
       <button class="bottom-nav-item" @click="router.push({ name: 'pacientes' })">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -237,7 +237,7 @@
       </button>
     </nav>
 
-    <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o PlantÃ£o" :itens="helpItens" />
+    <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Plantão" :itens="helpItens" />
     <TourDashboard ref="tourRef" />
   </div>
 </template>
@@ -313,21 +313,21 @@ function irParaInicio() {
 }
 
 const helpItens = [
-  { icone: 'ðŸ©º', titulo: 'AnotaÃ§Ã£o Inicial', desc: 'Registre o estado do paciente: posiÃ§Ã£o da cama, dispositivos, neurolÃ³gico, respiratÃ³rio e eliminaÃ§Ãµes. Gere o texto formatado e copie para o sistema.' },
-  { icone: 'ðŸ“Š', titulo: 'Sinais Vitais', desc: 'Registre PA, FC, FR, Tax, SpOâ‚‚ e HGT com horÃ¡rio. Inclui escala de dor 0â€“10 com chips coloridos e conduta tomada. Texto gerado automaticamente.' },
-  { icone: 'ðŸ’Š', titulo: 'MedicaÃ§Ã£o', desc: 'Documente os medicamentos administrados com dose, via, diluiÃ§Ã£o e dupla checagem. Suporta mÃºltiplos medicamentos no mesmo horÃ¡rio.' },
-  { icone: 'ðŸš‘', titulo: 'Encaminhamento', desc: 'Gere a anotaÃ§Ã£o de encaminhamento do paciente: destino, tipo de transporte, acompanhante e dispositivos em uso.' },
-  { icone: 'ðŸ§¼', titulo: 'HigienizaÃ§Ã£o', desc: 'Registre banho de aspersÃ£o, banho de leito ou troca de fralda com a lÃ³gica certa para o plantÃ£o.' },
-  { icone: 'ðŸ©¹', titulo: 'Curativo', desc: 'Documente curativo simples, troca ou troca de placa com avaliaÃ§Ã£o estruturada quando precisar.' },
-  { icone: 'ðŸ”„', titulo: 'Passagem de plantÃ£o', desc: 'Gere a anotaÃ§Ã£o de passagem de plantÃ£o com refeiÃ§Ã£o, queixas, cama, grades, decÃºbito e observaÃ§Ãµes.' },
-  { icone: 'ðŸ“', titulo: 'Notas Livres', desc: 'Crie seus prÃ³prios modelos de anotaÃ§Ã£o e use com um toque. Funciona offline.' },
-  { icone: 'ðŸ›ï¸', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantÃ£o por leito e acompanhe pendÃªncias.' },
-  { icone: 'ðŸ“‹', titulo: 'Organizador', desc: 'Checklist de tarefas do turno com horÃ¡rios e alertas.' },
-  { icone: 'ðŸ•', titulo: 'HistÃ³rico', desc: 'Busque, edite, copie e compartilhe anotaÃ§Ãµes jÃ¡ geradas.' },
-  { icone: 'ðŸ”‘', titulo: 'CÃ³digo de sincronizaÃ§Ã£o', desc: 'Seu cÃ³digo Ãºnico sincroniza os dados em qualquer dispositivo.' },
-  { icone: 'ðŸ§®', titulo: 'Calculadora de MedicaÃ§Ã£o', desc: 'Calculadora flutuante com dosagem, gotejamento, diluiÃ§Ã£o e conversÃµes.' },
-  { icone: 'âœ¨', titulo: 'Clara â€” Assistente IA', desc: 'Use a Clara para dÃºvidas de enfermagem, organizaÃ§Ã£o do plantÃ£o e apoio na redaÃ§Ã£o de anotaÃ§Ãµes.' },
-  { icone: 'ðŸ’¬', titulo: 'Feedback', desc: 'Envie sua opiniÃ£o para a equipe do PlantÃ£o para ajudar a melhorar o app.' },
+  { icone: '🩺', titulo: 'Anotação Inicial', desc: 'Registre o estado do paciente: posição da cama, dispositivos, neurológico, respiratório e eliminações. Gere o texto formatado e copie para o sistema.' },
+  { icone: '📊', titulo: 'Sinais Vitais', desc: 'Registre PA, FC, FR, Tax, SpO₂ e HGT com horário. Inclui escala de dor 0-10 com chips coloridos e conduta tomada. Texto gerado automaticamente.' },
+  { icone: '💊', titulo: 'Medicação', desc: 'Documente os medicamentos administrados com dose, via, diluição e dupla checagem. Suporta múltiplos medicamentos no mesmo horário.' },
+  { icone: '🚑', titulo: 'Encaminhamento', desc: 'Gere a anotação de encaminhamento do paciente: destino, tipo de transporte, acompanhante e dispositivos em uso.' },
+  { icone: '🧼', titulo: 'Higienização', desc: 'Registre banho de aspersão, banho de leito ou troca de fralda com a lógica certa para o plantão.' },
+  { icone: '🩹', titulo: 'Curativo', desc: 'Documente curativo simples, troca ou troca de placa com avaliação estruturada quando precisar.' },
+  { icone: '🔄', titulo: 'Passagem de plantão', desc: 'Gere a anotação de passagem de plantão com refeição, queixas, cama, grades, decúbito e observações.' },
+  { icone: '📝', titulo: 'Notas Livres', desc: 'Crie seus próprios modelos de anotação e use com um toque. Funciona offline.' },
+  { icone: '🛏️', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantão por leito e acompanhe pendências.' },
+  { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do turno com horários e alertas.' },
+  { icone: '🕐', titulo: 'Histórico', desc: 'Busque, edite, copie e compartilhe anotações já geradas.' },
+  { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo.' },
+  { icone: '🧮', titulo: 'Calculadora de Medicação', desc: 'Calculadora flutuante com dosagem, gotejamento, diluição e conversões.' },
+  { icone: '✨', titulo: 'Clara - Assistente IA', desc: 'Use a Clara para dúvidas de enfermagem, organização do plantão e apoio na redação de anotações.' },
+  { icone: '💬', titulo: 'Feedback', desc: 'Envie sua opinião para a equipe do Plantão para ajudar a melhorar o app.' },
 ]
 
 const sincronizandoAgora = ref(false)
@@ -416,17 +416,17 @@ const totalPendencias = computed(() =>
 )
 
 const syncTitle = computed(() => {
-  if (!isOnline.value && totalPendencias.value > 0) return 'SincronizaÃ§Ã£o pendente'
-  if (totalPendencias.value > 0) return 'SincronizaÃ§Ã£o pendente'
-  return 'SincronizaÃ§Ã£o em dia'
+  if (!isOnline.value && totalPendencias.value > 0) return 'Sincronização pendente'
+  if (totalPendencias.value > 0) return 'Sincronização pendente'
+  return 'Sincronização em dia'
 })
 
 const syncDescription = computed(() => {
   if (totalPendencias.value > 0) {
     return `${totalPendencias.value} item${totalPendencias.value !== 1 ? 's' : ''} aguardando envio`
   }
-  if (!ultimoSyncAt.value) return 'Ainda sem registro de sincronizaÃ§Ã£o'
-  return `Ãšltima atualizaÃ§Ã£o ${new Date(ultimoSyncAt.value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+  if (!ultimoSyncAt.value) return 'Ainda sem registro de sincronização'
+  return `Última atualização ${new Date(ultimoSyncAt.value).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
 })
 
 const syncButtonLabel = computed(() => {
@@ -441,11 +441,11 @@ const syncBadgeClass = computed(() => {
 })
 
 const organizadorResumo = computed(() => {
-  if (!orgStore.plantao) return 'Nenhum plantÃ£o ativo'
+  if (!orgStore.plantao) return 'Nenhum plantão ativo'
   const tarefas = orgStore.plantao.tarefas || []
   const feitas = tarefas.filter(t => t.feito).length
   const pendentes = tarefas.filter(t => !t.feito).length
-  return `${feitas}/${tarefas.length} tarefas â€¢ ${pendentes} pendente${pendentes !== 1 ? 's' : ''}`
+  return `${feitas}/${tarefas.length} tarefas • ${pendentes} pendente${pendentes !== 1 ? 's' : ''}`
 })
 
 const tarefasPendentes = computed(() => {
@@ -477,8 +477,8 @@ async function sincronizarAgora() {
     try { localStorage.setItem(_lastSyncKey(code), String(ultimoSyncAt.value)) } catch {}
     atualizarPainelSync()
 
-    if (total > 0 || orgAntes > 0) showToast('SincronizaÃ§Ã£o concluÃ­da âœ“')
-    else showToast('Tudo jÃ¡ estava sincronizado')
+    if (total > 0 || orgAntes > 0) showToast('Sincronização concluída ✓')
+    else showToast('Tudo já estava sincronizado')
   } catch {
     showToast('Erro ao sincronizar')
   } finally {
@@ -513,14 +513,14 @@ const saudacaoTexto = computed(() => {
 })
 
 const tipos = [
-  { id: 'sv', icon: iconSv, nome: 'Sinais vitais', meta: 'RÃ¡pido', rota: 'sinais-vitais' },
-  { id: 'medicacao', icon: iconMedicacao, nome: 'MedicaÃ§Ã£o', meta: 'RÃ¡pido', rota: 'medicacao' },
-  { id: 'livre', icon: iconLivre, nome: 'Notas livres', meta: 'RÃ¡pido', rota: 'livre' },
-  { id: 'passagem', icon: iconPassagem, nome: 'Passagem de plantÃ£o', meta: 'Turno', rota: 'passagem' },
+  { id: 'sv', icon: iconSv, nome: 'Sinais vitais', meta: 'Rápido', rota: 'sinais-vitais' },
+  { id: 'medicacao', icon: iconMedicacao, nome: 'Medicação', meta: 'Rápido', rota: 'medicacao' },
+  { id: 'livre', icon: iconLivre, nome: 'Notas livres', meta: 'Rápido', rota: 'livre' },
+  { id: 'passagem', icon: iconPassagem, nome: 'Passagem de plantão', meta: 'Turno', rota: 'passagem' },
   { id: 'encamin', icon: iconEncaminhamento, nome: 'Encaminhamento', meta: 'Apoio', rota: 'encaminhamento' },
-  { id: 'banho', icon: iconHigienizacao, nome: 'HigienizaÃ§Ã£o', meta: 'Apoio', rota: 'banho' },
+  { id: 'banho', icon: iconHigienizacao, nome: 'Higienização', meta: 'Apoio', rota: 'banho' },
   { id: 'curativo', icon: iconCurativo, nome: 'Curativo', meta: 'Apoio', rota: 'curativo' },
-  { id: 'inicial', icon: iconInicial, nome: 'AnotaÃ§Ã£o inicial', meta: '1x por plantÃ£o', rota: 'anotacao-inicial' },
+  { id: 'inicial', icon: iconInicial, nome: 'Anotação inicial', meta: '1x por plantão', rota: 'anotacao-inicial' },
 ]
 
 const tiposDashboard = computed(() => tipos)
@@ -861,7 +861,7 @@ function navegar(tipo) {
 .tipo-nome {
   color: #f7f9ff;
   font-size: 0.84rem;
-  line-height: 1.15;
+  line-height: 1.12;
   font-weight: 700;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -871,8 +871,9 @@ function navegar(tipo) {
   max-width: 100%;
   min-height: 2.3em;
   text-wrap: pretty;
-  overflow-wrap: break-word;
-  word-break: normal;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  hyphens: none;
 }
 
 .tipo-card-encamin .tipo-nome {
@@ -1175,15 +1176,30 @@ function navegar(tipo) {
     min-height: 138px;
     padding-left: 8px;
     padding-right: 8px;
-    grid-template-rows: 52px minmax(2.45em, auto) 1.15em;
+    grid-template-rows: 50px minmax(2.2em, auto) 1.1em;
   }
 
   .tipo-nome {
-    font-size: 0.76rem;
+    font-size: 0.71rem;
+    line-height: 1.08;
+    min-height: 2.16em;
   }
 
   .tipo-card-encamin .tipo-nome {
-    font-size: 0.7rem;
+    font-size: 0.66rem;
+  }
+
+  .atalho-title {
+    font-size: 0.96rem;
+  }
+
+  .atalho-sub {
+    font-size: 0.73rem;
+    line-height: 1.2;
+  }
+
+  .atalho-arrow {
+    font-size: 1.2rem;
   }
 }
 
