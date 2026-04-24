@@ -244,7 +244,7 @@
         <div class="bloco-nav">
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
-          <button class="btn btn-primary" @click="gerar">Gerar anotação</button>
+          <button class="btn btn-primary btn-generate" @click="gerar"><IconGenerateNote />Gerar anotação</button>
         </div>
       </div>
 
@@ -282,6 +282,7 @@ import { usePacientesStore } from '../../stores/pacientes.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
+import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
 
 const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()

@@ -428,7 +428,7 @@
         <div class="bloco-nav">
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 2">← Voltar</button>
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
-          <button class="btn btn-primary" @click="gerar">Gerar anotação</button>
+          <button class="btn btn-primary btn-generate" @click="gerar"><IconGenerateNote />Gerar anotação</button>
         </div>
       </div>
 
@@ -466,6 +466,7 @@ import { usePacientesStore } from '../../stores/pacientes.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
+import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
 import { db } from '../../firebase.js'
 import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 import { useAuthStore } from '../../stores/auth.js'

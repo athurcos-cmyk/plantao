@@ -219,15 +219,8 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
-        <button data-testid="auto-btn-sinaisvitaisview-3" class="btn btn-primary sv-submit-btn" @click="gerar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="5" y="3" width="12" height="18" rx="2" />
-            <path d="M9 7h4" />
-            <path d="M9 11h4" />
-            <path d="M9 15h3" />
-            <circle cx="19" cy="17" r="3" />
-            <path d="m19 15.5 1.2 1.2L22 15" />
-          </svg>
+        <button data-testid="auto-btn-sinaisvitaisview-3" class="btn btn-primary btn-generate sv-submit-btn" @click="gerar">
+          <IconGenerateNote />
           Gerar texto
         </button>
       </div>
@@ -293,6 +286,7 @@ import { useToast } from '../../composables/useToast.js'
 import { useRascunho } from '../../composables/useRascunho.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useCopia } from '../../composables/useCopia.js'
+import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
 import iconSv from '../../assets/dashboard-icons-png/sinais-vitais.png'
 
 const router = useRouter()

@@ -181,7 +181,8 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
-        <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary" style="width:100%;margin-top:8px" @click="gerar">
+        <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary btn-generate" style="width:100%;margin-top:8px" @click="gerar">
+          <IconGenerateNote />
           Gerar texto
         </button>
 
@@ -539,6 +540,7 @@ import { useRascunho }       from '../../composables/useRascunho.js'
 import { useAuthStore }      from '../../stores/auth.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useCopia }          from '../../composables/useCopia.js'
+import IconGenerateNote      from '../../components/icons/IconGenerateNote.vue'
 import { sugerirMedicamentosDetalhados, listarPresetsCatalogo } from '../../data/medicamentos.js'
 import {
   MEDICACAO_HISTORY_MAX,

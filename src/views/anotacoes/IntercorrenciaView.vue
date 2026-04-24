@@ -131,7 +131,7 @@
       </div>
 
       <p v-if="erro" class="erro-msg">{{ erro }}</p>
-      <button class="btn btn-primary" style="margin-top:20px" @click="gerar">Gerar anotação</button>
+      <button class="btn btn-primary btn-generate" style="margin-top:20px" @click="gerar"><IconGenerateNote />Gerar anotação</button>
 
     </main>
 
@@ -252,6 +252,7 @@ import { useAuthStore } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useOnlineStatus } from '../../composables/useOnlineStatus.js'
 import { useCopia } from '../../composables/useCopia.js'
+import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
 import { emitSyncState } from '../../utils/syncEvents.js'
 
 const router          = useRouter()

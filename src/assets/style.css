@@ -244,6 +244,20 @@ body {
 .btn-primary:active { background: var(--blue-dark); transform: scale(0.98); }
 .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.btn-generate {
+  min-height: 56px;
+  border-radius: 16px;
+  box-shadow: 0 14px 28px rgba(21, 101, 192, 0.24);
+}
+
+.btn-generate svg {
+  flex-shrink: 0;
+}
+
+.btn-generate .icon-generate-note {
+  opacity: 0.96;
+}
+
 .btn-secondary {
   background: var(--bg-hover);
   color: var(--text-dim);

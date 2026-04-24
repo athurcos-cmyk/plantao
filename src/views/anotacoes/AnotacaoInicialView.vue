@@ -365,7 +365,7 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button  data-testid="auto-btn-anotacaoinicialview-19" class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 4">← Voltar</button>
-          <button  data-testid="auto-btn-anotacaoinicialview-20" class="btn btn-primary" @click="gerar">Gerar anotação</button>
+          <button  data-testid="auto-btn-anotacaoinicialview-20" class="btn btn-primary btn-generate" @click="gerar"><IconGenerateNote />Gerar anotação</button>
         </div>
       </div>
 
@@ -470,6 +470,7 @@ import ModalDreno from '../../components/modais/ModalDreno.vue'
 import ModalCurativo from '../../components/modais/ModalCurativo.vue'
 import ModalOutros from '../../components/modais/ModalOutros.vue'
 import ConfigAnotacaoInicialModal from '../../components/ConfigAnotacaoInicialModal.vue'
+import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
 
 const modalComponentMap = {
   AVP: ModalAVP,
