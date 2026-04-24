@@ -78,9 +78,9 @@
                 </div>
               </div>
               <div class="pressure-row">
-                <input data-testid="auto-input-sinaisvitaisview-2" type="number" v-model="form.paSis" placeholder="120" min="0" max="300">
+                <input data-testid="auto-input-sinaisvitaisview-2" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.paSis" placeholder="120" @input="manterSomenteDigitos('paSis')">
                 <span class="pressure-sep">/</span>
-                <input data-testid="auto-input-sinaisvitaisview-3" type="number" v-model="form.paDia" placeholder="80" min="0" max="200">
+                <input data-testid="auto-input-sinaisvitaisview-3" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.paDia" placeholder="80" @input="manterSomenteDigitos('paDia')">
               </div>
             </div>
 
@@ -94,7 +94,7 @@
                 </span>
                 <p class="vital-title">PAM <span class="vital-unit">mmHg</span></p>
               </div>
-              <input data-testid="auto-input-sinaisvitaisview-4" type="number" v-model="form.pam" placeholder="87" min="0" max="200">
+              <input data-testid="auto-input-sinaisvitaisview-4" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.pam" placeholder="87" @input="manterSomenteDigitos('pam')">
             </div>
 
             <div class="vital-card">
@@ -107,7 +107,7 @@
                 </span>
                 <p class="vital-title">FC <span class="vital-unit">bpm</span></p>
               </div>
-              <input data-testid="auto-input-sinaisvitaisview-5" type="number" v-model="form.fc" placeholder="98" min="0" max="300">
+              <input data-testid="auto-input-sinaisvitaisview-5" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.fc" placeholder="98" @input="manterSomenteDigitos('fc')">
             </div>
 
             <div class="vital-card">
@@ -123,7 +123,7 @@
                 </span>
                 <p class="vital-title">FR <span class="vital-unit">rpm</span></p>
               </div>
-              <input data-testid="auto-input-sinaisvitaisview-6" type="number" v-model="form.fr" placeholder="17" min="0" max="60">
+              <input data-testid="auto-input-sinaisvitaisview-6" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.fr" placeholder="17" @input="manterSomenteDigitos('fr')">
             </div>
 
             <div class="vital-card">
@@ -136,7 +136,7 @@
                 </span>
                 <p class="vital-title">T <span class="vital-unit">°C</span></p>
               </div>
-              <input data-testid="auto-input-sinaisvitaisview-7" type="number" v-model="form.temp" step="0.1" placeholder="36.7" min="30" max="45">
+              <input data-testid="auto-input-sinaisvitaisview-7" type="text" inputmode="decimal" v-model="form.temp" placeholder="36,7" @input="manterDecimal('temp')">
             </div>
 
             <div class="vital-card">
@@ -149,7 +149,7 @@
                 </span>
                 <p class="vital-title">SAT O₂ <span class="vital-unit">%</span></p>
               </div>
-              <input data-testid="auto-input-sinaisvitaisview-8" type="number" v-model="form.sat" placeholder="95" min="0" max="100">
+              <input data-testid="auto-input-sinaisvitaisview-8" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.sat" placeholder="95" @input="manterSomenteDigitos('sat')">
             </div>
 
             <div class="vital-card vital-card-inline">
@@ -164,7 +164,7 @@
                   <p class="vital-hint">(opcional)</p>
                 </div>
               </div>
-              <input data-testid="auto-input-sinaisvitaisview-9" type="number" v-model="form.dextro" placeholder="120" min="0" max="600">
+              <input data-testid="auto-input-sinaisvitaisview-9" type="text" inputmode="numeric" pattern="[0-9]*" v-model="form.dextro" placeholder="120" @input="manterSomenteDigitos('dextro')">
             </div>
           </div>
         </section>
@@ -343,6 +343,30 @@ iniciarRascunho()
 
 function mostrarFeedback(msg) {
   showToast(msg)
+}
+
+function manterSomenteDigitos(campo) {
+  form[campo] = String(form[campo] ?? '').replace(/\D+/g, '')
+}
+
+function manterDecimal(campo) {
+  const raw = String(form[campo] ?? '').replace(/[^\d.,]/g, '')
+  let normalizado = ''
+  let temSeparador = false
+
+  for (const char of raw) {
+    if (/\d/.test(char)) {
+      normalizado += char
+      continue
+    }
+
+    if (!temSeparador) {
+      normalizado += char
+      temSeparador = true
+    }
+  }
+
+  form[campo] = normalizado
 }
 
 function gerar() {
