@@ -114,11 +114,11 @@
               <div class="vital-head">
                 <span class="vital-badge vital-badge-cyan">
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M7 4v7a5 5 0 0 0 10 0V4" />
-                    <path d="M10 4v7" />
-                    <path d="M14 4v7" />
-                    <path d="M12 16v4" />
-                    <path d="M8 20h8" />
+                    <path d="M12 5v6" />
+                    <path d="M12 11c-1.1-1.9-2.6-3.1-4.4-3.7C6 6.8 4.8 7.6 4.8 9.2c0 3.6 2.2 6.6 5.9 7.8 1 .3 1.3-.2 1.3-1.1V11Z" />
+                    <path d="M12 11c1.1-1.9 2.6-3.1 4.4-3.7 1.6-.5 2.8.3 2.8 1.9 0 3.6-2.2 6.6-5.9 7.8-1 .3-1.3-.2-1.3-1.1V11Z" />
+                    <path d="M9.2 9.3c-.7 1.1-.9 2.4-.8 3.9" />
+                    <path d="M14.8 9.3c.7 1.1.9 2.4.8 3.9" />
                   </svg>
                 </span>
                 <p class="vital-title">FR <span class="vital-unit">rpm</span></p>
