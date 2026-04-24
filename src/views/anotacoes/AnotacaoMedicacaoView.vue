@@ -1,5 +1,5 @@
 <template>
-  <div class="screen">
+  <div class="screen med-screen">
     <header class="app-header">
       <button  data-testid="auto-btn-anotacaomedicacaoview-1" class="btn-icon" @click="router.push({ name: 'dashboard' })">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -41,6 +41,16 @@
             >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
           </div>
         </div>
+
+        <section class="module-hero">
+          <div class="module-hero-icon">
+            <img :src="iconMed" alt="Medicação" />
+          </div>
+          <div class="module-hero-copy">
+            <h1>Medicação</h1>
+            <p>Checagem e administração do horário.</p>
+          </div>
+        </section>
 
         <section class="med-card">
           <div class="med-section-head">
@@ -181,7 +191,7 @@
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
 
-        <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary btn-generate" style="width:100%;margin-top:8px" @click="gerar">
+        <button  data-testid="auto-btn-anotacaomedicacaoview-8" class="btn btn-primary btn-generate med-submit-btn" @click="gerar">
           <IconGenerateNote />
           Gerar texto
         </button>
@@ -189,43 +199,20 @@
       </div>
 
       <!-- ── Preview ── -->
-      <div v-else>
-        <textarea v-model="textoGerado" class="preview-box" rows="8"></textarea>
-
-        <div style="display:flex;gap:10px;margin-top:16px">
-          <div style="flex:2">
-            <label class="label-small">Nome do paciente</label>
-            <input  data-testid="auto-input-anotacaomedicacaoview-8" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
-          </div>
-          <div style="flex:1">
-            <label class="label-small">Leito</label>
-            <input  data-testid="auto-input-anotacaomedicacaoview-9" class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
-          <button  data-testid="auto-btn-anotacaomedicacaoview-9" class="btn btn-primary" @click="copiar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2"/>
-              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-            </svg>
-            Copiar texto
-          </button>
-          <button  data-testid="auto-btn-anotacaomedicacaoview-10" class="btn btn-secondary" @click="salvar" :disabled="salvando">
-            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-          </button>
-          <button  data-testid="auto-btn-anotacaomedicacaoview-11" class="btn btn-secondary" @click="compartilhar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
-              <polyline points="16 6 12 2 8 6"/>
-              <line x1="12" y1="2" x2="12" y2="15"/>
-            </svg>
-            Compartilhar
-          </button>
-          <button  data-testid="auto-btn-anotacaomedicacaoview-12" class="btn btn-secondary" @click="novaAnotacao">Nova anotação</button>
-          <button  data-testid="auto-btn-anotacaomedicacaoview-13" class="btn btn-secondary" @click="gerado = false">← Editar</button>
-        </div>
-      </div>
+      <ResultadoAnotacao
+        v-else
+        :icon="iconMed"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nomePaciente"
+        v-model:leitoPaciente="form.leitoPaciente"
+        :salvando="salvando"
+        label-nova="Nova anotação"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAnotacao"
+        @editar="gerado = false"
+      />
 
     </main>
 
@@ -541,6 +528,8 @@ import { useAuthStore }      from '../../stores/auth.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useCopia }          from '../../composables/useCopia.js'
 import IconGenerateNote      from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao     from '../../components/ResultadoAnotacao.vue'
+import iconMed               from '../../assets/dashboard-icons-png/medicacao.png'
 import { sugerirMedicamentosDetalhados, listarPresetsCatalogo } from '../../data/medicamentos.js'
 import {
   MEDICACAO_HISTORY_MAX,
@@ -1378,16 +1367,17 @@ function novaAnotacao() {
 .btn-home-logo:active { background: var(--bg-hover); }
 
 .med-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(53, 82, 129, 0.5);
+  background: linear-gradient(180deg, rgba(19, 35, 66, 0.97), rgba(15, 28, 54, 0.98));
+  padding: 20px;
   margin-bottom: 16px;
+  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.2);
 }
 
 .med-card-medicamentos {
-  border-color: rgba(30, 136, 229, 0.24);
-  background: linear-gradient(180deg, rgba(30, 136, 229, 0.07), rgba(17, 29, 50, 1));
+  border-color: rgba(30, 136, 229, 0.38);
+  background: linear-gradient(180deg, rgba(22, 44, 80, 0.97), rgba(13, 24, 48, 0.98));
 }
 
 .med-quick-stack {
@@ -1446,24 +1436,24 @@ function novaAnotacao() {
 
 .med-section-kicker {
   display: inline-block;
-  font-size: 0.73rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #9aabd0;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   margin-bottom: 6px;
 }
 
 .med-section-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f5f8ff;
 }
 
 .med-section-sub {
-  margin-top: 4px;
-  font-size: 0.82rem;
-  color: var(--text-dim);
+  margin-top: 6px;
+  font-size: 0.86rem;
+  color: #9aabd0;
   line-height: 1.45;
 }
 
@@ -1472,12 +1462,18 @@ function novaAnotacao() {
 }
 
 .med-choice {
-  background: rgba(10, 22, 40, 0.48);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(18, 32, 58, 0.75);
+  border: 1px solid rgba(53, 78, 124, 0.45);
+  transition: all 0.18s ease;
 }
 
 .med-choice.checked {
-  background: rgba(30, 136, 229, 0.12);
-  color: var(--text);
+  background: linear-gradient(135deg, rgba(30, 136, 229, 0.2), rgba(20, 90, 200, 0.12));
+  border-color: rgba(65, 150, 255, 0.58);
+  color: #f0f6ff;
+  box-shadow: 0 4px 14px rgba(30, 120, 229, 0.16);
 }
 
 .med-choice-spaced {
@@ -1593,20 +1589,23 @@ function novaAnotacao() {
 /* ── Botão adicionar medicamento ── */
 .btn-add-med {
   width: 100%;
+  min-height: 52px;
   padding: 12px;
-  background: var(--bg-input);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--blue);
+  background: rgba(30, 100, 220, 0.08);
+  border: 1.5px dashed rgba(60, 140, 255, 0.4);
+  border-radius: 18px;
+  color: rgba(110, 175, 255, 0.95);
   font-family: inherit;
-  font-size: 0.92rem;
-  font-weight: 600;
+  font-size: 0.96rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  letter-spacing: 0.02em;
+  transition: all 0.18s ease;
 }
 .btn-add-med:active {
-  background: var(--bg-hover);
+  background: rgba(30, 100, 220, 0.16);
   border-style: solid;
+  border-color: rgba(60, 140, 255, 0.7);
 }
 
 /* ── Chips ── */
@@ -1617,23 +1616,26 @@ function novaAnotacao() {
 }
 
 .chip {
-  padding: 9px 16px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  color: var(--text-dim);
+  min-height: 48px;
+  padding: 0 18px;
+  background: rgba(18, 33, 62, 0.88);
+  border: 1px solid rgba(55, 82, 130, 0.55);
+  border-radius: 14px;
+  color: #8ea3d4;
   font-family: inherit;
-  font-size: 0.92rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s ease;
 }
 .chip.ativo {
-  background: rgba(41,98,255,0.15);
-  border-color: var(--blue);
-  color: var(--blue);
-  font-weight: 600;
+  background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
+  border-color: rgba(80, 160, 255, 0.72);
+  color: #a8d4ff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(30, 100, 230, 0.2);
 }
-.chip:not(.ativo):active { background: var(--bg-hover); }
+.chip:not(.ativo):active { background: rgba(30, 50, 90, 0.75); }
 
 .chip-sm {
   padding: 7px 12px;
@@ -1733,39 +1735,42 @@ select.campo-inline {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: flex-end;
   z-index: 200;
 }
 .modal-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 20px 20px 0 0;
+  background: linear-gradient(180deg, rgba(16, 32, 62, 0.99), rgba(11, 22, 45, 0.99));
+  border: 1px solid rgba(60, 92, 150, 0.55);
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
   width: 100%;
   max-height: 90dvh;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 -12px 40px rgba(2, 8, 20, 0.5);
 }
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 12px;
-  border-bottom: 1px solid var(--border);
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(55, 85, 140, 0.45);
   flex-shrink: 0;
 }
-.modal-header h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.modal-header h3 { font-size: 1.15rem; font-weight: 800; color: #f0f6ff; }
 .modal-body {
   overflow-y: auto;
-  padding: 16px 20px;
+  padding: 18px 20px;
   flex: 1;
 }
 .modal-footer {
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
   display: flex;
   gap: 10px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(55, 85, 140, 0.45);
   flex-shrink: 0;
   flex-wrap: wrap;
 }
@@ -1776,22 +1781,47 @@ select.campo-inline {
 
 .btn-avancado {
   width: 100%;
-  border: 1px dashed rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-muted);
-  border-radius: 12px;
-  padding: 10px 12px;
+  min-height: 48px;
+  border: 1px solid rgba(60, 88, 140, 0.5);
+  background: rgba(20, 36, 66, 0.7);
+  color: #8ea3d4;
+  border-radius: 16px;
+  padding: 12px 16px;
   font: inherit;
+  font-size: 0.94rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.18s ease;
 }
 
 .btn-avancado:active {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(30, 52, 95, 0.82);
+  border-color: rgba(80, 130, 220, 0.6);
+  color: #b0c8f0;
 }
 
 /* ── Autocomplete ── */
 .autocomplete-wrap {
   position: relative;
+}
+
+.autocomplete-wrap > input {
+  min-height: 60px;
+  font-size: 1.05rem;
+  border-radius: 16px;
+  border: 1px solid rgba(67, 93, 141, 0.55);
+  background: linear-gradient(180deg, rgba(20, 36, 68, 0.97), rgba(16, 28, 54, 0.98));
+  color: #eef4ff;
+  padding: 0 16px;
+  width: 100%;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.autocomplete-wrap > input:focus {
+  border-color: rgba(87, 157, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
 }
 .autocomplete-dropdown {
   position: absolute;
@@ -1863,4 +1893,86 @@ select.campo-inline {
   flex-shrink: 0; transition: all 0.15s;
 }
 .chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+
+/* ── Premium upgrade ─────────────────────────────────────── */
+
+.med-screen {
+  background:
+    radial-gradient(circle at top right, rgba(39, 116, 231, 0.12), transparent 28%),
+    linear-gradient(180deg, #091429 0%, #0a1628 100%);
+}
+
+.module-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  margin-bottom: 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(70, 132, 230, 0.42);
+  background:
+    radial-gradient(circle at top left, rgba(44, 117, 235, 0.18), transparent 40%),
+    linear-gradient(180deg, rgba(17, 34, 66, 0.98), rgba(14, 28, 54, 0.98));
+  box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
+}
+
+.module-hero-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 20px;
+  background: radial-gradient(circle at top, rgba(71, 140, 255, 0.38), rgba(39, 88, 170, 0.5));
+  border: 1px solid rgba(104, 161, 255, 0.38);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.module-hero-icon img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.module-hero-copy h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #f5f8ff;
+}
+
+.module-hero-copy p {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  color: #9aabd0;
+}
+
+.med-submit-btn {
+  width: 100%;
+  margin-top: 10px;
+  min-height: 62px;
+  border-radius: 18px;
+  font-size: 1.06rem;
+  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+}
+
+.chips-scroll .chip {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(101, 133, 198, 0.35);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(25, 42, 77, 0.95), rgba(18, 31, 57, 0.96));
+  color: #8ea3d4;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.chips-scroll .chip.ativo {
+  background: linear-gradient(180deg, #2e94ff, #1d72ea);
+  color: #fff;
+  border-color: rgba(109, 184, 255, 0.85);
+  box-shadow: 0 8px 20px rgba(26, 97, 194, 0.26);
+}
 </style>

@@ -226,55 +226,20 @@
         </button>
       </div>
 
-      <div v-else class="preview-flow">
-        <section class="module-hero module-hero-preview">
-          <div class="module-hero-icon">
-            <img :src="iconSv" alt="Sinais vitais" />
-          </div>
-          <div class="module-hero-copy">
-            <h1>Texto pronto</h1>
-            <p>Revise, copie ou salve no histórico.</p>
-          </div>
-        </section>
-
-        <textarea v-model="textoGerado" class="preview-box" rows="8"></textarea>
-
-        <section class="section-card identity-card">
-          <div class="identity-grid">
-            <div>
-              <label class="label-small">Nome do paciente</label>
-              <input data-testid="auto-input-sinaisvitaisview-13" class="campo-inline" type="text" v-model="form.nomePaciente" placeholder="Maria da Silva">
-            </div>
-            <div>
-              <label class="label-small">Leito</label>
-              <input data-testid="auto-input-sinaisvitaisview-14" class="campo-inline" type="text" v-model="form.leitoPaciente" placeholder="4B">
-            </div>
-          </div>
-        </section>
-
-        <div class="preview-actions">
-          <button data-testid="auto-btn-sinaisvitaisview-4" class="btn btn-primary" @click="copiar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" />
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-            </svg>
-            Copiar texto
-          </button>
-          <button data-testid="auto-btn-sinaisvitaisview-5" class="btn btn-secondary" @click="salvar" :disabled="salvando">
-            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-          </button>
-          <button data-testid="auto-btn-sinaisvitaisview-6" class="btn btn-secondary" @click="compartilhar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
-            </svg>
-            Compartilhar
-          </button>
-          <button data-testid="auto-btn-sinaisvitaisview-7" class="btn btn-secondary" @click="novaAfericao">Nova aferição</button>
-          <button data-testid="auto-btn-sinaisvitaisview-8" class="btn btn-tertiary" @click="gerado = false">Editar dados</button>
-        </div>
-      </div>
+      <ResultadoAnotacao
+        v-else
+        :icon="iconSv"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nomePaciente"
+        v-model:leitoPaciente="form.leitoPaciente"
+        :salvando="salvando"
+        label-nova="Nova aferição"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAfericao"
+        @editar="gerado = false"
+      />
     </main>
   </div>
 </template>
@@ -288,6 +253,7 @@ import { useRascunho } from '../../composables/useRascunho.js'
 import { usePacientesStore } from '../../stores/pacientes.js'
 import { useCopia } from '../../composables/useCopia.js'
 import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao from '../../components/ResultadoAnotacao.vue'
 import iconSv from '../../assets/dashboard-icons-png/sinais-vitais.png'
 
 const router = useRouter()
