@@ -6,7 +6,7 @@
       </Transition>
     </RouterView>
   </div>
-  <BotaoChat v-if="mostrarFab" />
+  <BotaoChat v-if="mostrarChatFab" />
   <ChatAssistente v-if="mostrarFab" />
   <CalculadoraModal v-if="mostrarFab" />
   <Transition name="toast">
@@ -120,7 +120,8 @@ const { limparConversa } = useChat()
 const router     = useRouter()
 const route      = useRoute()
 const rotasSemFab = ['landing', 'login', 'pc']
-const mostrarFab  = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
+const mostrarFab = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
+const mostrarChatFab = computed(() => mostrarFab.value && route.name !== 'dashboard')
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
 const LAST_SYNC_KEY_PREFIX = 'last_sync_'
