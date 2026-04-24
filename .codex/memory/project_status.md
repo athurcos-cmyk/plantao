@@ -70,6 +70,7 @@ Design doc estrategico mais recente conhecido:
 - Home foi refinada com saudacao + ilustracao, card de sincronizacao mais compacto, `Ver detalhes` restaurado e CTA de sync reduzido no mobile
 - `Feedback` da dashboard virou modal central com blur e o mobile ganhou rodape fixo estilo app
 - O botao da Clara foi movido para cima no mobile para nao colidir com o rodape fixo
+- `Sinais Vitais` agora força teclado numerico/decimal nos campos de medida no mobile, mas `Localizacao da dor` foi mantida como texto livre depois de feedback real de uso
 
 ## Alertas operacionais
 

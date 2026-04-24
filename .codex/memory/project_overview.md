@@ -131,3 +131,4 @@ Estruturas mais relevantes:
 - Aprendizado importante dessa view: evitar resumos grandes, estados obvios e microcopy em excesso; na medicacao, a melhor UX ate agora foi a mais enxuta e direta para chegar rapido em `Adicionar medicamento`
 - Nos avisos de quick add/modelos, manter texto curto e operacional; a versao atual fala so de `prescricao` e `apresentacao`
 - `src/utils/medicacao.js` preserva dados de lote dentro do template reaproveitavel da medicacao, mas continua deduplicando o historico pela chave clinica principal em vez de criar um item novo para cada lote
+- `src/views/anotacoes/SinaisVitaisView.vue` usa teclado numerico/decimal nos campos de medida para mobile, mas `Localizacao da dor` deve permanecer como texto livre, nao como chips

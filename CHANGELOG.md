@@ -28,6 +28,7 @@
 - Para dashboard mobile, manter `4 cards por linha` funcionou melhor do que voltar para `2 colunas grandes`
 - O card de `Encaminhamento` precisou de ajuste especifico de tipografia; a melhor solucao foi corrigir o texto sem desfazer a grade
 - Sempre que um ajuste for claro e incremental, seguir direto ate commit/push sem ficar pedindo confirmacao a cada passo
+- Em `Sinais Vitais`, campos numericos devem chamar teclado numerico no mobile, mas `Localizacao da dor` continua melhor como texto livre; a tentativa com chips foi revertida
 
 ### Validacao
 

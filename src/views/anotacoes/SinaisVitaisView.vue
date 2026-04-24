@@ -183,15 +183,7 @@
           <template v-if="form.algias === 'refere'">
             <div class="campo sv-subcampo">
               <label>Localização da dor</label>
-              <div class="chips-wrap">
-                <button
-                  v-for="local in dorLocais"
-                  :key="local"
-                  class="chip"
-                  :class="{ 'chip-on': form.dorDesc === local }"
-                  @click="form.dorDesc = form.dorDesc === local ? '' : local"
-                >{{ local }}</button>
-              </div>
+              <input data-testid="auto-input-sinaisvitaisview-12" type="text" inputmode="text" v-model="form.dorDesc" placeholder="Ex: cefaleia, dor em MMII, dor abdominal">
             </div>
 
             <div class="campo sv-subcampo">
@@ -334,8 +326,6 @@ const form = reactive({
   nomePaciente: '',
   leitoPaciente: '',
 })
-
-const dorLocais = ['Cefaleia', 'Abdominal', 'Torácica', 'Lombar', 'MMSS', 'MMII', 'Generalizada']
 
 const { temRascunho, restaurarRascunho, descartarRascunho, iniciarRascunho } =
   useRascunho(

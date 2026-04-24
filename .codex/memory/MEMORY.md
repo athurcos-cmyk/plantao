@@ -28,6 +28,7 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - `Encaminhamento` exigiu ajuste proprio de tipografia; a solucao foi tratar esse card especificamente sem desmontar a grade toda
 - Abaixo do sync ficou so o atalho `Como acessar no computador`; `Ao lado` saiu da primeira dobra
 - Regra de colaboracao alinhada com o usuario: para ajustes diretos e incrementais, seguir ate commit/push sem ficar pedindo confirmacao a cada micro-etapa
+- Em `Sinais Vitais`, teclado numerico nos campos de medida faz sentido, mas `Localizacao da dor` deve continuar como texto livre; a tentativa com chips foi revertida
 - Testes passaram com 60 testes e o build de producao tambem passou
 
 ## Sessao anterior (2026-04-21)
