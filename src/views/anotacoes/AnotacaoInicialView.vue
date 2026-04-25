@@ -1450,17 +1450,13 @@ textarea:focus {
 }
 
 .estado-options-compact {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .estado-options-inline {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 112px));
-}
-
-.estado-options-compact .radio-btn {
-  flex: 1 1 150px;
 }
 
 .estado-options .radio-btn,
@@ -1787,11 +1783,6 @@ textarea:focus {
   background: rgba(11, 25, 46, 0.62);
 }
 
-@media (max-width: 420px) {
-  .estado-options-compact .radio-btn {
-    flex-basis: 100%;
-  }
-}
 
 @media (max-width: 380px) {
   .module-hero {
