@@ -1125,8 +1125,8 @@ function novaAnotacao() {
 }
 
 .encaminhamento-header {
-  border-bottom: 1px solid rgba(78, 118, 180, 0.24);
-  background: rgba(7, 18, 34, 0.82);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
   backdrop-filter: blur(16px);
 }
 
@@ -1136,12 +1136,12 @@ function novaAnotacao() {
 }
 
 .encaminhamento-progress {
-  background: rgba(45, 72, 116, 0.55);
+  background: var(--bg-hover);
 }
 
 .encaminhamento-progress .progress-fill {
-  background: linear-gradient(90deg, #42b7ff, #6f8cff);
-  box-shadow: 0 0 12px rgba(66, 183, 255, 0.26);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  box-shadow: 0 0 12px var(--blue-faint);
 }
 
 .paciente-atalho {
@@ -1155,7 +1155,7 @@ function novaAnotacao() {
 
 .paciente-atalho label {
   display: block;
-  color: #9fb2d8;
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -1178,7 +1178,9 @@ function novaAnotacao() {
   margin-bottom: 16px;
   border-radius: 22px;
   border: 1px solid var(--border);
-  background: var(--bg-card);
+  background:
+    radial-gradient(circle at top left, var(--blue-faint), transparent 40%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
 }
 
@@ -1190,8 +1192,8 @@ function novaAnotacao() {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(114, 183, 255, 0.4);
-  background: radial-gradient(circle at top, rgba(79, 191, 255, 0.36), rgba(42, 95, 178, 0.44));
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 45%, transparent), color-mix(in srgb, var(--blue-dark) 72%, var(--bg-input) 28%));
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
@@ -1203,7 +1205,7 @@ function novaAnotacao() {
 
 .module-hero-copy h1 {
   margin: 0;
-  color: #f5f8ff;
+  color: var(--text);
   font-size: 1.75rem;
   line-height: 1.02;
   font-weight: 850;
@@ -1211,7 +1213,7 @@ function novaAnotacao() {
 
 .module-hero-copy p {
   margin: 8px 0 0;
-  color: #9fb2d8;
+  color: var(--text-dim);
   font-size: 0.96rem;
   line-height: 1.35;
 }
@@ -1219,9 +1221,9 @@ function novaAnotacao() {
 .encaminhamento-card {
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(55, 85, 133, 0.55);
+  border: 1px solid var(--border);
   background:
-    linear-gradient(180deg, rgba(18, 34, 64, 0.97), rgba(13, 27, 52, 0.98));
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 16px 32px rgba(3, 10, 22, 0.22);
 }
 
@@ -1230,8 +1232,8 @@ function novaAnotacao() {
 }
 
 .bloco-titulo {
-  color: #f3f7ff;
-  border-bottom-color: rgba(69, 105, 162, 0.5);
+  color: var(--text);
+  border-bottom-color: var(--border);
   font-size: 1.22rem;
 }
 
@@ -1240,20 +1242,20 @@ function novaAnotacao() {
   border-radius: 14px;
   border-color: var(--border);
   background: var(--bg-input);
-  color: #c2d0ea;
+  color: var(--text-dim);
 }
 
 .chip-on {
-  border-color: rgba(91, 174, 255, 0.88);
-  background: linear-gradient(180deg, #2e8df0, #1f67c9);
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
-  box-shadow: 0 7px 15px rgba(36, 117, 221, 0.16);
+  box-shadow: 0 7px 15px color-mix(in srgb, var(--blue) 18%, transparent);
 }
 
 .chip-add {
-  border-color: rgba(77, 165, 255, 0.65);
-  color: #7bc4ff;
-  background: rgba(37, 117, 205, 0.12);
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-muted);
 }
 
 .disp-card {
@@ -1264,7 +1266,7 @@ function novaAnotacao() {
 .btn-generate {
   min-height: 58px;
   border-radius: 18px;
-  box-shadow: 0 10px 20px rgba(25, 96, 201, 0.18);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--blue) 18%, transparent);
 }
 
 .btn-limpar {

@@ -102,10 +102,10 @@ defineEmits([
   gap: 14px;
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(70, 132, 230, 0.42);
+  border: 1px solid var(--border);
   background:
-    radial-gradient(circle at top left, rgba(44, 117, 235, 0.18), transparent 40%),
-    linear-gradient(180deg, rgba(17, 34, 66, 0.98), rgba(14, 28, 54, 0.98));
+    radial-gradient(circle at top left, var(--blue-faint), transparent 40%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
 }
 
@@ -113,8 +113,8 @@ defineEmits([
   width: 62px;
   height: 62px;
   border-radius: 20px;
-  background: radial-gradient(circle at top, rgba(71, 140, 255, 0.38), rgba(39, 88, 170, 0.5));
-  border: 1px solid rgba(104, 161, 255, 0.38);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 45%, transparent), color-mix(in srgb, var(--blue-dark) 72%, var(--bg-input) 28%));
+  border: 1px solid var(--border);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,7 @@ defineEmits([
   font-size: 1.9rem;
   line-height: 1;
   font-weight: 800;
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .resultado-hero-copy p {
@@ -190,10 +190,10 @@ defineEmits([
   width: 100%;
   box-sizing: border-box;
   min-height: 52px;
-  background: rgba(18, 33, 60, 0.9);
-  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  color: #eff4ff;
+  color: var(--text);
   font-family: inherit;
   font-size: 1rem;
   padding: 0 14px;
@@ -216,6 +216,6 @@ defineEmits([
   min-height: 62px;
   border-radius: 18px;
   font-size: 1.06rem;
-  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+  box-shadow: 0 16px 30px color-mix(in srgb, var(--blue) 28%, transparent);
 }
 </style>
