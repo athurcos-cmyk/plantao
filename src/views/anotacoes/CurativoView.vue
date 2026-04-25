@@ -18,7 +18,7 @@
       <span class="progress-label">Bloco {{ passo }} de 2</span>
     </div>
 
-    <main class="container curativo-page">
+    <main class="container curativo-page" @click.capture="desfocarChipAposClique">
 
       <!-- Banner rascunho -->
       <div v-if="temRascunho && !gerado" class="rascunho-banner">
@@ -823,6 +823,16 @@ function toggleLocal(value) {
   else form.local.push(value)
 }
 
+function desfocarChipAposClique(event) {
+  const alvo = event.target
+  if (!alvo || typeof alvo.closest !== 'function') return
+  const chip = alvo.closest('button.chip')
+  if (!chip) return
+  requestAnimationFrame(() => {
+    if (document.activeElement === chip) chip.blur()
+  })
+}
+
 
 function setAspecto(value) {
   form.aspecto = form.aspecto === value ? '' : value
@@ -1129,8 +1139,12 @@ function novaAnotacao() {
   color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   display: flex; align-items: center; gap: 4px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .chip:active { opacity: 0.8; }
+.chip:focus,
+.chip:focus-visible { outline: none; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 .chip-add { border-style: dashed; color: var(--text-muted); }
@@ -1398,6 +1412,12 @@ function novaAnotacao() {
   box-shadow: 0 10px 26px rgba(35, 177, 122, 0.22);
 }
 
+.chip.chip-on:hover {
+  border-color: rgba(110, 231, 183, 0.72);
+  background: linear-gradient(135deg, #16845c, #23b17a);
+  color: #ffffff;
+}
+
 .chip-add {
   border-color: rgba(110, 231, 183, 0.38);
   color: #86efac;
@@ -1608,6 +1628,12 @@ function novaAnotacao() {
   background: linear-gradient(135deg, #236fe1, #2d9cff);
   color: #fff;
   box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
+}
+
+.chip.chip-on:hover {
+  border-color: rgba(94, 166, 255, 0.9);
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  color: #fff;
 }
 
 .chip-add {
