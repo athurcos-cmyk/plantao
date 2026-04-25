@@ -427,8 +427,7 @@ onUnmounted(() => {
   padding: 8px 9px;
   border-radius: 18px;
   border: 1px solid rgba(124, 147, 194, 0.14);
-  background: rgba(14, 31, 60, 0.94);
-  backdrop-filter: blur(14px);
+  background: #0e1f3c;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 3px;
