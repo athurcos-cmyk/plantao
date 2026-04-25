@@ -147,6 +147,7 @@ Estado atual do código:
 - `src/App.vue` agora usa a calculadora no rodape fixo, em vez de FAB solto
 - `src/components/CalculadoraModal.vue`, `src/views/HistoricoView.vue` e `src/views/OrganizadorView.vue` ja estao no mesmo idioma visual premium do restante do app
 - `src/views/DashboardView.vue` manteve o atalho `Como acessar no computador`, agora com SVG inline no lugar do emoji quebrado
+- `src/views/DashboardView.vue` tambem teve o fechamento fino da grade mobile: sem selos secundarios nos cards e com nomes de `Higienizacao` e `Encaminhamento` visiveis por inteiro
 - Para a proxima sessao, assumir o fechamento visual dos cards como baseline e focar mais em backlog funcional, refinamentos clinicos e fluxos operacionais
 
 ## Padrão do texto gerado

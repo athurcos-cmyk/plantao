@@ -51,6 +51,7 @@ Design doc estrategico mais recente conhecido:
 - Ciclo principal de fechamento visual dos cards de anotacao concluido, com `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial` alinhados no mesmo padrao premium
 - `Meus Pacientes` tambem foi polida no mesmo ciclo e o FAB local foi removido para nao competir com o rodape global
 - `Historico` e `Organizador` tambem ja estao no mesmo idioma visual premium, e o `Historico` foi reaberto lateralmente para ficar melhor no PC onde o usuario copia anotacoes para o sistema do hospital
+- A dashboard tambem foi fechada em detalhes no mobile: a grade de `Anotacoes` perdeu os selos secundarios e os titulos criticos deixaram de cortar em cards menores
 
 ## Estado tecnico atual confirmado no codigo
 

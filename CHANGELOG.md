@@ -24,6 +24,7 @@
 - `Historico` foi elevado visualmente, ganhou largura melhor para desktop e passou a usar os novos icones ilustrados por tipo de anotacao para acelerar leitura e copia no computador do hospital
 - `Organizador do plantao` tambem entrou no padrao premium com hero, cards de resumo, progresso mais claro e modais alinhados ao restante do app
 - O atalho `Como acessar no computador` na dashboard trocou o emoji corrompido por um SVG inline, estabilizando o icone no botao
+- A grade de `Anotacoes` da dashboard foi simplificada no mobile: sairam as etiquetas `Rapido/Apoio/Turno` e os cards de `Higienizacao` e `Encaminhamento` ganharam espaco suficiente para o nome nao ficar mais cortado
 
 ### Estado consolidado para a proxima sessao
 

@@ -23,6 +23,7 @@
 - `Historico` foi alargado para uso melhor no desktop e passou a exibir icones ilustrados por tipo de anotacao
 - `Organizador` recebeu hero, cards de resumo, progresso mais claro e modais alinhados com o restante do app
 - Dashboard teve ajuste fino no atalho `Como acessar no computador`, trocando emoji quebrado por SVG inline
+- A grade de `Anotacoes` na dashboard tambem foi fechada para mobile, sem os selos `Rapido/Apoio/Turno` e sem corte de titulo em `Higienizacao` e `Encaminhamento`
 
 ---
 

@@ -128,6 +128,7 @@ Estruturas mais relevantes:
 - `src/stores/auth.js` depende do cache local para liberar a UI cedo; se mexer no bootstrap, preservar a restauracao rapida e o timeout de fallback
 - `src/views/DashboardView.vue` passou a concentrar a nova home mobile: topo com ilustracao, sync card compacto, grid 4x no celular, feedback modal, rodape fixo tipo app e atalhos ilustrados
 - `src/views/DashboardView.vue` manteve o atalho `Como acessar no computador` logo abaixo do sync; o icone desse atalho agora e SVG inline para evitar quebra de emoji
+- `src/views/DashboardView.vue` tambem teve a grade `Anotacoes` simplificada no mobile, sem selos secundarios e com mais espaco para os titulos dos cards
 - `src/views/DashboardView.vue` tambem guarda um aprendizado forte de produto: manter a primeira dobra leve, sem voltar a crescer o card de sincronizacao nem encher a home de microcopy
 - `src/assets/dashboard-icons-png/` e agora a pasta fonte dos icones ilustrados usados no dashboard; manter assets leves e transparentes
 - A direcao visual atual do projeto e usar a dashboard como referencia de linguagem premium para os outros modulos, desde que cada tela preserve leitura rapida, pouco atrito e foco operacional

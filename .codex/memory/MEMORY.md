@@ -27,6 +27,7 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - A calculadora saiu do FAB verde e foi integrada ao rodape fixo; o modal tambem ganhou visual premium no mesmo padrao do app
 - `Historico` e `Organizador` tambem entraram no fechamento visual, com melhor leitura no desktop e consistencia maior com dashboard/pacientes
 - O atalho `Como acessar no computador` da dashboard agora usa SVG inline, corrigindo o emoji quebrado
+- A grade de `Anotacoes` da dashboard foi simplificada: sairam as etiquetas pequenas e os nomes de `Higienizacao` e `Encaminhamento` foram ajustados para nao cortar no celular
 - `npm test` passou com 60 testes e `npm run build` passou
 
 ## Sessao anterior (2026-04-24)
