@@ -485,13 +485,16 @@ function pedirExcluir(pac) {
 
 async function executarExcluirTodos() {
   excluindoTodos.value = false
-  for (const pac of [...store.pacientes]) {
+  // Cancela todas as notificações em paralelo antes de limpar
+  const cancelamentos = []
+  for (const pac of store.pacientes) {
     for (const pend of (pac.pendencias || [])) {
-      await _cancelarDuas(pend._key)
+      cancelamentos.push(_cancelarDuas(pend._key))
       assinaturasPend.delete(pend._key)
     }
-    await store.excluir(pac._key)
   }
+  await Promise.all(cancelamentos)
+  await store.excluirTodos()
 }
 
 async function executarExcluir() {

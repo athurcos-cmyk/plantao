@@ -104,9 +104,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
 
     if (!navigator.onLine) {
       const tempKey = push(dbRef(db, `pacientes/${code}`)).key
-      const lista = _ordenar([...pacientes.value, { ...data, pendencias: [], _key: tempKey }])
-      pacientes.value = lista
-      _salvarCache(code, lista)
+      const novo = { ...data, pendencias: [], _key: tempKey }
+      _pacMap.set(tempKey, novo)
+      _reconstruir(code)
       _enfileirar(code, { op: 'add', key: tempKey, data })
       pendentesCount.value++
       return
@@ -120,9 +120,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const data = { nome: nome.trim(), leito: leito.trim() }
 
     if (!navigator.onLine) {
-      const lista = _ordenar(pacientes.value.map(p => p._key === key ? { ...p, ...data } : p))
-      pacientes.value = lista
-      _salvarCache(code, lista)
+      const pac = _pacMap.get(key)
+      if (pac) _pacMap.set(key, { ...pac, ...data })
+      _reconstruir(code)
       _enfileirar(code, { op: 'edit', key, data })
       pendentesCount.value++
       return
@@ -134,10 +134,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const auth = useAuthStore()
     const code = auth.syncCode
 
-    // Otimista: remove da lista local antes — UI atualiza instantaneamente
-    const lista = pacientes.value.filter(p => p._key !== key)
-    pacientes.value = lista
-    _salvarCache(code, lista)
+    // Otimista: remove do map e reconstrói antes de aguardar Firebase
+    _pacMap.delete(key)
+    _reconstruir(code)
 
     if (!navigator.onLine) {
       _enfileirar(code, { op: 'delete', key })
@@ -147,6 +146,26 @@ export const usePacientesStore = defineStore('pacientes', () => {
     try { await remove(dbRef(db, `pacientes/${code}/${key}`)) } catch {}
   }
 
+  async function excluirTodos() {
+    const auth = useAuthStore()
+    const code = auth.syncCode
+    const keys = Array.from(_pacMap.keys())
+
+    // Limpa tudo de uma vez localmente
+    _pacMap.clear()
+    pacientes.value = []
+    _salvarCache(code, [])
+
+    if (!navigator.onLine) {
+      keys.forEach(key => _enfileirar(code, { op: 'delete', key }))
+      pendentesCount.value += keys.length
+      return
+    }
+    await Promise.all(keys.map(key =>
+      remove(dbRef(db, `pacientes/${code}/${key}`)).catch(() => {})
+    ))
+  }
+
   async function adicionarPendencia(pacKey, texto) {
     const auth = useAuthStore()
     const code = auth.syncCode
@@ -154,12 +173,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
 
     if (!navigator.onLine) {
       const tempPendKey = push(dbRef(db, `pacientes/${code}/${pacKey}/pendencias`)).key
-      const lista = pacientes.value.map(p =>
-        p._key !== pacKey ? p
-          : { ...p, pendencias: [...(p.pendencias || []), { ...data, _key: tempPendKey }] }
-      )
-      pacientes.value = lista
-      _salvarCache(code, lista)
+      const pac = _pacMap.get(pacKey)
+      if (pac) _pacMap.set(pacKey, { ...pac, pendencias: [...(pac.pendencias || []), { ...data, _key: tempPendKey }] })
+      _reconstruir(code)
       _enfileirar(code, { op: 'addPend', pacKey, pendKey: tempPendKey, data })
       pendentesCount.value++
       return
@@ -173,13 +189,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const novoFeito = !feitoAtual
 
     if (!navigator.onLine) {
-      const lista = pacientes.value.map(p =>
-        p._key !== pacKey ? p
-          : { ...p, pendencias: p.pendencias.map(pend =>
-              pend._key === pendKey ? { ...pend, feito: novoFeito } : pend) }
-      )
-      pacientes.value = lista
-      _salvarCache(code, lista)
+      const pac = _pacMap.get(pacKey)
+      if (pac) _pacMap.set(pacKey, { ...pac, pendencias: pac.pendencias.map(p => p._key === pendKey ? { ...p, feito: novoFeito } : p) })
+      _reconstruir(code)
       _enfileirar(code, { op: 'togglePend', pacKey, pendKey, novoFeito })
       pendentesCount.value++
       return
@@ -193,13 +205,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const valor = horario || null
 
     if (!navigator.onLine) {
-      const lista = pacientes.value.map(p =>
-        p._key !== pacKey ? p
-          : { ...p, pendencias: p.pendencias.map(pend =>
-              pend._key === pendKey ? { ...pend, horario: valor } : pend) }
-      )
-      pacientes.value = lista
-      _salvarCache(code, lista)
+      const pac = _pacMap.get(pacKey)
+      if (pac) _pacMap.set(pacKey, { ...pac, pendencias: pac.pendencias.map(p => p._key === pendKey ? { ...p, horario: valor } : p) })
+      _reconstruir(code)
       _enfileirar(code, { op: 'horarioPend', pacKey, pendKey, horario: valor })
       pendentesCount.value++
       return
@@ -211,13 +219,10 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const auth = useAuthStore()
     const code = auth.syncCode
 
-    // Otimista: remove da lista local antes — UI atualiza instantaneamente
-    const lista = pacientes.value.map(p =>
-      p._key !== pacKey ? p
-        : { ...p, pendencias: p.pendencias.filter(pend => pend._key !== pendKey) }
-    )
-    pacientes.value = lista
-    _salvarCache(code, lista)
+    // Otimista: remove do map antes de aguardar Firebase
+    const pac = _pacMap.get(pacKey)
+    if (pac) _pacMap.set(pacKey, { ...pac, pendencias: pac.pendencias.filter(p => p._key !== pendKey) })
+    _reconstruir(code)
 
     if (!navigator.onLine) {
       _enfileirar(code, { op: 'deletePend', pacKey, pendKey })
@@ -281,7 +286,7 @@ export const usePacientesStore = defineStore('pacientes', () => {
 
   return {
     pacientes, pendentesCount, iniciar, parar,
-    adicionar, atualizar, excluir,
+    adicionar, atualizar, excluir, excluirTodos,
     adicionarPendencia, togglePendencia, excluirPendencia, definirHorarioPendencia,
     sincronizarPendentes,
   }
