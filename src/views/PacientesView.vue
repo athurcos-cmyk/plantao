@@ -847,7 +847,7 @@ async function excluirPend(pac, pend) {
   min-height: 100vh;
   background:
     radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
-    linear-gradient(180deg, #071426 0%, #081425 42%, #07111f 100%);
+    var(--bg);
 }
 
 .pacientes-header {
