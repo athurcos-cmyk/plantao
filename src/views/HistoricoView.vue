@@ -417,7 +417,7 @@ function mostrarFeedback(msg) {
 .historico-screen {
   background:
     radial-gradient(circle at top center, rgba(43, 110, 201, 0.16), transparent 34%),
-    linear-gradient(180deg, rgba(10, 22, 40, 0.98) 0%, rgba(9, 20, 36, 1) 100%);
+    var(--bg);
 }
 
 .historico-page {
