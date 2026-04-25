@@ -468,8 +468,8 @@ const tipos = [
   { id: 'medicacao', icon: iconMedicacao, nome: 'Medicação', rota: 'medicacao' },
   { id: 'livre', icon: iconLivre, nome: 'Notas livres', rota: 'livre' },
   { id: 'passagem', icon: iconPassagem, nome: 'Passagem de plantão', rota: 'passagem' },
-  { id: 'encamin', icon: iconEncaminhamento, nome: 'Encaminhamento', rota: 'encaminhamento' },
-  { id: 'banho', icon: iconHigienizacao, nome: 'Higienização', rota: 'banho' },
+  { id: 'encamin', icon: iconEncaminhamento, nome: 'Encaminhar', rota: 'encaminhamento' },
+  { id: 'banho', icon: iconHigienizacao, nome: 'Higiene', rota: 'banho' },
   { id: 'curativo', icon: iconCurativo, nome: 'Curativo', rota: 'curativo' },
   { id: 'inicial', icon: iconInicial, nome: 'Anotação inicial', rota: 'anotacao-inicial' },
 ]
