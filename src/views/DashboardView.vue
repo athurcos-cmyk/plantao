@@ -109,7 +109,6 @@
               <img class="tipo-icon-img" :src="tipo.icon" :alt="tipo.nome" />
             </span>
             <span class="tipo-nome">{{ tipo.nome }}</span>
-            <span v-if="tipo.meta" class="tipo-meta">{{ tipo.meta }}</span>
           </button>
         </div>
       </section>
@@ -465,14 +464,14 @@ const saudacaoTexto = computed(() => {
 })
 
 const tipos = [
-  { id: 'sv', icon: iconSv, nome: 'Sinais vitais', meta: 'Rápido', rota: 'sinais-vitais' },
-  { id: 'medicacao', icon: iconMedicacao, nome: 'Medicação', meta: 'Rápido', rota: 'medicacao' },
-  { id: 'livre', icon: iconLivre, nome: 'Notas livres', meta: 'Rápido', rota: 'livre' },
-  { id: 'passagem', icon: iconPassagem, nome: 'Passagem de plantão', meta: 'Turno', rota: 'passagem' },
-  { id: 'encamin', icon: iconEncaminhamento, nome: 'Encaminhamento', meta: 'Apoio', rota: 'encaminhamento' },
-  { id: 'banho', icon: iconHigienizacao, nome: 'Higienização', meta: 'Apoio', rota: 'banho' },
-  { id: 'curativo', icon: iconCurativo, nome: 'Curativo', meta: 'Apoio', rota: 'curativo' },
-  { id: 'inicial', icon: iconInicial, nome: 'Anotação inicial', meta: '1x por plantão', rota: 'anotacao-inicial' },
+  { id: 'sv', icon: iconSv, nome: 'Sinais vitais', rota: 'sinais-vitais' },
+  { id: 'medicacao', icon: iconMedicacao, nome: 'Medicação', rota: 'medicacao' },
+  { id: 'livre', icon: iconLivre, nome: 'Notas livres', rota: 'livre' },
+  { id: 'passagem', icon: iconPassagem, nome: 'Passagem de plantão', rota: 'passagem' },
+  { id: 'encamin', icon: iconEncaminhamento, nome: 'Encaminhamento', rota: 'encaminhamento' },
+  { id: 'banho', icon: iconHigienizacao, nome: 'Higienização', rota: 'banho' },
+  { id: 'curativo', icon: iconCurativo, nome: 'Curativo', rota: 'curativo' },
+  { id: 'inicial', icon: iconInicial, nome: 'Anotação inicial', rota: 'anotacao-inicial' },
 ]
 
 const tiposDashboard = computed(() => tipos)
@@ -783,15 +782,15 @@ function navegar(tipo) {
 .tipo-card {
   min-width: 0;
   min-height: 146px;
-  padding: 14px 10px 12px;
+  padding: 14px 10px;
   border-radius: 18px;
   border: 1px solid rgba(124, 147, 194, 0.14);
   background: linear-gradient(180deg, rgba(24, 44, 79, 0.98), rgba(19, 36, 68, 0.98));
   display: grid;
-  grid-template-rows: 56px minmax(2.35em, auto) 1.2em;
+  grid-template-rows: 56px minmax(2.7em, auto);
   justify-items: center;
   align-content: center;
-  gap: 8px;
+  gap: 10px;
   text-align: center;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
@@ -821,7 +820,7 @@ function navegar(tipo) {
 .tipo-nome {
   color: #f7f9ff;
   font-size: 0.84rem;
-  line-height: 1.12;
+  line-height: 1.15;
   font-weight: 700;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -836,14 +835,9 @@ function navegar(tipo) {
   hyphens: none;
 }
 
-.tipo-card-encamin .tipo-nome {
-  font-size: 0.75rem;
-}
-
-.tipo-meta {
-  color: #9aacd1;
-  font-size: 0.72rem;
-  line-height: 1.2;
+.tipo-card-encamin .tipo-nome,
+.tipo-card-banho .tipo-nome {
+  font-size: 0.78rem;
 }
 
 .atalhos-list {
@@ -1075,20 +1069,22 @@ function navegar(tipo) {
   }
 
   .tipo-card {
-    min-height: 138px;
+    min-height: 140px;
     padding-left: 8px;
     padding-right: 8px;
-    grid-template-rows: 50px minmax(2.2em, auto) 1.1em;
+    grid-template-rows: 50px minmax(2.95em, auto);
+    gap: 8px;
   }
 
   .tipo-nome {
-    font-size: 0.71rem;
-    line-height: 1.08;
-    min-height: 2.16em;
+    font-size: 0.72rem;
+    line-height: 1.12;
+    min-height: 2.24em;
   }
 
-  .tipo-card-encamin .tipo-nome {
-    font-size: 0.66rem;
+  .tipo-card-encamin .tipo-nome,
+  .tipo-card-banho .tipo-nome {
+    font-size: 0.68rem;
   }
 
   .atalho-title {
@@ -1151,6 +1147,12 @@ function navegar(tipo) {
 
   .tipo-card {
     min-height: 172px;
+  }
+
+  .tipo-nome,
+  .tipo-card-encamin .tipo-nome,
+  .tipo-card-banho .tipo-nome {
+    font-size: 0.9rem;
   }
 }
 </style>
