@@ -36,20 +36,25 @@ export const TEMAS = {
     },
   },
   floresta: {
-    nome: 'Floresta',
-    preview: { bg: '#071a10', card: '#0e2318', accent: '#2ecc71' },
+    nome: 'Verde Água (Clean)',
+    preview: { bg: '#F2F9F8', card: '#FFFFFF', accent: '#18B89E' },
     vars: {
-      '--bg':          '#44cd6d',
-      '--bg-card':     '#55db79',
-      '--bg-input':    '#64e986',
-      '--bg-hover':    '#73f793',
-      '--blue':        '#82ffa0',
-      '--blue-dark':   '#27ae60',
-      '--blue-muted':  'rgba(46,204,113,0.12)',
-      '--blue-faint':  'rgba(46,204,113,0.14)',
-      '--border':      '#1a3a24',
-      '--text-dim':    '#7aaa88',
-      '--text-muted':  '#4a7755',
+      // Fundos: Quase brancos, com um toque levíssimo de verde para dar o clima "clean"
+      '--bg':          '#F2F9F8', // Fundo principal da tela (off-white menta)
+      '--bg-card':     '#FFFFFF', // Fundo dos cards (branco puro para dar contraste)
+      '--bg-input':    '#E8F4F1', // Fundo de caixas de texto
+      '--bg-hover':    '#DDF0EB', // Fundo ao passar o mouse em itens de lista
+
+      // Destaques (O seu Verde Água / Turquesa)
+      '--blue':        '#18B89E', // Cor principal (Botões, ícones, links)
+      '--blue-dark':   '#0E947E', // Cor para o hover do botão (um tom mais escuro)
+      '--blue-muted':  'rgba(24, 184, 158, 0.12)', // Fundo translúcido para tags ou botões secundários
+      '--blue-faint':  'rgba(24, 184, 158, 0.05)', // Fundo translúcido super fraco
+
+      // Bordas e Textos
+      '--border':      '#CBE3DE', // Borda suave, levemente esverdeada
+      '--text-dim':    '#3D544F', // Texto principal (um cinza escuro azulado/esverdeado, mais elegante que o preto puro)
+      '--text-muted':  '#738F8A', // Texto secundário (cinza claro para legendas)
     },
   },
   roxo: {
