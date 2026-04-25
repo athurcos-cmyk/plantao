@@ -308,8 +308,8 @@ async function adicionarTemplate() {
 <style scoped>
 .organizer-screen {
   background:
-    radial-gradient(circle at top center, rgba(72, 143, 240, 0.24), transparent 34%),
-    linear-gradient(180deg, rgba(10, 22, 40, 0.98) 0%, rgba(9, 20, 36, 1) 100%);
+    radial-gradient(circle at top center, var(--blue-faint), transparent 34%),
+    var(--bg);
 }
 
 .organizer-page {
@@ -369,11 +369,11 @@ async function adicionarTemplate() {
   align-items: center;
   gap: 16px;
   padding: 28px 24px;
-  border: 1px solid rgba(78, 118, 180, 0.28);
+  border: 1px solid var(--border);
   border-radius: 24px;
   background:
-    linear-gradient(145deg, rgba(20, 39, 71, 0.98), rgba(13, 27, 48, 0.98)),
-    rgba(17, 29, 50, 0.96);
+    linear-gradient(145deg, var(--bg-input), var(--bg-card)),
+    var(--bg-card);
   text-align: center;
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.26);
 }
@@ -383,8 +383,8 @@ async function adicionarTemplate() {
   width: 68px;
   height: 68px;
   border-radius: 20px;
-  background: linear-gradient(145deg, rgba(53, 105, 188, 0.22), rgba(24, 55, 101, 0.38));
-  border: 1px solid rgba(106, 167, 255, 0.26);
+  background: linear-gradient(145deg, var(--blue-muted), var(--bg-input));
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -411,8 +411,8 @@ async function adicionarTemplate() {
   min-height: 22px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(55, 100, 176, 0.18);
-  color: #86bdf7;
+  background: var(--blue-muted);
+  color: var(--blue);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -423,11 +423,11 @@ async function adicionarTemplate() {
   font-size: 1.7rem;
   line-height: 1.05;
   font-weight: 800;
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .hero-subtitle {
-  color: #b1c4e2;
+  color: var(--text-dim);
   font-size: 0.94rem;
   line-height: 1.5;
 }
@@ -448,11 +448,11 @@ async function adicionarTemplate() {
   justify-content: space-between;
   gap: 16px;
   padding: 20px;
-  border: 1px solid rgba(78, 118, 180, 0.28);
+  border: 1px solid var(--border);
   border-radius: 22px;
   background:
-    linear-gradient(145deg, rgba(26, 47, 83, 0.99), rgba(16, 31, 56, 0.99)),
-    rgba(21, 36, 61, 0.98);
+    linear-gradient(145deg, var(--bg-input), var(--bg-card)),
+    var(--bg-card);
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.22);
 }
 
@@ -484,10 +484,10 @@ async function adicionarTemplate() {
 .overview-card,
 .progress-card,
 .panel-card {
-  border: 1px solid rgba(68, 101, 152, 0.3);
+  border: 1px solid var(--border);
   border-radius: 20px;
   background:
-    linear-gradient(180deg, rgba(23, 39, 67, 0.99), rgba(17, 30, 52, 0.99));
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
 }
 
@@ -499,7 +499,7 @@ async function adicionarTemplate() {
 }
 
 .overview-label {
-  color: #94a9cb;
+  color: var(--text-dim);
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -507,13 +507,13 @@ async function adicionarTemplate() {
 }
 
 .overview-value {
-  color: #eef4ff;
+  color: var(--text);
   font-size: 1.55rem;
   line-height: 1.05;
 }
 
 .overview-meta {
-  color: #a7b8d5;
+  color: var(--text-dim);
   font-size: 0.82rem;
 }
 
@@ -530,7 +530,7 @@ async function adicionarTemplate() {
 }
 
 .progress-title {
-  color: #eef4ff;
+  color: var(--text);
   font-size: 0.94rem;
   font-weight: 700;
 }
@@ -539,9 +539,9 @@ async function adicionarTemplate() {
   min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(55, 100, 176, 0.16);
-  border: 1px solid rgba(93, 150, 231, 0.26);
-  color: #89c0ff;
+  background: var(--blue-muted);
+  border: 1px solid var(--border);
+  color: var(--blue);
   display: inline-flex;
   align-items: center;
   font-size: 0.76rem;
@@ -550,7 +550,7 @@ async function adicionarTemplate() {
 
 .progress-wrap {
   height: 10px;
-  background: rgba(35, 58, 98, 0.86);
+  background: var(--bg-hover);
   border-radius: 999px;
   overflow: hidden;
   margin-bottom: 10px;
@@ -558,14 +558,14 @@ async function adicionarTemplate() {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2b7ddf, #62a8ff);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
   border-radius: inherit;
   transition: width 0.35s ease;
-  box-shadow: 0 0 18px rgba(67, 137, 231, 0.3);
+  box-shadow: 0 0 18px var(--blue-faint);
 }
 
 .progress-label {
-  color: #a6b8d6;
+  color: var(--text-dim);
   font-size: 0.82rem;
 }
 
@@ -582,7 +582,7 @@ async function adicionarTemplate() {
 }
 
 .secao-kicker {
-  color: #94a9cb;
+  color: var(--text-dim);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -591,7 +591,7 @@ async function adicionarTemplate() {
 
 .secao-titulo {
   margin-top: 4px;
-  color: #eef4ff;
+  color: var(--text);
   font-size: 1.1rem;
   font-weight: 800;
 }
@@ -601,9 +601,9 @@ async function adicionarTemplate() {
   height: 30px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(30, 136, 229, 0.14);
-  border: 1px solid rgba(77, 145, 225, 0.28);
-  color: #7cbaff;
+  background: var(--blue-muted);
+  border: 1px solid var(--border);
+  color: var(--blue);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -613,9 +613,9 @@ async function adicionarTemplate() {
 
 .tarefas-lista,
 .prox-lista {
-  border: 1px solid rgba(61, 92, 142, 0.38);
+  border: 1px solid var(--border);
   border-radius: 18px;
-  background: rgba(15, 28, 49, 0.84);
+  background: var(--bg-input);
   overflow: hidden;
 }
 
@@ -624,7 +624,7 @@ async function adicionarTemplate() {
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(73, 108, 165, 0.34);
+  border-bottom: 1px solid var(--border);
   transition: opacity 0.2s ease, background 0.2s ease;
 }
 
@@ -640,9 +640,9 @@ async function adicionarTemplate() {
   width: 26px;
   height: 26px;
   flex-shrink: 0;
-  border: 2px solid rgba(77, 110, 165, 0.55);
+  border: 2px solid var(--border);
   border-radius: 999px;
-  background: rgba(16, 29, 50, 0.92);
+  background: var(--bg-card);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -659,7 +659,7 @@ async function adicionarTemplate() {
 
 .tarefa-texto {
   flex: 1;
-  color: #f1f5fb;
+  color: var(--text);
   font-size: 0.95rem;
   line-height: 1.45;
 }
@@ -673,9 +673,9 @@ async function adicionarTemplate() {
   width: 30px;
   height: 30px;
   flex-shrink: 0;
-  border: 1px solid rgba(61, 92, 142, 0.35);
-  background: rgba(19, 34, 58, 0.95);
-  color: #a5b8d6;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-dim);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -697,14 +697,14 @@ async function adicionarTemplate() {
 
 .add-next-row {
   margin-top: 12px;
-  border: 1px solid rgba(61, 92, 142, 0.38);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(15, 28, 49, 0.82);
+  background: var(--bg-input);
 }
 
 .add-template-row {
   margin-top: 12px;
-  border-top: 1px solid rgba(61, 92, 142, 0.28);
+  border-top: 1px solid var(--border);
   padding: 14px 0 0;
 }
 
@@ -712,8 +712,8 @@ async function adicionarTemplate() {
   flex: 1;
   min-height: 46px;
   padding: 0 14px;
-  background: rgba(18, 33, 57, 0.96);
-  border: 1px solid rgba(82, 120, 182, 0.52);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 14px;
   outline: none;
   font-family: inherit;
@@ -726,16 +726,16 @@ async function adicionarTemplate() {
 }
 
 .add-input:focus {
-  border-color: rgba(101, 168, 255, 0.82);
-  box-shadow: 0 0 0 3px rgba(53, 122, 223, 0.14);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .add-btn-sm {
   min-height: 42px;
   padding: 0 14px;
-  background: linear-gradient(135deg, #1f78d8, #2f93ff);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
-  border: 1px solid rgba(142, 202, 255, 0.6);
+  border: 1px solid var(--blue);
   border-radius: 12px;
   font-size: 0.82rem;
   font-weight: 700;
@@ -749,7 +749,7 @@ async function adicionarTemplate() {
   align-items: flex-start;
   gap: 10px;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(61, 92, 142, 0.28);
+  border-bottom: 1px solid var(--border);
 }
 
 .prox-item:last-child {
@@ -757,7 +757,7 @@ async function adicionarTemplate() {
 }
 
 .prox-bullet {
-  color: #79b8ff;
+  color: var(--blue);
   font-size: 1.2rem;
   line-height: 1;
   margin-top: 2px;
@@ -768,28 +768,28 @@ async function adicionarTemplate() {
   flex: 1;
   font-size: 0.92rem;
   line-height: 1.55;
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .empty-hint {
   padding: 18px;
-  border: 1px dashed rgba(72, 109, 166, 0.38);
+  border: 1px dashed var(--border);
   border-radius: 18px;
-  color: #a6b8d6;
+  color: var(--text-dim);
   font-size: 0.88rem;
   font-style: italic;
-  background: rgba(16, 29, 50, 0.72);
+  background: var(--bg-input);
 }
 
 .btn-outline-sm {
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid rgba(65, 98, 150, 0.46);
-  background: rgba(18, 33, 57, 0.92);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   border-radius: 12px;
   font-size: 0.82rem;
   cursor: pointer;
-  color: #d6e4f8;
+  color: var(--text);
   font-family: inherit;
   font-weight: 700;
   transition: border-color 0.18s ease, color 0.18s ease;
@@ -817,8 +817,8 @@ async function adicionarTemplate() {
   max-width: 420px;
   padding: 22px;
   border-radius: 20px;
-  border: 1px solid rgba(67, 103, 161, 0.3);
-  background: linear-gradient(180deg, rgba(24, 40, 68, 0.99), rgba(16, 29, 50, 0.99));
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 24px 42px rgba(0, 0, 0, 0.34);
 }
 
@@ -834,7 +834,7 @@ async function adicionarTemplate() {
 
 .modal-subtitulo {
   margin-top: 8px;
-  color: #a7b9d6;
+  color: var(--text-dim);
   font-size: 0.88rem;
   line-height: 1.5;
 }
@@ -853,9 +853,9 @@ async function adicionarTemplate() {
   max-height: 280px;
   overflow-y: auto;
   margin-top: 14px;
-  border: 1px solid rgba(61, 92, 142, 0.38);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(16, 29, 50, 0.76);
+  background: var(--bg-input);
 }
 
 .modal-tpl-item {
@@ -863,7 +863,7 @@ async function adicionarTemplate() {
   align-items: center;
   gap: 8px;
   padding: 11px 14px;
-  border-bottom: 1px solid rgba(61, 92, 142, 0.24);
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-tpl-item:last-child {
@@ -881,7 +881,7 @@ async function adicionarTemplate() {
   padding: 0;
   background: none;
   border: none;
-  color: #7cbaff;
+  color: var(--blue);
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;

@@ -696,8 +696,8 @@ function novaAnotacao() {
 .passagem-screen {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
-    linear-gradient(180deg, #071426 0%, #081425 42%, #07111f 100%);
+    radial-gradient(circle at 14% 0%, var(--blue-faint), transparent 30%),
+    var(--bg);
 }
 
 .passagem-header {
@@ -734,11 +734,9 @@ function novaAnotacao() {
   gap: 16px;
   margin-bottom: 18px;
   padding: 20px;
-  border: 1px solid rgba(80, 142, 232, 0.36);
+  border: 1px solid var(--border);
   border-radius: 24px;
-  background:
-    radial-gradient(circle at top left, rgba(48, 134, 255, 0.2), transparent 42%),
-    linear-gradient(180deg, rgba(17, 34, 65, 0.98), rgba(12, 26, 50, 0.98));
+  background: var(--bg-card);
   box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
   overflow: hidden;
 }
@@ -799,10 +797,8 @@ function novaAnotacao() {
 .passagem-card {
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(54, 86, 137, 0.55);
-  background:
-    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 16px 34px rgba(2, 8, 18, 0.2);
 }
 

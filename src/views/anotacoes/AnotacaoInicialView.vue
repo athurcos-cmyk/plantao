@@ -989,7 +989,9 @@ function selecionarPaciente(p) {
 .chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
 
 .inicial-screen {
-  background: linear-gradient(180deg, #071426 0%, #0b1728 42%, #08111f 100%);
+  background:
+    radial-gradient(circle at top right, var(--blue-faint), transparent 28%),
+    var(--bg);
   min-height: 100vh;
 }
 
@@ -1044,10 +1046,8 @@ function selecionarPaciente(p) {
   padding: 18px;
   margin-bottom: 16px;
   border-radius: 22px;
-  border: 1px solid rgba(77, 171, 205, 0.44);
-  background:
-    radial-gradient(circle at top left, rgba(69, 212, 214, 0.16), transparent 42%),
-    linear-gradient(180deg, rgba(18, 42, 72, 0.98), rgba(12, 29, 50, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
 }
 
@@ -1825,10 +1825,8 @@ textarea:focus {
 }
 
 .module-hero {
-  border-color: rgba(76, 121, 190, 0.42);
-  background:
-    radial-gradient(circle at top left, rgba(48, 134, 255, 0.2), transparent 42%),
-    linear-gradient(180deg, rgba(17, 34, 65, 0.98), rgba(12, 26, 50, 0.98));
+  border-color: var(--border);
+  background: var(--bg-card);
 }
 
 .module-hero-icon {
@@ -1837,8 +1835,8 @@ textarea:focus {
 
 .inicial-card input:focus,
 .inicial-card textarea:focus {
-  border-color: rgba(87, 157, 255, 0.82);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .radio-btn.active,

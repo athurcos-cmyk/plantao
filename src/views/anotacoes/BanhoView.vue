@@ -668,7 +668,9 @@ function novaAnotacao() {
 }
 
 .banho-screen {
-  background: linear-gradient(180deg, #071426 0%, #0b1728 42%, #08111f 100%);
+  background:
+    radial-gradient(circle at top right, var(--blue-faint), transparent 28%),
+    var(--bg);
   min-height: 100vh;
 }
 
@@ -696,8 +698,8 @@ function novaAnotacao() {
   padding: 14px 16px;
   margin-bottom: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(73, 128, 154, 0.52);
-  background: linear-gradient(180deg, rgba(17, 38, 62, 0.92), rgba(12, 27, 47, 0.96));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
 }
 
@@ -725,10 +727,8 @@ function novaAnotacao() {
   padding: 18px;
   margin-bottom: 16px;
   border-radius: 22px;
-  border: 1px solid rgba(77, 171, 205, 0.44);
-  background:
-    radial-gradient(circle at top left, rgba(69, 212, 214, 0.2), transparent 42%),
-    linear-gradient(180deg, rgba(18, 42, 72, 0.98), rgba(12, 29, 50, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
 }
 
@@ -769,8 +769,8 @@ function novaAnotacao() {
 .banho-card {
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(55, 95, 133, 0.55);
-  background: linear-gradient(180deg, rgba(18, 38, 64, 0.97), rgba(13, 29, 52, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 16px 32px rgba(3, 10, 22, 0.22);
 }
 
@@ -787,8 +787,8 @@ function novaAnotacao() {
 .chip {
   min-height: 42px;
   border-radius: 14px;
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.9);
+  border-color: var(--border);
+  background: var(--bg-input);
   color: #c2d8ea;
 }
 
@@ -800,8 +800,8 @@ function novaAnotacao() {
 }
 
 .checkbox-label {
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.82);
+  border-color: var(--border);
+  background: var(--bg-input);
 }
 
 .checkbox-label.checked,
@@ -813,8 +813,8 @@ function novaAnotacao() {
 .add-input,
 input,
 textarea {
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(11, 25, 46, 0.92);
+  border-color: var(--border);
+  background: var(--bg-input);
 }
 
 .btn-generate {

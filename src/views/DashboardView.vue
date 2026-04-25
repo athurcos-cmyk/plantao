@@ -521,8 +521,8 @@ function navegar(tipo) {
   min-height: 24px;
   padding: 0 8px;
   border-radius: 999px;
-  border: 1px solid rgba(125, 148, 197, 0.14);
-  background: rgba(15, 31, 58, 0.75);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
   color: #a8b7de;
   font-family: inherit;
   font-size: 0.66rem;
@@ -546,8 +546,8 @@ function navegar(tipo) {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  border: 1px solid rgba(145, 166, 212, 0.16);
-  background: rgba(14, 31, 60, 0.7);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
   color: #a8b7de;
   display: inline-flex;
   align-items: center;
@@ -610,8 +610,8 @@ function navegar(tipo) {
   grid-template-columns: auto 1fr auto;
   gap: 10px;
   align-items: center;
-  background: linear-gradient(180deg, rgba(20, 41, 77, 0.92), rgba(17, 34, 66, 0.98));
-  border: 1px solid rgba(125, 148, 197, 0.18);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 18px;
   padding: 12px 14px;
   margin-bottom: 10px;
@@ -660,7 +660,7 @@ function navegar(tipo) {
   padding: 0;
   border: none;
   background: none;
-  color: #7fc0ff;
+  color: var(--blue);
   font-family: inherit;
   font-size: 0.76rem;
   font-weight: 700;
@@ -729,8 +729,8 @@ function navegar(tipo) {
   min-height: 30px;
   padding: 0 11px;
   border-radius: 999px;
-  border: 1px solid rgba(125, 148, 197, 0.14);
-  background: rgba(15, 31, 58, 0.75);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
   color: #a8b7de;
   font-family: inherit;
   font-size: 0.8rem;
@@ -784,8 +784,8 @@ function navegar(tipo) {
   min-height: 146px;
   padding: 14px 10px;
   border-radius: 18px;
-  border: 1px solid rgba(124, 147, 194, 0.14);
-  background: linear-gradient(180deg, rgba(24, 44, 79, 0.98), rgba(19, 36, 68, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   display: grid;
   grid-template-rows: 56px minmax(2.7em, auto);
   justify-items: center;
@@ -850,8 +850,8 @@ function navegar(tipo) {
   width: 100%;
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid rgba(124, 147, 194, 0.14);
-  background: linear-gradient(180deg, rgba(23, 43, 78, 0.96), rgba(18, 35, 67, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -1001,20 +1001,20 @@ function navegar(tipo) {
   max-width: 360px;
   padding: 24px;
   border-radius: 20px;
-  border: 1px solid rgba(124, 147, 194, 0.18);
-  background: #102142;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
 }
 
 .modal-title {
   margin: 0 0 14px;
-  color: #f7f9ff;
+  color: var(--text);
   font-size: 1.14rem;
   font-weight: 800;
 }
 
 .modal-text {
   margin: 0 0 10px;
-  color: #aab7d8;
+  color: var(--text-dim);
   font-size: 0.92rem;
   line-height: 1.45;
 }

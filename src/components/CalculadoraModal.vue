@@ -467,7 +467,7 @@ function tipoLabel(tipo) {
 }
 .calc-input {
   flex: 1;
-  background: var(--bg-input, #0d2137);
+  background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 10px;
   color: var(--text);
@@ -479,7 +479,7 @@ function tipoLabel(tipo) {
 }
 .calc-input:focus { border-color: var(--blue); }
 .calc-select {
-  background: var(--bg-input, #0d2137);
+  background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 10px;
   color: var(--text);
@@ -505,8 +505,8 @@ function tipoLabel(tipo) {
 
 /* ── Resultado ───────────────────────────────────────────────────────────── */
 .calc-resultado {
-  background: #0d2a1a;
-  border: 1px solid #1a5c3a;
+  background: var(--blue-muted);
+  border: 1px solid var(--blue);
   border-radius: 12px;
   padding: 14px 16px;
   display: flex;
@@ -526,7 +526,7 @@ function tipoLabel(tipo) {
 .calc-resultado-valor {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #4caf82;
+  color: var(--blue);
 }
 .calc-resultado-vazio .calc-resultado-valor {
   color: var(--text-muted);
@@ -534,8 +534,8 @@ function tipoLabel(tipo) {
 
 /* Resultado diluição (múltiplas linhas) */
 .calc-resultado-diluicao {
-  background: #0d2a1a;
-  border: 1px solid #1a5c3a;
+  background: var(--blue-muted);
+  border: 1px solid var(--blue);
   border-radius: 12px;
   padding: 12px 16px;
   display: flex;
@@ -554,7 +554,7 @@ function tipoLabel(tipo) {
 .calc-resultado-linha strong {
   font-size: 1rem;
   font-weight: 800;
-  color: #4caf82;
+  color: var(--blue);
 }
 
 /* ── Fórmula + Exemplo ───────────────────────────────────────────────────── */
@@ -566,7 +566,7 @@ function tipoLabel(tipo) {
 .calc-exemplo {
   font-size: 0.78rem;
   color: var(--text-muted);
-  background: var(--bg-input, #0d2137);
+  background: var(--bg-input);
   border-radius: 8px;
   padding: 10px 12px;
   line-height: 1.6;
@@ -661,7 +661,7 @@ function tipoLabel(tipo) {
 }
 .calc-historico-tipo {
   flex-shrink: 0;
-  background: var(--bg-input, #0d2137);
+  background: var(--bg-input);
   border-radius: 6px;
   padding: 2px 7px;
   font-size: 0.7rem;
@@ -703,11 +703,10 @@ function tipoLabel(tipo) {
 .calc-sheet {
   width: min(100%, 760px);
   max-height: min(88vh, 920px);
-  border: 1px solid rgba(110, 156, 232, 0.24);
+  border: 1px solid var(--border);
   border-bottom: none;
   border-radius: 30px 30px 0 0;
-  background:
-    linear-gradient(180deg, rgba(16, 32, 54, 0.98) 0%, rgba(10, 19, 35, 0.98) 52%, rgba(8, 16, 29, 0.99) 100%);
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
   box-shadow:
     0 -18px 60px rgba(2, 8, 20, 0.58),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -722,7 +721,7 @@ function tipoLabel(tipo) {
   width: 54px;
   height: 5px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(126, 151, 189, 0.5), rgba(180, 202, 255, 0.82), rgba(126, 151, 189, 0.5));
+  background: linear-gradient(90deg, var(--border), var(--text-dim), var(--border));
 }
 
 .calc-header {
@@ -745,9 +744,9 @@ function tipoLabel(tipo) {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #d9e7ff;
-  background: linear-gradient(180deg, rgba(70, 123, 220, 0.34), rgba(28, 58, 110, 0.7));
-  border: 1px solid rgba(133, 174, 241, 0.32);
+  color: var(--text);
+  background: linear-gradient(180deg, var(--blue-muted), var(--bg-input));
+  border: 1px solid var(--border);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 12px 26px rgba(6, 13, 28, 0.3);
@@ -766,20 +765,20 @@ function tipoLabel(tipo) {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(157, 183, 233, 0.78);
+  color: var(--text-dim);
 }
 
 .calc-titulo {
   font-size: 1.08rem;
   font-weight: 800;
   line-height: 1.2;
-  color: var(--text, #f6f9ff);
+  color: var(--text);
 }
 
 .calc-subtitulo {
   font-size: 0.84rem;
   line-height: 1.45;
-  color: rgba(196, 210, 236, 0.76);
+  color: var(--text-dim);
 }
 
 .calc-btn-fechar {
@@ -787,17 +786,17 @@ function tipoLabel(tipo) {
   height: 42px;
   min-width: 42px;
   min-height: 42px;
-  border: 1px solid rgba(112, 142, 194, 0.22);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: rgba(11, 22, 38, 0.72);
-  color: rgba(228, 236, 249, 0.78);
+  background: var(--bg-input);
+  color: var(--text-dim);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .calc-btn-fechar:hover {
-  border-color: rgba(128, 171, 245, 0.36);
-  background: rgba(18, 35, 58, 0.88);
-  color: #f6f9ff;
+  border-color: var(--blue);
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 .calc-abas-shell {
@@ -808,8 +807,8 @@ function tipoLabel(tipo) {
   gap: 8px;
   padding: 6px;
   border-radius: 18px;
-  background: rgba(8, 18, 31, 0.72);
-  border: 1px solid rgba(101, 136, 191, 0.16);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -818,20 +817,20 @@ function tipoLabel(tipo) {
   padding: 8px 14px;
   border: 1px solid transparent;
   border-radius: 14px;
-  color: rgba(192, 207, 232, 0.72);
+  color: var(--text-dim);
   font-size: 0.84rem;
   font-weight: 700;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .calc-aba:hover {
-  color: rgba(238, 244, 255, 0.92);
+  color: var(--text);
 }
 
 .calc-aba-on {
-  color: #f8fbff;
-  border-color: rgba(121, 174, 255, 0.34);
-  background: linear-gradient(180deg, rgba(52, 107, 205, 0.96), rgba(30, 72, 150, 0.96));
+  color: #fff;
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   box-shadow: 0 10px 22px rgba(16, 49, 110, 0.34);
 }
 
@@ -843,7 +842,7 @@ function tipoLabel(tipo) {
 .calc-descricao {
   font-size: 0.84rem;
   line-height: 1.55;
-  color: rgba(192, 207, 232, 0.72);
+  color: var(--text-dim);
 }
 
 .calc-campo {
@@ -853,13 +852,13 @@ function tipoLabel(tipo) {
 .calc-campo label {
   font-size: 0.83rem;
   font-weight: 700;
-  color: rgba(233, 239, 249, 0.92);
+  color: var(--text);
 }
 
 .calc-dica {
   font-size: 0.73rem;
   font-weight: 500;
-  color: rgba(171, 188, 216, 0.7);
+  color: var(--text-muted);
 }
 
 .calc-input-row {
@@ -870,8 +869,8 @@ function tipoLabel(tipo) {
 .calc-select {
   min-height: 50px;
   border-radius: 16px;
-  border: 1px solid rgba(94, 123, 171, 0.28);
-  background: linear-gradient(180deg, rgba(14, 28, 47, 0.96), rgba(10, 20, 36, 0.96));
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.03),
     0 8px 18px rgba(2, 8, 20, 0.18);
@@ -888,9 +887,9 @@ function tipoLabel(tipo) {
 
 .calc-input:focus,
 .calc-select:focus {
-  border-color: rgba(121, 174, 255, 0.56);
+  border-color: var(--blue);
   box-shadow:
-    0 0 0 4px rgba(73, 127, 222, 0.16),
+    0 0 0 4px var(--blue-faint),
     0 10px 22px rgba(8, 19, 37, 0.28);
 }
 
@@ -902,11 +901,11 @@ function tipoLabel(tipo) {
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  border: 1px solid rgba(94, 123, 171, 0.24);
-  background: rgba(11, 21, 37, 0.78);
+  border: 1px solid var(--border);
+  background: var(--bg-hover);
   font-size: 0.8rem;
   font-weight: 700;
-  color: rgba(197, 211, 235, 0.8);
+  color: var(--text-dim);
 }
 
 .calc-chips-row {
@@ -917,8 +916,8 @@ function tipoLabel(tipo) {
 .calc-resultado,
 .calc-resultado-diluicao {
   border-radius: 18px;
-  border: 1px solid rgba(96, 130, 189, 0.26);
-  background: linear-gradient(180deg, rgba(18, 38, 64, 0.98), rgba(11, 25, 44, 0.98));
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 18px 32px rgba(4, 11, 24, 0.2);
@@ -930,19 +929,19 @@ function tipoLabel(tipo) {
 }
 
 .calc-resultado-vazio {
-  border-color: rgba(96, 122, 166, 0.16);
-  background: linear-gradient(180deg, rgba(11, 22, 37, 0.9), rgba(9, 17, 30, 0.9));
+  border-color: var(--border);
+  background: linear-gradient(180deg, var(--bg-card), var(--bg));
 }
 
 .calc-resultado-label {
   font-size: 0.82rem;
   font-weight: 700;
-  color: rgba(194, 209, 234, 0.8);
+  color: var(--text-dim);
 }
 
 .calc-resultado-valor,
 .calc-resultado-linha strong {
-  color: #dceaff;
+  color: var(--blue);
 }
 
 .calc-resultado-valor {
@@ -950,7 +949,7 @@ function tipoLabel(tipo) {
 }
 
 .calc-resultado-vazio .calc-resultado-valor {
-  color: rgba(167, 184, 212, 0.66);
+  color: var(--text-muted);
 }
 
 .calc-resultado-diluicao {
@@ -959,46 +958,46 @@ function tipoLabel(tipo) {
 }
 
 .calc-resultado-linha span {
-  color: rgba(194, 209, 234, 0.78);
+  color: var(--text-dim);
 }
 
 .calc-formula-info,
 .calc-exemplo {
   border-radius: 16px;
-  border: 1px solid rgba(97, 124, 165, 0.18);
-  background: rgba(10, 20, 35, 0.72);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
 }
 
 .calc-formula-info {
   padding: 12px 14px;
   font-size: 0.76rem;
   line-height: 1.5;
-  color: rgba(171, 188, 216, 0.76);
+  color: var(--text-dim);
 }
 
 .calc-exemplo {
   padding: 12px 14px;
   font-size: 0.79rem;
   line-height: 1.62;
-  color: rgba(178, 194, 221, 0.78);
+  color: var(--text-dim);
 }
 
 .calc-exemplo strong {
-  color: rgba(239, 245, 255, 0.94);
+  color: var(--text);
 }
 
 .calc-exemplo-resp {
   margin-top: 4px;
-  color: rgba(214, 226, 247, 0.88);
+  color: var(--text);
 }
 
 .calc-btn-salvar {
   min-height: 44px;
   padding: 0 16px;
-  border: 1px solid rgba(101, 148, 224, 0.3);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(24, 50, 91, 0.92), rgba(14, 31, 57, 0.92));
-  color: #edf4ff;
+  background: linear-gradient(180deg, var(--bg-hover), var(--bg-input));
+  color: var(--text);
   font-size: 0.84rem;
   font-weight: 700;
   box-shadow: 0 10px 22px rgba(5, 14, 30, 0.24);
@@ -1006,7 +1005,7 @@ function tipoLabel(tipo) {
 }
 
 .calc-btn-salvar:hover {
-  border-color: rgba(126, 175, 247, 0.44);
+  border-color: var(--blue);
   box-shadow: 0 16px 28px rgba(8, 20, 41, 0.28);
 }
 
@@ -1018,21 +1017,21 @@ function tipoLabel(tipo) {
   gap: 8px;
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid rgba(93, 124, 173, 0.18);
-  background: rgba(10, 20, 35, 0.7);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
 }
 
 .calc-tabela-titulo {
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: rgba(154, 181, 227, 0.76);
+  color: var(--text-dim);
 }
 
 .calc-tabela-linha {
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(84, 109, 146, 0.2);
+  border-bottom: 1px solid var(--border);
 }
 
 .calc-tabela-linha:last-child {
@@ -1040,17 +1039,17 @@ function tipoLabel(tipo) {
 }
 
 .calc-tabela-linha span:first-child {
-  color: rgba(214, 225, 244, 0.82);
+  color: var(--text-dim);
 }
 
 .calc-tabela-linha span:last-child {
-  color: rgba(244, 248, 255, 0.94);
+  color: var(--text);
 }
 
 .calc-historico {
   margin: 18px 20px 0;
   padding-top: 16px;
-  border-top: 1px solid rgba(84, 109, 146, 0.22);
+  border-top: 1px solid var(--border);
 }
 
 .calc-historico-header {
@@ -1062,13 +1061,13 @@ function tipoLabel(tipo) {
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: rgba(163, 188, 231, 0.78);
+  color: var(--text-dim);
 }
 
 .calc-historico-limpar {
   min-height: 36px;
   padding: 0 10px;
-  color: rgba(171, 188, 216, 0.76);
+  color: var(--text-dim);
   font-size: 0.77rem;
   font-weight: 700;
 }
@@ -1076,38 +1075,38 @@ function tipoLabel(tipo) {
 .calc-historico-item {
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(84, 109, 146, 0.18);
+  border-bottom: 1px solid var(--border);
   font-size: 0.82rem;
 }
 
 .calc-historico-tipo {
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(97, 131, 186, 0.2);
-  background: rgba(14, 27, 46, 0.82);
+  border: 1px solid var(--border);
+  background: var(--bg-hover);
   font-size: 0.69rem;
   font-weight: 800;
-  color: rgba(193, 209, 236, 0.82);
+  color: var(--text-dim);
 }
 
 .calc-historico-resumo {
-  color: rgba(225, 233, 246, 0.84);
+  color: var(--text);
 }
 
 .chip {
   min-height: 44px;
   padding: 0 16px;
   border-radius: 14px;
-  border: 1px solid rgba(97, 131, 186, 0.24);
-  background: linear-gradient(180deg, rgba(15, 29, 49, 0.94), rgba(10, 21, 37, 0.94));
-  color: rgba(192, 207, 232, 0.76);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
+  color: var(--text-dim);
   font-weight: 700;
   box-shadow: 0 8px 18px rgba(2, 8, 20, 0.16);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .chip:hover {
-  color: #f7fbff;
+  color: var(--text);
 }
 
 .chip:active {
@@ -1116,8 +1115,8 @@ function tipoLabel(tipo) {
 }
 
 .chip-on {
-  border-color: rgba(121, 174, 255, 0.34);
-  background: linear-gradient(180deg, rgba(52, 107, 205, 0.96), rgba(30, 72, 150, 0.96));
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
   box-shadow: 0 12px 22px rgba(16, 49, 110, 0.3);
 }

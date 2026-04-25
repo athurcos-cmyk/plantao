@@ -1119,8 +1119,8 @@ function novaAnotacao() {
 
 .encaminhamento-screen {
   background:
-    radial-gradient(circle at top left, rgba(55, 145, 236, 0.16), transparent 34%),
-    linear-gradient(180deg, #071426 0%, #0b1628 42%, #08111f 100%);
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    var(--bg);
   min-height: 100vh;
 }
 
@@ -1148,8 +1148,8 @@ function novaAnotacao() {
   padding: 14px 16px;
   margin-bottom: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(62, 96, 149, 0.52);
-  background: linear-gradient(180deg, rgba(17, 33, 62, 0.92), rgba(12, 25, 47, 0.96));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
 }
 
@@ -1177,10 +1177,8 @@ function novaAnotacao() {
   padding: 18px;
   margin-bottom: 16px;
   border-radius: 22px;
-  border: 1px solid rgba(77, 137, 219, 0.44);
-  background:
-    radial-gradient(circle at top left, rgba(47, 160, 255, 0.2), transparent 42%),
-    linear-gradient(180deg, rgba(18, 38, 72, 0.98), rgba(12, 26, 50, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
 }
 
@@ -1240,8 +1238,8 @@ function novaAnotacao() {
 .chip {
   min-height: 42px;
   border-radius: 14px;
-  border-color: rgba(75, 107, 158, 0.58);
-  background: rgba(15, 30, 57, 0.9);
+  border-color: var(--border);
+  background: var(--bg-input);
   color: #c2d0ea;
 }
 
@@ -1259,8 +1257,8 @@ function novaAnotacao() {
 }
 
 .disp-card {
-  border-color: rgba(64, 95, 145, 0.56);
-  background: linear-gradient(180deg, rgba(15, 31, 59, 0.94), rgba(12, 25, 48, 0.98));
+  border-color: var(--border);
+  background: var(--bg-card);
 }
 
 .btn-generate {

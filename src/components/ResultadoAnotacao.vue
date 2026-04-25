@@ -138,19 +138,19 @@ defineEmits([
 .resultado-hero-copy p {
   margin: 8px 0 0;
   font-size: 1rem;
-  color: #9aabd0;
+  color: var(--text-dim);
 }
 
 .resultado-box {
-  background: linear-gradient(180deg, rgba(18, 33, 60, 0.96), rgba(14, 27, 51, 0.98));
-  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 18px;
   width: 100%;
   box-sizing: border-box;
   font-size: 0.98rem;
   line-height: 1.7;
-  color: #eef4ff;
+  color: var(--text);
   font-family: inherit;
   white-space: pre-wrap;
   resize: vertical;
@@ -158,15 +158,15 @@ defineEmits([
 }
 
 .resultado-box:focus {
-  border-color: rgba(87, 157, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .resultado-identidade {
   padding: 16px 18px;
   border-radius: 22px;
-  border: 1px solid rgba(53, 82, 129, 0.5);
-  background: linear-gradient(180deg, rgba(19, 35, 66, 0.97), rgba(15, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 14px 28px rgba(3, 10, 22, 0.18);
 }
 
@@ -178,7 +178,7 @@ defineEmits([
 
 .resultado-label {
   display: block;
-  color: #9aabd0;
+  color: var(--text-dim);
   margin-bottom: 8px;
   font-size: 0.82rem;
   font-weight: 700;
@@ -202,8 +202,8 @@ defineEmits([
 }
 
 .resultado-input:focus {
-  border-color: rgba(87, 157, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .resultado-acoes {

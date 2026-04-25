@@ -1373,16 +1373,16 @@ function novaAnotacao() {
 
 .med-card {
   border-radius: 22px;
-  border: 1px solid rgba(53, 82, 129, 0.5);
-  background: linear-gradient(180deg, rgba(19, 35, 66, 0.97), rgba(15, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   padding: 20px;
   margin-bottom: 16px;
   box-shadow: 0 14px 28px rgba(3, 10, 22, 0.2);
 }
 
 .med-card-medicamentos {
-  border-color: rgba(30, 136, 229, 0.38);
-  background: linear-gradient(180deg, rgba(22, 44, 80, 0.97), rgba(13, 24, 48, 0.98));
+  border-color: var(--border);
+  background: var(--bg-card);
 }
 
 .med-quick-stack {
@@ -1443,7 +1443,7 @@ function novaAnotacao() {
   display: inline-block;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #9aabd0;
+  color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 6px;
@@ -1458,7 +1458,7 @@ function novaAnotacao() {
 .med-section-sub {
   margin-top: 6px;
   font-size: 0.86rem;
-  color: #9aabd0;
+  color: var(--text-dim);
   line-height: 1.45;
 }
 
@@ -1623,10 +1623,10 @@ function novaAnotacao() {
 .chip {
   min-height: 48px;
   padding: 0 18px;
-  background: rgba(18, 33, 62, 0.88);
-  border: 1px solid rgba(55, 82, 130, 0.55);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  color: #8ea3d4;
+  color: var(--text-dim);
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 600;
@@ -1634,9 +1634,9 @@ function novaAnotacao() {
   transition: all 0.18s ease;
 }
 .chip.ativo {
-  background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
-  border-color: rgba(80, 160, 255, 0.72);
-  color: #a8d4ff;
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  border-color: var(--blue);
+  color: #fff;
   font-weight: 700;
   box-shadow: 0 4px 14px rgba(30, 100, 230, 0.2);
 }
@@ -1747,8 +1747,8 @@ select.campo-inline {
   z-index: 200;
 }
 .modal-box {
-  background: linear-gradient(180deg, rgba(16, 32, 62, 0.99), rgba(11, 22, 45, 0.99));
-  border: 1px solid rgba(60, 92, 150, 0.55);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-bottom: none;
   border-radius: 24px 24px 0 0;
   width: 100%;
@@ -1787,9 +1787,9 @@ select.campo-inline {
 .btn-avancado {
   width: 100%;
   min-height: 48px;
-  border: 1px solid rgba(60, 88, 140, 0.5);
-  background: rgba(20, 36, 66, 0.7);
-  color: #8ea3d4;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   border-radius: 16px;
   padding: 12px 16px;
   font: inherit;
@@ -1800,7 +1800,7 @@ select.campo-inline {
 }
 
 .btn-avancado:active {
-  background: rgba(30, 52, 95, 0.82);
+  background: var(--bg-hover);
   border-color: rgba(80, 130, 220, 0.6);
   color: #b0c8f0;
 }
@@ -1825,8 +1825,8 @@ select.campo-inline {
 }
 
 .autocomplete-wrap > input:focus {
-  border-color: rgba(87, 157, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 .autocomplete-dropdown {
   position: absolute;
@@ -1903,8 +1903,8 @@ select.campo-inline {
 
 .med-screen {
   background:
-    radial-gradient(circle at top right, rgba(39, 116, 231, 0.12), transparent 28%),
-    linear-gradient(180deg, #091429 0%, #0a1628 100%);
+    radial-gradient(circle at top right, var(--blue-faint), transparent 28%),
+    var(--bg);
 }
 
 .module-hero {
@@ -1916,10 +1916,8 @@ select.campo-inline {
   padding: 18px;
   margin-bottom: 22px;
   border-radius: 22px;
-  border: 1px solid rgba(70, 132, 230, 0.42);
-  background:
-    radial-gradient(circle at top left, rgba(44, 117, 235, 0.18), transparent 40%),
-    linear-gradient(180deg, rgba(17, 34, 66, 0.98), rgba(14, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
 }
 
@@ -1952,7 +1950,7 @@ select.campo-inline {
 .module-hero-copy p {
   margin: 8px 0 0;
   font-size: 1rem;
-  color: #9aabd0;
+  color: var(--text-dim);
 }
 
 .med-submit-btn {
@@ -1967,17 +1965,17 @@ select.campo-inline {
 .chips-scroll .chip {
   min-height: 44px;
   padding: 0 18px;
-  border: 1px solid rgba(101, 133, 198, 0.35);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(25, 42, 77, 0.95), rgba(18, 31, 57, 0.96));
-  color: #8ea3d4;
+  background: var(--bg-input);
+  color: var(--text-dim);
   font-size: 0.92rem;
   font-weight: 600;
 }
 .chips-scroll .chip.ativo {
-  background: linear-gradient(180deg, #2e94ff, #1d72ea);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
-  border-color: rgba(109, 184, 255, 0.85);
+  border-color: var(--blue);
   box-shadow: 0 8px 20px rgba(26, 97, 194, 0.26);
 }
 </style>

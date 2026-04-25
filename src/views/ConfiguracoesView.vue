@@ -460,7 +460,7 @@ async function confirmarDelete() {
 }
 
 .btn-copiar {
-  background: rgba(41, 98, 255, 0.1);
+  background: var(--blue-muted);
   border: 1px solid var(--blue);
   color: var(--blue);
   font-size: 0.75rem;
@@ -539,7 +539,7 @@ async function confirmarDelete() {
 }
 
 .sucesso-msg {
-  color: #4caf82;
+  color: var(--success);
   font-size: 0.85rem;
   text-align: center;
 }

@@ -1228,8 +1228,8 @@ function novaAnotacao() {
 .curativo-screen {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 18% 0%, rgba(72, 213, 151, 0.12), transparent 30%),
-    linear-gradient(180deg, #06160f 0%, #081713 42%, #07100d 100%);
+    radial-gradient(circle at 18% 0%, var(--blue-faint), transparent 30%),
+    var(--bg);
 }
 
 .curativo-header {
@@ -1295,11 +1295,9 @@ function novaAnotacao() {
   gap: 16px;
   margin: 4px 0 18px;
   padding: 18px;
-  border: 1px solid rgba(92, 185, 139, 0.22);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background:
-    linear-gradient(135deg, rgba(13, 45, 33, 0.96), rgba(8, 24, 23, 0.92)),
-    radial-gradient(circle at 100% 0%, rgba(110, 231, 183, 0.16), transparent 34%);
+  background: var(--bg-card);
   box-shadow: 0 22px 56px rgba(0, 0, 0, 0.26);
 }
 
@@ -1526,8 +1524,8 @@ function novaAnotacao() {
 
 .curativo-screen {
   background:
-    radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
-    linear-gradient(180deg, #071426 0%, #081425 42%, #07111f 100%);
+    radial-gradient(circle at 14% 0%, var(--blue-faint), transparent 30%),
+    var(--bg);
 }
 
 .curativo-header {
@@ -1558,10 +1556,8 @@ function novaAnotacao() {
 }
 
 .module-hero {
-  border-color: rgba(76, 121, 190, 0.42);
-  background:
-    radial-gradient(circle at top left, rgba(48, 134, 255, 0.2), transparent 42%),
-    linear-gradient(180deg, rgba(17, 34, 65, 0.98), rgba(12, 26, 50, 0.98));
+  border-color: var(--border);
+  background: var(--bg-card);
   box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
 }
 
@@ -1608,8 +1604,8 @@ function novaAnotacao() {
 .campo input:focus,
 .add-input:focus,
 .outro-input-row input:focus {
-  border-color: rgba(87, 157, 255, 0.82);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .chip {

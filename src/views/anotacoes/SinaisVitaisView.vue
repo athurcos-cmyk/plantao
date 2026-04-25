@@ -442,8 +442,8 @@ function novaAfericao() {
 <style scoped>
 .sv-screen {
   background:
-    radial-gradient(circle at top right, rgba(39, 116, 231, 0.14), transparent 28%),
-    linear-gradient(180deg, #091429 0%, #0a1628 100%);
+    radial-gradient(circle at top right, var(--blue-faint), transparent 28%),
+    var(--bg);
 }
 
 .sv-header {
@@ -485,7 +485,7 @@ function novaAfericao() {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #9aabd0;
+  color: var(--text-dim);
 }
 
 .patient-chip-row {
@@ -495,10 +495,10 @@ function novaAfericao() {
 .patient-chip {
   min-height: 44px;
   padding: 0 18px;
-  border: 1px solid rgba(101, 133, 198, 0.35);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(25, 42, 77, 0.95), rgba(18, 31, 57, 0.96));
-  color: #8ea3d4;
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
+  color: var(--text-dim);
   font-size: 0.92rem;
   font-family: inherit;
   font-weight: 600;
@@ -508,9 +508,9 @@ function novaAfericao() {
 }
 
 .patient-chip-on {
-  background: linear-gradient(180deg, #2e94ff, #1d72ea);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
-  border-color: rgba(109, 184, 255, 0.85);
+  border-color: var(--blue);
   box-shadow: 0 10px 22px rgba(26, 97, 194, 0.26);
 }
 
@@ -523,10 +523,8 @@ function novaAfericao() {
   padding: 18px 18px;
   margin-bottom: 22px;
   border-radius: 22px;
-  border: 1px solid rgba(70, 132, 230, 0.42);
-  background:
-    radial-gradient(circle at top left, rgba(44, 117, 235, 0.18), transparent 40%),
-    linear-gradient(180deg, rgba(17, 34, 66, 0.98), rgba(14, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
 }
 
@@ -538,8 +536,8 @@ function novaAfericao() {
   width: 62px;
   height: 62px;
   border-radius: 20px;
-  background: radial-gradient(circle at top, rgba(71, 140, 255, 0.38), rgba(39, 88, 170, 0.5));
-  border: 1px solid rgba(104, 161, 255, 0.38);
+  background: var(--blue-muted);
+  border: 1px solid var(--border);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -563,7 +561,7 @@ function novaAfericao() {
 .module-hero-copy p {
   margin: 8px 0 0;
   font-size: 1rem;
-  color: #9aabd0;
+  color: var(--text-dim);
 }
 
 .module-hero-wave {
@@ -583,8 +581,8 @@ function novaAfericao() {
   width: 100%;
   min-height: 64px;
   padding-right: 16px;
-  background: linear-gradient(180deg, rgba(23, 37, 67, 0.96), rgba(18, 30, 56, 0.98));
-  border: 1px solid rgba(67, 93, 141, 0.5);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 18px;
   color: #eef4ff;
   font-size: 1.16rem;
@@ -601,16 +599,16 @@ function novaAfericao() {
 .vital-card {
   padding: 16px 16px 18px;
   border-radius: 20px;
-  border: 1px solid rgba(53, 82, 129, 0.5);
-  background: linear-gradient(180deg, rgba(19, 35, 66, 0.96), rgba(15, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
 }
 
 .vital-card input {
   width: 100%;
   min-height: 56px;
-  background: rgba(18, 33, 60, 0.9);
-  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 15px;
   color: #eff4ff;
   font-size: 1rem;
@@ -620,8 +618,8 @@ function novaAfericao() {
 }
 
 .vital-card input:focus {
-  border-color: rgba(87, 157, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.14);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .vital-card-pa,
@@ -726,8 +724,8 @@ function novaAfericao() {
 .section-card {
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(50, 76, 122, 0.48);
-  background: linear-gradient(180deg, rgba(16, 30, 58, 0.94), rgba(13, 25, 49, 0.96));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 16px 30px rgba(3, 10, 22, 0.15);
 }
 
@@ -740,9 +738,9 @@ function novaAfericao() {
 .segmented-btn {
   min-height: 60px;
   border-radius: 16px;
-  border: 1px solid rgba(54, 80, 125, 0.52);
-  background: rgba(22, 37, 68, 0.88);
-  color: #8ea3d4;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   font-family: inherit;
   font-size: 0.98rem;
   font-weight: 700;
@@ -753,8 +751,8 @@ function novaAfericao() {
 }
 
 .segmented-btn-on {
-  background: linear-gradient(180deg, #2f93ff, #1e71ea);
-  border-color: rgba(108, 182, 255, 0.84);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  border-color: var(--blue);
   color: #fff;
   box-shadow: 0 10px 22px rgba(28, 101, 214, 0.24);
 }
@@ -767,7 +765,7 @@ function novaAfericao() {
 .campo label,
 .label-small {
   display: block;
-  color: #9aabd0;
+  color: var(--text-dim);
   margin-bottom: 8px;
   font-size: 0.84rem;
   font-weight: 700;
@@ -783,10 +781,10 @@ function novaAfericao() {
 .comunicado-input {
   width: 100%;
   min-height: 56px;
-  background: rgba(18, 33, 60, 0.9);
-  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  color: #eff4ff;
+  color: var(--text);
   font-family: inherit;
   font-size: 1rem;
   padding: 0 16px;
@@ -797,8 +795,8 @@ function novaAfericao() {
 .campo-inline:focus,
 .details-stack input:focus,
 .comunicado-input:focus {
-  border-color: rgba(87, 157, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.14);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .chips-wrap {
@@ -810,10 +808,10 @@ function novaAfericao() {
 .chip {
   min-height: 44px;
   padding: 0 16px;
-  background: rgba(20, 35, 63, 0.88);
-  border: 1px solid rgba(58, 84, 128, 0.6);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  color: #8ea3d4;
+  color: var(--text-dim);
   font-size: 0.92rem;
   font-family: inherit;
   font-weight: 600;
@@ -822,8 +820,8 @@ function novaAfericao() {
 }
 
 .chip-on {
-  background: linear-gradient(180deg, #2f93ff, #1e71ea);
-  border-color: rgba(108, 182, 255, 0.84);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  border-color: var(--blue);
   color: #fff;
 }
 
@@ -887,8 +885,8 @@ function novaAfericao() {
 }
 
 .preview-box {
-  background: linear-gradient(180deg, rgba(18, 33, 60, 0.96), rgba(14, 27, 51, 0.98));
-  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 18px;
   width: 100%;
@@ -918,8 +916,8 @@ function novaAfericao() {
 }
 
 .sv-rascunho-banner {
-  background: rgba(37, 101, 219, 0.12);
-  border: 1px solid rgba(69, 132, 231, 0.3);
+  background: var(--blue-muted);
+  border: 1px solid var(--border);
   border-radius: 18px;
   padding: 14px 16px;
 }

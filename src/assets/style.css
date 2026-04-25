@@ -10,6 +10,7 @@
   --blue:      #1E88E5;
   --blue-dark: #1565C0;
   --blue-muted:rgba(30, 136, 229, 0.12);
+  --blue-faint:rgba(30, 136, 229, 0.16);
 
   /* Text */
   --text:      #EAEEF3;
@@ -301,8 +302,8 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: rgba(41, 98, 255, 0.08);
-  border: 1px solid rgba(41, 98, 255, 0.25);
+  background: var(--blue-muted);
+  border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent);
   border-radius: var(--radius);
   padding: 12px 14px;
   margin-bottom: 16px;

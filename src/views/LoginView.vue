@@ -653,8 +653,8 @@ async function recuperar() {
   padding: 12px 14px;
   border-radius: 12px;
   margin-bottom: 16px;
-  background: rgba(41, 98, 255, 0.08);
-  border: 1px solid rgba(41, 98, 255, 0.2);
+  background: var(--blue-muted);
+  border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent);
 }
 .destaque-info strong {
   font-size: 0.9rem;

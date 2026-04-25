@@ -426,8 +426,8 @@ onUnmounted(() => {
   width: min(94vw, 420px);
   padding: 8px 9px;
   border-radius: 18px;
-  border: 1px solid rgba(124, 147, 194, 0.14);
-  background: #0e1f3c;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 3px;
@@ -441,7 +441,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 14px;
   background: transparent;
-  color: #8ea3d4;
+  color: var(--text-dim);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -454,12 +454,12 @@ onUnmounted(() => {
 }
 
 .bottom-nav-item-calc svg {
-  filter: drop-shadow(0 0 10px rgba(103, 171, 255, 0.22));
+  filter: drop-shadow(0 0 10px var(--blue-faint));
 }
 
 .bottom-nav-item-on {
-  background: rgba(255, 255, 255, 0.05);
-  color: #7fc0ff;
+  background: var(--blue-muted);
+  color: var(--blue);
 }
 
 .bottom-nav-badge {
@@ -484,9 +484,9 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #1a1a2e;
-  border-top: 1px solid #e57373;
-  color: #ef9a9a;
+  background: var(--bg-card);
+  border-top: 1px solid var(--danger);
+  color: var(--text);
   font-size: 0.82rem;
   font-weight: 600;
   text-align: center;
@@ -499,8 +499,8 @@ onUnmounted(() => {
 }
 
 .offline-badge {
-  background: #e57373;
-  color: #1a1a2e;
+  background: var(--danger);
+  color: #fff;
   border-radius: 10px;
   padding: 1px 7px;
   font-size: 0.75rem;
@@ -518,10 +518,10 @@ onUnmounted(() => {
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   width: min(460px, calc(100% - 20px));
-  background: #1e3a5f;
-  border: 1px solid #4a90d9;
+  background: var(--bg-card);
+  border: 1px solid var(--blue);
   border-radius: 16px;
-  color: #e8f4fd;
+  color: var(--text);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 12px 16px;
@@ -541,15 +541,15 @@ onUnmounted(() => {
 .install-titulo {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #e8f4fd;
+  color: var(--text);
 }
 .install-sub {
   font-size: 0.75rem;
-  color: #8ab8d8;
+  color: var(--text-dim);
   font-weight: 400;
 }
 .install-btn {
-  background: #4a90d9;
+  background: var(--blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -585,10 +585,10 @@ onUnmounted(() => {
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   width: min(460px, calc(100% - 20px));
-  background: #0d2137;
-  border: 1px solid #2196f3;
+  background: var(--bg-card);
+  border: 1px solid var(--blue);
   border-radius: 16px;
-  color: #b3d9f7;
+  color: var(--text);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 12px 16px;
@@ -601,7 +601,7 @@ onUnmounted(() => {
 .safari-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
 .safari-bar-texto { flex: 1; }
 .safari-bar-btn {
-  background: #2196f3;
+  background: var(--blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -712,10 +712,10 @@ onUnmounted(() => {
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   width: min(460px, calc(100% - 20px));
-  background: #0d2137;
+  background: var(--bg-card);
   border: 1px solid var(--blue);
   border-radius: 16px;
-  color: #b3d9f7;
+  color: var(--text);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 12px 16px;
@@ -753,9 +753,9 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  background: #1a3a2e;
-  border-bottom: 1px solid #4caf82;
-  color: #a5d6b7;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--blue);
+  color: var(--text);
   font-size: 0.85rem;
   font-weight: 600;
   padding: 10px 16px;
@@ -766,8 +766,8 @@ onUnmounted(() => {
   gap: 12px;
 }
 .update-btn {
-  background: #4caf82;
-  color: #0a1a14;
+  background: var(--blue);
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 5px 14px;

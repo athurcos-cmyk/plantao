@@ -416,7 +416,7 @@ function mostrarFeedback(msg) {
 <style scoped>
 .historico-screen {
   background:
-    radial-gradient(circle at top center, rgba(43, 110, 201, 0.16), transparent 34%),
+    radial-gradient(circle at top center, var(--blue-faint), transparent 34%),
     var(--bg);
 }
 
@@ -662,8 +662,8 @@ function mostrarFeedback(msg) {
 }
 
 .chip.ativo {
-  background: linear-gradient(135deg, #1f78d8, #2f93ff);
-  border-color: rgba(142, 202, 255, 0.9);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  border-color: var(--blue);
   color: #fff;
   box-shadow: 0 10px 20px rgba(23, 85, 158, 0.28);
 }

@@ -1135,8 +1135,8 @@ watch(notaTexto, (txt) => {
 /* Premium upgrade */
 .livre-screen {
   background:
-    radial-gradient(circle at top right, rgba(39, 116, 231, 0.14), transparent 28%),
-    linear-gradient(180deg, #091429 0%, #0a1628 100%);
+    radial-gradient(circle at top right, var(--blue-faint), transparent 28%),
+    var(--bg);
 }
 
 .livre-header {
@@ -1170,10 +1170,8 @@ watch(notaTexto, (txt) => {
   margin-bottom: 18px;
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(70, 132, 230, 0.42);
-  background:
-    radial-gradient(circle at top left, rgba(44, 117, 235, 0.2), transparent 42%),
-    linear-gradient(180deg, rgba(17, 34, 66, 0.98), rgba(14, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
 }
 
@@ -1241,15 +1239,15 @@ watch(notaTexto, (txt) => {
   margin: 8px 0 0;
   font-size: 1rem;
   line-height: 1.35;
-  color: #9aabd0;
+  color: var(--text-dim);
 }
 
 .livre-card,
 .nota-composer,
 .modal-modelos {
   border-radius: 22px;
-  border: 1px solid rgba(53, 82, 129, 0.5);
-  background: linear-gradient(180deg, rgba(19, 35, 66, 0.97), rgba(15, 28, 54, 0.98));
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   box-shadow: 0 14px 28px rgba(3, 10, 22, 0.2);
 }
 
@@ -1260,7 +1258,7 @@ watch(notaTexto, (txt) => {
 
 .campo label {
   display: block;
-  color: #9aabd0;
+  color: var(--text-dim);
   margin-bottom: 8px;
   font-size: 0.84rem;
   font-weight: 700;
@@ -1273,8 +1271,8 @@ watch(notaTexto, (txt) => {
   width: 100%;
   min-height: 56px;
   box-sizing: border-box;
-  background: rgba(18, 33, 60, 0.9);
-  border: 1px solid rgba(60, 86, 131, 0.58);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 16px;
   color: #eff4ff;
   font-family: inherit;
@@ -1292,8 +1290,8 @@ watch(notaTexto, (txt) => {
 
 .campo input:focus,
 .campo textarea:focus {
-  border-color: rgba(87, 157, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.14);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 .chips-scroll {
@@ -1304,16 +1302,16 @@ watch(notaTexto, (txt) => {
   min-height: 44px;
   padding: 0 16px;
   border-radius: 999px;
-  background: rgba(20, 35, 63, 0.88);
-  border: 1px solid rgba(58, 84, 128, 0.6);
-  color: #8ea3d4;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
   font-size: 0.92rem;
   font-weight: 600;
 }
 
 .chip-on {
-  background: linear-gradient(180deg, #2f93ff, #1e71ea);
-  border-color: rgba(108, 182, 255, 0.84);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  border-color: var(--blue);
   color: #fff;
   box-shadow: 0 6px 14px rgba(30, 100, 230, 0.15);
 }
@@ -1323,7 +1321,7 @@ watch(notaTexto, (txt) => {
 }
 
 .secao-label-lg {
-  color: #9aabd0;
+  color: var(--text-dim);
   font-size: 0.82rem;
   letter-spacing: 0.06em;
 }
@@ -1334,7 +1332,7 @@ watch(notaTexto, (txt) => {
 }
 
 .badge-count.azul {
-  background: linear-gradient(180deg, #2f93ff, #1e71ea);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
 }
 
 .modelos-acoes {
@@ -1351,12 +1349,12 @@ watch(notaTexto, (txt) => {
 .btn-gerenciar {
   background: rgba(18, 33, 60, 0.76);
   border-color: rgba(60, 86, 131, 0.58);
-  color: #9aabd0;
+  color: var(--text-dim);
 }
 
 .btn-novo-modelo-topo {
-  background: linear-gradient(180deg, #2f93ff, #1e71ea);
-  border-color: rgba(108, 182, 255, 0.84);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  border-color: var(--blue);
   box-shadow: 0 7px 15px rgba(28, 101, 214, 0.14);
 }
 
@@ -1376,7 +1374,7 @@ watch(notaTexto, (txt) => {
   padding: 0 10px;
   border-radius: 16px;
   background: rgba(10, 22, 40, 0.56);
-  color: #75bdff;
+  color: var(--blue);
   font-size: 1.02rem;
   font-weight: 800;
 }
@@ -1395,7 +1393,7 @@ watch(notaTexto, (txt) => {
 }
 
 .nc-texto::placeholder {
-  color: #7184ac;
+  color: var(--text-muted);
 }
 
 .nc-footer {
@@ -1409,7 +1407,7 @@ watch(notaTexto, (txt) => {
 .nc-btn-add {
   min-height: 38px;
   border-radius: 14px;
-  background: linear-gradient(180deg, #2f93ff, #1e71ea);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   font-weight: 800;
   box-shadow: 0 7px 15px rgba(28, 101, 214, 0.14);
 }
@@ -1426,27 +1424,27 @@ watch(notaTexto, (txt) => {
 
 .timeline-content {
   border-radius: 16px;
-  border: 1px solid rgba(53, 82, 129, 0.5);
-  background: linear-gradient(180deg, rgba(19, 35, 66, 0.92), rgba(15, 28, 54, 0.94));
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 10px 20px rgba(3, 10, 22, 0.15);
 }
 
 .timeline-hora {
-  color: #75bdff;
+  color: var(--blue);
   font-weight: 800;
 }
 
 .timeline-dot {
-  background: #2f93ff;
-  box-shadow: 0 0 0 4px rgba(47, 147, 255, 0.18);
+  background: var(--blue);
+  box-shadow: 0 0 0 4px var(--blue-faint);
 }
 
 .timeline-line {
-  background: rgba(60, 86, 131, 0.58);
+  background: var(--border);
 }
 
 .timeline-texto {
-  color: #dce8ff;
+  color: var(--text);
 }
 
 .btn-del-nota,
@@ -1468,12 +1466,12 @@ watch(notaTexto, (txt) => {
 .chip-modelo-on {
   background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
   border-color: rgba(80, 160, 255, 0.72);
-  color: #a8d4ff;
+  color: #fff;
   box-shadow: 0 6px 14px rgba(30, 100, 230, 0.13);
 }
 
 .modelos-vazio-row {
-  color: #9aabd0;
+  color: var(--text-dim);
   min-height: 40px;
   padding: 0 2px;
 }
@@ -1491,9 +1489,9 @@ watch(notaTexto, (txt) => {
   min-height: 48px;
   padding: 0 14px;
   border-radius: 16px;
-  border: 1px solid rgba(60, 86, 131, 0.58);
-  background: rgba(18, 33, 60, 0.82);
-  color: #8ea3d4;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
 }
 
 .modelo-search-wrap input {
@@ -1501,13 +1499,13 @@ watch(notaTexto, (txt) => {
   border: none;
   outline: none;
   background: transparent;
-  color: #eef4ff;
+  color: var(--text);
   font-family: inherit;
   font-size: 0.96rem;
 }
 
 .modelo-search-wrap input::placeholder {
-  color: #7184ac;
+  color: var(--text-muted);
 }
 
 .modelos-favoritos {
@@ -1517,7 +1515,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modelos-subtitle {
-  color: #9aabd0;
+  color: var(--text-dim);
   font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.07em;
@@ -1555,7 +1553,7 @@ watch(notaTexto, (txt) => {
 
 .modelo-fav-chip-on {
   background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
-  border-color: rgba(108, 182, 255, 0.84);
+  border-color: var(--blue);
   color: #fff;
 }
 
@@ -1592,7 +1590,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modelo-list-item-on {
-  border-color: rgba(108, 182, 255, 0.78);
+  border-color: var(--blue);
   box-shadow: 0 7px 16px rgba(28, 101, 214, 0.15);
 }
 
@@ -1634,7 +1632,7 @@ watch(notaTexto, (txt) => {
 }
 
 .btn-link {
-  color: #75bdff;
+  color: var(--blue);
   font-weight: 700;
   text-decoration: none;
 }

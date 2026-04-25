@@ -846,13 +846,13 @@ async function excluirPend(pac, pend) {
 .pacientes-screen {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
+    radial-gradient(circle at 14% 0%, var(--blue-faint), transparent 30%),
     var(--bg);
 }
 
 .pacientes-header {
-  background: rgba(8, 20, 37, 0.92);
-  border-bottom: 1px solid rgba(71, 119, 194, 0.18);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
   backdrop-filter: blur(14px);
 }
 
@@ -869,10 +869,10 @@ async function excluirPend(pac, pend) {
   margin-bottom: 18px;
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(76, 121, 190, 0.36);
+  border: 1px solid var(--border);
   background:
-    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 18px 34px rgba(2, 8, 18, 0.22);
 }
 
@@ -892,13 +892,13 @@ async function excluirPend(pac, pend) {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 800;
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .pag-subtitulo {
   margin: 6px 0 0;
   font-size: 0.92rem;
-  color: #9fb0d2;
+  color: var(--text-dim);
 }
 
 .btn-limpar-todos {
@@ -915,7 +915,7 @@ async function excluirPend(pac, pend) {
 .btn-add-pac {
   min-height: 44px;
   padding: 0 16px;
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   border-radius: 14px;
   font-size: 0.84rem;
   font-weight: 800;
@@ -925,34 +925,34 @@ async function excluirPend(pac, pend) {
 .btn-dica-reabrir {
   min-height: 48px;
   padding: 0 14px;
-  background: rgba(15, 32, 57, 0.82);
-  border: 1px dashed rgba(76, 121, 190, 0.52);
+  background: var(--bg-input);
+  border: 1px dashed var(--border);
   border-radius: 16px;
-  color: #9fb0d2;
+  color: var(--text-dim);
   font-weight: 700;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
 .btn-dica-reabrir:active {
-  border-color: rgba(94, 166, 255, 0.82);
-  color: #dfeaff;
-  background: rgba(17, 36, 67, 0.96);
+  border-color: var(--blue);
+  color: var(--text);
+  background: var(--bg-card);
 }
 
 .dica-notif {
   padding: 16px 18px;
   border-radius: 20px;
-  border: 1px solid rgba(76, 121, 190, 0.36);
+  border: 1px solid var(--border);
   background:
-    radial-gradient(circle at top left, rgba(49, 126, 228, 0.12), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 16px 34px rgba(2, 8, 18, 0.18);
 }
 
 .dica-notif-header {
   gap: 8px;
   margin-bottom: 10px;
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .dica-notif-icon {
@@ -962,8 +962,8 @@ async function excluirPend(pac, pend) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(43, 118, 232, 0.18);
-  color: #8dbdff;
+  background: var(--blue-faint);
+  color: var(--blue);
   font-size: 0.95rem;
 }
 
@@ -971,30 +971,30 @@ async function excluirPend(pac, pend) {
   width: 28px;
   height: 28px;
   border-radius: 9px;
-  color: #9fb0d2;
+  color: var(--text-dim);
   font-size: 1.15rem;
   padding: 0;
 }
 
 .dica-notif-fechar:active {
-  background: rgba(255,255,255,0.06);
+  background: var(--bg-hover);
 }
 
 .dica-notif-texto,
 .dica-plataforma-texto {
-  color: #c8d7f4;
+  color: var(--text-dim);
 }
 
 .dica-notif-passos {
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .dica-notif-sub {
-  color: #9fb0d2;
+  color: var(--text-dim);
 }
 
 .dica-plataforma {
-  border-top-color: rgba(76, 121, 190, 0.22);
+  border-top-color: var(--border);
 }
 
 .dica-plataforma-tag.android { background: rgba(67, 160, 71, 0.14); color: #7fe58d; }
@@ -1003,21 +1003,21 @@ async function excluirPend(pac, pend) {
 .empty-pac {
   padding: 56px 20px;
   border-radius: 22px;
-  border: 1px solid rgba(76, 121, 190, 0.32);
+  border: 1px solid var(--border);
   background:
-    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 18px 34px rgba(2, 8, 18, 0.2);
 }
 
-.empty-pac-titulo { color: #f5f8ff; font-weight: 800; }
-.empty-pac-sub { color: #9fb0d2; font-size: 0.88rem; }
+.empty-pac-titulo { color: var(--text); font-weight: 800; }
+.empty-pac-sub { color: var(--text-dim); font-size: 0.88rem; }
 
 .pac-card {
   background:
-    radial-gradient(circle at top left, rgba(47, 120, 225, 0.08), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
-  border: 1px solid rgba(76, 121, 190, 0.32);
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
+  border: 1px solid var(--border);
   border-radius: 20px;
   margin-bottom: 14px;
   box-shadow: 0 16px 30px rgba(2, 8, 18, 0.18);
@@ -1025,7 +1025,7 @@ async function excluirPend(pac, pend) {
 
 .pac-header {
   padding: 14px 16px;
-  border-bottom-color: rgba(76, 121, 190, 0.18);
+  border-bottom-color: var(--border);
 }
 
 .pac-leito-badge {
@@ -1034,7 +1034,7 @@ async function excluirPend(pac, pend) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   border-radius: 10px;
   font-weight: 800;
   box-shadow: 0 10px 20px rgba(32, 116, 225, 0.18);
@@ -1043,36 +1043,36 @@ async function excluirPend(pac, pend) {
 .pac-nome {
   font-size: 1rem;
   font-weight: 700;
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .pend-contador {
-  background: rgba(18, 35, 66, 0.92);
-  color: #9fb0d2;
-  border: 1px solid rgba(67, 101, 157, 0.58);
+  background: var(--bg-card);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 2px 7px;
   font-weight: 800;
 }
 
 .pend-contador-alerta {
-  background: rgba(42, 118, 224, 0.18);
-  color: #9fc5ff;
-  border-color: rgba(94, 166, 255, 0.4);
+  background: var(--blue-muted);
+  color: var(--blue);
+  border-color: var(--blue);
 }
 
-.toggle-btn { color: #9fb0d2; }
+.toggle-btn { color: var(--text-dim); }
 
 .btn-icon-sm {
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(67, 101, 157, 0.34);
-  background: rgba(15, 32, 57, 0.82);
-  color: #c8d7f4;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
   border-radius: 10px;
 }
 
-.btn-icon-sm:active { background: rgba(18, 35, 66, 0.98); }
+.btn-icon-sm:active { background: var(--bg-card); }
 .btn-icon-danger { color: #ff9d9a; }
 
 .pend-lista { padding: 8px 0; }
@@ -1082,51 +1082,51 @@ async function excluirPend(pac, pend) {
 }
 
 .pend-check {
-  border-color: rgba(67, 101, 157, 0.58);
+  border-color: var(--border);
   border-radius: 7px;
-  background: rgba(12, 25, 48, 0.72);
+  background: var(--bg-input);
 }
 
 .pend-item.feito .pend-check {
-  background: #2d9c69;
-  border-color: #2d9c69;
+  background: var(--success);
+  border-color: var(--success);
 }
 
 .pend-texto {
   font-size: 0.9rem;
-  color: #eef4ff;
+  color: var(--text);
 }
 
-.pend-item.feito .pend-texto { color: #8ea3d4; }
-.pend-tempo { color: #8ea3d4; }
+.pend-item.feito .pend-texto { color: var(--text-dim); }
+.pend-tempo { color: var(--text-dim); }
 
-.pend-horario-ok { background: rgba(42, 118, 224, 0.14); color: #8dbdff; }
+.pend-horario-ok { background: var(--blue-muted); color: var(--blue); }
 
 .pend-time-input {
-  border-color: rgba(67, 101, 157, 0.58);
-  background: rgba(18, 33, 60, 0.96);
-  color: #eef4ff;
+  border-color: var(--border);
+  background: var(--bg-card);
+  color: var(--text);
 }
 
-.pend-del { color: #8ea3d4; }
+.pend-del { color: var(--text-dim); }
 
 .pend-add-row {
   padding: 10px 16px;
-  border-top-color: rgba(76, 121, 190, 0.18);
-  background: rgba(10, 22, 40, 0.28);
+  border-top-color: var(--border);
+  background: var(--bg-input);
 }
 
 .pend-add-input {
   font-size: 0.88rem;
-  color: #d7e3ff;
+  color: var(--text);
   padding: 6px 0;
 }
 
-.pend-add-input::placeholder { color: #8ea3d4; }
+.pend-add-input::placeholder { color: var(--text-dim); }
 
 .pend-add-btn {
   min-height: 34px;
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   border-radius: 10px;
   font-weight: 700;
   padding: 0 12px;
@@ -1134,27 +1134,27 @@ async function excluirPend(pac, pend) {
 
 .modal-box {
   background:
-    radial-gradient(circle at top left, rgba(47, 120, 225, 0.12), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.98), rgba(12, 25, 48, 0.99));
-  border: 1px solid rgba(76, 121, 190, 0.34);
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
+  border: 1px solid var(--border);
   border-radius: 20px;
   box-shadow: 0 22px 44px rgba(0,0,0,0.3);
 }
 
-.modal-titulo { color: #f5f8ff; font-weight: 800; }
-.campo label { color: #9fb0d2; font-weight: 700; }
+.modal-titulo { color: var(--text); font-weight: 800; }
+.campo label { color: var(--text-dim); font-weight: 700; }
 
 .campo-inline {
-  background: rgba(18, 33, 60, 0.96);
-  border-color: rgba(67, 101, 157, 0.58);
+  background: var(--bg-card);
+  border-color: var(--border);
   border-radius: 14px;
   padding: 12px 14px;
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .campo-inline:focus {
-  border-color: rgba(87, 157, 255, 0.82);
-  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 
 @media (max-width: 520px) {
