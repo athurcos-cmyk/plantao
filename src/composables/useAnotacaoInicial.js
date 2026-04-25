@@ -294,7 +294,7 @@ export function useAnotacaoInicial() {
     erro.value = ''
     if (passo.value === 1) {
       if (!form.horario) {
-        erro.value = 'Informe o horÃ¡rio.'
+        erro.value = 'Informe o horário.'
         return
       }
       passo.value = 2
