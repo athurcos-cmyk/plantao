@@ -357,6 +357,7 @@ function tipoLabel(tipo) {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  will-change: transform;
 }
 
 /* ── Handle + Header ─────────────────────────────────────────────────────── */
@@ -683,7 +684,7 @@ function tipoLabel(tipo) {
   padding: 7px 14px;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
@@ -696,10 +697,7 @@ function tipoLabel(tipo) {
 
 .calc-overlay {
   padding: 16px 12px 0;
-  background:
-    radial-gradient(circle at top center, rgba(88, 154, 255, 0.12), transparent 34%),
-    rgba(3, 9, 19, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(3, 9, 19, 0.78);
 }
 
 .calc-sheet {
@@ -793,11 +791,10 @@ function tipoLabel(tipo) {
   border-radius: 14px;
   background: rgba(11, 22, 38, 0.72);
   color: rgba(228, 236, 249, 0.78);
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .calc-btn-fechar:hover {
-  transform: translateY(-1px);
   border-color: rgba(128, 171, 245, 0.36);
   background: rgba(18, 35, 58, 0.88);
   color: #f6f9ff;
@@ -824,7 +821,7 @@ function tipoLabel(tipo) {
   color: rgba(192, 207, 232, 0.72);
   font-size: 0.84rem;
   font-weight: 700;
-  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .calc-aba:hover {
@@ -878,7 +875,7 @@ function tipoLabel(tipo) {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.03),
     0 8px 18px rgba(2, 8, 20, 0.18);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .calc-input {
@@ -1005,11 +1002,10 @@ function tipoLabel(tipo) {
   font-size: 0.84rem;
   font-weight: 700;
   box-shadow: 0 10px 22px rgba(5, 14, 30, 0.24);
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .calc-btn-salvar:hover {
-  transform: translateY(-1px);
   border-color: rgba(126, 175, 247, 0.44);
   box-shadow: 0 16px 28px rgba(8, 20, 41, 0.28);
 }
@@ -1107,11 +1103,10 @@ function tipoLabel(tipo) {
   color: rgba(192, 207, 232, 0.76);
   font-weight: 700;
   box-shadow: 0 8px 18px rgba(2, 8, 20, 0.16);
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .chip:hover {
-  transform: translateY(-1px);
   color: #f7fbff;
 }
 
@@ -1129,12 +1124,11 @@ function tipoLabel(tipo) {
 
 .calc-slide-enter-active,
 .calc-slide-leave-active {
-  transition: opacity 0.24s ease, transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .calc-slide-enter-from,
 .calc-slide-leave-to {
-  opacity: 0;
   transform: translateY(100%);
 }
 
