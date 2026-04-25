@@ -576,11 +576,11 @@ function barraLargura(count, lista) {
 .admin-header { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
 .header-acoes { display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .btn-broadcast { background: var(--blue-muted); border: 1px solid var(--blue); color: var(--blue); font-size: 1.1rem; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: background 0.15s; }
-.btn-broadcast:hover { background: rgba(30,136,229,0.22); }
+.btn-broadcast:hover { background: color-mix(in srgb, var(--blue) 22%, transparent); }
 .btn-back { background: none; border: none; color: #8899AA; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
 .admin-title { margin: 0; font-size: 1.1rem; font-weight: 700; }
 .btn-refresh { background: none; border: none; color: #8899AA; font-size: 1.4rem; cursor: pointer; padding: 4px 8px; transition: color 0.15s; }
-.btn-refresh:hover:not(:disabled) { color: #1E88E5; }
+.btn-refresh:hover:not(:disabled) { color: var(--blue); }
 .spin { display: inline-block; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -638,7 +638,7 @@ function barraLargura(count, lista) {
 /* ── Botões de ação por usuário ── */
 .btn-icon { border-radius: 8px; border: 1px solid; padding: 8px 10px; font-size: 0.9rem; cursor: pointer; min-height: 38px; min-width: 38px; transition: background 0.15s; }
 .btn-email { background: var(--blue-muted); border-color: var(--blue); color: var(--blue); }
-.btn-email:hover:not(:disabled) { background: rgba(30,136,229,0.18); }
+.btn-email:hover:not(:disabled) { background: color-mix(in srgb, var(--blue) 18%, transparent); }
 .btn-del { background: rgba(229,57,53,0.08); border-color: rgba(229,57,53,0.25); color: #E53935; }
 .btn-del:hover:not(:disabled) { background: rgba(229,57,53,0.18); }
 .btn-icon:disabled { opacity: 0.4; cursor: default; }
@@ -659,7 +659,7 @@ function barraLargura(count, lista) {
 /* ── Métricas ── */
 .metricas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .metrica-card { background: #111d32; border: 1px solid #1e3050; border-radius: 10px; padding: 14px 10px; text-align: center; }
-.metrica-destaque { border-color: rgba(30,136,229,0.4); background: rgba(30,136,229,0.06); }
+.metrica-destaque { border-color: color-mix(in srgb, var(--blue) 40%, transparent); background: color-mix(in srgb, var(--blue) 6%, transparent); }
 .metrica-label { margin: 0 0 4px; font-size: 0.7rem; color: #8899AA; text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.3; }
 .metrica-num { margin: 0; font-size: 1.4rem; font-weight: 700; }
 .metrica-sm { font-size: 1rem; }

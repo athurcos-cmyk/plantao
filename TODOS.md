@@ -18,6 +18,13 @@
 
 ## Concluídos
 
+### [x] Corrigir hardcolor azul em Historico e Anotacao Inicial (2026-04-25)
+- `HistoricoView.vue` deixou de depender de tons azuis fixos em hero/cards/modal e passou a usar tokens dinâmicos do tema
+- `AnotacaoInicialView.vue` ganhou camada de unificação para forçar superfícies, bordas e textos a seguirem as variáveis do tema ativo
+- Build validado com sucesso após o ajuste
+
+---
+
 ### [x] Calculadora, Historico e Organizador no padrao premium (2026-04-25)
 - A calculadora foi movida para o rodape fixo e ganhou novo visual premium em `CalculadoraModal.vue`
 - `Historico` foi alargado para uso melhor no desktop e passou a exibir icones ilustrados por tipo de anotacao

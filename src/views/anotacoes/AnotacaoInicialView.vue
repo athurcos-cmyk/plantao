@@ -1012,7 +1012,7 @@ function selecionarPaciente(p) {
 
 .inicial-progress .progress-fill {
   background: linear-gradient(90deg, var(--blue-faint), var(--blue));
-  box-shadow: 0 0 12px rgba(69, 212, 214, 0.22);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--blue) 22%, transparent);
 }
 
 .paciente-atalho {
@@ -1111,8 +1111,8 @@ textarea {
 .input-suffix-wrap input:focus,
 input:focus,
 textarea:focus {
-  border-color: rgba(92, 215, 226, 0.78);
-  box-shadow: 0 0 0 3px rgba(69, 212, 214, 0.12);
+  border-color: color-mix(in srgb, var(--blue) 78%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 12%, transparent);
 }
 
 .radio-btn,
@@ -1125,9 +1125,9 @@ textarea:focus {
 .radio-btn:has(input:checked),
 .checkbox-label.checked,
 .checkbox-label:has(input:checked) {
-  border-color: rgba(92, 215, 226, 0.78);
-  background: rgba(38, 142, 179, 0.18);
-  box-shadow: 0 7px 15px rgba(35, 150, 200, 0.12);
+  border-color: color-mix(in srgb, var(--blue) 78%, transparent);
+  background: color-mix(in srgb, var(--blue) 18%, transparent);
+  box-shadow: 0 7px 15px color-mix(in srgb, var(--blue) 12%, transparent);
 }
 
 .chip {
@@ -1198,8 +1198,8 @@ textarea:focus {
   color: #eaf8ff;
   font-size: 0.95rem;
   font-weight: 850;
-  border: 1px solid rgba(92, 215, 226, 0.68);
-  background: rgba(38, 142, 179, 0.22);
+  border: 1px solid color-mix(in srgb, var(--blue) 68%, transparent);
+  background: color-mix(in srgb, var(--blue) 22%, transparent);
 }
 
 .disp-empty {
@@ -1249,8 +1249,8 @@ textarea:focus {
 }
 
 .btn-icon-sm:not(:disabled):active {
-  border-color: rgba(92, 215, 226, 0.72);
-  background: rgba(38, 142, 179, 0.18);
+  border-color: color-mix(in srgb, var(--blue) 72%, transparent);
+  background: color-mix(in srgb, var(--blue) 18%, transparent);
   color: #f5fbff;
 }
 
@@ -1441,7 +1441,7 @@ textarea:focus {
 
 .estado-section-resp + .estado-section-resp-main {
   margin-top: 10px;
-  border-top-color: rgba(92, 215, 226, 0.34);
+  border-top-color: color-mix(in srgb, var(--blue) 34%, transparent);
   background: rgba(15, 32, 57, 0.62);
 }
 
@@ -1542,7 +1542,7 @@ textarea:focus {
 }
 
 .btn-novo-modelo-topo {
-  border-color: rgba(92, 215, 226, 0.58);
+  border-color: color-mix(in srgb, var(--blue) 58%, transparent);
   color: #eaf8ff;
 }
 
@@ -1627,7 +1627,7 @@ textarea:focus {
 
 .modelo-fav-chip-on {
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
-  border-color: rgba(92, 215, 226, 0.84);
+  border-color: color-mix(in srgb, var(--blue) 84%, transparent);
   color: #fff;
 }
 
@@ -1639,7 +1639,7 @@ textarea:focus {
   overflow-y: auto;
   padding-right: 2px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(92, 215, 226, 0.45) transparent;
+  scrollbar-color: color-mix(in srgb, var(--blue) 45%, transparent) transparent;
 }
 
 .modelo-list-item {
@@ -1655,8 +1655,8 @@ textarea:focus {
 }
 
 .modelo-list-item-on {
-  border-color: rgba(92, 215, 226, 0.78);
-  box-shadow: 0 7px 16px rgba(35, 150, 200, 0.15);
+  border-color: color-mix(in srgb, var(--blue) 78%, transparent);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 15%, transparent);
 }
 
 .modelo-main-btn {
@@ -1807,7 +1807,7 @@ textarea:focus {
 }
 
 .inicial-header {
-  border-bottom-color: rgba(71, 119, 194, 0.18);
+  border-bottom-color: color-mix(in srgb, var(--blue) 18%, transparent);
 }
 
 .inicial-progress {
@@ -1845,7 +1845,7 @@ textarea:focus {
 .chip.ativo {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .estado-card-on,
@@ -1853,7 +1853,7 @@ textarea:focus {
 .modelo-list-item-on {
   border-color: var(--blue);
   background: var(--blue-muted);
-  box-shadow: 0 7px 16px rgba(32, 116, 225, 0.14);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 14%, transparent);
 }
 
 .btn-novo-modelo-topo,
@@ -1875,5 +1875,87 @@ textarea:focus {
 
 .btn-link {
   color: var(--blue);
+}
+
+/* Theme unification: remove hard blue casting from local surfaces */
+.inicial-screen {
+  --inicial-surface-1: color-mix(in srgb, var(--bg-card) 88%, var(--bg) 12%);
+  --inicial-surface-2: color-mix(in srgb, var(--bg-input) 72%, var(--bg) 28%);
+  --inicial-border-soft: color-mix(in srgb, var(--border) 82%, var(--blue) 18%);
+  --inicial-border-strong: color-mix(in srgb, var(--border) 68%, var(--blue) 32%);
+  --inicial-text-soft: color-mix(in srgb, var(--text) 68%, var(--text-dim) 32%);
+}
+
+.inicial-header {
+  border-bottom-color: var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-card) 86%, transparent);
+}
+
+.inicial-progress {
+  background: color-mix(in srgb, var(--bg-hover) 86%, transparent);
+}
+
+.inicial-progress .progress-fill {
+  box-shadow: 0 0 14px var(--blue-faint);
+}
+
+.paciente-atalho,
+.inicial-card,
+.estado-section,
+.fechamento-modos,
+.fechamento-vazio,
+.disp-item,
+.disp-empty,
+.modal-modelo-item,
+.modal-vazio {
+  border-color: var(--inicial-border-soft);
+  background: linear-gradient(180deg, var(--inicial-surface-1), var(--inicial-surface-2));
+}
+
+.paciente-atalho label,
+.module-hero-copy p,
+.disp-head p,
+.disp-empty span,
+.fechamento-modelos-head p,
+.modelos-vazio-row,
+.modal-vazio,
+.modal-header p {
+  color: var(--inicial-text-soft);
+}
+
+.module-hero-copy h1,
+.bloco-titulo,
+.modal-header h3,
+.disp-empty strong,
+.disp-texto {
+  color: var(--text);
+}
+
+.bloco-titulo,
+.disp-head,
+.fechamento-modelos-head,
+.modal-header,
+.modal-footer {
+  border-color: var(--inicial-border-soft);
+}
+
+.campo-inline,
+.input-suffix-wrap input,
+input,
+textarea,
+.radio-btn,
+.checkbox-label,
+.chip,
+.btn-icon-sm,
+.btn-gerenciar,
+.btn-novo-modelo-topo,
+.modelo-search-wrap,
+.modelo-fav-chip {
+  border-color: var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 84%, var(--bg) 16%);
+}
+
+.chip {
+  color: var(--text-dim);
 }
 </style>

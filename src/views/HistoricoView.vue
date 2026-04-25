@@ -415,6 +415,11 @@ function mostrarFeedback(msg) {
 
 <style scoped>
 .historico-screen {
+  --hist-surface-1: color-mix(in srgb, var(--bg-card) 86%, var(--bg) 14%);
+  --hist-surface-2: color-mix(in srgb, var(--bg-input) 72%, var(--bg) 28%);
+  --hist-border-soft: color-mix(in srgb, var(--border) 82%, var(--blue) 18%);
+  --hist-border-strong: color-mix(in srgb, var(--border) 68%, var(--blue) 32%);
+  --hist-shadow: color-mix(in srgb, #000 78%, var(--bg) 22%);
   background:
     radial-gradient(circle at top center, var(--blue-faint), transparent 34%),
     var(--bg);
@@ -468,12 +473,10 @@ function mostrarFeedback(msg) {
   gap: 14px;
   padding: 18px;
   margin-bottom: 10px;
-  border: 1px solid rgba(78, 118, 180, 0.28);
+  border: 1px solid var(--hist-border-soft);
   border-radius: 22px;
-  background:
-    linear-gradient(145deg, rgba(20, 39, 71, 0.98), rgba(13, 27, 48, 0.98)),
-    rgba(17, 29, 50, 0.96);
-  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.26);
+  background: linear-gradient(145deg, var(--hist-surface-1), var(--hist-surface-2));
+  box-shadow: 0 22px 40px color-mix(in srgb, var(--hist-shadow) 26%, transparent);
 }
 
 .hist-hero-copy {
@@ -504,7 +507,7 @@ function mostrarFeedback(msg) {
 
 .hist-subtitulo {
   margin-top: 10px;
-  color: #91a6c9;
+  color: var(--text-dim);
   font-size: 0.9rem;
   line-height: 1.45;
 }
@@ -674,9 +677,9 @@ function mostrarFeedback(msg) {
 .vazio {
   padding: 28px 18px;
   margin-top: 10px;
-  border: 1px dashed rgba(72, 109, 166, 0.42);
+  border: 1px dashed var(--hist-border-strong);
   border-radius: 20px;
-  background: rgba(13, 25, 44, 0.72);
+  background: color-mix(in srgb, var(--bg-card) 70%, transparent);
   color: var(--text-muted);
   text-align: center;
   line-height: 1.5;
@@ -685,11 +688,10 @@ function mostrarFeedback(msg) {
 .anot-card {
   margin-bottom: 14px;
   padding: 16px;
-  border: 1px solid rgba(68, 101, 152, 0.3);
+  border: 1px solid var(--hist-border-soft);
   border-radius: 20px;
-  background:
-    linear-gradient(180deg, rgba(19, 32, 56, 0.98), rgba(14, 26, 45, 0.98));
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+  background: linear-gradient(180deg, var(--hist-surface-1), var(--hist-surface-2));
+  box-shadow: 0 16px 32px color-mix(in srgb, var(--hist-shadow) 20%, transparent);
   content-visibility: auto;
   contain-intrinsic-size: 280px;
 }
@@ -721,7 +723,7 @@ function mostrarFeedback(msg) {
   height: 16px;
   object-fit: contain;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(39, 111, 201, 0.22));
+  filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--blue) 28%, transparent));
 }
 
 .anot-data {
@@ -739,7 +741,7 @@ function mostrarFeedback(msg) {
 
 .anot-paciente {
   flex: 1;
-  color: #b6c4db;
+  color: var(--text-dim);
   font-size: 0.84rem;
   font-weight: 600;
 }
@@ -885,10 +887,10 @@ function mostrarFeedback(msg) {
   max-width: 332px;
   padding: 24px;
   border-radius: 20px;
-  border: 1px solid rgba(67, 103, 161, 0.3);
-  background: linear-gradient(180deg, rgba(19, 32, 56, 0.98), rgba(13, 24, 43, 0.98));
+  border: 1px solid var(--hist-border-soft);
+  background: linear-gradient(180deg, var(--hist-surface-1), var(--hist-surface-2));
   text-align: center;
-  box-shadow: 0 24px 42px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 24px 42px color-mix(in srgb, var(--hist-shadow) 34%, transparent);
 }
 
 .modal-confirm p {

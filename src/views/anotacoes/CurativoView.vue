@@ -1531,7 +1531,7 @@ function novaAnotacao() {
 
 .curativo-header {
   background: rgba(8, 20, 37, 0.92);
-  border-bottom-color: rgba(71, 119, 194, 0.18);
+  border-bottom-color: color-mix(in srgb, var(--border) 70%, var(--blue) 30%);
 }
 
 .curativo-progress {
@@ -1632,7 +1632,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
-  box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .chip.chip-on:hover {
@@ -1671,6 +1671,6 @@ function novaAnotacao() {
 }
 
 .btn-generate {
-  box-shadow: 0 16px 34px rgba(31, 111, 214, 0.24);
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--blue) 24%, transparent);
 }
 </style>

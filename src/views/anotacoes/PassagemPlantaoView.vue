@@ -702,7 +702,7 @@ function novaAnotacao() {
 
 .passagem-header {
   background: rgba(8, 20, 37, 0.92);
-  border-bottom: 1px solid rgba(71, 119, 194, 0.18);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, var(--blue) 30%);
   backdrop-filter: blur(14px);
 }
 
@@ -868,7 +868,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
-  box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .radio-btn {
@@ -893,7 +893,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
-  box-shadow: 0 8px 16px rgba(31, 111, 214, 0.15);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--blue) 15%, transparent);
 }
 
 .checkbox-label {
@@ -909,7 +909,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   background: linear-gradient(135deg, color-mix(in srgb, var(--blue-dark) 92%, transparent), color-mix(in srgb, var(--blue) 82%, transparent));
   color: #fff;
-  box-shadow: 0 8px 16px rgba(31, 111, 214, 0.15);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--blue) 15%, transparent);
 }
 
 .radio-btn input,

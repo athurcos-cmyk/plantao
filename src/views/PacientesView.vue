@@ -713,9 +713,9 @@ async function excluirPend(pac, pend) {
   flex-shrink: 0;
 }
 .pend-contador-alerta {
-  background: rgba(30,136,229,0.12);
+  background: var(--blue-muted);
   color: var(--blue);
-  border-color: rgba(30,136,229,0.3);
+  border-color: color-mix(in srgb, var(--blue) 30%, transparent);
 }
 .toggle-btn { color: var(--text-muted); }
 
@@ -764,7 +764,7 @@ async function excluirPend(pac, pend) {
   padding: 2px 6px; border-radius: 7px; flex-shrink: 0;
   cursor: pointer;
 }
-.pend-horario-ok      { background: rgba(30,136,229,0.1); color: var(--blue); }
+.pend-horario-ok      { background: var(--blue-muted); color: var(--blue); }
 .pend-horario-proxima { background: rgba(255,152,0,0.15); color: #f57c00; }
 .pend-horario-vencida { background: rgba(229,57,53,0.12); color: var(--danger); }
 
@@ -814,7 +814,7 @@ async function excluirPend(pac, pend) {
   position: fixed; bottom: calc(24px + var(--safe-bottom)); right: 20px;
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--blue); color: #fff; border: none;
-  box-shadow: 0 4px 16px rgba(30,136,229,0.5);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--blue) 50%, transparent);
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   z-index: 90; transition: transform 0.15s;
 }
@@ -919,7 +919,7 @@ async function excluirPend(pac, pend) {
   border-radius: 14px;
   font-size: 0.84rem;
   font-weight: 800;
-  box-shadow: 0 14px 28px rgba(32, 116, 225, 0.22);
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--blue) 22%, transparent);
 }
 
 .btn-dica-reabrir {
@@ -1037,7 +1037,7 @@ async function excluirPend(pac, pend) {
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   border-radius: 10px;
   font-weight: 800;
-  box-shadow: 0 10px 20px rgba(32, 116, 225, 0.18);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--blue) 18%, transparent);
 }
 
 .pac-nome {

@@ -8,6 +8,12 @@
 
 ## Sessao 2026-04-25
 
+### Correcao de tema dinamico em telas com hardcolor
+
+- `HistoricoView` foi ajustada para parar de usar tons fixos de azul em superficies, bordas e sombras, passando a derivar tudo de tokens do tema ativo
+- `AnotacaoInicialView` recebeu unificacao de tema no final do arquivo para neutralizar cast azul fixo em cards, blocos, modais e campos
+- Com isso, temas alternativos (rosa, floresta, roxo, carbono, cobalto) passam a refletir melhor nessas telas que ainda tinham acento visual preso ao azul original
+
 ### Cards de anotacao concluidos no novo padrao premium
 
 - Todos os cards principais de anotacao usados no plantao agora estao fechados na nova linguagem visual premium, com padrao consolidado de hero no primeiro bloco, cards mais profundos, chips premium e fluxo final compartilhado quando faz sentido
