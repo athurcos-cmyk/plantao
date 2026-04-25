@@ -18,6 +18,30 @@
 
 ## Concluídos
 
+### [x] Fechamento visual dos cards principais de anotação (2026-04-25)
+Todos os cards principais de anotação foram consolidados no novo padrão premium do app.
+
+**Fechado nesta fase:**
+- `Sinais Vitais`
+- `Medicacao`
+- `Notas Livres`
+- `Passagem de Plantao`
+- `Encaminhamento`
+- `Higienizacao/Banho`
+- `Curativos`
+- `Anotacao Inicial`
+
+**Padrão consolidado:**
+- `paciente registrado` no topo quando aplicável
+- hero apenas no primeiro bloco
+- cards navy/azul com chips premium
+- consistência visual entre blocos e resultado final padronizado
+
+**Extensão natural do mesmo trabalho:**
+- `PacientesView` também foi polida no novo padrão e o FAB local foi removido para não colidir com o rodapé global
+
+---
+
 ### [x] Fix dispositivos sumiam após "Nova anotação" (2026-04-01)
 `Object.assign(form, { dispositivos: [] })` substituía o array por um novo, quebrando a referência do composable `useDispositivos`. Corrigido com `form.dispositivos.splice(0)` em PassagemPlantaoView e useAnotacaoInicial.
 
@@ -333,4 +357,3 @@ Com a migração para Firebase Auth, `hashPin()` e `hashPinLegacy()` foram remov
 Adicionados `--warning`, `--warning-muted`, `--info`, `--info-muted`, `--blue-muted`, `--danger-muted`, `--success-muted`, `--radius-lg`, `--radius-full` ao `:root`. Atualizado `aviso-fcm` (OrganizadorView) e `aviso-pin` (LoginView) para usar `var(--warning-muted)`. Atualizado `.card` e `.toast-central` para usar `var(--radius-lg)`. Atualizado `.btn-ajuda` para usar `var(--radius-full)`.
 
 ---
-

@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <header class="app-header">
+  <div class="screen curativo-screen">
+    <header class="app-header curativo-header">
       <button class="btn-icon" @click="voltarOuSair">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
@@ -13,12 +13,12 @@
       <div style="width:34px"/>
     </header>
 
-    <div v-if="!gerado" class="progress-wrap">
+    <div v-if="!gerado" class="progress-wrap curativo-progress">
       <div class="progress-fill" :style="{ width: (passo / 2 * 100) + '%' }"></div>
       <span class="progress-label">Bloco {{ passo }} de 2</span>
     </div>
 
-    <main class="container" style="padding-top:20px;padding-bottom:40px">
+    <main class="container curativo-page">
 
       <!-- Banner rascunho -->
       <div v-if="temRascunho && !gerado" class="rascunho-banner">
@@ -30,35 +30,35 @@
       </div>
 
       <!-- ═══ BLOCO 1 — Identificação ═══ -->
-      <div v-if="!gerado && passo === 1">
+      <section v-if="!gerado && pacientesStore.pacientes.length > 0" class="paciente-atalho">
+        <label>Paciente registrado</label>
+        <div class="chips-scroll">
+          <button
+            v-for="p in pacientesStore.pacientes"
+            :key="p._key"
+            class="chip"
+            :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
+            @click="selecionarPaciente(p)"
+          >{{ p.leito ? p.leito + ' ' : '' }}<span v-if="p.leito" aria-hidden="true">&middot;</span>{{ p.leito ? ' ' : '' }}{{ p.nome }}</button>
+        </div>
+      </section>
+
+      <section v-if="!gerado && passo === 1" class="module-hero">
+        <div class="module-hero-icon">
+          <img :src="iconCurativo" alt="Curativo" />
+        </div>
+        <div class="module-hero-copy">
+          <h1>Curativos</h1>
+          <p>Registre curativos, coberturas, drenos e avaliação da lesão.</p>
+        </div>
+      </section>
+
+      <div v-if="!gerado && passo === 1" class="curativo-card">
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
           <label>Horário <span class="obrigatorio">*</span></label>
           <input type="time" v-model="form.horario">
-        </div>
-
-        <div v-if="pacientesStore.pacientes.length > 0" class="campo">
-          <label>Paciente registrado</label>
-          <div class="chips-wrap">
-            <button
-              v-for="p in pacientesStore.pacientes"
-              :key="p._key"
-              class="chip"
-              :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
-              @click="selecionarPaciente(p)"
-            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Nome do paciente <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.nome" placeholder="Ex: João da Silva">
-        </div>
-
-        <div class="campo">
-          <label>Leito <span class="opc">(opcional)</span></label>
-          <input type="text" v-model="form.leito" placeholder="Ex: 4B">
         </div>
 
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
@@ -69,7 +69,7 @@
       </div>
 
       <!-- ═══ BLOCO 2 — Detalhes ═══ -->
-      <div v-if="!gerado && passo === 2">
+      <div v-if="!gerado && passo === 2" class="curativo-card">
         <h2 class="bloco-titulo">Detalhes do curativo</h2>
 
         <!-- Tipo -->
@@ -439,26 +439,20 @@
       </div>
 
       <!-- ═══ RESULTADO ═══ -->
-      <div v-if="gerado">
-        <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
-
-        <button class="btn-copy" @click="copiar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          {{ copiado ? 'Copiado!' : 'Copiar texto' }}
-        </button>
-
-        <div class="nav-row">
-          <button class="btn btn-secondary" style="flex:1" @click="salvar" :disabled="salvando">
-            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-          </button>
-          <button class="btn btn-secondary" style="flex:1" @click="novaAnotacao">Nova anotação</button>
-        </div>
-
-        <button class="btn btn-secondary" style="width:100%;margin-top:10px" @click="gerado = false; passo = 2">← Editar</button>
-      </div>
+      <ResultadoAnotacao
+        v-if="gerado"
+        :icon="iconCurativo"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nome"
+        v-model:leitoPaciente="form.leito"
+        :salvando="salvando"
+        label-nova="Novo curativo"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAnotacao"
+        @editar="gerado = false; passo = 2"
+      />
 
     </main>
   </div>
@@ -474,6 +468,8 @@ import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
 import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao from '../../components/ResultadoAnotacao.vue'
+import iconCurativo from '../../assets/dashboard-icons-png/curativo.png'
 import { db } from '../../firebase.js'
 import { ref as dbRef, push, onValue, off, remove } from 'firebase/database'
 
@@ -897,10 +893,6 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (!form.nome.trim()) {
-    erro.value = 'Informe o nome do paciente.'
-    return
-  }
   if (!form.horario) {
     erro.value = 'Informe o horário.'
     return
@@ -935,6 +927,21 @@ function gerar() {
   erro.value = ''
 
   const hora = formatHora(form.horario)
+
+  if (!form.tipo) {
+    erro.value = 'Selecione o tipo de curativo.'
+    return
+  }
+
+  if (form.tipo !== 'placa' && form.ehDreno && !form.dreno.trim()) {
+    erro.value = 'Informe o dreno.'
+    return
+  }
+
+  if (!form.ehDreno && !localTexto()) {
+    erro.value = 'Informe o local do curativo.'
+    return
+  }
 
   const localPart = form.ehDreno
     ? ` de dreno ${form.dreno.trim()}`
@@ -1028,6 +1035,15 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
+function compartilhar() {
+  const texto = textoGerado.value
+  if (navigator.share) {
+    navigator.share({ text: texto }).catch(() => {})
+  } else {
+    const url = `https://wa.me/?text=${encodeURIComponent(texto)}`
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+}
 
 // ── Salvar ──
 async function salvar() {
@@ -1194,4 +1210,436 @@ function novaAnotacao() {
 }
 .btn-expandir:active { background: var(--bg-hover); }
 .expandir-icone { font-size: 0.8rem; color: var(--text-muted); }
+
+.curativo-screen {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(72, 213, 151, 0.12), transparent 30%),
+    linear-gradient(180deg, #06160f 0%, #081713 42%, #07100d 100%);
+}
+
+.curativo-header {
+  background: rgba(6, 22, 15, 0.86);
+  border-bottom: 1px solid rgba(92, 185, 139, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.curativo-page {
+  padding: 18px 16px 120px;
+}
+
+.curativo-progress {
+  height: 6px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.curativo-progress .progress-fill {
+  background: linear-gradient(90deg, #37c58a, #6ee7b7);
+  box-shadow: 0 0 18px rgba(55, 197, 138, 0.38);
+}
+
+.curativo-progress .progress-label {
+  top: 10px;
+  color: rgba(209, 250, 229, 0.72);
+  font-weight: 700;
+}
+
+.paciente-atalho {
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid rgba(92, 185, 139, 0.2);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(11, 33, 25, 0.94), rgba(9, 25, 22, 0.9));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
+.paciente-atalho label {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(236, 253, 245, 0.82);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.chips-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.module-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 4px 0 18px;
+  padding: 18px;
+  border: 1px solid rgba(92, 185, 139, 0.22);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(13, 45, 33, 0.96), rgba(8, 24, 23, 0.92)),
+    radial-gradient(circle at 100% 0%, rgba(110, 231, 183, 0.16), transparent 34%);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.26);
+}
+
+.module-hero-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: linear-gradient(145deg, rgba(31, 143, 96, 0.26), rgba(18, 82, 70, 0.3));
+  border: 1px solid rgba(110, 231, 183, 0.26);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 34px rgba(3, 9, 7, 0.28);
+}
+
+.module-hero-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.module-hero-copy h1 {
+  margin: 0 0 6px;
+  color: #f0fdf4;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.module-hero-copy p {
+  margin: 0;
+  color: rgba(209, 250, 229, 0.72);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.curativo-card {
+  padding: 18px;
+  border: 1px solid rgba(92, 185, 139, 0.2);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(10, 29, 23, 0.98), rgba(8, 20, 18, 0.96)),
+    radial-gradient(circle at 12% 0%, rgba(55, 197, 138, 0.08), transparent 26%);
+  box-shadow: 0 22px 58px rgba(0, 0, 0, 0.28);
+}
+
+.curativo-card + .curativo-card {
+  margin-top: 14px;
+}
+
+.bloco-titulo {
+  color: #f0fdf4;
+  border-bottom-color: rgba(92, 185, 139, 0.18);
+  font-size: 1.08rem;
+}
+
+.campo {
+  margin-bottom: 18px;
+}
+
+.campo > label,
+.campo .checkbox-label span {
+  color: rgba(236, 253, 245, 0.84);
+  font-weight: 750;
+}
+
+.campo input[type="text"],
+.campo input[type="time"],
+.campo input[type="number"],
+.add-input,
+.outro-input-row input {
+  min-height: 50px;
+  border-radius: 14px;
+  border: 1px solid rgba(92, 185, 139, 0.2);
+  background: rgba(2, 12, 10, 0.5);
+  color: #f8fafc;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.campo input:focus,
+.add-input:focus,
+.outro-input-row input:focus {
+  border-color: rgba(110, 231, 183, 0.58);
+  box-shadow: 0 0 0 3px rgba(55, 197, 138, 0.14);
+  outline: none;
+}
+
+.chip {
+  min-height: 42px;
+  border-radius: 13px;
+  border-color: rgba(92, 185, 139, 0.18);
+  background: rgba(3, 16, 13, 0.58);
+  color: rgba(226, 232, 240, 0.82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.chip-sm {
+  min-height: 38px;
+}
+
+.chip:hover {
+  border-color: rgba(110, 231, 183, 0.36);
+  background: rgba(10, 37, 29, 0.82);
+}
+
+.chip-on {
+  border-color: rgba(110, 231, 183, 0.72);
+  background: linear-gradient(135deg, #16845c, #23b17a);
+  color: #ffffff;
+  box-shadow: 0 10px 26px rgba(35, 177, 122, 0.22);
+}
+
+.chip-add {
+  border-color: rgba(110, 231, 183, 0.38);
+  color: #86efac;
+  background: rgba(13, 45, 33, 0.5);
+}
+
+.chip-temp {
+  border-color: rgba(125, 211, 252, 0.34);
+}
+
+.checkbox-label {
+  padding: 14px;
+  border: 1px solid rgba(92, 185, 139, 0.18);
+  border-radius: 14px;
+  background: rgba(3, 16, 13, 0.52);
+}
+
+.checkbox-label:has(input:checked),
+.checkbox-label.checked {
+  border-color: rgba(110, 231, 183, 0.58);
+  background: rgba(20, 83, 45, 0.34);
+}
+
+.btn-expandir {
+  min-height: 52px;
+  border-radius: 16px;
+  border-color: rgba(92, 185, 139, 0.22);
+  background: linear-gradient(135deg, rgba(11, 33, 25, 0.96), rgba(8, 23, 20, 0.92));
+  color: #d1fae5;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+}
+
+.add-row,
+.outro-input-row {
+  padding: 12px;
+  border: 1px solid rgba(92, 185, 139, 0.16);
+  border-radius: 16px;
+  background: rgba(3, 16, 13, 0.42);
+}
+
+.material-actions .chip {
+  min-height: 38px;
+}
+
+.bloco-nav {
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.bloco-nav .btn {
+  border-radius: 14px;
+}
+
+.btn-generate {
+  min-height: 52px;
+  gap: 10px;
+  box-shadow: 0 16px 34px rgba(35, 177, 122, 0.28);
+}
+
+.erro-msg {
+  padding: 10px 12px;
+  border: 1px solid rgba(248, 113, 113, 0.26);
+  border-radius: 12px;
+  background: rgba(127, 29, 29, 0.18);
+}
+
+@media (max-width: 430px) {
+  .curativo-page {
+    padding: 16px 12px 110px;
+  }
+
+  .module-hero,
+  .curativo-card,
+  .paciente-atalho {
+    border-radius: 18px;
+  }
+
+  .module-hero {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .module-hero-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+
+  .module-hero-icon img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .module-hero-copy h1 {
+    font-size: 1.32rem;
+  }
+
+  .bloco-nav {
+    flex-wrap: wrap;
+  }
+
+  .bloco-nav .btn-primary {
+    min-width: 100%;
+  }
+}
+
+.curativo-screen {
+  background:
+    radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
+    linear-gradient(180deg, #071426 0%, #081425 42%, #07111f 100%);
+}
+
+.curativo-header {
+  background: rgba(8, 20, 37, 0.92);
+  border-bottom-color: rgba(71, 119, 194, 0.18);
+}
+
+.curativo-progress {
+  background: rgba(50, 76, 118, 0.5);
+}
+
+.curativo-progress .progress-fill {
+  background: linear-gradient(90deg, #2f8cff, #51b5ff);
+  box-shadow: 0 0 14px rgba(57, 143, 255, 0.28);
+}
+
+.curativo-progress .progress-label {
+  color: #9fb0d2;
+}
+
+.paciente-atalho {
+  border-color: rgba(76, 121, 190, 0.34);
+  background: linear-gradient(180deg, rgba(17, 34, 65, 0.96), rgba(12, 26, 50, 0.98));
+}
+
+.paciente-atalho label {
+  color: #9fb0d2;
+}
+
+.module-hero {
+  border-color: rgba(76, 121, 190, 0.42);
+  background:
+    radial-gradient(circle at top left, rgba(48, 134, 255, 0.2), transparent 42%),
+    linear-gradient(180deg, rgba(17, 34, 65, 0.98), rgba(12, 26, 50, 0.98));
+  box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
+}
+
+.module-hero-icon {
+  background: radial-gradient(circle at top, rgba(84, 157, 255, 0.36), rgba(31, 88, 174, 0.48));
+  border-color: rgba(104, 161, 255, 0.34);
+}
+
+.module-hero-copy h1,
+.bloco-titulo {
+  color: #f5f8ff;
+}
+
+.module-hero-copy p {
+  color: #9fb0d2;
+}
+
+.curativo-card {
+  border-color: rgba(76, 121, 190, 0.36);
+  background:
+    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+}
+
+.bloco-titulo {
+  border-bottom-color: rgba(76, 121, 190, 0.3);
+}
+
+.campo > label,
+.campo .checkbox-label span {
+  color: #d8e4fb;
+}
+
+.campo input[type="text"],
+.campo input[type="time"],
+.campo input[type="number"],
+.add-input,
+.outro-input-row input {
+  border-color: rgba(66, 98, 150, 0.62);
+  background: rgba(18, 33, 60, 0.96);
+  color: #eef4ff;
+}
+
+.campo input:focus,
+.add-input:focus,
+.outro-input-row input:focus {
+  border-color: rgba(87, 157, 255, 0.82);
+  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+}
+
+.chip {
+  border-color: rgba(67, 101, 157, 0.58);
+  background: rgba(18, 35, 66, 0.92);
+  color: #aabbe0;
+}
+
+.chip:hover {
+  border-color: rgba(94, 166, 255, 0.66);
+  background: rgba(20, 38, 70, 0.98);
+}
+
+.chip-on {
+  border-color: rgba(94, 166, 255, 0.9);
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  color: #fff;
+  box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
+}
+
+.chip-add {
+  border-color: rgba(94, 166, 255, 0.46);
+  color: #9fc5ff;
+  background: rgba(17, 33, 62, 0.82);
+}
+
+.chip-temp {
+  border-color: rgba(94, 166, 255, 0.38);
+}
+
+.checkbox-label {
+  border-color: rgba(67, 101, 157, 0.46);
+  background: rgba(18, 35, 66, 0.78);
+}
+
+.checkbox-label:has(input:checked),
+.checkbox-label.checked {
+  border-color: rgba(94, 166, 255, 0.72);
+  background: rgba(42, 118, 224, 0.18);
+}
+
+.btn-expandir,
+.add-row,
+.outro-input-row {
+  border-color: rgba(76, 121, 190, 0.32);
+  background: linear-gradient(180deg, rgba(20, 42, 78, 0.96), rgba(14, 28, 53, 0.98));
+  color: #d8e4fb;
+}
+
+.btn-generate {
+  box-shadow: 0 16px 34px rgba(31, 111, 214, 0.24);
+}
 </style>

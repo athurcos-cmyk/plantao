@@ -43,7 +43,7 @@
         </div>
       </section>
 
-      <section v-if="!gerado" class="module-hero">
+      <section v-if="!gerado && passo === 1" class="module-hero">
         <div class="module-hero-icon">
           <img :src="iconPassagem" alt="Passagem de plantão" />
         </div>
@@ -718,7 +718,7 @@ function novaAnotacao() {
 
 .passagem-progress .progress-fill {
   background: linear-gradient(90deg, #2f8cff, #51b5ff);
-  box-shadow: 0 0 22px rgba(57, 143, 255, 0.44);
+  box-shadow: 0 0 14px rgba(57, 143, 255, 0.28);
 }
 
 .passagem-progress .progress-label {
@@ -871,7 +871,7 @@ function novaAnotacao() {
   border-color: rgba(94, 166, 255, 0.9);
   background: linear-gradient(135deg, #236fe1, #2d9cff);
   color: #fff;
-  box-shadow: 0 10px 24px rgba(32, 116, 225, 0.24);
+  box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
 }
 
 .radio-btn {
@@ -896,7 +896,7 @@ function novaAnotacao() {
   border-color: rgba(86, 159, 255, 0.88);
   background: linear-gradient(135deg, #236fe1, #2d9cff);
   color: #fff;
-  box-shadow: 0 12px 24px rgba(31, 111, 214, 0.22);
+  box-shadow: 0 8px 16px rgba(31, 111, 214, 0.15);
 }
 
 .checkbox-label {
@@ -912,7 +912,7 @@ function novaAnotacao() {
   border-color: rgba(86, 159, 255, 0.88);
   background: linear-gradient(135deg, rgba(37, 105, 211, 0.92), rgba(36, 141, 229, 0.82));
   color: #fff;
-  box-shadow: 0 12px 24px rgba(31, 111, 214, 0.22);
+  box-shadow: 0 8px 16px rgba(31, 111, 214, 0.15);
 }
 
 .radio-btn input,
@@ -964,7 +964,7 @@ function novaAnotacao() {
 
 .bloco-nav .btn-primary,
 .btn-generate {
-  box-shadow: 0 16px 30px rgba(35, 111, 225, 0.28);
+  box-shadow: 0 10px 20px rgba(35, 111, 225, 0.18);
 }
 
 .rascunho-banner {

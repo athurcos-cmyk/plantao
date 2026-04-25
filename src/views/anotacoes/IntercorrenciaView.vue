@@ -1315,7 +1315,7 @@ watch(notaTexto, (txt) => {
   background: linear-gradient(180deg, #2f93ff, #1e71ea);
   border-color: rgba(108, 182, 255, 0.84);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(30, 100, 230, 0.22);
+  box-shadow: 0 6px 14px rgba(30, 100, 230, 0.15);
 }
 
 .secao-header {
@@ -1357,7 +1357,7 @@ watch(notaTexto, (txt) => {
 .btn-novo-modelo-topo {
   background: linear-gradient(180deg, #2f93ff, #1e71ea);
   border-color: rgba(108, 182, 255, 0.84);
-  box-shadow: 0 10px 20px rgba(28, 101, 214, 0.2);
+  box-shadow: 0 7px 15px rgba(28, 101, 214, 0.14);
 }
 
 .nota-composer {
@@ -1411,7 +1411,7 @@ watch(notaTexto, (txt) => {
   border-radius: 14px;
   background: linear-gradient(180deg, #2f93ff, #1e71ea);
   font-weight: 800;
-  box-shadow: 0 10px 20px rgba(28, 101, 214, 0.2);
+  box-shadow: 0 7px 15px rgba(28, 101, 214, 0.14);
 }
 
 .nc-btn-add:disabled {
@@ -1469,7 +1469,7 @@ watch(notaTexto, (txt) => {
   background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
   border-color: rgba(80, 160, 255, 0.72);
   color: #a8d4ff;
-  box-shadow: 0 8px 18px rgba(30, 100, 230, 0.18);
+  box-shadow: 0 6px 14px rgba(30, 100, 230, 0.13);
 }
 
 .modelos-vazio-row {
@@ -1593,7 +1593,7 @@ watch(notaTexto, (txt) => {
 
 .modelo-list-item-on {
   border-color: rgba(108, 182, 255, 0.78);
-  box-shadow: 0 10px 22px rgba(28, 101, 214, 0.22);
+  box-shadow: 0 7px 16px rgba(28, 101, 214, 0.15);
 }
 
 .modelo-main-btn {
@@ -1645,7 +1645,7 @@ watch(notaTexto, (txt) => {
   min-height: 62px;
   border-radius: 18px;
   font-size: 1.06rem;
-  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+  box-shadow: 0 10px 20px rgba(25, 96, 201, 0.18);
 }
 
 .modal-overlay {

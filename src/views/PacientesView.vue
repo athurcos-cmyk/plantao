@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <header class="app-header">
+  <div class="screen pacientes-screen">
+    <header class="app-header pacientes-header">
       <button class="btn-icon" @click="router.push({ name: 'dashboard' })">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
@@ -13,15 +13,17 @@
       <button class="btn-ajuda" @click="helpAberto = true">? Ajuda</button>
     </header>
 
-    <main class="container" style="padding-top:20px;padding-bottom:100px">
-      <div class="pag-titulo-row">
-        <h2 class="pag-titulo">Meus Pacientes</h2>
-        <span class="pag-subtitulo">{{ store.pacientes.length }} registrado{{ store.pacientes.length !== 1 ? 's' : '' }}</span>
-        <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
-          <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">🗑️ Limpar</button>
+    <main class="container pacientes-page">
+      <section class="pacientes-hero">
+        <div class="pacientes-hero-copy">
+          <h2 class="pag-titulo">Meus Pacientes</h2>
+          <p class="pag-subtitulo">{{ store.pacientes.length }} registrado{{ store.pacientes.length !== 1 ? 's' : '' }} no plantão atual</p>
+        </div>
+        <div class="pacientes-hero-actions">
+          <button v-if="store.pacientes.length > 0" class="btn-limpar-todos" @click="excluindoTodos = true" title="Excluir todos os pacientes">Limpar plantão</button>
           <button class="btn-add-pac" @click="abrirAdd">+ Paciente</button>
         </div>
-      </div>
+      </section>
 
       <!-- Botão para reabrir a dica (aparece quando fechada) -->
       <button
@@ -173,13 +175,6 @@
         </div>
       </div>
     </main>
-
-    <!-- FAB -->
-    <button v-if="store.pacientes.length > 0" class="fab" @click="abrirAdd">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-    </button>
 
     <!-- Modal add/edit paciente -->
     <div v-if="modal.aberto" class="modal-overlay" @click.self="modal.aberto = false">
@@ -844,4 +839,337 @@ async function excluirPend(pac, pend) {
   color: var(--text); font-family: inherit; font-size: 0.95rem; outline: none;
 }
 .campo-inline:focus { border-color: var(--blue); }
+
+.pacientes-screen {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(42, 132, 255, 0.14), transparent 30%),
+    linear-gradient(180deg, #071426 0%, #081425 42%, #07111f 100%);
+}
+
+.pacientes-header {
+  background: rgba(8, 20, 37, 0.92);
+  border-bottom: 1px solid rgba(71, 119, 194, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.pacientes-page {
+  padding-top: 20px;
+  padding-bottom: 118px;
+}
+
+.pacientes-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(76, 121, 190, 0.36);
+  background:
+    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+  box-shadow: 0 18px 34px rgba(2, 8, 18, 0.22);
+}
+
+.pacientes-hero-copy {
+  min-width: 0;
+}
+
+.pacientes-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.pag-titulo {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #f5f8ff;
+}
+
+.pag-subtitulo {
+  margin: 6px 0 0;
+  font-size: 0.92rem;
+  color: #9fb0d2;
+}
+
+.btn-limpar-todos {
+  min-height: 42px;
+  padding: 0 14px;
+  background: rgba(255, 106, 103, 0.08);
+  border: 1px solid rgba(255, 106, 103, 0.24);
+  color: #ffb4b2;
+  border-radius: 13px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.btn-add-pac {
+  min-height: 44px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-radius: 14px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  box-shadow: 0 14px 28px rgba(32, 116, 225, 0.22);
+}
+
+.btn-dica-reabrir {
+  min-height: 48px;
+  padding: 0 14px;
+  background: rgba(15, 32, 57, 0.82);
+  border: 1px dashed rgba(76, 121, 190, 0.52);
+  border-radius: 16px;
+  color: #9fb0d2;
+  font-weight: 700;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.btn-dica-reabrir:active {
+  border-color: rgba(94, 166, 255, 0.82);
+  color: #dfeaff;
+  background: rgba(17, 36, 67, 0.96);
+}
+
+.dica-notif {
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(76, 121, 190, 0.36);
+  background:
+    radial-gradient(circle at top left, rgba(49, 126, 228, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+  box-shadow: 0 16px 34px rgba(2, 8, 18, 0.18);
+}
+
+.dica-notif-header {
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #eef4ff;
+}
+
+.dica-notif-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(43, 118, 232, 0.18);
+  color: #8dbdff;
+  font-size: 0.95rem;
+}
+
+.dica-notif-fechar {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  color: #9fb0d2;
+  font-size: 1.15rem;
+  padding: 0;
+}
+
+.dica-notif-fechar:active {
+  background: rgba(255,255,255,0.06);
+}
+
+.dica-notif-texto,
+.dica-plataforma-texto {
+  color: #c8d7f4;
+}
+
+.dica-notif-passos {
+  color: #eef4ff;
+}
+
+.dica-notif-sub {
+  color: #9fb0d2;
+}
+
+.dica-plataforma {
+  border-top-color: rgba(76, 121, 190, 0.22);
+}
+
+.dica-plataforma-tag.android { background: rgba(67, 160, 71, 0.14); color: #7fe58d; }
+.dica-plataforma-tag.ios     { background: rgba(94, 166, 255, 0.14); color: #9fc5ff; }
+
+.empty-pac {
+  padding: 56px 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(76, 121, 190, 0.32);
+  background:
+    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+  box-shadow: 0 18px 34px rgba(2, 8, 18, 0.2);
+}
+
+.empty-pac-titulo { color: #f5f8ff; font-weight: 800; }
+.empty-pac-sub { color: #9fb0d2; font-size: 0.88rem; }
+
+.pac-card {
+  background:
+    radial-gradient(circle at top left, rgba(47, 120, 225, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+  border: 1px solid rgba(76, 121, 190, 0.32);
+  border-radius: 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 16px 30px rgba(2, 8, 18, 0.18);
+}
+
+.pac-header {
+  padding: 14px 16px;
+  border-bottom-color: rgba(76, 121, 190, 0.18);
+}
+
+.pac-leito-badge {
+  min-width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-radius: 10px;
+  font-weight: 800;
+  box-shadow: 0 10px 20px rgba(32, 116, 225, 0.18);
+}
+
+.pac-nome {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #eef4ff;
+}
+
+.pend-contador {
+  background: rgba(18, 35, 66, 0.92);
+  color: #9fb0d2;
+  border: 1px solid rgba(67, 101, 157, 0.58);
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-weight: 800;
+}
+
+.pend-contador-alerta {
+  background: rgba(42, 118, 224, 0.18);
+  color: #9fc5ff;
+  border-color: rgba(94, 166, 255, 0.4);
+}
+
+.toggle-btn { color: #9fb0d2; }
+
+.btn-icon-sm {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(67, 101, 157, 0.34);
+  background: rgba(15, 32, 57, 0.82);
+  color: #c8d7f4;
+  border-radius: 10px;
+}
+
+.btn-icon-sm:active { background: rgba(18, 35, 66, 0.98); }
+.btn-icon-danger { color: #ff9d9a; }
+
+.pend-lista { padding: 8px 0; }
+
+.pend-item {
+  padding: 9px 16px;
+}
+
+.pend-check {
+  border-color: rgba(67, 101, 157, 0.58);
+  border-radius: 7px;
+  background: rgba(12, 25, 48, 0.72);
+}
+
+.pend-item.feito .pend-check {
+  background: #2d9c69;
+  border-color: #2d9c69;
+}
+
+.pend-texto {
+  font-size: 0.9rem;
+  color: #eef4ff;
+}
+
+.pend-item.feito .pend-texto { color: #8ea3d4; }
+.pend-tempo { color: #8ea3d4; }
+
+.pend-horario-ok { background: rgba(42, 118, 224, 0.14); color: #8dbdff; }
+
+.pend-time-input {
+  border-color: rgba(67, 101, 157, 0.58);
+  background: rgba(18, 33, 60, 0.96);
+  color: #eef4ff;
+}
+
+.pend-del { color: #8ea3d4; }
+
+.pend-add-row {
+  padding: 10px 16px;
+  border-top-color: rgba(76, 121, 190, 0.18);
+  background: rgba(10, 22, 40, 0.28);
+}
+
+.pend-add-input {
+  font-size: 0.88rem;
+  color: #d7e3ff;
+  padding: 6px 0;
+}
+
+.pend-add-input::placeholder { color: #8ea3d4; }
+
+.pend-add-btn {
+  min-height: 34px;
+  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 0 12px;
+}
+
+.modal-box {
+  background:
+    radial-gradient(circle at top left, rgba(47, 120, 225, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(16, 32, 60, 0.98), rgba(12, 25, 48, 0.99));
+  border: 1px solid rgba(76, 121, 190, 0.34);
+  border-radius: 20px;
+  box-shadow: 0 22px 44px rgba(0,0,0,0.3);
+}
+
+.modal-titulo { color: #f5f8ff; font-weight: 800; }
+.campo label { color: #9fb0d2; font-weight: 700; }
+
+.campo-inline {
+  background: rgba(18, 33, 60, 0.96);
+  border-color: rgba(67, 101, 157, 0.58);
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: #eef4ff;
+}
+
+.campo-inline:focus {
+  border-color: rgba(87, 157, 255, 0.82);
+  box-shadow: 0 0 0 3px rgba(43, 118, 232, 0.13);
+}
+
+@media (max-width: 520px) {
+  .pacientes-page {
+    padding-bottom: 112px;
+  }
+
+  .pacientes-hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pacientes-hero-actions {
+    justify-content: stretch;
+  }
+
+  .pacientes-hero-actions > button {
+    flex: 1;
+  }
+}
 </style>

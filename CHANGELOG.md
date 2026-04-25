@@ -6,6 +6,27 @@
 
 ---
 
+## Sessao 2026-04-25
+
+### Cards de anotacao concluidos no novo padrao premium
+
+- Todos os cards principais de anotacao usados no plantao agora estao fechados na nova linguagem visual premium, com padrao consolidado de hero no primeiro bloco, cards mais profundos, chips premium e fluxo final compartilhado quando faz sentido
+- `Anotacao Inicial`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho` e `Curativos` foram revisitados para alinhar paleta, glow, hierarquia, paciente registrado no topo e consistencia entre blocos
+- `Curativos` saiu do visual verde isolado e foi trazido para a mesma familia navy/azul do resto do app
+- `Anotacao Inicial` tambem teve os acentos verde/ciano reduzidos para ficar no mesmo padrao visual das outras telas
+- `Meus Pacientes` recebeu polimento premium: hero do modulo, cards mais fortes, pendencias mais legiveis, modal alinhado com o app e remocao do FAB local que colidia com o rodape global
+- O aviso de notificacoes em `Meus Pacientes` continua abrindo uma vez e pode ser reaberto manualmente depois, agora com visual mais integrado
+
+### Estado consolidado para a proxima sessao
+
+- O ciclo de fechamento visual dos cards de anotacao pode ser considerado concluido nesta etapa
+- Proximos trabalhos podem sair de polimento de tela por tela e voltar para backlog funcional, linguagem clinica, metricas e refinamentos de fluxo
+
+### Validacao
+
+- `npm test` passou com 60 testes
+- `npm run build` passou
+
 ## Sessao 2026-04-24
 
 ### Notas Livres: tela fechada no padrao premium

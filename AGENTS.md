@@ -40,6 +40,13 @@ Firebase Auth é o sistema de autenticação ativo.
 14h00 – [texto da anotação], sem intercorrências.
 ```
 
+## Estado atual do produto - 2026-04-25
+- Os cards principais de anotação do app podem ser considerados concluídos no novo padrão premium
+- O padrão atual consolidado é: `paciente registrado` no topo quando aplicável, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
+- Módulos revisados nesta fase: `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial`
+- `Meus Pacientes` também foi elevado visualmente e o FAB local de adicionar paciente foi removido para não colidir com o rodapé global
+- Para a próxima sessão, assumir que o ciclo de fechamento visual dos cards terminou e priorizar backlog funcional, refinamentos clínicos e fluxos operacionais
+
 ## Skills disponíveis
 @.Codex/skills/planner.md
 @.Codex/skills/build-error-resolver.md

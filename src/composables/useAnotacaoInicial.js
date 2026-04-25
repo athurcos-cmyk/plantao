@@ -1,4 +1,4 @@
-import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { ref, reactive, computed, watch, nextTick, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { useAuthStore } from '../stores/auth.js'
@@ -8,7 +8,7 @@ import { useToast } from './useToast.js'
 import { useCopia } from './useCopia.js'
 import { useDispositivos } from './useDispositivos.js'
 import { db } from '../firebase.js'
-import { ref as dbRef, set, get } from 'firebase/database'
+import { ref as dbRef, set, get, push, remove, onValue, update } from 'firebase/database'
 
 export function useAnotacaoInicial() {
   const router = useRouter()
@@ -23,6 +23,18 @@ export function useAnotacaoInicial() {
   const textoGerado = ref('')
   const erro        = ref('')
   const salvando    = ref(false)
+  const carregandoFechamentos = ref(false)
+  const salvandoFechamentoModelo = ref(false)
+  const modalFechamentos = ref(false)
+  const modalNovoFechamento = ref(false)
+  const fechamentosModelos = ref([])
+  const fechamentoSelecionadoKey = ref('')
+  const fechamentoBusca = ref('')
+  const fechamentoBuscaModal = ref('')
+  const novoFechamentoTitulo = ref('')
+  const novoFechamentoTexto = ref('')
+  const novoFechamentoTituloInput = ref(null)
+  let fechamentosOff = null
 
   // ── Campos "Outro" ────────────────────────────────────────────────────────
   const outroAtivo = reactive({})
@@ -78,6 +90,13 @@ export function useAnotacaoInicial() {
   // Scroll para o topo ao trocar de bloco
   watch(passo, () => { nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' })) })
 
+  onUnmounted(() => {
+    if (fechamentosOff) {
+      fechamentosOff()
+      fechamentosOff = null
+    }
+  })
+
   // ── Rascunho ──────────────────────────────────────────────────────────────
   const RASCUNHO_KEY = 'rascunho_anotacao_inicial'
   // Banner aparece apenas na montagem inicial (se havia rascunho salvo)
@@ -117,6 +136,7 @@ export function useAnotacaoInicial() {
       const { form: saved, passo: p } = JSON.parse(raw)
       Object.assign(form, saved)
       passo.value = p || 1
+      if (passo.value === 5 && form.fechamentoModo !== 'personalizado') atualizarFechamento()
       temRascunho.value = false   // esconde o banner
       nextTick(() => { restaurando = false })
     } catch {
@@ -146,7 +166,7 @@ export function useAnotacaoInicial() {
     diurese: [], svdDebito: '', svdAspecto: '', diureseObs: '',
     queixas: '', obsApresenta: '',
     // Bloco 5
-    fechamento: '',
+    fechamentoModo: 'identificacao', fechamento: '',
     // Preview
     nomePaciente: '', leitoPaciente: ''
   })
@@ -206,6 +226,26 @@ export function useAnotacaoInicial() {
     ]
   })
 
+  const podeSalvarFechamentoModelo = computed(() =>
+    novoFechamentoTitulo.value.trim().length > 0 && novoFechamentoTexto.value.trim().length > 0
+  )
+  const fechamentosOrdenados = computed(() => _ordenarFechamentos(fechamentosModelos.value))
+  const fechamentosFavoritos = computed(() => fechamentosOrdenados.value.filter(m => m.favorito).slice(0, 5))
+  const fechamentosFiltrados = computed(() => {
+    const termo = fechamentoBusca.value.trim().toLowerCase()
+    if (!termo) return fechamentosOrdenados.value
+    return fechamentosOrdenados.value.filter(m =>
+      [m.titulo, m.texto].some(v => String(v || '').toLowerCase().includes(termo))
+    )
+  })
+  const fechamentosGerenciamentoFiltrados = computed(() => {
+    const termo = fechamentoBuscaModal.value.trim().toLowerCase()
+    if (!termo) return fechamentosOrdenados.value
+    return fechamentosOrdenados.value.filter(m =>
+      [m.titulo, m.texto].some(v => String(v || '').toLowerCase().includes(termo))
+    )
+  })
+
   watch(() => form.sexo, () => {
     form.colaboracao = ''
     form.deambulacao = ''
@@ -253,6 +293,10 @@ export function useAnotacaoInicial() {
   function avancar() {
     erro.value = ''
     if (passo.value === 1) {
+      if (!form.horario) {
+        erro.value = 'Informe o horÃ¡rio.'
+        return
+      }
       passo.value = 2
     } else if (passo.value === 2) {
       passo.value = 3
@@ -280,14 +324,230 @@ export function useAnotacaoInicial() {
 
   // ── Fechamento automático ─────────────────────────────────────────────────
   function atualizarFechamento() {
-    if (form.localizacao === 'poltrona') {
+    const valorSeguro = (v) => {
+      const valor = String(v || '').trim()
+      if (!valor || /^[_\-\s]+$/.test(valor)) return ''
+      return valor
+    }
+    const joinPt = (items) => {
+      const valid = items.filter(Boolean)
+      if (valid.length <= 1) return valid[0] || ''
+      return `${valid.slice(0, -1).join(', ')} e ${valid[valid.length - 1]}`
+    }
+
+    if (!form.fechamentoModo) form.fechamentoModo = 'identificacao'
+    if (form.fechamentoModo === 'sem') {
+      form.fechamento = ''
+      return
+    }
+    if (form.fechamentoModo === 'personalizado') return
+    if (form.fechamentoModo === 'poltrona' || form.localizacao === 'poltrona') {
       form.fechamento = 'Mantenho campainha próxima e oriento a chamar sempre que necessário.'
     } else {
-      const p = form.posicaoCama || '___'
-      const r = form.rodas       || '___'
-      const g = form.grades      || '___'
-      form.fechamento = `Mantenho cama ${p}, rodas ${r}, grades ${g}, campainha próxima e oriento a chamar sempre que necessário.`
+      const itens = [
+        valorSeguro(form.posicaoCama) && `cama ${valorSeguro(form.posicaoCama)}`,
+        valorSeguro(form.rodas) && `rodas ${valorSeguro(form.rodas)}`,
+        valorSeguro(form.grades) && `grades ${valorSeguro(form.grades)}`,
+      ].filter(Boolean)
+      const prefixo = itens.length > 0 ? `Mantenho ${joinPt(itens)}, ` : 'Mantenho '
+      form.fechamento = `${prefixo}campainha próxima e oriento a chamar sempre que necessário.`
     }
+  }
+
+  function selecionarFechamentoModo(modo) {
+    form.fechamentoModo = modo
+    fechamentoSelecionadoKey.value = ''
+    atualizarFechamento()
+  }
+
+  function _code() {
+    return (auth.syncCode || '').trim()
+  }
+
+  function _fechamentosPath(code = _code()) {
+    return `anotacao_inicial/${code}/fechamentos`
+  }
+
+  function _fechamentosCacheKey(code = _code()) {
+    return `fechamentos_anotacao_inicial_${code}`
+  }
+
+  function _tituloFechamentoPadrao(texto = '') {
+    const base = String(texto || '').replace(/\s+/g, ' ').trim()
+    if (!base) return 'Fechamento'
+    return base.length > 34 ? `${base.slice(0, 34)}...` : base
+  }
+
+  function _normalizarFechamentos(lista = []) {
+    return _ordenarFechamentos((lista || []).map((m, idx) => {
+      const texto = String(m?.texto || m?.conteudo || '').trim()
+      const titulo = String(m?.titulo || '').trim() || _tituloFechamentoPadrao(texto)
+      const criadoEm = Number(m?.criadoEm || 0)
+      const keyBase = String(m?._key || m?.key || `${criadoEm || Date.now()}-${idx}`)
+      return {
+        ...m,
+        _key: keyBase,
+        titulo,
+        texto,
+        criadoEm,
+        favorito: !!m?.favorito,
+      }
+    }).filter(m => m.texto))
+  }
+
+  function _ordenarFechamentos(lista = []) {
+    return [...(lista || [])].sort((a, b) => {
+      if (!!a.favorito !== !!b.favorito) return a.favorito ? -1 : 1
+      return (b.criadoEm || 0) - (a.criadoEm || 0)
+    })
+  }
+
+  function _salvarCacheFechamentos(code, lista) {
+    try { localStorage.setItem(_fechamentosCacheKey(code), JSON.stringify(lista || [])) } catch {}
+  }
+
+  function _carregarCacheFechamentos(code) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(_fechamentosCacheKey(code)) || '[]')
+      return Array.isArray(cached) ? _normalizarFechamentos(cached) : []
+    } catch {
+      return []
+    }
+  }
+
+  async function iniciarFechamentosModelos() {
+    const code = _code()
+    if (fechamentosOff) {
+      fechamentosOff()
+      fechamentosOff = null
+    }
+    if (!code) {
+      fechamentosModelos.value = []
+      carregandoFechamentos.value = false
+      return
+    }
+
+    carregandoFechamentos.value = true
+    const cached = _carregarCacheFechamentos(code)
+    if (cached.length) {
+      fechamentosModelos.value = cached
+      carregandoFechamentos.value = false
+    }
+
+    const path = dbRef(db, _fechamentosPath(code))
+    try {
+      const snap = await get(path)
+      const lista = []
+      snap.forEach(child => { lista.push({ ...child.val(), _key: child.key }) })
+      const normalizada = _normalizarFechamentos(lista)
+      fechamentosModelos.value = normalizada
+      _salvarCacheFechamentos(code, normalizada)
+      carregandoFechamentos.value = false
+    } catch {
+      carregandoFechamentos.value = false
+    }
+
+    fechamentosOff = onValue(path, (snap) => {
+      const lista = []
+      snap.forEach(child => { lista.push({ ...child.val(), _key: child.key }) })
+      const normalizada = _normalizarFechamentos(lista)
+      fechamentosModelos.value = normalizada
+      _salvarCacheFechamentos(code, normalizada)
+      carregandoFechamentos.value = false
+    }, () => { carregandoFechamentos.value = false })
+  }
+
+  async function abrirModalFechamentos() {
+    modalFechamentos.value = true
+    fechamentoBuscaModal.value = ''
+    await iniciarFechamentosModelos()
+  }
+
+  function fecharModalFechamentos() {
+    modalFechamentos.value = false
+    fechamentoBuscaModal.value = ''
+  }
+
+  async function abrirModalNovoFechamento() {
+    modalNovoFechamento.value = true
+    novoFechamentoTitulo.value = ''
+    novoFechamentoTexto.value = form.fechamento || ''
+    await nextTick()
+    novoFechamentoTituloInput.value?.focus()
+  }
+
+  function fecharModalNovoFechamento() {
+    modalNovoFechamento.value = false
+    novoFechamentoTitulo.value = ''
+    novoFechamentoTexto.value = ''
+  }
+
+  async function salvarFechamentoModelo() {
+    const code = _code()
+    const titulo = novoFechamentoTitulo.value.trim()
+    const texto = novoFechamentoTexto.value.trim()
+    if (!titulo || !texto) return
+    if (!code) { showToast('Sessão inválida'); return }
+
+    salvandoFechamentoModelo.value = true
+    const data = { titulo, texto, criadoEm: Date.now(), favorito: false }
+    try {
+      const novoRef = await push(dbRef(db, _fechamentosPath(code)), data)
+      fechamentosModelos.value = _normalizarFechamentos([
+        ...fechamentosModelos.value,
+        { ...data, _key: novoRef.key },
+      ])
+      _salvarCacheFechamentos(code, fechamentosModelos.value)
+      fecharModalNovoFechamento()
+      showToast('Modelo de fechamento salvo!')
+    } catch {
+      showToast('Erro ao salvar modelo')
+    } finally {
+      salvandoFechamentoModelo.value = false
+    }
+  }
+
+  async function deletarFechamentoModelo(key) {
+    const code = _code()
+    if (!code || !key) { showToast('Sessão inválida'); return }
+    const anterior = fechamentosModelos.value
+    fechamentosModelos.value = fechamentosModelos.value.filter(m => m._key !== key)
+    if (fechamentoSelecionadoKey.value === key) fechamentoSelecionadoKey.value = ''
+    _salvarCacheFechamentos(code, fechamentosModelos.value)
+    try {
+      await remove(dbRef(db, `${_fechamentosPath(code)}/${key}`))
+      showToast('Modelo removido')
+    } catch {
+      fechamentosModelos.value = anterior
+      _salvarCacheFechamentos(code, anterior)
+      showToast('Erro ao remover modelo')
+    }
+  }
+
+  async function alternarFechamentoFavorito(modelo) {
+    const code = _code()
+    if (!code || !modelo?._key) { showToast('Sessão inválida'); return }
+    const favorito = !modelo.favorito
+    fechamentosModelos.value = _normalizarFechamentos(fechamentosModelos.value.map(m =>
+      m._key === modelo._key ? { ...m, favorito } : m
+    ))
+    _salvarCacheFechamentos(code, fechamentosModelos.value)
+    try {
+      await update(dbRef(db, `${_fechamentosPath(code)}/${modelo._key}`), { favorito })
+    } catch {
+      showToast('Erro ao atualizar favorito')
+    }
+  }
+
+  function selecionarFechamentoModelo(modelo) {
+    if (!modelo?._key) return
+    if (fechamentoSelecionadoKey.value === modelo._key) {
+      fechamentoSelecionadoKey.value = ''
+      return
+    }
+    fechamentoSelecionadoKey.value = modelo._key
+    form.fechamentoModo = 'personalizado'
+    form.fechamento = modelo.texto || ''
   }
 
   // ── Geração de texto ──────────────────────────────────────────────────────
@@ -297,7 +557,7 @@ export function useAnotacaoInicial() {
       erro.value = 'Informe o horário.'
       return
     }
-    if (!form.fechamento) atualizarFechamento()
+    if (form.fechamentoModo !== 'personalizado' || !form.fechamento.trim()) atualizarFechamento()
     textoGerado.value = gerarTexto(form, camposAtivos)
     gerado.value = true
   }
@@ -339,7 +599,7 @@ export function useAnotacaoInicial() {
       deambulaAuxilio:'', respPadrao:'', respiracao:'', oxigenioLitros:'',
       acompanhante:'', acompanhanteNome:'', acompanhanteParentesco:'',
       evacuacaoOpcao:'', evacuacaoData:'', diurese:[], svdDebito:'', svdAspecto:'', diureseObs:'',
-      queixas:'', obsApresenta:'', fechamento:'',
+      queixas:'', obsApresenta:'', fechamentoModo:'identificacao', fechamento:'',
       nomePaciente:'', leitoPaciente:''
     })
     form.dispositivos.splice(0)
@@ -364,6 +624,8 @@ export function useAnotacaoInicial() {
     textoGerado,
     erro,
     salvando,
+    carregandoFechamentos,
+    salvandoFechamentoModelo,
     dragIdx,
     dragOverIdx,
     temRascunho,
@@ -379,6 +641,29 @@ export function useAnotacaoInicial() {
     selecionarOutro,
     atualizarOutro,
     desativarOutro,
+    // modelos de fechamento
+    modalFechamentos,
+    modalNovoFechamento,
+    fechamentosModelos,
+    fechamentoSelecionadoKey,
+    fechamentoBusca,
+    fechamentoBuscaModal,
+    novoFechamentoTitulo,
+    novoFechamentoTexto,
+    novoFechamentoTituloInput,
+    podeSalvarFechamentoModelo,
+    fechamentosFavoritos,
+    fechamentosFiltrados,
+    fechamentosGerenciamentoFiltrados,
+    iniciarFechamentosModelos,
+    abrirModalFechamentos,
+    fecharModalFechamentos,
+    abrirModalNovoFechamento,
+    fecharModalNovoFechamento,
+    salvarFechamentoModelo,
+    deletarFechamentoModelo,
+    alternarFechamentoFavorito,
+    selecionarFechamentoModelo,
     // reactive
     form,
     modal,
@@ -397,6 +682,7 @@ export function useAnotacaoInicial() {
     voltarOuSair,
     avancar,
     limparBloco,
+    selecionarFechamentoModo,
     onRespChange,
     onDiureseChange,
     abrirModal,

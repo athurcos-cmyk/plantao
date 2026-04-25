@@ -21,6 +21,13 @@ Ler esse arquivo completo antes de qualquer decisão de produto ou arquitetura.
 **Ao fim de cada sessão:** atualizar CHANGELOG.md, TODOS.md e o MEMORY.md em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md` com o que foi feito.
 Não fechar sessão sem atualizar a memória do projeto.
 
+## Status atual - 2026-04-25
+- O ciclo de fechamento visual dos cards principais de anotação está concluído nesta etapa
+- O padrão visual consolidado do app agora é: `paciente registrado` no topo quando aplicável, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
+- Módulos fechados nesta fase: `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial`
+- `Meus Pacientes` também foi polido no mesmo padrão e o FAB local foi removido para não competir com o rodapé global
+- Para a próxima sessão, assumir esse fechamento como baseline e focar mais em backlog funcional, refinamentos clínicos e fluxos
+
 ## Design System
 Sempre ler DESIGN.md antes de qualquer decisão visual ou de UI.
 Todas as escolhas de fonte, cor, espaçamento e direção estética estão definidas lá.

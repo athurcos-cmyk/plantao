@@ -1,6 +1,6 @@
 <template>
-  <div class="screen">
-    <header class="app-header">
+  <div class="screen banho-screen">
+    <header class="app-header banho-header">
       <button class="btn-icon" @click="voltarOuSair">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="15 18 9 12 15 6"/>
@@ -14,12 +14,12 @@
     </header>
 
     <!-- Barra de progresso -->
-    <div v-if="!gerado" class="progress-wrap">
+    <div v-if="!gerado" class="progress-wrap banho-progress">
       <div class="progress-fill" :style="{ width: (passo / 2 * 100) + '%' }"></div>
       <span class="progress-label">Bloco {{ passo }} de 2</span>
     </div>
 
-    <main class="container" style="padding-top:20px;padding-bottom:40px">
+    <main class="container banho-page">
 
       <!-- Banner de rascunho -->
       <div v-if="temRascunho && !gerado" class="rascunho-banner">
@@ -30,8 +30,31 @@
         </div>
       </div>
 
+      <section v-if="!gerado && pacientesStore.pacientes.length > 0" class="paciente-atalho">
+        <label>Paciente registrado</label>
+        <div class="chips-scroll">
+          <button
+            v-for="p in pacientesStore.pacientes"
+            :key="p._key"
+            class="chip"
+            :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
+            @click="selecionarPaciente(p)"
+          >{{ p.leito ? p.leito + ' ' : '' }}<span v-if="p.leito" aria-hidden="true">&middot;</span>{{ p.leito ? ' ' : '' }}{{ p.nome }}</button>
+        </div>
+      </section>
+
+      <section v-if="!gerado && passo === 1" class="module-hero">
+        <div class="module-hero-icon">
+          <img :src="iconHigienizacao" alt="Higienização" />
+        </div>
+        <div class="module-hero-copy">
+          <h1>Higienização</h1>
+          <p>Registre banho, troca de fralda e cuidados de higiene.</p>
+        </div>
+      </section>
+
       <!-- ═══ BLOCO 1 — Identificação ═══ -->
-      <div v-if="!gerado && passo === 1">
+      <div v-if="!gerado && passo === 1" class="banho-card">
         <h2 class="bloco-titulo">Identificação</h2>
 
         <div class="campo">
@@ -47,38 +70,15 @@
           </div>
         </div>
 
-        <div v-if="pacientesStore.pacientes.length > 0" class="campo">
-          <label>Paciente registrado</label>
-          <div class="chips-wrap">
-            <button
-              v-for="p in pacientesStore.pacientes"
-              :key="p._key"
-              class="chip"
-              :class="{ 'chip-on': form.nome === p.nome && form.leito === (p.leito || '') }"
-              @click="selecionarPaciente(p)"
-            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-          </div>
-        </div>
-
-        <div class="campo">
-          <label>Nome do paciente <span class="obrigatorio">*</span></label>
-          <input type="text" v-model="form.nome" placeholder="Ex: João da Silva">
-        </div>
-
-        <div class="campo">
-          <label>Leito <span class="opc">(opcional)</span></label>
-          <input type="text" v-model="form.leito" placeholder="Ex: 4B">
-        </div>
-
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
-          <button class="btn btn-secondary" style="width:auto;padding:12px 20px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary" @click="avancar">Próximo →</button>
         </div>
       </div>
 
       <!-- ═══ BLOCO 2 — Detalhes da higienização ═══ -->
-      <div v-if="!gerado && passo === 2">
+      <div v-if="!gerado && passo === 2" class="banho-card">
         <h2 class="bloco-titulo">Detalhes da higienização</h2>
 
         <div class="campo">
@@ -243,32 +243,26 @@
         <p v-if="erro" class="erro-msg">{{ erro }}</p>
         <div class="bloco-nav">
           <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="passo = 1">← Voltar</button>
-          <button class="btn btn-secondary" style="width:auto;padding:12px 16px" @click="limparBloco">Limpar</button>
+          <button class="btn btn-tertiary btn-limpar" @click="limparBloco">Limpar</button>
           <button class="btn btn-primary btn-generate" @click="gerar"><IconGenerateNote />Gerar anotação</button>
         </div>
       </div>
 
       <!-- ═══ RESULTADO ═══ -->
-      <div v-if="gerado">
-        <textarea v-model="textoGerado" class="resultado-box" rows="6"></textarea>
-
-        <button class="btn-copy" @click="copiar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2"/>
-            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-          </svg>
-          {{ copiado ? 'Copiado!' : 'Copiar texto' }}
-        </button>
-
-        <div class="nav-row">
-          <button class="btn btn-secondary" style="flex:1" @click="salvar" :disabled="salvando">
-            {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-          </button>
-          <button class="btn btn-secondary" style="flex:1" @click="novaAnotacao">Nova anotação</button>
-        </div>
-
-        <button class="btn btn-secondary" style="width:100%;margin-top:10px" @click="gerado = false; passo = 2">← Editar</button>
-      </div>
+      <ResultadoAnotacao
+        v-if="gerado"
+        :icon="iconHigienizacao"
+        v-model:texto="textoGerado"
+        v-model:nomePaciente="form.nome"
+        v-model:leitoPaciente="form.leito"
+        :salvando="salvando"
+        label-nova="Nova higienização"
+        @copiar="copiar"
+        @salvar="salvar"
+        @compartilhar="compartilhar"
+        @nova="novaAnotacao"
+        @editar="gerado = false; passo = 2"
+      />
 
     </main>
   </div>
@@ -283,12 +277,14 @@ import { useRascunho } from '../../composables/useRascunho.js'
 import { useToast } from '../../composables/useToast.js'
 import { useCopia } from '../../composables/useCopia.js'
 import IconGenerateNote from '../../components/icons/IconGenerateNote.vue'
+import ResultadoAnotacao from '../../components/ResultadoAnotacao.vue'
+import iconHigienizacao from '../../assets/dashboard-icons-png/higienizacao.png'
 
 const router         = useRouter()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
 const { showToast }  = useToast()
-const { copiado, copiar: _copiar } = useCopia()
+const { copiar: _copiar } = useCopia()
 
 // ── Estado ──
 const passo       = ref(1)
@@ -388,7 +384,7 @@ function voltarOuSair() {
 function limparBloco() {
   erro.value = ''
   if (passo.value === 1) {
-    form.horario = ''; form.genero = 'M'; form.nome = ''; form.leito = ''
+    form.horario = ''; form.genero = 'M'
   } else {
     form.tipo = ''
     form.cadeiraBanho = false; form.comAuxilio = false
@@ -404,10 +400,6 @@ function limparBloco() {
 
 function avancar() {
   erro.value = ''
-  if (!form.nome.trim()) {
-    erro.value = 'Informe o nome do paciente.'
-    return
-  }
   if (!form.horario) {
     erro.value = 'Informe o horário.'
     return
@@ -520,6 +512,16 @@ async function copiar() {
   else showToast('Erro ao copiar')
 }
 
+async function compartilhar() {
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: textoGerado.value })
+      return
+    } catch {}
+  }
+  await copiar()
+}
+
 
 // ── Salvar ──
 async function salvar() {
@@ -553,7 +555,7 @@ function novaAnotacao() {
   })
   higieneExtras.value = []; adicionandoHigiene.value = false; novaHigieneTxt.value = ''
   textoGerado.value = ''; gerado.value = false; passo.value = 1
-  erro.value = ''; copiado.value = false
+  erro.value = ''
   descartarRascunho()
 }
 </script>
@@ -663,5 +665,188 @@ function novaAnotacao() {
 .checkbox-label:has(input:checked),
 .checkbox-label.checked {
   border-color: var(--border);
+}
+
+.banho-screen {
+  background: linear-gradient(180deg, #071426 0%, #0b1728 42%, #08111f 100%);
+  min-height: 100vh;
+}
+
+.banho-header {
+  border-bottom: 1px solid rgba(86, 154, 178, 0.24);
+  background: rgba(7, 18, 34, 0.82);
+  backdrop-filter: blur(16px);
+}
+
+.banho-page {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
+.banho-progress {
+  background: rgba(45, 84, 100, 0.55);
+}
+
+.banho-progress .progress-fill {
+  background: linear-gradient(90deg, #45d4d6, #5c98ff);
+  box-shadow: 0 0 12px rgba(69, 212, 214, 0.22);
+}
+
+.paciente-atalho {
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(73, 128, 154, 0.52);
+  background: linear-gradient(180deg, rgba(17, 38, 62, 0.92), rgba(12, 27, 47, 0.96));
+  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
+}
+
+.paciente-atalho label {
+  display: block;
+  color: #a6c4d8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.paciente-atalho .chips-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.module-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(77, 171, 205, 0.44);
+  background:
+    radial-gradient(circle at top left, rgba(69, 212, 214, 0.2), transparent 42%),
+    linear-gradient(180deg, rgba(18, 42, 72, 0.98), rgba(12, 29, 50, 0.98));
+  box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
+}
+
+.module-hero-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(130, 226, 229, 0.4);
+  background: radial-gradient(circle at top, rgba(95, 232, 232, 0.34), rgba(42, 128, 178, 0.42));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.module-hero-icon img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.module-hero-copy h1 {
+  margin: 0;
+  color: #f5f8ff;
+  font-size: 1.75rem;
+  line-height: 1.02;
+  font-weight: 850;
+}
+
+.module-hero-copy p {
+  margin: 8px 0 0;
+  color: #a6c4d8;
+  font-size: 0.96rem;
+  line-height: 1.35;
+}
+
+.banho-card {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(55, 95, 133, 0.55);
+  background: linear-gradient(180deg, rgba(18, 38, 64, 0.97), rgba(13, 29, 52, 0.98));
+  box-shadow: 0 16px 32px rgba(3, 10, 22, 0.22);
+}
+
+.banho-card + .banho-card {
+  margin-top: 14px;
+}
+
+.bloco-titulo {
+  color: #f3f7ff;
+  border-bottom-color: rgba(77, 130, 160, 0.5);
+  font-size: 1.22rem;
+}
+
+.chip {
+  min-height: 42px;
+  border-radius: 14px;
+  border-color: rgba(76, 116, 150, 0.58);
+  background: rgba(15, 32, 57, 0.9);
+  color: #c2d8ea;
+}
+
+.chip-on {
+  border-color: rgba(92, 215, 226, 0.86);
+  background: linear-gradient(180deg, #23aeca, #1d72c8);
+  color: #fff;
+  box-shadow: 0 7px 15px rgba(35, 150, 200, 0.15);
+}
+
+.checkbox-label {
+  border-color: rgba(76, 116, 150, 0.58);
+  background: rgba(15, 32, 57, 0.82);
+}
+
+.checkbox-label.checked,
+.checkbox-label:has(input:checked) {
+  border-color: rgba(92, 215, 226, 0.78);
+  background: rgba(38, 142, 179, 0.18);
+}
+
+.add-input,
+input,
+textarea {
+  border-color: rgba(76, 116, 150, 0.58);
+  background: rgba(11, 25, 46, 0.92);
+}
+
+.btn-generate {
+  min-height: 58px;
+  border-radius: 18px;
+  box-shadow: 0 10px 20px rgba(25, 126, 201, 0.16);
+}
+
+.btn-limpar {
+  width: auto;
+  padding: 12px 18px;
+}
+
+@media (max-width: 380px) {
+  .module-hero {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .module-hero-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .module-hero-icon img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .module-hero-copy h1 {
+    font-size: 1.45rem;
+  }
 }
 </style>

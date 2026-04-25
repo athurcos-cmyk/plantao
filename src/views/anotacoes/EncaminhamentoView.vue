@@ -44,7 +44,7 @@
         </div>
       </section>
 
-      <section v-if="!gerado" class="module-hero">
+      <section v-if="!gerado && passo === 1" class="module-hero">
         <div class="module-hero-icon">
           <img :src="iconEncaminhamento" alt="Encaminhamento" />
         </div>
@@ -321,17 +321,21 @@
                 @click="avp.local = avp.local === loc ? '' : loc"
               >{{ loc }}</button>
             </div>
-            <label class="toggle-row">
-              <input type="checkbox" v-model="avp.emInfusao">
-              <span>Em infusão</span>
-            </label>
-            <input
-              v-if="avp.emInfusao"
-              type="text"
-              v-model="avp.infundindo"
-              placeholder="Ex: tiamina 100mg + 100ml SF0,9% a 35ml/h em BIC"
-              style="margin-top:8px"
-            >
+            <div v-for="(_, idx) in (avp.infusoes || [])" :key="idx" style="display:flex;align-items:center;gap:6px;margin-top:8px">
+              <input
+                type="text"
+                v-model="avp.infusoes[idx]"
+                placeholder="Ex: tiamina 100mg + 100ml SF0,9% a 35ml/h em BIC"
+                style="flex:1"
+              >
+              <button class="disp-del-btn" @click="removerInfusaoAVP(avp, idx)" style="padding:2px 8px">✕</button>
+            </div>
+            <button
+              v-if="!avp.infusoes || avp.infusoes.length < 3"
+              class="chip chip-add"
+              style="margin-top:8px;font-size:0.78rem;padding:5px 12px"
+              @click="adicionarInfusaoAVP(avp)"
+            >+ Infusão</button>
           </div>
 
           <!-- Card: SNE -->
@@ -670,9 +674,19 @@ function togglePulseiraOpcao(op) {
 
 function addAVP() {
   _limparNenhum()
-  avps.value.push({ id: ++avpIdCtr, local: '', emInfusao: false, infundindo: '' })
+  avps.value.push({ id: ++avpIdCtr, local: '', infusoes: [] })
 }
 function removeAVP(id) { avps.value = avps.value.filter(a => a.id !== id) }
+
+function adicionarInfusaoAVP(avp) {
+  if (!Array.isArray(avp.infusoes)) avp.infusoes = []
+  avp.infusoes.push('')
+}
+
+function removerInfusaoAVP(avp, idx) {
+  if (!Array.isArray(avp.infusoes)) return
+  avp.infusoes.splice(idx, 1)
+}
 
 function addDreno() {
   _limparNenhum()
@@ -810,7 +824,11 @@ function gerarTextoDispositivos() {
   for (const avp of avps.value) {
     let txt = 'AVP'
     if (avp.local) txt += ` em ${avp.local}`
-    if (avp.emInfusao && avp.infundindo.trim()) txt += ` recebendo ${avp.infundindo.trim()}`
+    const infusoesNovas = Array.isArray(avp.infusoes) ? avp.infusoes : []
+    const infs = infusoesNovas.map(i => i.trim()).filter(Boolean)
+    if (!infs.length && avp.emInfusao && avp.infundindo?.trim()) infs.push(avp.infundindo.trim())
+    if (infs.length === 1) txt += ` recebendo ${infs[0]}`
+    else if (infs.length > 1) txt += ` recebendo ${infs.join(', ')}`
     partes.push(txt)
   }
 
@@ -1123,7 +1141,7 @@ function novaAnotacao() {
 
 .encaminhamento-progress .progress-fill {
   background: linear-gradient(90deg, #42b7ff, #6f8cff);
-  box-shadow: 0 0 18px rgba(66, 183, 255, 0.42);
+  box-shadow: 0 0 12px rgba(66, 183, 255, 0.26);
 }
 
 .paciente-atalho {
@@ -1231,7 +1249,7 @@ function novaAnotacao() {
   border-color: rgba(91, 174, 255, 0.88);
   background: linear-gradient(180deg, #2e8df0, #1f67c9);
   color: #fff;
-  box-shadow: 0 10px 20px rgba(36, 117, 221, 0.26);
+  box-shadow: 0 7px 15px rgba(36, 117, 221, 0.16);
 }
 
 .chip-add {
@@ -1248,7 +1266,7 @@ function novaAnotacao() {
 .btn-generate {
   min-height: 58px;
   border-radius: 18px;
-  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+  box-shadow: 0 10px 20px rgba(25, 96, 201, 0.18);
 }
 
 .btn-limpar {

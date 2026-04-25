@@ -1,5 +1,15 @@
 export function gerarTexto(form, camposAtivos = {}) {
   const ativo = (k) => camposAtivos[k] !== false
+  const clean = (v) => {
+    const valor = String(v || '').trim()
+    if (!valor || /^[_\-\s]+$/.test(valor)) return ''
+    return valor
+  }
+  const joinPt = (items) => {
+    const valid = items.filter(Boolean)
+    if (valid.length <= 1) return valid[0] || ''
+    return `${valid.slice(0, -1).join(', ')} e ${valid[valid.length - 1]}`
+  }
 
   const parts = []
   const h = form.horario.replace(':', 'h')
@@ -8,18 +18,24 @@ export function gerarTexto(form, camposAtivos = {}) {
     if (form.localizacao === 'poltrona') {
       parts.push(`${h} – Recebo plantão com paciente em poltrona.`)
     } else {
-      parts.push(`${h} – Recebo plantão com paciente em seu leito com cama ${form.posicaoCama}, rodas ${form.rodas}, grades ${form.grades} e decúbito ${form.decubito}.`)
+      const leitoDetalhes = joinPt([
+        clean(form.posicaoCama) && `cama ${clean(form.posicaoCama)}`,
+        clean(form.rodas) && `rodas ${clean(form.rodas)}`,
+        clean(form.grades) && `grades ${clean(form.grades)}`,
+        clean(form.decubito) && `decúbito ${clean(form.decubito)}`,
+      ])
+      parts.push(`${h} – Recebo plantão com paciente em seu leito${leitoDetalhes ? ` com ${leitoDetalhes}` : ''}.`)
     }
   }
 
-  if (ativo('estadoMental') && form.mentalAlterado && form.mentalDesc)
-    parts.push(`Aparentemente ${form.mentalDesc}.`)
+  if (ativo('estadoMental') && form.mentalAlterado && clean(form.mentalDesc))
+    parts.push(`Aparentemente ${clean(form.mentalDesc)}.`)
 
   const ap = []
   ap.push(form.colaboracao)
 
   if (form.deambulacao === 'deambula com auxílio')
-    ap.push(`deambula com auxílio de ${form.deambulaAuxilio}`)
+    ap.push(clean(form.deambulaAuxilio) ? `deambula com auxílio de ${clean(form.deambulaAuxilio)}` : 'deambula com auxílio')
   else if (form.deambulacao !== 'não deambula' && form.deambulacao)
     ap.push(form.deambulacao)
 
@@ -27,7 +43,7 @@ export function gerarTexto(form, camposAtivos = {}) {
     const rv = form.respPadrao
     if (form.respiracao === 'cateter nasal de O₂' || form.respiracao === 'máscara de O₂') {
       if (rv) ap.push(rv)
-      ap.push(`em ${form.respiracao} a ${form.oxigenioLitros}L/min`)
+      ap.push(`em ${form.respiracao}${clean(form.oxigenioLitros) ? ` a ${clean(form.oxigenioLitros)}L/min` : ''}`)
     } else if (form.respiracao === 'em ar ambiente') {
       ap.push(rv ? `${rv} em ar ambiente` : 'em ar ambiente')
     } else {
@@ -37,7 +53,8 @@ export function gerarTexto(form, camposAtivos = {}) {
 
   if (ativo('acompanhante') && form.acompanhante === 'sim') {
     const gen = form.sexo === 'M' ? 'acompanhado' : 'acompanhada'
-    ap.push(`${gen} de ${form.acompanhanteParentesco} ${form.acompanhanteNome}`)
+    const acompanhante = [clean(form.acompanhanteParentesco), clean(form.acompanhanteNome)].filter(Boolean).join(' ')
+    ap.push(acompanhante ? `${gen} de ${acompanhante}` : gen)
   }
 
   const apText = ap.filter(Boolean).join(', ')
@@ -98,9 +115,11 @@ export function gerarTexto(form, camposAtivos = {}) {
 
   if (ref.length > 0) parts.push(ref.join(', ') + '.')
 
-  // Guard: se nenhum campo gerou texto, retorna mínimo válido
-  if (parts.length === 0) return `${h} – Avaliação realizada. ${form.fechamento}`
+  const fechamento = clean(form.fechamento)
 
-  parts.push(form.fechamento)
+  // Guard: se nenhum campo gerou texto, retorna mínimo válido
+  if (parts.length === 0) return `${h} – Avaliação realizada.${fechamento ? ` ${fechamento}` : ''}`
+
+  if (fechamento) parts.push(fechamento)
   return parts.join(' ')
 }
