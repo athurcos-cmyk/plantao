@@ -1,6 +1,6 @@
 # Memory Index - Plantao (Codex)
 
-> Ultima atualizacao: 2026-04-24
+> Ultima atualizacao: 2026-04-25
 
 ## Arquivos locais do Codex
 
@@ -15,7 +15,21 @@ Arquivos preservados como referencia, sem edicao por este fluxo:
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
 - `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
 
-## Ultima sessao (2026-04-24)
+## Ultima sessao (2026-04-25)
+
+- O ciclo visual dos cards principais de anotacao foi fechado nesta etapa
+- `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial` foram alinhados ao padrao premium consolidado
+- `Curativos` saiu do verde isolado e voltou para a mesma familia navy/azul do app
+- `Anotacao Inicial` tambem teve os acentos verde/ciano reduzidos para ficar no mesmo padrao visual das outras telas
+- `Meus Pacientes` recebeu polimento premium, com topo mais forte, cards melhores e remocao do FAB local para nao colidir com o rodape global
+- O aviso de notificacoes em `Meus Pacientes` continua abrindo uma vez e pode ser reaberto manualmente depois
+- O padrao consolidado agora e: `paciente registrado` no topo quando aplicavel, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
+- A calculadora saiu do FAB verde e foi integrada ao rodape fixo; o modal tambem ganhou visual premium no mesmo padrao do app
+- `Historico` e `Organizador` tambem entraram no fechamento visual, com melhor leitura no desktop e consistencia maior com dashboard/pacientes
+- O atalho `Como acessar no computador` da dashboard agora usa SVG inline, corrigindo o emoji quebrado
+- `npm test` passou com 60 testes e `npm run build` passou
+
+## Sessao anterior (2026-04-24)
 
 - `Notas Livres` foi fechada como o quarto modulo no padrao premium, depois de `Dashboard`, `Sinais Vitais` e `Medicacao`
 - A tela ganhou hero com PNG proprio, fundo premium, cards mais profundos e resultado final via `ResultadoAnotacao.vue`

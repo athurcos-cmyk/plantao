@@ -136,6 +136,19 @@ Estado atual do código:
 - Modelos de `Notas Livres` usam busca, favoritos persistidos e rolagem interna; evitar voltar para previews longos de duas linhas no fluxo principal
 - `ResultadoAnotacao.vue` e o padrao desejado para o final dos modulos de anotacao que geram texto
 
+### Notas de UI da sessao 2026-04-25
+
+- O ciclo de fechamento visual dos cards principais de anotacao pode ser considerado concluido nesta etapa
+- O padrao consolidado agora e: `paciente registrado` no topo quando aplicavel, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
+- Modulos revisados nessa fase: `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial`
+- `Curativos` saiu do verde isolado e voltou para a mesma familia visual do app
+- `Anotacao Inicial` tambem teve os acentos verde/ciano reduzidos para alinhar com o azul padrao
+- `src/views/PacientesView.vue` tambem foi polida nesse mesmo ciclo e o FAB local de adicionar paciente foi removido para nao colidir com o rodape global
+- `src/App.vue` agora usa a calculadora no rodape fixo, em vez de FAB solto
+- `src/components/CalculadoraModal.vue`, `src/views/HistoricoView.vue` e `src/views/OrganizadorView.vue` ja estao no mesmo idioma visual premium do restante do app
+- `src/views/DashboardView.vue` manteve o atalho `Como acessar no computador`, agora com SVG inline no lugar do emoji quebrado
+- Para a proxima sessao, assumir o fechamento visual dos cards como baseline e focar mais em backlog funcional, refinamentos clinicos e fluxos operacionais
+
 ## Padrão do texto gerado
 
 ```text

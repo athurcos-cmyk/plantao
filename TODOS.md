@@ -18,6 +18,14 @@
 
 ## Concluídos
 
+### [x] Calculadora, Historico e Organizador no padrao premium (2026-04-25)
+- A calculadora foi movida para o rodape fixo e ganhou novo visual premium em `CalculadoraModal.vue`
+- `Historico` foi alargado para uso melhor no desktop e passou a exibir icones ilustrados por tipo de anotacao
+- `Organizador` recebeu hero, cards de resumo, progresso mais claro e modais alinhados com o restante do app
+- Dashboard teve ajuste fino no atalho `Como acessar no computador`, trocando emoji quebrado por SVG inline
+
+---
+
 ### [x] Fechamento visual dos cards principais de anotação (2026-04-25)
 Todos os cards principais de anotação foram consolidados no novo padrão premium do app.
 

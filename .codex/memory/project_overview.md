@@ -2,7 +2,7 @@
 name: Plantao - Visao geral do projeto (Codex)
 description: Stack, estrutura de pastas, rotas, stores, composables e integracoes
 type: project
-updated: 2026-04-24
+updated: 2026-04-25
 ---
 
 ## O que e
@@ -26,6 +26,7 @@ O objetivo e gerar textos padronizados, rapidos de copiar e utilizaveis mesmo qu
 
 - `src/main.js` - bootstrap do app
 - `src/App.vue` - shell principal
+- `src/App.vue` tambem concentra o rodape fixo e o gatilho global da calculadora
 - `src/router/index.js` - rotas e guards
 - `src/firebase.js` - setup Firebase client
 - `src/stores/` - `auth.js`, `anotacoes.js`, `pacientes.js`, `organizador.js`
@@ -126,9 +127,13 @@ Estruturas mais relevantes:
 - `src/composables/usePushNotificacoes.js` carrega `firebase/messaging` dinamicamente; se mexer em push, preservar esse lazy-load
 - `src/stores/auth.js` depende do cache local para liberar a UI cedo; se mexer no bootstrap, preservar a restauracao rapida e o timeout de fallback
 - `src/views/DashboardView.vue` passou a concentrar a nova home mobile: topo com ilustracao, sync card compacto, grid 4x no celular, feedback modal, rodape fixo tipo app e atalhos ilustrados
+- `src/views/DashboardView.vue` manteve o atalho `Como acessar no computador` logo abaixo do sync; o icone desse atalho agora e SVG inline para evitar quebra de emoji
 - `src/views/DashboardView.vue` tambem guarda um aprendizado forte de produto: manter a primeira dobra leve, sem voltar a crescer o card de sincronizacao nem encher a home de microcopy
 - `src/assets/dashboard-icons-png/` e agora a pasta fonte dos icones ilustrados usados no dashboard; manter assets leves e transparentes
 - A direcao visual atual do projeto e usar a dashboard como referencia de linguagem premium para os outros modulos, desde que cada tela preserve leitura rapida, pouco atrito e foco operacional
+- `src/views/HistoricoView.vue` agora usa esses PNGs tambem dentro das capsulas do tipo de anotacao
+- `src/views/OrganizadorView.vue` foi elevado para o mesmo padrao premium de dashboard/pacientes
+- `src/components/CalculadoraModal.vue` tambem entrou nessa mesma familia visual e continua sendo controlada globalmente por `src/composables/useCalculadora.js`
 - `src/views/anotacoes/AnotacaoMedicacaoView.vue` hoje tem duas zonas visuais principais (`preparo` e `medicamentos do horario`), quick add por historico/preset, catalogo detalhado e fluxo `Salvar e adicionar proxima`; preservar essa hierarquia se evoluir a tela
 - Aprendizado importante dessa view: evitar resumos grandes, estados obvios e microcopy em excesso; na medicacao, a melhor UX ate agora foi a mais enxuta e direta para chegar rapido em `Adicionar medicamento`
 - Nos avisos de quick add/modelos, manter texto curto e operacional; a versao atual fala so de `prescricao` e `apresentacao`
@@ -137,3 +142,7 @@ Estruturas mais relevantes:
 - `src/views/anotacoes/IntercorrenciaView.vue` e a tela de `Notas Livres`; manter a biblioteca de modelos compacta, pesquisavel, com favoritos e rolagem interna
 - Em `Notas Livres`, `Gerar anotacao` deve ficar antes dos modelos. Modelos sao aceleradores, nao o ultimo passo obrigatorio do fluxo
 - Modelos de `Notas Livres` ficam em `livres/{syncCode}/modelos`; favoritos sao salvos no proprio modelo e tambem entram na fila offline de update
+- `src/components/ResultadoAnotacao.vue` virou o padrao consolidado para o estado final dos modulos que geram texto pronto
+- O padrao visual atual das views principais de anotacao e: `paciente registrado` no topo quando aplicavel, hero so no primeiro bloco, cards navy/azul e chips premium
+- `src/views/anotacoes/PassagemPlantaoView.vue`, `src/views/anotacoes/EncaminhamentoView.vue`, `src/views/anotacoes/BanhoView.vue`, `src/views/anotacoes/CurativoView.vue` e `src/views/anotacoes/AnotacaoInicialView.vue` ja estao alinhadas nesse mesmo padrao
+- `src/views/PacientesView.vue` tambem foi polida nesse ciclo e nao usa mais FAB local de adicionar paciente; a acao principal ficou integrada ao topo da tela para nao colidir com o rodape global

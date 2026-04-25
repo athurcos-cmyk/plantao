@@ -2,7 +2,7 @@
 name: Plantao - Status do projeto (Codex)
 description: Status do app, alertas operacionais, pendencias tecnicas e contexto de negocio
 type: project
-updated: 2026-04-24
+updated: 2026-04-25
 ---
 
 ## Status geral
@@ -23,7 +23,7 @@ Esse numero nao deve ser tratado como dado em tempo real sem nova verificacao.
 - Modelo desejado continua sendo mensal, sem plano anual
 - B2B hospitalar foi descartado no curto prazo
 - A principal tese do produto continua sendo mobilidade offline em ambiente hospitalar caotico
-- Direcao atual de UX/UI: elevar o app inteiro para um visual mais premium e mais consistente com a nova dashboard, sem transformar as telas em vitrines visuais lentas ou cheias de leitura
+- Direcao atual de UX/UI: manter e refinar o padrao premium ja consolidado nos modulos principais, sem transformar as telas em vitrines visuais lentas ou cheias de leitura
 
 Design doc estrategico mais recente conhecido:
 `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\Thurcos-main-design-20260326-gtm.md`
@@ -47,6 +47,10 @@ Design doc estrategico mais recente conhecido:
 - Emails transacionais via Resend
 - PWA offline-first instalavel
 - Dashboard mobile redesenhado com cards ilustrados, feedback modal e rodape fixo tipo app
+- A calculadora agora abre pelo rodape fixo em vez de FAB separado, e o modal ja acompanha o mesmo padrao premium navy/azul do resto do produto
+- Ciclo principal de fechamento visual dos cards de anotacao concluido, com `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial` alinhados no mesmo padrao premium
+- `Meus Pacientes` tambem foi polida no mesmo ciclo e o FAB local foi removido para nao competir com o rodape global
+- `Historico` e `Organizador` tambem ja estao no mesmo idioma visual premium, e o `Historico` foi reaberto lateralmente para ficar melhor no PC onde o usuario copia anotacoes para o sistema do hospital
 
 ## Estado tecnico atual confirmado no codigo
 
@@ -75,6 +79,10 @@ Design doc estrategico mais recente conhecido:
 - `Sinais Vitais` agora força teclado numerico/decimal nos campos de medida no mobile, mas `Localizacao da dor` foi mantida como texto livre depois de feedback real de uso
 - `Notas Livres` agora usa `ResultadoAnotacao.vue` no texto pronto, removeu limite curto de caracteres dos modelos e trata modelos como biblioteca auxiliar compacta com busca/favoritos
 - Em `Notas Livres`, manter `Gerar anotacao` antes da biblioteca de modelos; listas de modelos grandes devem rolar internamente para nao alongar o fluxo principal
+- `Curativos` saiu da paleta verde isolada e foi trazida para a mesma familia navy/azul do app
+- `Anotacao Inicial` tambem teve os acentos verde/ciano reduzidos para alinhar com o azul padrao
+- O padrao consolidado dos modulos ficou: `paciente registrado` no topo quando aplicavel, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
+- O shell principal esta mais consistente: dashboard, historico, pacientes, organizador e calculadora ja conversam na mesma familia visual
 
 ## Alertas operacionais
 
@@ -95,7 +103,7 @@ Design doc estrategico mais recente conhecido:
 - [ ] Avaliar Resend Batch API quando a base crescer
 - [ ] Revisar qualquer documentacao antiga que ainda descreva auth legado
 - [ ] Continuar lapidando a home mobile apenas com ajustes cirurgicos; evitar voltar a crescer a primeira dobra com microcopy ou CTA exagerado
-- [ ] Propagar a nova linguagem premium da dashboard para os modulos restantes de anotacao, sempre priorizando rapidez, pouco scroll e pouco ruido visual
+- [ ] Seguir para backlog funcional e refinamentos clinicos agora que o ciclo principal de fechamento visual dos cards foi concluido
 
 ## Conformidade e posicionamento
 

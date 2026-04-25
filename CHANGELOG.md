@@ -17,9 +17,18 @@
 - `Meus Pacientes` recebeu polimento premium: hero do modulo, cards mais fortes, pendencias mais legiveis, modal alinhado com o app e remocao do FAB local que colidia com o rodape global
 - O aviso de notificacoes em `Meus Pacientes` continua abrindo uma vez e pode ser reaberto manualmente depois, agora com visual mais integrado
 
+### Shell e modulos gerais refinados no mesmo padrao
+
+- A calculadora saiu do FAB verde solto e passou a abrir pelo rodape fixo do app, com estado compartilhado em `useCalculadora.js`
+- `CalculadoraModal.vue` foi redesenhado para a mesma linguagem navy/azul do produto, com header premium, abas melhores, campos mais fortes e resultados sem o verde isolado antigo
+- `Historico` foi elevado visualmente, ganhou largura melhor para desktop e passou a usar os novos icones ilustrados por tipo de anotacao para acelerar leitura e copia no computador do hospital
+- `Organizador do plantao` tambem entrou no padrao premium com hero, cards de resumo, progresso mais claro e modais alinhados ao restante do app
+- O atalho `Como acessar no computador` na dashboard trocou o emoji corrompido por um SVG inline, estabilizando o icone no botao
+
 ### Estado consolidado para a proxima sessao
 
 - O ciclo de fechamento visual dos cards de anotacao pode ser considerado concluido nesta etapa
+- O shell principal tambem ja esta mais perto do padrao final, com dashboard, historico, organizador, pacientes e calculadora na mesma familia visual
 - Proximos trabalhos podem sair de polimento de tela por tela e voltar para backlog funcional, linguagem clinica, metricas e refinamentos de fluxo
 
 ### Validacao
