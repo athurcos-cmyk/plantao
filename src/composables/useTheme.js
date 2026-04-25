@@ -22,7 +22,7 @@ export const TEMAS = {
     nome: 'Rosa',
     preview: { bg: '#1a0a14', card: '#251120', accent: '#ffcbdb' },
     vars: {
-      '--bg':          '#1a0a14',
+      '--bg':          '#fffafa',
       '--bg-card':     '#251120',
       '--bg-input':    '#2d1628',
       '--bg-hover':    '#361c30',
