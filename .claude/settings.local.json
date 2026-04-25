@@ -24,7 +24,8 @@
       "Skill(gstack-upgrade)",
       "Skill(gstack-upgrade:*)",
       "Bash(npx vite:*)",
-      "mcp__Windows-MCP__PowerShell"
+      "mcp__Windows-MCP__PowerShell",
+      "Bash(\"C:/Users/Thurcos/Desktop/plantao/CHANGELOG.md\":*)"
     ]
   }
 }

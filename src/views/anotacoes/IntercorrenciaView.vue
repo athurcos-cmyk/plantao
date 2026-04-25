@@ -959,7 +959,7 @@ watch(notaTexto, (txt) => {
 }
 .chip-modelo:active { opacity: 0.8; }
 .chip-modelo-on {
-  background: rgba(59,130,246,0.12); border-color: var(--blue); color: var(--blue); font-weight: 600;
+  background: var(--blue-faint); border-color: var(--blue); color: var(--blue); font-weight: 600;
 }
 .modelos-vazio-row {
   font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;
@@ -1031,7 +1031,7 @@ watch(notaTexto, (txt) => {
   position: absolute; left: 0; top: 16px;
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--blue); flex-shrink: 0;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+  box-shadow: 0 0 0 3px var(--blue-faint);
 }
 .timeline-line {
   position: absolute; left: 4px; top: 26px;
@@ -1203,15 +1203,16 @@ watch(notaTexto, (txt) => {
 }
 
 .module-hero-icon {
-  width: 62px;
-  height: 62px;
-  border-radius: 20px;
-  background: radial-gradient(circle at top, rgba(71, 140, 255, 0.38), rgba(39, 88, 170, 0.5));
-  border: 1px solid rgba(104, 161, 255, 0.38);
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
   position: relative;
   z-index: 1;
 }
@@ -1373,7 +1374,7 @@ watch(notaTexto, (txt) => {
   min-height: 64px;
   padding: 0 10px;
   border-radius: 16px;
-  background: rgba(10, 22, 40, 0.56);
+  background: var(--bg-input);
   color: var(--blue);
   font-size: 1.02rem;
   font-weight: 800;
@@ -1387,8 +1388,8 @@ watch(notaTexto, (txt) => {
   min-height: 64px;
   padding: 17px 14px;
   border-radius: 16px;
-  background: rgba(10, 22, 40, 0.36);
-  color: #eef4ff;
+  background: var(--bg-card);
+  color: var(--text);
   font-size: 1rem;
 }
 
@@ -1401,7 +1402,7 @@ watch(notaTexto, (txt) => {
 }
 
 .nc-hint {
-  color: #7386ad;
+  color: var(--text-muted);
 }
 
 .nc-btn-add {
@@ -1413,8 +1414,8 @@ watch(notaTexto, (txt) => {
 }
 
 .nc-btn-add:disabled {
-  background: rgba(58, 84, 128, 0.5);
-  color: #8a9abc;
+  background: var(--bg-hover);
+  color: var(--text-muted);
   box-shadow: none;
 }
 
@@ -1450,22 +1451,22 @@ watch(notaTexto, (txt) => {
 .btn-del-nota,
 .btn-del-modal,
 .btn-fechar-modal {
-  color: #91a5cf;
+  color: var(--text-dim);
 }
 
 .chip-modelo {
   max-width: 180px;
   min-height: 40px;
   border-radius: 14px;
-  background: rgba(20, 35, 63, 0.88);
-  border: 1px solid rgba(58, 84, 128, 0.6);
-  color: #aabce4;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
   font-weight: 700;
 }
 
 .chip-modelo-on {
-  background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
-  border-color: rgba(80, 160, 255, 0.72);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  border-color: var(--blue);
   color: #fff;
   box-shadow: 0 6px 14px rgba(30, 100, 230, 0.13);
 }
@@ -1540,9 +1541,9 @@ watch(notaTexto, (txt) => {
   min-height: 40px;
   padding: 0 14px;
   border-radius: 14px;
-  border: 1px solid rgba(89, 132, 198, 0.5);
-  background: rgba(20, 35, 63, 0.88);
-  color: #d7e4ff;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
   font-family: inherit;
   font-size: 0.86rem;
   font-weight: 800;
@@ -1552,7 +1553,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modelo-fav-chip-on {
-  background: linear-gradient(180deg, rgba(45, 110, 255, 0.28), rgba(25, 80, 220, 0.2));
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
   color: #fff;
 }
@@ -1565,7 +1566,7 @@ watch(notaTexto, (txt) => {
   overflow-y: auto;
   padding-right: 2px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(117, 189, 255, 0.45) transparent;
+  scrollbar-color: color-mix(in srgb, var(--blue) 45%, transparent) transparent;
 }
 
 .modelos-lista::-webkit-scrollbar {
@@ -1573,7 +1574,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modelos-lista::-webkit-scrollbar-thumb {
-  background: rgba(117, 189, 255, 0.45);
+  background: color-mix(in srgb, var(--blue) 45%, transparent);
   border-radius: 999px;
 }
 
@@ -1583,8 +1584,8 @@ watch(notaTexto, (txt) => {
   align-items: stretch;
   min-height: 48px;
   border-radius: 15px;
-  border: 1px solid rgba(53, 82, 129, 0.5);
-  background: linear-gradient(180deg, rgba(19, 35, 66, 0.92), rgba(15, 28, 54, 0.94));
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   overflow: hidden;
   box-shadow: 0 8px 16px rgba(3, 10, 22, 0.12);
 }

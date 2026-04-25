@@ -570,12 +570,12 @@ function barraLargura(count, lista) {
 </script>
 
 <style scoped>
-.admin-wrap { min-height: 100vh; background: #0A1628; color: #EAEEF3; font-family: 'DM Sans', sans-serif; }
+.admin-wrap { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
 
 /* ── Header ── */
-.admin-header { display: flex; align-items: center; gap: 12px; padding: 16px; background: #111d32; border-bottom: 1px solid #1e3050; }
+.admin-header { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
 .header-acoes { display: flex; align-items: center; gap: 4px; margin-left: auto; }
-.btn-broadcast { background: rgba(30,136,229,0.12); border: 1px solid rgba(30,136,229,0.3); color: #1E88E5; font-size: 1.1rem; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: background 0.15s; }
+.btn-broadcast { background: var(--blue-muted); border: 1px solid var(--blue); color: var(--blue); font-size: 1.1rem; cursor: pointer; padding: 6px 10px; border-radius: 8px; transition: background 0.15s; }
 .btn-broadcast:hover { background: rgba(30,136,229,0.22); }
 .btn-back { background: none; border: none; color: #8899AA; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; }
 .admin-title { margin: 0; font-size: 1.1rem; font-weight: 700; }
@@ -588,12 +588,12 @@ function barraLargura(count, lista) {
 .admin-body { padding: 20px 16px; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 
 /* ── Counter ── */
-.counter-card { background: #111d32; border: 1px solid #1e3050; border-radius: 12px; padding: 16px; }
+.counter-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .counter-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .counter-label { margin: 0; font-size: 0.78rem; color: #8899AA; text-transform: uppercase; letter-spacing: 0.04em; }
 .counter-num { margin: 4px 0 0; font-size: 1.8rem; font-weight: 700; line-height: 1; }
 .counter-de { font-size: 0.9rem; font-weight: 400; color: #8899AA; }
-.btn-init { background: #1E88E5; color: #fff; border: none; border-radius: 8px; padding: 9px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn-init { background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 9px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .btn-init:disabled { opacity: 0.5; cursor: default; }
 .counter-hint { margin: 8px 0 0; font-size: 0.78rem; }
 .counter-ok { color: #4caf50; }
@@ -601,9 +601,9 @@ function barraLargura(count, lista) {
 
 /* ── Tabs ── */
 .tabs { display: flex; gap: 6px; }
-.tab-btn { flex: 1; padding: 9px 4px; border-radius: 8px; border: 1px solid #1e3050; background: #162033; color: #8899AA; font-size: 0.8rem; font-family: inherit; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-.tab-on { background: rgba(30, 136, 229, 0.12); border-color: #1E88E5; color: #1E88E5; }
-.tab-badge { background: #E53935; color: #fff; border-radius: 9999px; font-size: 0.65rem; font-weight: 700; padding: 1px 5px; min-width: 16px; text-align: center; }
+.tab-btn { flex: 1; padding: 9px 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-dim); font-size: 0.8rem; font-family: inherit; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.tab-on { background: var(--blue-muted); border-color: var(--blue); color: var(--blue); }
+.tab-badge { background: var(--danger); color: #fff; border-radius: 9999px; font-size: 0.65rem; font-weight: 700; padding: 1px 5px; min-width: 16px; text-align: center; }
 
 /* ── Hints ── */
 .hint-central { margin: 0; color: #8899AA; font-size: 0.875rem; text-align: center; }
@@ -611,12 +611,12 @@ function barraLargura(count, lista) {
 .hint-vazio { margin: 0; color: #556677; font-size: 0.875rem; text-align: center; padding: 24px 0; }
 
 /* ── Busca ── */
-.search-input { width: 100%; box-sizing: border-box; background: #162033; border: 1px solid #1e3050; border-radius: 10px; padding: 11px 14px; color: #EAEEF3; font-size: 0.9rem; font-family: inherit; outline: none; }
-.search-input:focus { border-color: #1E88E5; }
+.search-input { width: 100%; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; color: var(--text); font-size: 0.9rem; font-family: inherit; outline: none; }
+.search-input:focus { border-color: var(--blue); }
 
 /* ── Usuários ── */
 .usuarios-lista { display: flex; flex-direction: column; gap: 10px; }
-.usuario-card { background: #111d32; border: 1px solid #1e3050; border-radius: 10px; padding: 14px; display: flex; align-items: flex-start; gap: 10px; }
+.usuario-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; align-items: flex-start; gap: 10px; }
 .usuario-info { flex: 1; min-width: 0; }
 .usuario-top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
 .usuario-nome { margin: 0; font-size: 0.95rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -629,7 +629,7 @@ function barraLargura(count, lista) {
 .badge { display: inline-block; padding: 2px 7px; border-radius: 9999px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
 .badge-ok { background: rgba(67,160,71,0.15); color: #43A047; }
 .badge-dim { background: rgba(136,153,170,0.1); color: #8899AA; }
-.badge-new { background: rgba(30,136,229,0.15); color: #1E88E5; }
+.badge-new { background: var(--blue-muted); color: var(--blue); }
 .badge-ativo { background: rgba(67,160,71,0.2); color: #43A047; }
 .badge-semana { background: rgba(255,193,7,0.15); color: #FFC107; }
 .badge-mes { background: rgba(255,152,0,0.15); color: #FF9800; }
@@ -637,7 +637,7 @@ function barraLargura(count, lista) {
 
 /* ── Botões de ação por usuário ── */
 .btn-icon { border-radius: 8px; border: 1px solid; padding: 8px 10px; font-size: 0.9rem; cursor: pointer; min-height: 38px; min-width: 38px; transition: background 0.15s; }
-.btn-email { background: rgba(30,136,229,0.08); border-color: rgba(30,136,229,0.25); color: #1E88E5; }
+.btn-email { background: var(--blue-muted); border-color: var(--blue); color: var(--blue); }
 .btn-email:hover:not(:disabled) { background: rgba(30,136,229,0.18); }
 .btn-del { background: rgba(229,57,53,0.08); border-color: rgba(229,57,53,0.25); color: #E53935; }
 .btn-del:hover:not(:disabled) { background: rgba(229,57,53,0.18); }
@@ -652,7 +652,7 @@ function barraLargura(count, lista) {
 .feedback-data { font-size: 0.78rem; color: #556677; margin-left: auto; }
 .feedback-texto { margin: 0 0 10px; font-size: 0.875rem; color: #8899AA; line-height: 1.5; }
 .feedback-acoes { display: flex; gap: 8px; }
-.btn-reply { font-size: 0.78rem; color: #1E88E5; text-decoration: none; padding: 5px 10px; border: 1px solid rgba(30,136,229,0.3); border-radius: 6px; }
+.btn-reply { font-size: 0.78rem; color: var(--blue); text-decoration: none; padding: 5px 10px; border: 1px solid var(--blue); border-radius: 6px; }
 .btn-lido { font-size: 0.78rem; color: #8899AA; background: none; border: 1px solid #1e3050; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-family: inherit; }
 .btn-lido:hover { color: #EAEEF3; border-color: #8899AA; }
 
@@ -667,9 +667,9 @@ function barraLargura(count, lista) {
 .grafico-barras { display: flex; flex-direction: column; gap: 8px; }
 .barra-wrap { display: flex; align-items: center; gap: 8px; }
 .barra-label { font-size: 0.72rem; color: #8899AA; width: 68px; flex-shrink: 0; }
-.barra-track { flex: 1; height: 10px; background: #162033; border-radius: 9999px; overflow: hidden; }
-.barra-fill { height: 100%; background: #1E88E5; border-radius: 9999px; transition: width 0.3s ease; min-width: 2px; }
-.barra-acum { background: #43A047; }
+.barra-track { flex: 1; height: 10px; background: var(--bg-input); border-radius: 9999px; overflow: hidden; }
+.barra-fill { height: 100%; background: var(--blue); border-radius: 9999px; transition: width 0.3s ease; min-width: 2px; }
+.barra-acum { background: var(--success); }
 .barra-num { font-size: 0.8rem; font-weight: 600; width: 20px; text-align: right; }
 
 /* ── Monitor ── */
@@ -689,21 +689,21 @@ function barraLargura(count, lista) {
 .broadcast-stats { display: flex; gap: 6px; }
 
 /* ── Divider ── */
-.divider { height: 1px; background: #1e3050; }
+.divider { height: 1px; background: var(--border); }
 
 /* ── Broadcast form ── */
 .admin-hint { margin: 0; font-size: 0.875rem; color: #8899AA; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #8899AA; }
-.input { background: #162033; border: 1px solid #1e3050; border-radius: 10px; padding: 12px 14px; color: #EAEEF3; font-size: 1rem; font-family: inherit; outline: none; width: 100%; box-sizing: border-box; }
-.input:focus { border-color: #1E88E5; }
+.input { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-size: 1rem; font-family: inherit; outline: none; width: 100%; box-sizing: border-box; }
+.input:focus { border-color: var(--blue); }
 .textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 .char-count { font-size: 0.75rem; color: #556677; text-align: right; }
 .chips { display: flex; gap: 8px; }
-.chip { padding: 8px 16px; border-radius: 9999px; border: 1px solid #1e3050; background: #162033; color: #8899AA; font-size: 0.875rem; font-family: inherit; cursor: pointer; }
-.chip-on { background: rgba(30,136,229,0.12); border-color: #1E88E5; color: #1E88E5; }
-.btn-enviar { width: 100%; padding: 14px; background: #1E88E5; color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer; min-height: 52px; }
-.btn-enviar:hover:not(:disabled) { background: #1565C0; }
+.chip { padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text-dim); font-size: 0.875rem; font-family: inherit; cursor: pointer; }
+.chip-on { background: var(--blue-muted); border-color: var(--blue); color: var(--blue); }
+.btn-enviar { width: 100%; padding: 14px; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer; min-height: 52px; }
+.btn-enviar:hover:not(:disabled) { background: var(--blue-dark); }
 .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
 .resultado { border-radius: 10px; padding: 14px; }
 .resultado-ok { background: rgba(67,160,71,0.1); border: 1px solid rgba(67,160,71,0.25); }
@@ -717,11 +717,11 @@ function barraLargura(count, lista) {
 
 /* ── Modal ── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: flex-end; justify-content: center; z-index: 100; padding: 0; }
-.modal { background: #111d32; border: 1px solid #1e3050; border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
 .modal-titulo { margin: 0; font-size: 1.05rem; font-weight: 700; }
 .modal-sub { margin: -8px 0 0; font-size: 0.82rem; color: #8899AA; }
 .modal-acoes { display: flex; gap: 10px; }
-.btn-cancel { flex: 1; padding: 12px; background: #162033; border: 1px solid #1e3050; border-radius: 10px; color: #8899AA; font-size: 0.9rem; font-family: inherit; cursor: pointer; }
-.btn-enviar-modal { flex: 2; padding: 12px; background: #1E88E5; color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; font-family: inherit; cursor: pointer; }
+.btn-cancel { flex: 1; padding: 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; color: var(--text-dim); font-size: 0.9rem; font-family: inherit; cursor: pointer; }
+.btn-enviar-modal { flex: 2; padding: 12px; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; font-family: inherit; cursor: pointer; }
 .btn-enviar-modal:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>

@@ -1302,15 +1302,16 @@ function novaAnotacao() {
 }
 
 .module-hero-icon {
-  width: 70px;
-  height: 70px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  background: linear-gradient(145deg, rgba(31, 143, 96, 0.26), rgba(18, 82, 70, 0.3));
-  border: 1px solid rgba(110, 231, 183, 0.26);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 34px rgba(3, 9, 7, 0.28);
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {
@@ -1534,61 +1535,69 @@ function novaAnotacao() {
 }
 
 .curativo-progress {
-  background: rgba(50, 76, 118, 0.5);
+  background: var(--bg-hover);
 }
 
 .curativo-progress .progress-fill {
-  background: linear-gradient(90deg, #2f8cff, #51b5ff);
-  box-shadow: 0 0 14px rgba(57, 143, 255, 0.28);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  box-shadow: 0 0 14px var(--blue-faint);
 }
 
 .curativo-progress .progress-label {
-  color: #9fb0d2;
+  color: var(--text-dim);
 }
 
 .paciente-atalho {
-  border-color: rgba(76, 121, 190, 0.34);
-  background: linear-gradient(180deg, rgba(17, 34, 65, 0.96), rgba(12, 26, 50, 0.98));
+  border-color: var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
 }
 
 .paciente-atalho label {
-  color: #9fb0d2;
+  color: var(--text-dim);
 }
 
 .module-hero {
   border-color: var(--border);
-  background: var(--bg-card);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
 }
 
 .module-hero-icon {
-  background: radial-gradient(circle at top, rgba(84, 157, 255, 0.36), rgba(31, 88, 174, 0.48));
-  border-color: rgba(104, 161, 255, 0.34);
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-copy h1,
 .bloco-titulo {
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .module-hero-copy p {
-  color: #9fb0d2;
+  color: var(--text-dim);
 }
 
 .curativo-card {
-  border-color: rgba(76, 121, 190, 0.36);
+  border-color: var(--border);
   background:
-    radial-gradient(circle at top left, rgba(47, 120, 225, 0.11), transparent 34%),
-    linear-gradient(180deg, rgba(16, 32, 60, 0.97), rgba(12, 25, 48, 0.99));
+    radial-gradient(circle at top left, var(--blue-faint), transparent 34%),
+    linear-gradient(180deg, var(--bg-input), var(--bg-card));
 }
 
 .bloco-titulo {
-  border-bottom-color: rgba(76, 121, 190, 0.3);
+  border-bottom-color: var(--border);
 }
 
 .campo > label,
 .campo .checkbox-label span {
-  color: #d8e4fb;
+  color: var(--text);
 }
 
 .campo input[type="text"],
@@ -1596,9 +1605,9 @@ function novaAnotacao() {
 .campo input[type="number"],
 .add-input,
 .outro-input-row input {
-  border-color: rgba(66, 98, 150, 0.62);
-  background: rgba(18, 33, 60, 0.96);
-  color: #eef4ff;
+  border-color: var(--border);
+  background: var(--bg-input);
+  color: var(--text);
 }
 
 .campo input:focus,
@@ -1609,56 +1618,56 @@ function novaAnotacao() {
 }
 
 .chip {
-  border-color: rgba(67, 101, 157, 0.58);
-  background: rgba(18, 35, 66, 0.92);
-  color: #aabbe0;
+  border-color: var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
 }
 
 .chip:hover {
-  border-color: rgba(94, 166, 255, 0.66);
-  background: rgba(20, 38, 70, 0.98);
+  border-color: var(--blue);
+  background: var(--bg-card);
 }
 
 .chip-on {
-  border-color: rgba(94, 166, 255, 0.9);
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-color: var(--blue);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
   box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
 }
 
 .chip.chip-on:hover {
-  border-color: rgba(94, 166, 255, 0.9);
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-color: var(--blue);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
 }
 
 .chip-add {
-  border-color: rgba(94, 166, 255, 0.46);
-  color: #9fc5ff;
-  background: rgba(17, 33, 62, 0.82);
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-muted);
 }
 
 .chip-temp {
-  border-color: rgba(94, 166, 255, 0.38);
+  border-color: var(--border);
 }
 
 .checkbox-label {
-  border-color: rgba(67, 101, 157, 0.46);
-  background: rgba(18, 35, 66, 0.78);
+  border-color: var(--border);
+  background: var(--bg-input);
 }
 
 .checkbox-label:has(input:checked),
 .checkbox-label.checked {
-  border-color: rgba(94, 166, 255, 0.72);
-  background: rgba(42, 118, 224, 0.18);
+  border-color: var(--blue);
+  background: var(--blue-muted);
 }
 
 .btn-expandir,
 .add-row,
 .outro-input-row {
-  border-color: rgba(76, 121, 190, 0.32);
-  background: linear-gradient(180deg, rgba(20, 42, 78, 0.96), rgba(14, 28, 53, 0.98));
-  color: #d8e4fb;
+  border-color: var(--border);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
+  color: var(--text);
 }
 
 .btn-generate {

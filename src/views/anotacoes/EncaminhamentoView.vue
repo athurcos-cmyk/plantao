@@ -1050,7 +1050,7 @@ function novaAnotacao() {
 
 .chip-add {
   border-style: dashed; color: var(--blue); border-color: var(--blue);
-  background: rgba(30,136,229,0.06);
+  background: var(--blue-faint);
 }
 
 /* ── Add inline row ── */
@@ -1193,8 +1193,8 @@ function novaAnotacao() {
   justify-content: center;
   flex-shrink: 0;
   border: 1px solid var(--border);
-  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 45%, transparent), color-mix(in srgb, var(--blue-dark) 72%, var(--bg-input) 28%));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {

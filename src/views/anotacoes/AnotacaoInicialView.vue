@@ -1011,7 +1011,7 @@ function selecionarPaciente(p) {
 }
 
 .inicial-progress .progress-fill {
-  background: linear-gradient(90deg, #45d4d6, #5c98ff);
+  background: linear-gradient(90deg, var(--blue-faint), var(--blue));
   box-shadow: 0 0 12px rgba(69, 212, 214, 0.22);
 }
 
@@ -1059,9 +1059,9 @@ function selecionarPaciente(p) {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(130, 226, 229, 0.4);
-  background: radial-gradient(circle at top, rgba(95, 232, 232, 0.28), rgba(42, 128, 178, 0.38));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {
@@ -1140,11 +1140,11 @@ textarea:focus {
 
 .chip-on,
 .chip.ativo {
-  border-color: rgba(92, 215, 226, 0.86);
-  background: linear-gradient(180deg, #23aeca, #1d72c8);
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
   font-weight: 700;
-  box-shadow: 0 7px 15px rgba(35, 150, 200, 0.15);
+  box-shadow: 0 7px 15px rgba(30,100,230,0.12);
 }
 
 .btn-generate {
@@ -1209,7 +1209,7 @@ textarea:focus {
   margin-bottom: 16px;
   padding: 14px 16px;
   border-radius: 16px;
-  border: 1px dashed rgba(92, 153, 186, 0.52);
+  border: 1px dashed var(--blue-muted);
   background: rgba(11, 25, 46, 0.62);
 }
 
@@ -1263,9 +1263,9 @@ textarea:focus {
 .btn-disp {
   min-height: 48px;
   border-radius: 14px;
-  border-color: rgba(76, 116, 150, 0.58);
+  border-color: var(--border);
   background: linear-gradient(180deg, rgba(17, 37, 63, 0.92), rgba(11, 26, 49, 0.96));
-  color: #c2d8ea;
+  color: var(--text-dim);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1281,15 +1281,15 @@ textarea:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(69, 212, 214, 0.16);
-  color: #8be9f0;
+  background: var(--blue-faint);
+  color: var(--blue);
   font-size: 1rem;
   line-height: 1;
 }
 
 .btn-disp:active {
-  background: rgba(38, 142, 179, 0.18);
-  border-color: rgba(92, 215, 226, 0.78);
+  background: linear-gradient(180deg, rgba(17, 37, 63, 0.92), rgba(11, 26, 49, 0.96));
+  border-color: var(--blue);
 }
 
 .modal-overlay {
@@ -1391,9 +1391,9 @@ textarea:focus {
 .modal-body :deep(.radio-btn:has(input:checked)),
 .modal-body :deep(.checkbox-label.checked),
 .modal-body :deep(.checkbox-label:has(input:checked)) {
-  border-color: rgba(92, 215, 226, 0.82);
-  background: linear-gradient(180deg, rgba(35, 174, 202, 0.34), rgba(29, 114, 200, 0.24));
-  box-shadow: 0 7px 15px rgba(35, 150, 200, 0.14);
+  border-color: var(--blue);
+  background: var(--blue-faint);
+  box-shadow: 0 7px 15px rgba(30,100,230,0.12);
 }
 
 .modal-body :deep(.radio-btn:has(input:checked) span),
@@ -1626,7 +1626,7 @@ textarea:focus {
 }
 
 .modelo-fav-chip-on {
-  background: linear-gradient(180deg, rgba(35, 174, 202, 0.34), rgba(29, 114, 200, 0.24));
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   border-color: rgba(92, 215, 226, 0.84);
   color: #fff;
 }
@@ -1811,26 +1811,26 @@ textarea:focus {
 }
 
 .inicial-progress {
-  background: rgba(50, 76, 118, 0.5);
+  background: var(--bg-hover);
 }
 
 .inicial-progress .progress-fill {
-  background: linear-gradient(90deg, #2f8cff, #51b5ff);
-  box-shadow: 0 0 14px rgba(57, 143, 255, 0.28);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  box-shadow: 0 0 14px var(--blue-faint);
 }
 
 .paciente-atalho,
 .inicial-card {
-  border-color: rgba(76, 121, 190, 0.36);
+  border-color: var(--border);
 }
 
 .module-hero {
   border-color: var(--border);
-  background: var(--bg-card);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
 }
 
 .module-hero-icon {
-  background: radial-gradient(circle at top, rgba(84, 157, 255, 0.36), rgba(31, 88, 174, 0.48));
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 45%, transparent), color-mix(in srgb, var(--blue-dark) 72%, var(--bg-input) 28%));
 }
 
 .inicial-card input:focus,
@@ -1843,37 +1843,37 @@ textarea:focus {
 .segmented-option.active,
 .chip-on,
 .chip.ativo {
-  border-color: rgba(94, 166, 255, 0.9);
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-color: var(--blue);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
 }
 
 .estado-card-on,
 .disp-item-on,
 .modelo-list-item-on {
-  border-color: rgba(94, 166, 255, 0.78);
-  background: rgba(42, 118, 224, 0.18);
+  border-color: var(--blue);
+  background: var(--blue-muted);
   box-shadow: 0 7px 16px rgba(32, 116, 225, 0.14);
 }
 
 .btn-novo-modelo-topo,
 .modelo-fav-chip-on {
-  border-color: rgba(94, 166, 255, 0.76);
+  border-color: var(--blue);
 }
 
 .modelo-fav-chip-on {
-  background: linear-gradient(180deg, rgba(45, 156, 255, 0.32), rgba(35, 111, 225, 0.24));
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
 }
 
 .modelo-search-wrap {
-  color: #9fc5ff;
+  color: var(--blue);
 }
 
 .modelos-lista {
-  scrollbar-color: rgba(94, 166, 255, 0.45) transparent;
+  scrollbar-color: color-mix(in srgb, var(--blue) 45%, transparent) transparent;
 }
 
 .btn-link {
-  color: #8dbdff;
+  color: var(--blue);
 }
 </style>

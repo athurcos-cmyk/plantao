@@ -166,10 +166,11 @@ body {
 }
 
 .radio-btn input:checked + span {
-  background: var(--blue);
+  background: linear-gradient(180deg, var(--blue-faint), var(--blue-muted));
   border-color: var(--blue);
   color: #fff;
   font-weight: 600;
+  box-shadow: 0 6px 18px var(--blue-faint);
 }
 
 .radio-group.vertical .radio-btn span { width: 100%; }

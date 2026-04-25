@@ -487,8 +487,8 @@ function mostrarFeedback(msg) {
   padding: 0 10px;
   margin-bottom: 10px;
   border-radius: 999px;
-  background: rgba(55, 100, 176, 0.18);
-  color: #86bdf7;
+  background: var(--blue-muted);
+  color: var(--blue);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -515,9 +515,9 @@ function mostrarFeedback(msg) {
   gap: 6px;
   min-height: 44px;
   padding: 0 14px;
-  border: 1px solid rgba(73, 118, 191, 0.34);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(10, 23, 43, 0.78);
+  background: var(--bg);
   color: var(--text);
   cursor: pointer;
   flex-shrink: 0;
@@ -534,7 +534,7 @@ function mostrarFeedback(msg) {
 .sync-pill-code {
   font-family: monospace;
   font-size: 1rem;
-  color: #6eb5ff;
+  color: var(--blue);
   font-weight: 800;
   letter-spacing: 0.08em;
 }
@@ -549,10 +549,9 @@ function mostrarFeedback(msg) {
 .filtros-wrap {
   margin-bottom: 16px;
   padding: 16px;
-  border: 1px solid rgba(67, 103, 161, 0.26);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background:
-    linear-gradient(180deg, rgba(17, 30, 53, 0.98), rgba(13, 25, 44, 0.98));
+  background: var(--bg-card);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
 }
 
@@ -588,10 +587,10 @@ function mostrarFeedback(msg) {
   gap: 6px;
   min-height: 38px;
   padding: 0 12px;
-  background: rgba(229, 57, 53, 0.08);
-  border: 1px solid rgba(229, 57, 53, 0.36);
+  background: var(--danger-muted);
+  border: 1px solid var(--danger);
   border-radius: 12px;
-  color: #ff8d89;
+  color: var(--danger);
   font-size: 0.78rem;
   font-family: inherit;
   font-weight: 700;
@@ -614,8 +613,8 @@ function mostrarFeedback(msg) {
   min-height: 52px;
   padding: 0 16px;
   border-radius: 16px;
-  border: 1px solid rgba(61, 92, 142, 0.5);
-  background: rgba(10, 21, 39, 0.82);
+  border: 1px solid var(--border);
+  background: var(--bg-input);
   color: var(--text);
   font-family: inherit;
   font-size: 0.96rem;
@@ -624,8 +623,8 @@ function mostrarFeedback(msg) {
 }
 
 .filtro-input:focus {
-  border-color: rgba(101, 168, 255, 0.82);
-  box-shadow: 0 0 0 3px rgba(53, 122, 223, 0.14);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-muted);
 }
 
 .chips-scroll {
@@ -649,9 +648,9 @@ function mostrarFeedback(msg) {
   min-height: 40px;
   padding: 0 14px;
   border-radius: 14px;
-  border: 1px solid rgba(63, 92, 140, 0.5);
-  background: rgba(19, 33, 57, 0.76);
-  color: #92a8cb;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   font-size: 0.84rem;
   font-family: inherit;
   font-weight: 600;
@@ -665,11 +664,11 @@ function mostrarFeedback(msg) {
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   border-color: var(--blue);
   color: #fff;
-  box-shadow: 0 10px 20px rgba(23, 85, 158, 0.28);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
 }
 
 .chip-pac:not(.ativo) {
-  color: #a4b6d3;
+  color: var(--text-dim);
 }
 
 .vazio {
@@ -710,9 +709,9 @@ function mostrarFeedback(msg) {
   min-height: 32px;
   padding: 0 12px;
   border-radius: 999px;
-  background: rgba(44, 88, 160, 0.18);
-  border: 1px solid rgba(68, 115, 190, 0.28);
-  color: #7cbaff;
+  background: var(--blue-muted);
+  border: 1px solid var(--border);
+  color: var(--blue);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -758,9 +757,9 @@ function mostrarFeedback(msg) {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  border: 1px solid rgba(64, 93, 141, 0.48);
-  background: rgba(16, 29, 50, 0.88);
-  color: #8ca5c9;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -779,8 +778,8 @@ function mostrarFeedback(msg) {
 .edit-input {
   min-height: 46px;
   padding: 0 14px;
-  background: rgba(10, 23, 41, 0.82);
-  border: 1px solid rgba(88, 141, 218, 0.6);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 14px;
   color: var(--text);
   font-family: inherit;
@@ -809,9 +808,9 @@ function mostrarFeedback(msg) {
   min-height: 40px;
   padding: 0 14px;
   border-radius: 12px;
-  border: 1px solid rgba(63, 92, 140, 0.46);
-  background: rgba(15, 28, 48, 0.84);
-  color: #a1b4d2;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   font-size: 0.82rem;
   font-family: inherit;
   font-weight: 700;
@@ -824,14 +823,14 @@ function mostrarFeedback(msg) {
 }
 
 .btn-acao-primary {
-  color: #dcecff;
-  border-color: rgba(103, 168, 255, 0.58);
-  background: linear-gradient(135deg, rgba(31, 104, 190, 0.58), rgba(22, 77, 142, 0.72));
+  color: var(--text);
+  border-color: var(--blue);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
 }
 
 .btn-acao-danger {
-  color: #ff8e89;
-  border-color: rgba(229, 57, 53, 0.34);
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 .btn-acao-mais {
@@ -839,9 +838,9 @@ function mostrarFeedback(msg) {
   min-height: 50px;
   justify-content: center;
   border-radius: 16px;
-  color: #dcecff;
-  border-color: rgba(103, 168, 255, 0.44);
-  background: linear-gradient(180deg, rgba(19, 57, 105, 0.84), rgba(14, 40, 73, 0.9));
+  color: var(--text);
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue-dark), var(--blue));
 }
 
 .toast-feedback {
@@ -851,8 +850,8 @@ function mostrarFeedback(msg) {
   transform: translateX(-50%) translateY(20px);
   padding: 12px 20px;
   border-radius: 18px;
-  border: 1px solid rgba(91, 145, 219, 0.5);
-  background: rgba(16, 40, 76, 0.96);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   color: var(--text);
   font-size: 0.88rem;
   font-weight: 700;

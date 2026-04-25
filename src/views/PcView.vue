@@ -3,8 +3,8 @@
     <div class="pc-card">
       <div class="pc-icon">
         <svg width="56" height="56" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="23" stroke="#1E88E5" stroke-width="2"/>
-          <path d="M24 14v20M14 24h20" stroke="#1E88E5" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="24" cy="24" r="23" stroke="currentColor" stroke-width="2"/>
+          <path d="M24 14v20M14 24h20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </div>
       <h1>Plantão</h1>
@@ -62,7 +62,7 @@ function continuar() {
   align-items: center;
   gap: 12px;
 }
-.pc-icon { margin-bottom: 4px; }
+.pc-icon { margin-bottom: 4px; } .pc-icon svg { color: var(--blue); }
 h1 {
   font-size: 2rem;
   font-weight: 700;

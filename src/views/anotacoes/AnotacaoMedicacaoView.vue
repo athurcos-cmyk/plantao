@@ -1424,8 +1424,8 @@ function novaAnotacao() {
 }
 
 .chip-quick {
-  border-color: rgba(30, 136, 229, 0.35);
-  background: rgba(30, 136, 229, 0.12);
+  border-color: var(--blue-muted);
+  background: var(--blue-faint);
 }
 
 .med-section-head {
@@ -1475,10 +1475,10 @@ function novaAnotacao() {
 }
 
 .med-choice.checked {
-  background: linear-gradient(135deg, rgba(30, 136, 229, 0.2), rgba(20, 90, 200, 0.12));
-  border-color: rgba(65, 150, 255, 0.58);
-  color: #f0f6ff;
-  box-shadow: 0 4px 14px rgba(30, 120, 229, 0.16);
+  background: linear-gradient(135deg, var(--blue-faint), transparent);
+  border-color: var(--blue-muted);
+  color: var(--text);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
 }
 
 .med-choice-spaced {
@@ -1596,10 +1596,10 @@ function novaAnotacao() {
   width: 100%;
   min-height: 52px;
   padding: 12px;
-  background: rgba(30, 100, 220, 0.08);
-  border: 1.5px dashed rgba(60, 140, 255, 0.4);
+  background: var(--bg-card);
+  border: 1.5px dashed var(--border);
   border-radius: 18px;
-  color: rgba(110, 175, 255, 0.95);
+  color: var(--blue);
   font-family: inherit;
   font-size: 0.96rem;
   font-weight: 700;
@@ -1608,9 +1608,9 @@ function novaAnotacao() {
   transition: all 0.18s ease;
 }
 .btn-add-med:active {
-  background: rgba(30, 100, 220, 0.16);
+  background: var(--bg-hover);
   border-style: solid;
-  border-color: rgba(60, 140, 255, 0.7);
+  border-color: var(--blue-muted);
 }
 
 /* ── Chips ── */
@@ -1638,7 +1638,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   color: #fff;
   font-weight: 700;
-  box-shadow: 0 4px 14px rgba(30, 100, 230, 0.2);
+  box-shadow: 0 4px 14px var(--blue-faint);
 }
 .chip:not(.ativo):active { background: rgba(30, 50, 90, 0.75); }
 
@@ -1801,7 +1801,7 @@ select.campo-inline {
 
 .btn-avancado:active {
   background: var(--bg-hover);
-  border-color: rgba(80, 130, 220, 0.6);
+  border-color: var(--blue-muted);
   color: #b0c8f0;
 }
 
@@ -1814,7 +1814,7 @@ select.campo-inline {
   min-height: 60px;
   font-size: 1.05rem;
   border-radius: 16px;
-  border: 1px solid rgba(67, 93, 141, 0.55);
+  border: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(20, 36, 68, 0.97), rgba(16, 28, 54, 0.98));
   color: #eef4ff;
   padding: 0 16px;
@@ -1869,7 +1869,7 @@ select.campo-inline {
 .autocomplete-badge {
   font-size: 0.72rem;
   color: var(--blue);
-  background: rgba(41,98,255,0.12);
+  background: var(--blue-faint);
   border-radius: 5px;
   padding: 2px 7px;
   white-space: nowrap;
@@ -1922,15 +1922,16 @@ select.campo-inline {
 }
 
 .module-hero-icon {
-  width: 62px;
-  height: 62px;
-  border-radius: 20px;
-  background: radial-gradient(circle at top, rgba(71, 140, 255, 0.38), rgba(39, 88, 170, 0.5));
-  border: 1px solid rgba(104, 161, 255, 0.38);
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {
@@ -1959,7 +1960,7 @@ select.campo-inline {
   min-height: 62px;
   border-radius: 18px;
   font-size: 1.06rem;
-  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+  box-shadow: 0 16px 30px var(--blue-faint);
 }
 
 .chips-scroll .chip {
@@ -1976,6 +1977,6 @@ select.campo-inline {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
   border-color: var(--blue);
-  box-shadow: 0 8px 20px rgba(26, 97, 194, 0.26);
+  box-shadow: 0 8px 20px var(--blue-faint);
 }
 </style>

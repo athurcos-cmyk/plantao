@@ -690,8 +690,8 @@ function novaAnotacao() {
 }
 
 .banho-progress .progress-fill {
-  background: linear-gradient(90deg, #45d4d6, #5c98ff);
-  box-shadow: 0 0 12px rgba(69, 212, 214, 0.22);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  box-shadow: 0 0 12px var(--blue-faint);
 }
 
 .paciente-atalho {
@@ -705,7 +705,7 @@ function novaAnotacao() {
 
 .paciente-atalho label {
   display: block;
-  color: #a6c4d8;
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -728,7 +728,7 @@ function novaAnotacao() {
   margin-bottom: 16px;
   border-radius: 22px;
   border: 1px solid var(--border);
-  background: var(--bg-card);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
 }
 
@@ -740,9 +740,9 @@ function novaAnotacao() {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(130, 226, 229, 0.4);
-  background: radial-gradient(circle at top, rgba(95, 232, 232, 0.34), rgba(42, 128, 178, 0.42));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {
@@ -753,7 +753,7 @@ function novaAnotacao() {
 
 .module-hero-copy h1 {
   margin: 0;
-  color: #f5f8ff;
+  color: var(--text);
   font-size: 1.75rem;
   line-height: 1.02;
   font-weight: 850;
@@ -761,7 +761,7 @@ function novaAnotacao() {
 
 .module-hero-copy p {
   margin: 8px 0 0;
-  color: #a6c4d8;
+  color: var(--text-dim);
   font-size: 0.96rem;
   line-height: 1.35;
 }
@@ -779,8 +779,8 @@ function novaAnotacao() {
 }
 
 .bloco-titulo {
-  color: #f3f7ff;
-  border-bottom-color: rgba(77, 130, 160, 0.5);
+  color: var(--text);
+  border-bottom-color: var(--border);
   font-size: 1.22rem;
 }
 
@@ -789,12 +789,12 @@ function novaAnotacao() {
   border-radius: 14px;
   border-color: var(--border);
   background: var(--bg-input);
-  color: #c2d8ea;
+  color: var(--text-dim);
 }
 
 .chip-on {
-  border-color: rgba(92, 215, 226, 0.86);
-  background: linear-gradient(180deg, #23aeca, #1d72c8);
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: #fff;
   box-shadow: 0 7px 15px rgba(35, 150, 200, 0.15);
 }
@@ -806,8 +806,8 @@ function novaAnotacao() {
 
 .checkbox-label.checked,
 .checkbox-label:has(input:checked) {
-  border-color: rgba(92, 215, 226, 0.78);
-  background: rgba(38, 142, 179, 0.18);
+  border-color: var(--blue);
+  background: var(--blue-muted);
 }
 
 .add-input,

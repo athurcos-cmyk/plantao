@@ -713,17 +713,17 @@ function novaAnotacao() {
 
 .passagem-progress {
   height: 6px;
-  background: rgba(50, 76, 118, 0.5);
+  background: var(--bg-hover);
 }
 
 .passagem-progress .progress-fill {
-  background: linear-gradient(90deg, #2f8cff, #51b5ff);
-  box-shadow: 0 0 14px rgba(57, 143, 255, 0.28);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  box-shadow: 0 0 14px var(--blue-faint);
 }
 
 .passagem-progress .progress-label {
   top: 10px;
-  color: #7f95bb;
+  color: var(--text-dim);
   font-weight: 700;
 }
 
@@ -736,7 +736,7 @@ function novaAnotacao() {
   padding: 20px;
   border: 1px solid var(--border);
   border-radius: 24px;
-  background: var(--bg-card);
+  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
   overflow: hidden;
 }
@@ -747,7 +747,7 @@ function novaAnotacao() {
 
 .paciente-atalho label {
   display: block;
-  color: #9fb4d9;
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -765,12 +765,13 @@ function novaAnotacao() {
   width: 68px;
   height: 68px;
   border-radius: 22px;
-  border: 1px solid rgba(117, 176, 255, 0.4);
-  background: radial-gradient(circle at top, rgba(84, 157, 255, 0.36), rgba(31, 88, 174, 0.48));
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {
@@ -783,13 +784,13 @@ function novaAnotacao() {
   margin: 0;
   font-size: 1.72rem;
   line-height: 1.05;
-  color: #f5f8ff;
+  color: var(--text);
   font-weight: 850;
 }
 
 .module-hero-copy p {
   margin: 8px 0 0;
-  color: #9fb0d2;
+  color: var(--text-dim);
   font-size: 0.96rem;
   line-height: 1.35;
 }
@@ -809,8 +810,8 @@ function novaAnotacao() {
 .passagem-card .bloco-titulo {
   margin: 0 0 18px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(77, 110, 165, 0.35);
-  color: #f3f7ff;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
   font-size: 1.28rem;
   letter-spacing: 0;
 }
@@ -820,7 +821,7 @@ function novaAnotacao() {
 }
 
 .passagem-card label:not(.radio-btn):not(.checkbox-label) {
-  color: #9fb4d9;
+  color: var(--text-dim);
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -831,23 +832,23 @@ function novaAnotacao() {
 .passagem-card input[type="time"],
 .passagem-card .campo-inline {
   min-height: 52px;
-  background: rgba(18, 33, 60, 0.96);
-  border: 1px solid rgba(66, 98, 150, 0.62);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 15px;
-  color: #eef4ff;
+  color: var(--text);
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .passagem-card input:focus,
 .passagem-card .campo-inline:focus {
-  border-color: rgba(89, 157, 255, 0.82);
-  box-shadow: 0 0 0 3px rgba(47, 140, 255, 0.14);
-  background: rgba(20, 38, 70, 0.98);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-faint);
+  background: var(--bg-card);
 }
 
 .passagem-card input::placeholder {
-  color: rgba(169, 184, 213, 0.62);
+  color: var(--text-muted);
 }
 
 .chips-wrap {
@@ -857,15 +858,15 @@ function novaAnotacao() {
 .chip,
 .btn-disp {
   min-height: 38px;
-  border-color: rgba(75, 113, 174, 0.58);
-  background: rgba(18, 35, 66, 0.92);
-  color: #aabbe0;
+  border-color: var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .chip-on {
-  border-color: rgba(94, 166, 255, 0.9);
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-color: var(--blue);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
   box-shadow: 0 7px 16px rgba(32, 116, 225, 0.16);
 }
@@ -881,16 +882,16 @@ function novaAnotacao() {
 .radio-btn span {
   min-height: 46px;
   border-radius: 15px;
-  border: 1px solid rgba(62, 94, 148, 0.55);
-  background: rgba(17, 33, 62, 0.82);
-  color: #b9c8e6;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   padding: 10px 14px;
 }
 
 .radio-btn input:checked + span,
 .radio-btn.radio-on span {
-  border-color: rgba(86, 159, 255, 0.88);
-  background: linear-gradient(135deg, #236fe1, #2d9cff);
+  border-color: var(--blue);
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: #fff;
   box-shadow: 0 8px 16px rgba(31, 111, 214, 0.15);
 }
@@ -898,22 +899,22 @@ function novaAnotacao() {
 .checkbox-label {
   min-height: 46px;
   border-radius: 15px;
-  border: 1px solid rgba(62, 94, 148, 0.55);
-  background: rgba(17, 33, 62, 0.82);
-  color: #b9c8e6;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text-dim);
   padding: 10px 12px;
 }
 
 .checkbox-label.checked {
-  border-color: rgba(86, 159, 255, 0.88);
-  background: linear-gradient(135deg, rgba(37, 105, 211, 0.92), rgba(36, 141, 229, 0.82));
+  border-color: var(--blue);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--blue-dark) 92%, transparent), color-mix(in srgb, var(--blue) 82%, transparent));
   color: #fff;
   box-shadow: 0 8px 16px rgba(31, 111, 214, 0.15);
 }
 
 .radio-btn input,
 .checkbox-label input {
-  accent-color: #58a6ff;
+  accent-color: var(--blue);
 }
 
 .disp-lista {
@@ -921,31 +922,31 @@ function novaAnotacao() {
 }
 
 .disp-item {
-  border-color: rgba(68, 101, 157, 0.58);
-  background: rgba(15, 31, 58, 0.94);
+  border-color: var(--border);
+  background: var(--bg-card);
   border-radius: 16px;
 }
 
 .disp-texto {
-  color: #d6e2f8;
+  color: var(--text);
 }
 
 .btn-icon-sm {
   min-width: 28px;
   min-height: 28px;
   border-radius: 9px;
-  background: rgba(26, 45, 80, 0.84);
+  background: var(--bg-card);
 }
 
 .btn-disp {
   border-style: dashed;
   border-radius: 14px;
-  color: #78b6ff;
+  color: var(--blue);
   font-weight: 700;
 }
 
 .btn-disp:active {
-  background: rgba(42, 118, 224, 0.18);
+  background: var(--blue-muted);
 }
 
 .bloco-nav {

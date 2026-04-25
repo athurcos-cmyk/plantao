@@ -533,15 +533,16 @@ function novaAfericao() {
 }
 
 .module-hero-icon {
-  width: 62px;
-  height: 62px;
-  border-radius: 20px;
-  background: var(--blue-muted);
-  border: 1px solid var(--border);
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .module-hero-icon img {
