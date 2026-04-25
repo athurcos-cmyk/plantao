@@ -32,7 +32,7 @@ export const TEMAS = {
       '--blue-faint':  'rgba(255,203,219,0.14)',
       '--border':      '#1e3050',
       '--text-dim':    '#ffcbdb',
-      '--text-muted':  '#556677',
+      '--text-muted':  '#f28bc4',
     },
   },
   floresta: {
