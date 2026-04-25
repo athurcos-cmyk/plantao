@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, push, onValue, remove, update } from 'firebase/database'
+import { ref as dbRef, push, onChildAdded, onChildChanged, onChildRemoved, remove, update } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
 const _cacheKey = code => `cache_pacientes_${code}`
@@ -25,48 +25,74 @@ function _enfileirar(code, op) {
   _salvarQueue(code, q)
 }
 
+function _parsePaciente(snap) {
+  const data = snap.val()
+  const pendencias = data.pendencias
+    ? Object.entries(data.pendencias)
+        .map(([k, v]) => ({ ...v, _key: k }))
+        .sort((a, b) => (a.criadoEm || 0) - (b.criadoEm || 0))
+    : []
+  return { ...data, pendencias, _key: snap.key }
+}
+
 export const usePacientesStore = defineStore('pacientes', () => {
-  const pacientes     = ref([])
+  const pacientes      = ref([])
   const pendentesCount = ref(0)
-  let unsubscribe = null
+  const _pacMap        = new Map()
+  let _stopAdded   = null
+  let _stopChanged = null
+  let _stopRemoved = null
 
   function _ordenar(lista) {
     return lista.sort((a, b) => (a.leito || '').localeCompare(b.leito || '', undefined, { numeric: true }))
   }
 
+  function _reconstruir(code) {
+    const lista = _ordenar(Array.from(_pacMap.values()))
+    pacientes.value = lista
+    _salvarCache(code, lista)
+  }
+
+  function _limparListeners() {
+    if (_stopAdded)   { _stopAdded();   _stopAdded   = null }
+    if (_stopChanged) { _stopChanged(); _stopChanged = null }
+    if (_stopRemoved) { _stopRemoved(); _stopRemoved = null }
+  }
+
   function iniciar() {
-    if (unsubscribe) return
+    if (_stopAdded) return
     const auth = useAuthStore()
     if (!auth.syncCode) return
     const code = auth.syncCode
 
     const cached = _lerCache(code)
-    if (cached.length) pacientes.value = cached
+    if (cached.length) {
+      cached.forEach(p => _pacMap.set(p._key, p))
+      pacientes.value = cached
+    }
     pendentesCount.value = _lerQueue(code).length
 
     const path = dbRef(db, `pacientes/${code}`)
-    unsubscribe = onValue(path, (snap) => {
-      const lista = []
-      snap.forEach(child => {
-        const data = child.val()
-        const pendencias = data.pendencias
-          ? Object.entries(data.pendencias)
-              .map(([k, v]) => ({ ...v, _key: k }))
-              .sort((a, b) => (a.criadoEm || 0) - (b.criadoEm || 0))
-          : []
-        lista.push({ ...data, pendencias, _key: child.key })
-      })
-      _ordenar(lista)
-      pacientes.value = lista
-      _salvarCache(code, lista)
+
+    _stopAdded = onChildAdded(path, (snap) => {
+      _pacMap.set(snap.key, _parsePaciente(snap))
+      _reconstruir(code)
+    })
+
+    _stopChanged = onChildChanged(path, (snap) => {
+      _pacMap.set(snap.key, _parsePaciente(snap))
+      _reconstruir(code)
+    })
+
+    _stopRemoved = onChildRemoved(path, (snap) => {
+      _pacMap.delete(snap.key)
+      _reconstruir(code)
     })
   }
 
   function parar() {
-    if (unsubscribe) {
-      unsubscribe()
-      unsubscribe = null
-    }
+    _limparListeners()
+    _pacMap.clear()
     pacientes.value = []
     pendentesCount.value = 0
   }
