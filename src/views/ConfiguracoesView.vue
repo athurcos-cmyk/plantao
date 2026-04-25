@@ -39,6 +39,31 @@
         </p>
       </section>
 
+      <!-- Aparência -->
+      <section class="config-section">
+        <h2 class="config-section-titulo">Aparência</h2>
+        <div class="temas-grid">
+          <button
+            v-for="(tema, id) in temas"
+            :key="id"
+            class="tema-card"
+            :class="{ 'tema-card-on': temaAtivo === id }"
+            @click="aplicarTema(id)"
+          >
+            <div class="tema-preview-wrap">
+              <div class="tema-prev-bg" :style="{ background: tema.preview.bg }">
+                <div class="tema-prev-card" :style="{ background: tema.preview.card }">
+                  <div class="tema-prev-accent" :style="{ background: tema.preview.accent }"></div>
+                  <div class="tema-prev-line" :style="{ background: tema.preview.accent, opacity: 0.4 }"></div>
+                </div>
+              </div>
+            </div>
+            <span class="tema-nome">{{ tema.nome }}</span>
+            <span v-if="temaAtivo === id" class="tema-check">✓</span>
+          </button>
+        </div>
+      </section>
+
       <!-- Senha (para quem logou com Google) -->
       <section v-if="!temSenha" class="config-section">
         <h2 class="config-section-titulo">Criar senha</h2>
@@ -144,10 +169,12 @@ import {
 } from 'firebase/auth'
 import { googleProvider } from '../firebase.js'
 import { useCopia } from '../composables/useCopia.js'
+import { useTheme } from '../composables/useTheme.js'
 
 const router = useRouter()
 const auth = useAuthStore()
 const { copiar } = useCopia()
+const { temas, temaAtivo, aplicarTema } = useTheme()
 
 const copiou = ref(false)
 const erro = ref('')
@@ -515,5 +542,83 @@ async function confirmarDelete() {
   color: #4caf82;
   font-size: 0.85rem;
   text-align: center;
+}
+
+/* ── Temas ── */
+.temas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.tema-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.tema-card-on {
+  border-color: var(--blue);
+}
+
+.tema-preview-wrap {
+  width: 100%;
+  height: 52px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tema-prev-bg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: 5px;
+}
+
+.tema-prev-card {
+  width: 100%;
+  border-radius: 5px;
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tema-prev-accent {
+  height: 6px;
+  border-radius: 3px;
+  width: 60%;
+}
+
+.tema-prev-line {
+  height: 4px;
+  border-radius: 2px;
+  width: 85%;
+}
+
+.tema-nome {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tema-check {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.75rem;
+  color: var(--blue);
+  font-weight: 700;
 }
 </style>
