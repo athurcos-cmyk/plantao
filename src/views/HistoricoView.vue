@@ -1,112 +1,166 @@
 <template>
-  <div class="screen">
+  <div class="screen historico-screen">
     <header class="app-header">
-      <button  data-testid="auto-btn-historicoview-1" class="btn-icon" @click="router.push({ name: 'dashboard' })">
+      <button data-testid="auto-btn-historicoview-1" class="btn-icon" @click="router.push({ name: 'dashboard' })">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="15 18 9 12 15 6"/>
+          <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
-      <button  data-testid="auto-btn-historicoview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
+      <button data-testid="auto-btn-historicoview-2" class="btn-home-logo" @click="router.push({ name: 'dashboard' })">
         <img src="/icons/icon-512.png" width="22" height="22" alt="Plantão" style="border-radius:5px;display:block" />
         <span>Plantão</span>
       </button>
       <button class="btn-ajuda" @click="helpAberto = true">? Ajuda</button>
     </header>
 
-    <div class="hist-topo">
-      <h2 class="hist-titulo">Histórico</h2>
-      <div class="sync-pill" @click="mostrarCodigo = !mostrarCodigo" style="cursor:pointer" title="Seu código para entrar em outro celular">
-        <span class="sync-pill-label">{{ mostrarCodigo ? 'código de acesso' : 'ver meu código' }}</span>
-        <span class="sync-pill-code">{{ mostrarCodigo ? auth.syncCode : syncCodeMasked }}</span>
-        <svg v-if="!mostrarCodigo" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-      </div>
+    <main class="container historico-page">
+      <section class="hist-hero">
+        <div class="hist-hero-copy">
+          <span class="hist-kicker">Plantão</span>
+          <h2 class="hist-titulo">Histórico</h2>
+          <p class="hist-subtitulo">
+            {{ anotacoesFiltradas.length }} de {{ store.anotacoes.length }} anotaç{{ store.anotacoes.length !== 1 ? 'ões' : 'ão' }}
+            {{ anotacoesFiltradas.length !== 1 ? 'visíveis' : 'visível' }}
+          </p>
+        </div>
+
+        <button class="sync-pill" @click="mostrarCodigo = !mostrarCodigo" title="Seu código para entrar em outro celular">
+          <span class="sync-pill-label">{{ mostrarCodigo ? 'código de acesso' : 'ver meu código' }}</span>
+          <span class="sync-pill-code">{{ mostrarCodigo ? auth.syncCode : syncCodeMasked }}</span>
+          <svg v-if="!mostrarCodigo" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;flex-shrink:0">
+            <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+            <line x1="1" y1="1" x2="23" y2="23" />
+          </svg>
+        </button>
+      </section>
+
       <transition name="fade">
         <p v-if="mostrarCodigo" class="sync-pill-hint">Use este código para entrar em outro celular ou tablet</p>
       </transition>
-    </div>
 
-    <div class="filtros-wrap">
-      <div class="busca-row">
-        <input data-testid="auto-input-historicoview-1" v-model="filtro.busca" class="filtro-input" type="text" placeholder="Buscar por nome ou leito...">
-        <button v-if="store.anotacoes.length > 0" data-testid="auto-btn-historicoview-12" class="btn-limpar-tudo" @click="confirmandoLimpar = true" :title="pacienteAtivo ? 'Apagar anotações de ' + pacienteAtivo.nome : 'Apagar todo o histórico'">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3 6 5 6 21 6"/>
-            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-            <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-          </svg>
-          {{ pacienteAtivo ? 'Limpar ' + pacienteAtivo.nome : 'Limpar tudo' }}
-        </button>
-      </div>
-      <div class="chips-scroll">
-        <button  data-testid="auto-btn-historicoview-3" v-for="op in tiposFiltro" :key="op.v" class="chip" :class="{ ativo: filtro.tipo === op.v }" @click="filtro.tipo = op.v">
-          {{ op.l }}
-        </button>
-      </div>
+      <section class="filtros-wrap">
+        <div class="filtros-head">
+          <div class="filtros-head-copy">
+            <span class="filtros-label">Filtrar anotações</span>
+            <span class="filtros-total">{{ anotacoesFiltradas.length }} resultado{{ anotacoesFiltradas.length !== 1 ? 's' : '' }}</span>
+          </div>
 
-      <!-- Filtro por paciente registrado -->
-      <div v-if="pacientesStore.pacientes.length > 0" class="chips-scroll" style="margin-top:6px">
-        <button
-          v-for="p in pacientesStore.pacientes"
-          :key="p._key"
-          class="chip chip-pac"
-          :class="{ ativo: filtro.busca === p.nome }"
-          @click="filtro.busca = filtro.busca === p.nome ? '' : p.nome"
-        >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
-      </div>
-    </div>
+          <button
+            v-if="store.anotacoes.length > 0"
+            data-testid="auto-btn-historicoview-12"
+            class="btn-limpar-tudo"
+            @click="confirmandoLimpar = true"
+            :title="pacienteAtivo ? 'Apagar anotações de ' + pacienteAtivo.nome : 'Apagar todo o histórico'"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+            </svg>
+            {{ pacienteAtivo ? 'Limpar ' + pacienteAtivo.nome : 'Limpar tudo' }}
+          </button>
+        </div>
 
-    <main class="container" style="padding-top:12px;padding-bottom:40px">
+        <div class="busca-row">
+          <input
+            data-testid="auto-input-historicoview-1"
+            v-model="filtro.busca"
+            class="filtro-input"
+            type="text"
+            placeholder="Buscar por paciente ou leito..."
+          />
+        </div>
+
+        <div class="chips-scroll">
+          <button
+            v-for="op in tiposFiltro"
+            :key="op.v"
+            data-testid="auto-btn-historicoview-3"
+            class="chip"
+            :class="{ ativo: filtro.tipo === op.v }"
+            @click="filtro.tipo = op.v"
+          >
+            {{ op.l }}
+          </button>
+        </div>
+
+        <div v-if="pacientesStore.pacientes.length > 0" class="chips-scroll chips-scroll-pacientes">
+          <button
+            v-for="p in pacientesStore.pacientes"
+            :key="p._key"
+            class="chip chip-pac"
+            :class="{ ativo: filtro.busca === p.nome }"
+            @click="filtro.busca = filtro.busca === p.nome ? '' : p.nome"
+          >
+            {{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}
+          </button>
+        </div>
+      </section>
+
       <p v-if="anotacoesFiltradas.length === 0" class="vazio">
         {{ store.anotacoes.length === 0 ? 'Nenhuma anotação salva ainda.' : 'Nenhuma anotação encontrada.' }}
       </p>
 
       <div v-for="anot in anotacoesVisiveis" :key="anot._key" class="anot-card">
         <div class="anot-header">
-          <span class="anot-tipo">{{ labelTipo(anot.tipo) }}</span>
+          <span class="anot-tipo">
+            <img v-if="iconeTipo(anot.tipo)" :src="iconeTipo(anot.tipo)" :alt="labelTipo(anot.tipo)" class="anot-tipo-icon" />
+            <span>{{ labelTipo(anot.tipo) }}</span>
+          </span>
           <span class="anot-data">{{ formatData(anot.timestamp) }}</span>
         </div>
 
         <div v-if="editando === anot._key" class="edit-row">
           <div style="display:flex;gap:8px">
-            <input  data-testid="auto-input-historicoview-2" class="edit-input" type="text" v-model="editForm.nome" placeholder="Nome do paciente" style="flex:2">
-            <input  data-testid="auto-input-historicoview-3" class="edit-input" type="text" v-model="editForm.leito" placeholder="Leito" style="flex:1">
+            <input data-testid="auto-input-historicoview-2" class="edit-input" type="text" v-model="editForm.nome" placeholder="Nome do paciente" style="flex:2" />
+            <input data-testid="auto-input-historicoview-3" class="edit-input" type="text" v-model="editForm.leito" placeholder="Leito" style="flex:1" />
           </div>
           <div style="display:flex;gap:6px">
-            <button  data-testid="auto-btn-historicoview-4" class="btn-acao" @click="salvarEdicao(anot._key)">✓ Salvar</button>
-            <button  data-testid="auto-btn-historicoview-5" class="btn-acao" @click="editando = null">Cancelar</button>
+            <button data-testid="auto-btn-historicoview-4" class="btn-acao btn-acao-primary" @click="salvarEdicao(anot._key)">Salvar</button>
+            <button data-testid="auto-btn-historicoview-5" class="btn-acao" @click="editando = null">Cancelar</button>
           </div>
         </div>
+
         <div v-else class="anot-paciente-row">
           <span v-if="anot.nome || anot.leito" class="anot-paciente">
             {{ anot.nome }}{{ anot.nome && anot.leito ? ' · ' : '' }}{{ anot.leito ? 'Leito ' + anot.leito : '' }}
           </span>
           <span v-else class="anot-paciente sem-paciente">sem paciente registrado</span>
-          <button  data-testid="auto-btn-historicoview-6" class="btn-editar" @click="iniciarEdicao(anot)" title="Editar">✏️</button>
+          <button data-testid="auto-btn-historicoview-6" class="btn-editar" @click="iniciarEdicao(anot)" title="Editar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+          </button>
         </div>
 
         <p class="anot-texto">{{ anot.texto }}</p>
 
         <div class="anot-acoes">
-          <button  data-testid="auto-btn-historicoview-7" class="btn-acao" @click="copiar(anot.texto)">
+          <button data-testid="auto-btn-historicoview-7" class="btn-acao" @click="copiar(anot.texto)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2"/>
-              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
             </svg>
             Copiar
           </button>
-          <button  data-testid="auto-btn-historicoview-8" class="btn-acao" @click="compartilhar(anot.texto)">
+          <button data-testid="auto-btn-historicoview-8" class="btn-acao" @click="compartilhar(anot.texto)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
-              <polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+              <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
             </svg>
             Enviar
           </button>
-          <button  data-testid="auto-btn-historicoview-9" class="btn-acao btn-acao-danger" @click="confirmarDeletar(anot)">
+          <button data-testid="auto-btn-historicoview-9" class="btn-acao btn-acao-danger" @click="confirmarDeletar(anot)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
             </svg>
             Excluir
           </button>
@@ -143,8 +197,8 @@
         <p>Excluir esta anotação?</p>
         <p class="confirm-sub">{{ confirmando.nome ? confirmando.nome + ' · ' : '' }}{{ formatData(confirmando.timestamp) }}</p>
         <div style="display:flex;gap:10px;margin-top:16px">
-          <button  data-testid="auto-btn-historicoview-10" class="btn btn-secondary" style="flex:1" @click="confirmando = null">Cancelar</button>
-          <button  data-testid="auto-btn-historicoview-11" class="btn btn-danger" style="flex:1" @click="deletar">Excluir</button>
+          <button data-testid="auto-btn-historicoview-10" class="btn btn-secondary" style="flex:1" @click="confirmando = null">Cancelar</button>
+          <button data-testid="auto-btn-historicoview-11" class="btn btn-danger" style="flex:1" @click="deletar">Excluir</button>
         </div>
       </div>
     </div>
@@ -159,25 +213,33 @@ import { useAuthStore } from '../stores/auth.js'
 import { usePacientesStore } from '../stores/pacientes.js'
 import HelpModal from '../components/HelpModal.vue'
 import { useCopia } from '../composables/useCopia.js'
+import iconSv from '../assets/dashboard-icons-png/sinais-vitais.png'
+import iconMedicacao from '../assets/dashboard-icons-png/medicacao.png'
+import iconLivre from '../assets/dashboard-icons-png/notas-lives.png'
+import iconPassagem from '../assets/dashboard-icons-png/passagem.png'
+import iconEncaminhamento from '../assets/dashboard-icons-png/encaminhamento.png'
+import iconHigienizacao from '../assets/dashboard-icons-png/higienizacao.png'
+import iconCurativo from '../assets/dashboard-icons-png/curativo.png'
+import iconInicial from '../assets/dashboard-icons-png/anotacao-inicial.png'
 
 const router = useRouter()
-const store  = useAnotacoesStore()
+const store = useAnotacoesStore()
 const { limparPorKeys } = store
-const auth   = useAuthStore()
+const auth = useAuthStore()
 const pacientesStore = usePacientesStore()
 
 onMounted(() => pacientesStore.iniciar())
 
 const mostrarCodigo = ref(false)
-const helpAberto    = ref(false)
+const helpAberto = ref(false)
 
 const helpItens = [
-  { icone: '🔍', titulo: 'Busca', desc: 'Digite o nome do paciente, leito ou qualquer texto da anotação para filtrar. O botão × limpa a busca.' },
-  { icone: '🏷️', titulo: 'Filtro por tipo', desc: 'Use os chips "Inicial" e "Medicação" para ver apenas anotações de um tipo específico.' },
-  { icone: '🛏️', titulo: 'Filtro por paciente', desc: 'Se você tem pacientes cadastrados em "Meus Pacientes", eles aparecem como chips de atalho para filtrar rapidamente.' },
-  { icone: '📋', titulo: 'Copiar e compartilhar', desc: 'Use o botão "Copiar" para copiar o texto da anotação. "Compartilhar" abre o WhatsApp ou outros apps diretamente.' },
-  { icone: '✏️', titulo: 'Editar', desc: 'Toque em "Editar" para alterar o nome do paciente e o leito de uma anotação já salva.' },
-  { icone: '🗑️', titulo: 'Excluir', desc: 'Toque em "Excluir" e confirme para remover uma anotação permanentemente. "Limpar tudo" remove todas de uma vez.' },
+  { icone: '🔍', titulo: 'Busca', desc: 'Digite o nome do paciente ou o leito para filtrar rapidamente.' },
+  { icone: '🏷️', titulo: 'Filtro por tipo', desc: 'Use os chips para ver apenas um tipo específico de anotação.' },
+  { icone: '🛏️', titulo: 'Filtro por paciente', desc: 'Os pacientes registrados aparecem como atalhos para filtro rápido.' },
+  { icone: '📋', titulo: 'Copiar e compartilhar', desc: 'Use os botões para copiar o texto ou enviar a anotação para outro app.' },
+  { icone: '✏️', titulo: 'Editar', desc: 'Você pode ajustar nome e leito de uma anotação já salva.' },
+  { icone: '🗑️', titulo: 'Excluir', desc: 'Excluir remove a anotação permanentemente. Limpar tudo apaga o histórico filtrado ou inteiro.' },
 ]
 
 const syncCodeMasked = computed(() => {
@@ -186,37 +248,49 @@ const syncCodeMasked = computed(() => {
   return c.slice(0, 4) + '••••'
 })
 
-const filtro           = reactive({ busca: '', tipo: 'todos' })
-const confirmando      = ref(null)
+const filtro = reactive({ busca: '', tipo: 'todos' })
+const confirmando = ref(null)
 const confirmandoLimpar = ref(false)
-const feedback    = ref('')
-const editando    = ref(null)
-const editForm    = reactive({ nome: '', leito: '' })
+const feedback = ref('')
+const editando = ref(null)
+const editForm = reactive({ nome: '', leito: '' })
 const visiveisCount = ref(40)
 const { copiar: copiarTexto } = useCopia()
 
 const tiposFiltro = [
-  { v: 'todos',    l: 'Todos'         },
-  { v: 'inicial',  l: 'Inicial'       },
-  { v: 'sv',       l: 'Sinais Vitais' },
-  { v: 'medicacao',l: 'Medicação'     },
-  { v: 'curativo', l: 'Curativo'      },
-  { v: 'banho',    l: 'Higienização'  },
-  { v: 'encaminhamento', l: 'Encaminhamento'},
-  { v: 'passagem', l: 'Passagem'      },
-  { v: 'livre',    l: 'Notas Livres'},
+  { v: 'todos', l: 'Todos' },
+  { v: 'inicial', l: 'Inicial' },
+  { v: 'sv', l: 'Sinais Vitais' },
+  { v: 'medicacao', l: 'Medicação' },
+  { v: 'curativo', l: 'Curativo' },
+  { v: 'banho', l: 'Higienização' },
+  { v: 'encaminhamento', l: 'Encaminhamento' },
+  { v: 'passagem', l: 'Passagem' },
+  { v: 'livre', l: 'Notas Livres' },
 ]
 
 const tipoLabels = {
-  inicial:   '📋 Inicial',
-  sv:        '📊 Sinais Vitais',
-  medicacao: '💊 Medicação',
-  encamin:   '🚑 Encaminhamento',
-  encaminhamento: '🚑 Encaminhamento',
-  banho:     '🧼 Higienização',
-  curativo:  '🩹 Curativo',
-  passagem:  '🔄 Passagem de Plantão',
-  livre:     '📝 Notas Livres',
+  inicial: 'Inicial',
+  sv: 'Sinais Vitais',
+  medicacao: 'Medicação',
+  encamin: 'Encaminhamento',
+  encaminhamento: 'Encaminhamento',
+  banho: 'Higienização',
+  curativo: 'Curativo',
+  passagem: 'Passagem de Plantão',
+  livre: 'Notas Livres',
+}
+
+const tipoIcons = {
+  inicial: iconInicial,
+  sv: iconSv,
+  medicacao: iconMedicacao,
+  encamin: iconEncaminhamento,
+  encaminhamento: iconEncaminhamento,
+  banho: iconHigienizacao,
+  curativo: iconCurativo,
+  passagem: iconPassagem,
+  livre: iconLivre,
 }
 
 function extrairHora(texto) {
@@ -238,17 +312,19 @@ const anotacoesOrdenadas = computed(() =>
 )
 
 const pacienteAtivo = computed(() =>
-  pacientesStore.pacientes.find(p => p.nome === filtro.busca) || null
+  pacientesStore.pacientes.find((p) => p.nome === filtro.busca) || null
 )
 
 const anotacoesFiltradas = computed(() => {
   let lista = anotacoesOrdenadas.value
-  if (filtro.tipo !== 'todos') lista = lista.filter(a => a.tipo === filtro.tipo)
+  if (filtro.tipo !== 'todos') lista = lista.filter((a) => a.tipo === filtro.tipo)
   const busca = filtro.busca.trim().toLowerCase()
-  if (busca) lista = lista.filter(a =>
-    (a.nome  || '').toLowerCase().includes(busca) ||
-    (a.leito || '').toLowerCase().includes(busca)
-  )
+  if (busca) {
+    lista = lista.filter((a) =>
+      (a.nome || '').toLowerCase().includes(busca) ||
+      (a.leito || '').toLowerCase().includes(busca)
+    )
+  }
   return lista
 })
 
@@ -261,10 +337,15 @@ watch(
   () => { visiveisCount.value = 40 }
 )
 
-function labelTipo(tipo)  { return tipoLabels[tipo] || tipo }
-function formatData(ts)   {
+function labelTipo(tipo) { return tipoLabels[tipo] || tipo }
+function iconeTipo(tipo) { return tipoIcons[tipo] || '' }
+
+function formatData(ts) {
   return new Date(ts).toLocaleString('pt-BR', {
-    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
@@ -277,38 +358,53 @@ function compartilhar(texto) {
   window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank')
 }
 
-function confirmarDeletar(anot) { confirmando.value = anot }
+function confirmarDeletar(anot) {
+  confirmando.value = anot
+}
 
 async function deletar() {
   if (!confirmando.value) return
-  try   { await store.deletar(confirmando.value._key); mostrarFeedback('Excluído') }
-  catch { mostrarFeedback('Erro ao excluir') }
-  finally { confirmando.value = null }
+  try {
+    await store.deletar(confirmando.value._key)
+    mostrarFeedback('Excluído')
+  } catch {
+    mostrarFeedback('Erro ao excluir')
+  } finally {
+    confirmando.value = null
+  }
 }
 
 function iniciarEdicao(anot) {
   editando.value = anot._key
-  editForm.nome  = anot.nome  || ''
+  editForm.nome = anot.nome || ''
   editForm.leito = anot.leito || ''
 }
 
 async function salvarEdicao(key) {
-  try   { await store.atualizar(key, { nome: editForm.nome, leito: editForm.leito }); editando.value = null; mostrarFeedback('Atualizado!') }
-  catch { mostrarFeedback('Erro ao salvar') }
+  try {
+    await store.atualizar(key, { nome: editForm.nome, leito: editForm.leito })
+    editando.value = null
+    mostrarFeedback('Atualizado!')
+  } catch {
+    mostrarFeedback('Erro ao salvar')
+  }
 }
 
 async function executarLimparTudo() {
   try {
     if (pacienteAtivo.value) {
-      const keys = anotacoesFiltradas.value.map(a => a._key)
+      const keys = anotacoesFiltradas.value.map((a) => a._key)
       await limparPorKeys(keys)
       mostrarFeedback('Anotações de ' + pacienteAtivo.value.nome + ' apagadas')
     } else {
       await store.limparTudo()
       mostrarFeedback('Histórico apagado')
     }
-  } catch { mostrarFeedback('Erro ao apagar') }
-  finally { confirmandoLimpar.value = false }
+  } catch {
+    mostrarFeedback('Erro ao apagar')
+  } finally {
+    confirmandoLimpar.value = false
+  }
 }
 
 function mostrarFeedback(msg) {
@@ -318,144 +414,566 @@ function mostrarFeedback(msg) {
 </script>
 
 <style scoped>
+.historico-screen {
+  background:
+    radial-gradient(circle at top center, rgba(43, 110, 201, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(10, 22, 40, 0.98) 0%, rgba(9, 20, 36, 1) 100%);
+}
+
+.historico-page {
+  width: 100%;
+  max-width: 980px;
+  padding-top: 18px;
+  padding-bottom: 136px;
+}
+
 .btn-icon {
-  background: none; border: none; color: var(--text-dim);
-  cursor: pointer; padding: 6px; border-radius: 8px;
-  display: flex; align-items: center;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
 }
-.btn-icon:active { background: var(--bg-hover); }
+
+.btn-icon:active {
+  background: var(--bg-hover);
+}
+
 .btn-home-logo {
-  display: flex; align-items: center; gap: 6px;
-  background: none; border: none; color: var(--blue);
-  font-size: 1rem; font-weight: 700; font-family: inherit;
-  cursor: pointer; padding: 4px 8px; border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 10px;
 }
-.btn-home-logo:active { background: var(--bg-hover); }
 
-.hist-topo {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px 6px; max-width: 480px; margin: 0 auto; gap: 12px;
+.btn-home-logo:active {
+  background: var(--bg-hover);
 }
 
-.btn-limpar-tudo {
-  display: flex; align-items: center; gap: 5px;
-  background: none; border: 1px solid var(--danger);
-  border-radius: 20px; color: var(--danger);
-  font-size: 0.75rem; font-family: inherit; font-weight: 600;
-  padding: 5px 12px; cursor: pointer; transition: all 0.15s;
-  white-space: nowrap;
+.hist-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(78, 118, 180, 0.28);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(20, 39, 71, 0.98), rgba(13, 27, 48, 0.98)),
+    rgba(17, 29, 50, 0.96);
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.26);
 }
-.btn-limpar-tudo:active { background: rgba(220,38,38,0.1); }
-.hist-titulo { font-size: 1.3rem; font-weight: 700; color: var(--text); }
+
+.hist-hero-copy {
+  min-width: 0;
+}
+
+.hist-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: rgba(55, 100, 176, 0.18);
+  color: #86bdf7;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hist-titulo {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.05;
+}
+
+.hist-subtitulo {
+  margin-top: 10px;
+  color: #91a6c9;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .sync-pill {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgba(73, 118, 191, 0.34);
+  border-radius: 16px;
+  background: rgba(10, 23, 43, 0.78);
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
 }
+
 .sync-pill-label {
-  font-size: 0.68rem; color: var(--text-muted);
-  text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
 }
+
 .sync-pill-code {
-  font-family: monospace; font-size: 0.95rem;
-  color: var(--blue); font-weight: 700; letter-spacing: 0.1em;
+  font-family: monospace;
+  font-size: 1rem;
+  color: #6eb5ff;
+  font-weight: 800;
+  letter-spacing: 0.08em;
 }
+
 .sync-pill-hint {
-  font-size: 0.75rem; color: var(--text-muted);
-  text-align: right; margin: 4px 0 0;
+  margin: 0 4px 14px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
 .filtros-wrap {
-  background: var(--bg-card); border-bottom: 1px solid var(--border);
-  padding: 10px 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid rgba(67, 103, 161, 0.26);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(17, 30, 53, 0.98), rgba(13, 25, 44, 0.98));
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
 }
+
+.filtros-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.filtros-head-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.filtros-label {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.filtros-total {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.btn-limpar-tudo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 12px;
+  background: rgba(229, 57, 53, 0.08);
+  border: 1px solid rgba(229, 57, 53, 0.36);
+  border-radius: 12px;
+  color: #ff8d89;
+  font-size: 0.78rem;
+  font-family: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btn-limpar-tudo:active {
+  transform: translateY(1px);
+}
+
 .busca-row {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.busca-row .filtro-input { flex: 1; }
+
 .filtro-input {
-  width: 100%; background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: var(--radius); color: var(--text);
-  font-family: inherit; font-size: 0.95rem; padding: 10px 14px; outline: none;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(61, 92, 142, 0.5);
+  background: rgba(10, 21, 39, 0.82);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.96rem;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
-.filtro-input:focus { border-color: var(--blue); }
+
+.filtro-input:focus {
+  border-color: rgba(101, 168, 255, 0.82);
+  box-shadow: 0 0 0 3px rgba(53, 122, 223, 0.14);
+}
+
 .chips-scroll {
-  display: flex; gap: 6px; margin-top: 8px;
-  overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
 }
-.chips-scroll::-webkit-scrollbar { display: none; }
+
+.chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.chips-scroll-pacientes {
+  margin-top: 10px;
+}
+
 .chip {
-  background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: 20px; color: var(--text-muted);
-  font-size: 0.83rem; font-family: inherit;
-  padding: 7px 13px; cursor: pointer; white-space: nowrap;
-  flex-shrink: 0; transition: all 0.15s;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(63, 92, 140, 0.5);
+  background: rgba(19, 33, 57, 0.76);
+  color: #92a8cb;
+  font-size: 0.84rem;
+  font-family: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
-.chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
 
-.vazio { color: var(--text-muted); text-align: center; margin-top: 40px; }
+.chip.ativo {
+  background: linear-gradient(135deg, #1f78d8, #2f93ff);
+  border-color: rgba(142, 202, 255, 0.9);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(23, 85, 158, 0.28);
+}
+
+.chip-pac:not(.ativo) {
+  color: #a4b6d3;
+}
+
+.vazio {
+  padding: 28px 18px;
+  margin-top: 10px;
+  border: 1px dashed rgba(72, 109, 166, 0.42);
+  border-radius: 20px;
+  background: rgba(13, 25, 44, 0.72);
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
 .anot-card {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid rgba(68, 101, 152, 0.3);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(19, 32, 56, 0.98), rgba(14, 26, 45, 0.98));
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
   content-visibility: auto;
-  contain-intrinsic-size: 260px;
+  contain-intrinsic-size: 280px;
 }
-.anot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.anot-tipo { font-size: 0.8rem; font-weight: 700; color: var(--blue); }
-.anot-data { font-size: 0.75rem; color: var(--text-muted); }
 
-.anot-paciente-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.anot-paciente { font-size: 0.82rem; color: var(--text-dim); font-weight: 500; flex: 1; }
-.sem-paciente { color: var(--text-muted) !important; font-style: italic; font-weight: 400 !important; }
+.anot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.anot-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(44, 88, 160, 0.18);
+  border: 1px solid rgba(68, 115, 190, 0.28);
+  color: #7cbaff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.anot-tipo-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(39, 111, 201, 0.22));
+}
+
+.anot-data {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+
+.anot-paciente-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.anot-paciente {
+  flex: 1;
+  color: #b6c4db;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.sem-paciente {
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 500;
+}
+
 .btn-editar {
-  background: none; border: none; cursor: pointer;
-  font-size: 0.8rem; padding: 2px 4px; border-radius: 4px; color: var(--text-muted);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(64, 93, 141, 0.48);
+  background: rgba(16, 29, 50, 0.88);
+  color: #8ca5c9;
+  cursor: pointer;
+  flex-shrink: 0;
 }
-.btn-editar:active { background: var(--bg-hover); }
 
-.edit-row { margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; }
+.btn-editar:active {
+  transform: translateY(1px);
+}
+
+.edit-row {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .edit-input {
-  background: var(--bg-input); border: 1px solid var(--blue);
-  border-radius: var(--radius); color: var(--text);
-  font-family: inherit; font-size: 0.9rem; padding: 8px 12px; outline: none;
+  min-height: 46px;
+  padding: 0 14px;
+  background: rgba(10, 23, 41, 0.82);
+  border: 1px solid rgba(88, 141, 218, 0.6);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.92rem;
+  outline: none;
 }
 
 .anot-texto {
-  font-size: 0.88rem; color: var(--text);
-  line-height: 1.6; white-space: pre-wrap; margin-bottom: 12px;
+  margin-bottom: 14px;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.62;
+  white-space: pre-wrap;
 }
-.anot-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.anot-acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .btn-acao {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: 8px; color: var(--text-dim);
-  font-size: 0.78rem; font-family: inherit;
-  padding: 7px 12px; cursor: pointer; transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(63, 92, 140, 0.46);
+  background: rgba(15, 28, 48, 0.84);
+  color: #a1b4d2;
+  font-size: 0.82rem;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
-.btn-acao:active { background: var(--bg-hover); }
-.btn-acao-danger { color: var(--danger); }
-.btn-acao-danger:active { border-color: var(--danger); }
+
+.btn-acao:active {
+  transform: translateY(1px);
+}
+
+.btn-acao-primary {
+  color: #dcecff;
+  border-color: rgba(103, 168, 255, 0.58);
+  background: linear-gradient(135deg, rgba(31, 104, 190, 0.58), rgba(22, 77, 142, 0.72));
+}
+
+.btn-acao-danger {
+  color: #ff8e89;
+  border-color: rgba(229, 57, 53, 0.34);
+}
+
+.btn-acao-mais {
+  margin-top: 6px;
+  min-height: 50px;
+  justify-content: center;
+  border-radius: 16px;
+  color: #dcecff;
+  border-color: rgba(103, 168, 255, 0.44);
+  background: linear-gradient(180deg, rgba(19, 57, 105, 0.84), rgba(14, 40, 73, 0.9));
+}
 
 .toast-feedback {
-  position: fixed; bottom: 24px; left: 50%;
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #1a3a6e; color: var(--text);
-  padding: 10px 20px; border-radius: 20px;
-  font-size: 0.88rem; font-weight: 500;
-  opacity: 0; transition: all 0.25s;
-  pointer-events: none; z-index: 300;
-  border: 1px solid #2a5298; white-space: nowrap;
+  padding: 12px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(91, 145, 219, 0.5);
+  background: rgba(16, 40, 76, 0.96);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 300;
+  white-space: nowrap;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
 }
-.toast-feedback.visivel { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.toast-feedback.visivel {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.65);
-  display: flex; align-items: center; justify-content: center; z-index: 200; padding: 24px;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(2, 8, 18, 0.72);
+  backdrop-filter: blur(4px);
+  z-index: 200;
 }
+
 .modal-confirm {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 24px; width: 100%; max-width: 320px; text-align: center;
+  width: 100%;
+  max-width: 332px;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(67, 103, 161, 0.3);
+  background: linear-gradient(180deg, rgba(19, 32, 56, 0.98), rgba(13, 24, 43, 0.98));
+  text-align: center;
+  box-shadow: 0 24px 42px rgba(0, 0, 0, 0.34);
 }
-.modal-confirm p { font-size: 1rem; font-weight: 600; color: var(--text); }
-.confirm-sub { font-size: 0.82rem !important; color: var(--text-muted) !important; font-weight: 400 !important; margin-top: 4px !important; }
+
+.modal-confirm p {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.confirm-sub {
+  margin-top: 6px !important;
+  color: var(--text-muted) !important;
+  font-size: 0.84rem !important;
+  font-weight: 500 !important;
+  line-height: 1.45;
+}
+
+@media (max-width: 420px) {
+  .hist-hero {
+    flex-direction: column;
+  }
+
+  .sync-pill {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .filtros-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-limpar-tudo {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .historico-page {
+    max-width: 1080px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hist-hero {
+    padding: 22px 24px;
+  }
+
+  .filtros-wrap {
+    padding: 18px 20px;
+  }
+
+  .anot-card {
+    padding: 18px 20px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .historico-page {
+    max-width: 1240px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .hist-hero {
+    display: grid;
+    grid-template-columns: minmax(280px, 420px) minmax(320px, 1fr);
+    align-items: start;
+  }
+
+  .sync-pill {
+    justify-self: end;
+    min-width: 280px;
+  }
+
+  .filtros-wrap {
+    padding: 20px 22px;
+  }
+
+  .anot-card {
+    padding: 20px 22px;
+  }
+
+  .anot-texto {
+    font-size: 0.97rem;
+  }
+}
 </style>

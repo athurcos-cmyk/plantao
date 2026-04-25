@@ -1,29 +1,5 @@
 <template>
   <Teleport to="body">
-    <!-- FAB -->
-    <button
-      class="btn-calc"
-      :class="{ 'btn-calc-aberta': aberta }"
-      @click="toggleCalculadora"
-      :aria-label="aberta ? 'Fechar calculadora' : 'Abrir calculadora de medicação'"
-    >
-      <svg v-if="!aberta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
-        <!-- visor -->
-        <rect x="4" y="2" width="16" height="5" rx="1.5"/>
-        <!-- grade de botões 3×3 -->
-        <rect x="4" y="9"  width="4" height="3" rx="1"/>
-        <rect x="10" y="9" width="4" height="3" rx="1"/>
-        <rect x="16" y="9" width="4" height="3" rx="1"/>
-        <rect x="4"  y="14" width="4" height="3" rx="1"/>
-        <rect x="10" y="14" width="4" height="3" rx="1"/>
-        <rect x="16" y="14" width="4" height="3" rx="1"/>
-        <rect x="4"  y="19" width="4" height="3" rx="1"/>
-        <rect x="10" y="19" width="9" height="3" rx="1"/>
-      </svg>
-      <span v-else style="font-size:1.1rem;font-weight:700;">✕</span>
-    </button>
-
-    <!-- Bottom sheet -->
     <Transition name="calc-slide">
       <div v-if="aberta" class="calc-overlay" @click.self="toggleCalculadora">
         <div class="calc-sheet" role="dialog" aria-modal="true" aria-label="Calculadora de medicação">
@@ -35,16 +11,36 @@
 
           <!-- Header -->
           <div class="calc-header">
-            <span class="calc-titulo">Calculadora</span>
+            <div class="calc-header-main">
+              <div class="calc-header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                  <rect x="5" y="3" width="14" height="18" rx="3" />
+                  <path d="M8 7.5h8" />
+                  <path d="M8 12h2" />
+                  <path d="M12 12h2" />
+                  <path d="M16 12h0.01" />
+                  <path d="M8 16h2" />
+                  <path d="M12 16h2" />
+                  <path d="M16 16h0.01" />
+                </svg>
+              </div>
+              <div class="calc-header-copy">
+                <span class="calc-eyebrow">Ferramenta rápida</span>
+                <span class="calc-titulo">Calculadora de medicação</span>
+                <span class="calc-subtitulo">Dosagem, gotejamento, diluição e conversões no mesmo lugar.</span>
+              </div>
+            </div>
             <button class="calc-btn-fechar" @click="toggleCalculadora" aria-label="Fechar">✕</button>
           </div>
 
           <!-- Abas -->
-          <div class="calc-abas">
+          <div class="calc-abas-shell">
+            <div class="calc-abas">
             <button class="calc-aba" :class="{ 'calc-aba-on': abaAtiva === 'dosagem' }"     @click="abaAtiva = 'dosagem'">Dosagem</button>
             <button class="calc-aba" :class="{ 'calc-aba-on': abaAtiva === 'gotejamento' }" @click="abaAtiva = 'gotejamento'">Gotejamento</button>
             <button class="calc-aba" :class="{ 'calc-aba-on': abaAtiva === 'diluicao' }"   @click="abaAtiva = 'diluicao'">Diluição</button>
             <button class="calc-aba" :class="{ 'calc-aba-on': abaAtiva === 'conversoes' }"  @click="abaAtiva = 'conversoes'">Conversões</button>
+            </div>
           </div>
 
           <!-- ── ABA DOSAGEM ── -->
@@ -339,28 +335,6 @@ function tipoLabel(tipo) {
 </script>
 
 <style scoped>
-/* ── FAB ─────────────────────────────────────────────────────────────────── */
-.btn-calc {
-  position: fixed;
-  bottom: 88px;
-  right: 18px;
-  z-index: 900;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #1a5c3a;
-  border: none;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, transform 0.15s;
-}
-.btn-calc:active,
-.btn-calc-aberta { background: #124429; transform: scale(0.92); }
-
 /* ── Overlay ─────────────────────────────────────────────────────────────── */
 .calc-overlay {
   position: fixed;
@@ -719,4 +693,527 @@ function tipoLabel(tipo) {
 .calc-slide-leave-active { transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
 .calc-slide-enter-from,
 .calc-slide-leave-to     { transform: translateY(100%); }
+
+.calc-overlay {
+  padding: 16px 12px 0;
+  background:
+    radial-gradient(circle at top center, rgba(88, 154, 255, 0.12), transparent 34%),
+    rgba(3, 9, 19, 0.7);
+  backdrop-filter: blur(12px);
+}
+
+.calc-sheet {
+  width: min(100%, 760px);
+  max-height: min(88vh, 920px);
+  border: 1px solid rgba(110, 156, 232, 0.24);
+  border-bottom: none;
+  border-radius: 30px 30px 0 0;
+  background:
+    linear-gradient(180deg, rgba(16, 32, 54, 0.98) 0%, rgba(10, 19, 35, 0.98) 52%, rgba(8, 16, 29, 0.99) 100%);
+  box-shadow:
+    0 -18px 60px rgba(2, 8, 20, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding-bottom: calc(28px + env(safe-area-inset-bottom));
+}
+
+.calc-handle-wrap {
+  padding: 14px 0 8px;
+}
+
+.calc-handle {
+  width: 54px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(126, 151, 189, 0.5), rgba(180, 202, 255, 0.82), rgba(126, 151, 189, 0.5));
+}
+
+.calc-header {
+  align-items: flex-start;
+  gap: 16px;
+  padding: 6px 22px 18px;
+}
+
+.calc-header-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.calc-header-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d9e7ff;
+  background: linear-gradient(180deg, rgba(70, 123, 220, 0.34), rgba(28, 58, 110, 0.7));
+  border: 1px solid rgba(133, 174, 241, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 26px rgba(6, 13, 28, 0.3);
+  flex-shrink: 0;
+}
+
+.calc-header-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.calc-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(157, 183, 233, 0.78);
+}
+
+.calc-titulo {
+  font-size: 1.08rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text, #f6f9ff);
+}
+
+.calc-subtitulo {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: rgba(196, 210, 236, 0.76);
+}
+
+.calc-btn-fechar {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  border: 1px solid rgba(112, 142, 194, 0.22);
+  border-radius: 14px;
+  background: rgba(11, 22, 38, 0.72);
+  color: rgba(228, 236, 249, 0.78);
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.calc-btn-fechar:hover {
+  transform: translateY(-1px);
+  border-color: rgba(128, 171, 245, 0.36);
+  background: rgba(18, 35, 58, 0.88);
+  color: #f6f9ff;
+}
+
+.calc-abas-shell {
+  padding: 0 18px 18px;
+}
+
+.calc-abas {
+  gap: 8px;
+  padding: 6px;
+  border-radius: 18px;
+  background: rgba(8, 18, 31, 0.72);
+  border: 1px solid rgba(101, 136, 191, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.calc-aba {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  color: rgba(192, 207, 232, 0.72);
+  font-size: 0.84rem;
+  font-weight: 700;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.calc-aba:hover {
+  color: rgba(238, 244, 255, 0.92);
+}
+
+.calc-aba-on {
+  color: #f8fbff;
+  border-color: rgba(121, 174, 255, 0.34);
+  background: linear-gradient(180deg, rgba(52, 107, 205, 0.96), rgba(30, 72, 150, 0.96));
+  box-shadow: 0 10px 22px rgba(16, 49, 110, 0.34);
+}
+
+.calc-corpo {
+  gap: 16px;
+  padding: 0 20px 8px;
+}
+
+.calc-descricao {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: rgba(192, 207, 232, 0.72);
+}
+
+.calc-campo {
+  gap: 8px;
+}
+
+.calc-campo label {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: rgba(233, 239, 249, 0.92);
+}
+
+.calc-dica {
+  font-size: 0.73rem;
+  font-weight: 500;
+  color: rgba(171, 188, 216, 0.7);
+}
+
+.calc-input-row {
+  gap: 10px;
+}
+
+.calc-input,
+.calc-select {
+  min-height: 50px;
+  border-radius: 16px;
+  border: 1px solid rgba(94, 123, 171, 0.28);
+  background: linear-gradient(180deg, rgba(14, 28, 47, 0.96), rgba(10, 20, 36, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 8px 18px rgba(2, 8, 20, 0.18);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.calc-input {
+  padding: 0 14px;
+}
+
+.calc-select {
+  padding: 0 14px;
+}
+
+.calc-input:focus,
+.calc-select:focus {
+  border-color: rgba(121, 174, 255, 0.56);
+  box-shadow:
+    0 0 0 4px rgba(73, 127, 222, 0.16),
+    0 10px 22px rgba(8, 19, 37, 0.28);
+}
+
+.calc-unid-fixo {
+  min-width: 42px;
+  min-height: 50px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid rgba(94, 123, 171, 0.24);
+  background: rgba(11, 21, 37, 0.78);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(197, 211, 235, 0.8);
+}
+
+.calc-chips-row {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.calc-resultado,
+.calc-resultado-diluicao {
+  border-radius: 18px;
+  border: 1px solid rgba(96, 130, 189, 0.26);
+  background: linear-gradient(180deg, rgba(18, 38, 64, 0.98), rgba(11, 25, 44, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 32px rgba(4, 11, 24, 0.2);
+}
+
+.calc-resultado {
+  padding: 16px 18px;
+  gap: 10px;
+}
+
+.calc-resultado-vazio {
+  border-color: rgba(96, 122, 166, 0.16);
+  background: linear-gradient(180deg, rgba(11, 22, 37, 0.9), rgba(9, 17, 30, 0.9));
+}
+
+.calc-resultado-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(194, 209, 234, 0.8);
+}
+
+.calc-resultado-valor,
+.calc-resultado-linha strong {
+  color: #dceaff;
+}
+
+.calc-resultado-valor {
+  font-size: 1.34rem;
+}
+
+.calc-resultado-vazio .calc-resultado-valor {
+  color: rgba(167, 184, 212, 0.66);
+}
+
+.calc-resultado-diluicao {
+  padding: 16px 18px;
+  gap: 10px;
+}
+
+.calc-resultado-linha span {
+  color: rgba(194, 209, 234, 0.78);
+}
+
+.calc-formula-info,
+.calc-exemplo {
+  border-radius: 16px;
+  border: 1px solid rgba(97, 124, 165, 0.18);
+  background: rgba(10, 20, 35, 0.72);
+}
+
+.calc-formula-info {
+  padding: 12px 14px;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: rgba(171, 188, 216, 0.76);
+}
+
+.calc-exemplo {
+  padding: 12px 14px;
+  font-size: 0.79rem;
+  line-height: 1.62;
+  color: rgba(178, 194, 221, 0.78);
+}
+
+.calc-exemplo strong {
+  color: rgba(239, 245, 255, 0.94);
+}
+
+.calc-exemplo-resp {
+  margin-top: 4px;
+  color: rgba(214, 226, 247, 0.88);
+}
+
+.calc-btn-salvar {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid rgba(101, 148, 224, 0.3);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(24, 50, 91, 0.92), rgba(14, 31, 57, 0.92));
+  color: #edf4ff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(5, 14, 30, 0.24);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.calc-btn-salvar:hover {
+  transform: translateY(-1px);
+  border-color: rgba(126, 175, 247, 0.44);
+  box-shadow: 0 16px 28px rgba(8, 20, 41, 0.28);
+}
+
+.calc-tabela {
+  gap: 14px;
+}
+
+.calc-tabela-grupo {
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(93, 124, 173, 0.18);
+  background: rgba(10, 20, 35, 0.7);
+}
+
+.calc-tabela-titulo {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(154, 181, 227, 0.76);
+}
+
+.calc-tabela-linha {
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(84, 109, 146, 0.2);
+}
+
+.calc-tabela-linha:last-child {
+  border-bottom: none;
+}
+
+.calc-tabela-linha span:first-child {
+  color: rgba(214, 225, 244, 0.82);
+}
+
+.calc-tabela-linha span:last-child {
+  color: rgba(244, 248, 255, 0.94);
+}
+
+.calc-historico {
+  margin: 18px 20px 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(84, 109, 146, 0.22);
+}
+
+.calc-historico-header {
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.calc-historico-titulo {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(163, 188, 231, 0.78);
+}
+
+.calc-historico-limpar {
+  min-height: 36px;
+  padding: 0 10px;
+  color: rgba(171, 188, 216, 0.76);
+  font-size: 0.77rem;
+  font-weight: 700;
+}
+
+.calc-historico-item {
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(84, 109, 146, 0.18);
+  font-size: 0.82rem;
+}
+
+.calc-historico-tipo {
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(97, 131, 186, 0.2);
+  background: rgba(14, 27, 46, 0.82);
+  font-size: 0.69rem;
+  font-weight: 800;
+  color: rgba(193, 209, 236, 0.82);
+}
+
+.calc-historico-resumo {
+  color: rgba(225, 233, 246, 0.84);
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(97, 131, 186, 0.24);
+  background: linear-gradient(180deg, rgba(15, 29, 49, 0.94), rgba(10, 21, 37, 0.94));
+  color: rgba(192, 207, 232, 0.76);
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(2, 8, 20, 0.16);
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+  color: #f7fbff;
+}
+
+.chip:active {
+  transform: scale(0.98);
+  opacity: 1;
+}
+
+.chip-on {
+  border-color: rgba(121, 174, 255, 0.34);
+  background: linear-gradient(180deg, rgba(52, 107, 205, 0.96), rgba(30, 72, 150, 0.96));
+  color: #fff;
+  box-shadow: 0 12px 22px rgba(16, 49, 110, 0.3);
+}
+
+.calc-slide-enter-active,
+.calc-slide-leave-active {
+  transition: opacity 0.24s ease, transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.calc-slide-enter-from,
+.calc-slide-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+@media (min-width: 768px) {
+  .calc-overlay {
+    padding: 24px 20px 0;
+  }
+
+  .calc-header {
+    padding: 10px 26px 20px;
+  }
+
+  .calc-titulo {
+    font-size: 1.18rem;
+  }
+
+  .calc-subtitulo {
+    font-size: 0.88rem;
+  }
+
+  .calc-abas-shell {
+    padding: 0 24px 20px;
+  }
+
+  .calc-corpo {
+    padding: 0 24px 12px;
+  }
+
+  .calc-historico {
+    margin: 20px 24px 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .calc-overlay {
+    padding: 8px 0 0;
+  }
+
+  .calc-sheet {
+    width: 100%;
+    border-radius: 26px 26px 0 0;
+  }
+
+  .calc-header {
+    padding: 2px 16px 16px;
+  }
+
+  .calc-header-main {
+    align-items: flex-start;
+  }
+
+  .calc-header-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+
+  .calc-abas-shell {
+    padding: 0 14px 16px;
+  }
+
+  .calc-corpo {
+    padding: 0 14px 6px;
+  }
+
+  .calc-input-row {
+    flex-wrap: wrap;
+  }
+
+  .calc-select {
+    min-width: 110px;
+  }
+
+  .calc-unid-fixo {
+    min-width: unset;
+  }
+
+  .calc-historico {
+    margin: 18px 14px 0;
+  }
+}
 </style>

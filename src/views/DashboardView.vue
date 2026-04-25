@@ -81,7 +81,14 @@
       </section>
 
       <div class="utility-row">
-        <button class="utility-chip" @click="pcModalAberto = true">ðŸ’» Como acessar no computador</button>
+        <button class="utility-chip" @click="pcModalAberto = true">
+          <svg class="utility-chip-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="12" rx="2" />
+            <path d="M8 20h8" />
+            <path d="M12 16v4" />
+          </svg>
+          <span>Como acessar no computador</span>
+        </button>
       </div>
 
       <section class="dashboard-section">
@@ -717,6 +724,9 @@ function navegar(tipo) {
 }
 
 .utility-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   min-height: 30px;
   padding: 0 11px;
   border-radius: 999px;
@@ -727,6 +737,11 @@ function navegar(tipo) {
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.utility-chip-icon {
+  flex-shrink: 0;
+  color: #8fc4ff;
 }
 
 .dashboard-section {

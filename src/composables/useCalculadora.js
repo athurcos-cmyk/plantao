@@ -151,6 +151,14 @@ function toggleCalculadora() {
   aberta.value = !aberta.value
 }
 
+function abrirCalculadora() {
+  aberta.value = true
+}
+
+function fecharCalculadora() {
+  aberta.value = false
+}
+
 function resetar() {
   Object.assign(dosagem, { prescrita: '', disponivel: '', volume: '', unidade: 'mg' })
   Object.assign(gotej, { volume: '', tempo: '', equipo: 'macro', unidTempo: 'horas' })
@@ -235,7 +243,7 @@ export function useCalculadora() {
     resultGotejamento, resultGotejamentoFmt, unidadeGotejamento,
     resultDiluicao, resultDiluicaoFmt,
     // Ações
-    toggleCalculadora, resetar,
+    toggleCalculadora, abrirCalculadora, fecharCalculadora, resetar,
     salvarNoHistorico, limparHistorico,
     useScrollLock,
     // Helpers para testes

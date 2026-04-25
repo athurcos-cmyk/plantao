@@ -23,6 +23,19 @@
       </svg>
       <span>Pacientes</span>
     </button>
+    <button :class="['bottom-nav-item', 'bottom-nav-item-calc', { 'bottom-nav-item-on': calculadoraAberta }]" @click="toggleCalculadora">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="5" y="3" width="14" height="18" rx="3" />
+        <path d="M8 7.5h8" />
+        <path d="M8 12h2" />
+        <path d="M12 12h2" />
+        <path d="M16 12h0.01" />
+        <path d="M8 16h2" />
+        <path d="M12 16h2" />
+        <path d="M16 16h0.01" />
+      </svg>
+      <span>Calc</span>
+    </button>
     <button :class="['bottom-nav-item', { 'bottom-nav-item-on': chatAberto }]" @click="toggleChat">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
         <path d="M7 17.5H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 3v-3Z" />
@@ -50,7 +63,7 @@
     </button>
   </nav>
   <ChatAssistente v-if="mostrarBottomNav" />
-  <CalculadoraModal v-if="mostrarFab" />
+  <CalculadoraModal v-if="mostrarCalculadora" />
   <Transition name="toast">
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
   </Transition>
@@ -145,6 +158,7 @@ import { useRouter } from 'vue-router'
 import { useToast } from './composables/useToast.js'
 import { useOnlineStatus } from './composables/useOnlineStatus.js'
 import { useChat } from './composables/useChat.js'
+import { useCalculadora } from './composables/useCalculadora.js'
 import { emitSyncState } from './utils/syncEvents.js'
 
 const ChatAssistente = defineAsyncComponent(() => import('./components/ChatAssistente.vue'))
@@ -158,11 +172,12 @@ const anotacoes   = useAnotacoesStore()
 const pacientes   = usePacientesStore()
 const organizador = useOrganizadorStore()
 const { limparConversa, aberto: chatAberto, toggleChat } = useChat()
+const { aberta: calculadoraAberta, toggleCalculadora } = useCalculadora()
 const router     = useRouter()
 const route      = useRoute()
-const rotasSemFab = ['landing', 'login', 'pc']
+const rotasSemCalculadora = ['landing', 'login', 'pc']
 const rotasComBottomNav = ['dashboard', 'historico', 'pacientes', 'organizador', 'configuracoes']
-const mostrarFab = computed(() => auth.isLoggedIn && !rotasSemFab.includes(route.name))
+const mostrarCalculadora = computed(() => auth.isLoggedIn && !rotasSemCalculadora.includes(route.name))
 const mostrarBottomNav = computed(() => auth.isLoggedIn && rotasComBottomNav.includes(route.name))
 const sincronizando = ref(false)
 const SYNC_RETRY_MS = 10 * 1000
@@ -408,15 +423,15 @@ onUnmounted(() => {
   left: 50%;
   bottom: max(12px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
-  width: min(92vw, 360px);
-  padding: 8px 10px;
+  width: min(94vw, 420px);
+  padding: 8px 9px;
   border-radius: 18px;
   border: 1px solid rgba(124, 147, 194, 0.14);
   background: rgba(14, 31, 60, 0.94);
   backdrop-filter: blur(14px);
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 3px;
   z-index: 220;
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
 }
@@ -437,6 +452,10 @@ onUnmounted(() => {
   font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.bottom-nav-item-calc svg {
+  filter: drop-shadow(0 0 10px rgba(103, 171, 255, 0.22));
 }
 
 .bottom-nav-item-on {
