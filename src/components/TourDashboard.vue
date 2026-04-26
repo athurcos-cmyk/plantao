@@ -117,7 +117,7 @@ defineExpose({ abrirTour })
 .tour-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,14 +206,14 @@ defineExpose({ abrirTour })
   transition: opacity 0.2s, transform 0.15s;
 }
 .btn-proximo:active { transform: scale(0.97); opacity: 0.9; }
-.btn-comecar { background: var(--success, #22c55e); }
+.btn-comecar { background: var(--success); }
 
 /* Badge Google inline */
 :deep(.tour-google-badge) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255,255,255,0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 1px 7px 1px 5px;

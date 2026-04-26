@@ -636,7 +636,7 @@ function novaAnotacao() {
   font-size: 0.78rem; font-family: inherit;
   cursor: pointer; padding: 2px 6px; border-radius: 4px;
 }
-.btn-remove-inf:active { background: rgba(220,38,38,0.1); }
+.btn-remove-inf:active { background: color-mix(in srgb, var(--danger) 10%, transparent); }
 
 .campo-inline {
   background: var(--bg-input); border: 1px solid var(--border);
@@ -718,7 +718,7 @@ function novaAnotacao() {
 
 .passagem-progress .progress-fill {
   background: linear-gradient(90deg, var(--blue-dark), var(--blue));
-  box-shadow: 0 0 14px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 
 .passagem-progress .progress-label {
@@ -771,7 +771,7 @@ function novaAnotacao() {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: var(--shadow-inset-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .module-hero-icon img {
@@ -843,7 +843,7 @@ function novaAnotacao() {
 .passagem-card input:focus,
 .passagem-card .campo-inline:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
   background: var(--bg-card);
 }
 
@@ -861,14 +861,14 @@ function novaAnotacao() {
   border-color: var(--border);
   background: var(--bg-input);
   color: var(--text-dim);
-  box-shadow: var(--shadow-inset-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .chip-on {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: var(--text-on-accent);
-  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .radio-btn {
@@ -893,7 +893,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   color: var(--text-on-accent);
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--blue) 15%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .checkbox-label {
@@ -909,7 +909,7 @@ function novaAnotacao() {
   border-color: var(--blue);
   background: linear-gradient(135deg, color-mix(in srgb, var(--blue-dark) 92%, transparent), color-mix(in srgb, var(--blue) 82%, transparent));
   color: var(--text-on-accent);
-  box-shadow: 0 8px 16px color-mix(in srgb, var(--blue) 15%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .radio-btn input,
@@ -961,7 +961,7 @@ function novaAnotacao() {
 
 .bloco-nav .btn-primary,
 .btn-generate {
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .rascunho-banner {
@@ -979,7 +979,7 @@ function novaAnotacao() {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 24px 24px 0 0;
-  box-shadow: 0 -20px 42px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-modal);
 }
 
 .modal-header,

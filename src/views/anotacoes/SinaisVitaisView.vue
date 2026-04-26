@@ -511,7 +511,7 @@ function novaAfericao() {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
   border-color: var(--blue);
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .module-hero {
@@ -542,7 +542,7 @@ function novaAfericao() {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: var(--shadow-inset-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .module-hero-icon img {
@@ -571,7 +571,7 @@ function novaAfericao() {
   top: 16px;
   width: 140px;
   height: auto;
-  color: rgba(92, 120, 182, 0.18);
+  color: color-mix(in srgb, var(--text-dim) 32%, transparent);
 }
 
 .time-shell {
@@ -620,7 +620,7 @@ function novaAfericao() {
 
 .vital-card input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 
 .vital-card-pa,
@@ -647,37 +647,37 @@ function novaAfericao() {
 
 .vital-badge-blue {
   color: var(--text-info);
-  background: rgba(42, 124, 235, 0.2);
+  background: var(--blue-muted);
 }
 
 .vital-badge-sky {
   color: var(--text-info);
-  background: rgba(44, 142, 255, 0.18);
+  background: var(--blue-muted);
 }
 
 .vital-badge-heart {
   color: var(--text-info);
-  background: rgba(77, 110, 255, 0.18);
+  background: var(--blue-muted);
 }
 
 .vital-badge-cyan {
   color: var(--text-info);
-  background: rgba(43, 171, 210, 0.17);
+  background: var(--blue-faint);
 }
 
 .vital-badge-teal {
   color: var(--text-info);
-  background: rgba(28, 141, 159, 0.18);
+  background: var(--blue-faint);
 }
 
 .vital-badge-o2 {
   color: var(--text-info);
-  background: rgba(48, 115, 255, 0.18);
+  background: var(--blue-muted);
 }
 
 .vital-badge-drop {
   color: var(--text-info);
-  background: rgba(39, 121, 255, 0.18);
+  background: var(--blue-muted);
 }
 
 .vital-title {
@@ -755,7 +755,7 @@ function novaAfericao() {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
   color: var(--text-on-accent);
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .sv-subcampo {
@@ -797,7 +797,7 @@ function novaAfericao() {
 .details-stack input:focus,
 .comunicado-input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 
 .chips-wrap {
@@ -870,7 +870,7 @@ function novaAfericao() {
   min-height: 62px;
   border-radius: 18px;
   font-size: 1.06rem;
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .erro-msg {

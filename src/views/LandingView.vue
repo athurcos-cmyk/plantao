@@ -455,8 +455,8 @@ const testimonials = [
 
 /* ── BARRA DE URGÊNCIA ── */
 .urgencia-bar {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 30%, #7c3aed 70%, transparent), color-mix(in srgb, var(--blue) 22%, transparent));
-  border-bottom: 1px solid #7c3aed44;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 44%, var(--bg-card) 56%), color-mix(in srgb, var(--blue) 22%, transparent));
+  border-bottom: 1px solid color-mix(in srgb, var(--blue) 28%, transparent);
   text-align: center;
   padding: 9px 16px;
   font-size: 0.85rem;
@@ -470,7 +470,7 @@ const testimonials = [
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--danger);
   animation: pulsar 1.4s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -493,7 +493,7 @@ const testimonials = [
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 22, 40, 0.85);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -540,7 +540,7 @@ const testimonials = [
 .hero-dots {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(30, 136, 229, 0.12) 1px, transparent 1px);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--blue) 12%, transparent) 1px, transparent 1px);
   background-size: 28px 28px;
   z-index: 0;
   pointer-events: none;
@@ -552,7 +552,7 @@ const testimonials = [
   transform: translateX(-50%);
   width: 600px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(30, 136, 229, 0.08) 0%, transparent 70%);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--blue) 8%, transparent) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -577,7 +577,7 @@ const testimonials = [
   gap: 8px;
   background: var(--blue-muted);
   color: var(--blue);
-  border: 1px solid rgba(30, 136, 229, 0.3);
+  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
   border-radius: var(--radius-full);
   padding: 5px 14px 5px 10px;
   font-size: 0.78rem;
@@ -639,12 +639,12 @@ const testimonials = [
   border-radius: var(--radius-full);
   transition: all 0.2s ease;
   width: fit-content;
-  box-shadow: 0 4px 24px rgba(30, 136, 229, 0.3);
+  box-shadow: var(--shadow-md);
 }
 .btn-hero:hover {
   background: var(--blue-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 32px rgba(30, 136, 229, 0.45);
+  box-shadow: var(--shadow-lg);
 }
 .btn-hero:active { transform: translateY(0) scale(0.97); }
 .btn-hero-lg {
@@ -689,20 +689,17 @@ const testimonials = [
   transform: translate(-50%, -50%);
   width: 320px;
   height: 400px;
-  background: radial-gradient(ellipse, rgba(30, 136, 229, 0.18) 0%, transparent 65%);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--blue) 18%, transparent) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
 .phone {
   width: 258px;
-  background: #0d1e38;
+  background: color-mix(in srgb, var(--bg-card) 84%, var(--bg) 16%);
   border: 2px solid var(--border);
   border-radius: 44px;
   padding: 14px 12px 20px;
-  box-shadow:
-    0 32px 80px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(30, 136, 229, 0.1),
-    inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: var(--shadow-modal);
   position: relative;
   z-index: 1;
 }
@@ -774,7 +771,7 @@ const testimonials = [
 }
 .sim-card-active {
   background: var(--blue-muted);
-  border-color: rgba(30, 136, 229, 0.4);
+  border-color: color-mix(in srgb, var(--blue) 40%, transparent);
   color: var(--text);
 }
 .sim-icon { font-size: 1rem; }
@@ -913,7 +910,7 @@ const testimonials = [
   transition: border-color 0.2s, transform 0.2s;
 }
 .feat-card:hover {
-  border-color: rgba(30, 136, 229, 0.45);
+  border-color: color-mix(in srgb, var(--blue) 45%, transparent);
   transform: translateY(-2px);
 }
 .feat-icon { font-size: 1.6rem; }
@@ -951,7 +948,7 @@ const testimonials = [
   height: 44px;
   border-radius: 50%;
   background: var(--blue-muted);
-  border: 2px solid rgba(30, 136, 229, 0.4);
+  border: 2px solid color-mix(in srgb, var(--blue) 40%, transparent);
   color: var(--blue);
   font-weight: 700;
   font-size: 1rem;
@@ -959,7 +956,7 @@ const testimonials = [
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 0 6px rgba(30, 136, 229, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 .step-body h3 {
   font-size: 0.95rem;
@@ -1006,7 +1003,7 @@ const testimonials = [
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
-  border: 1px solid rgba(30, 136, 229, 0.4);
+  border: 1px solid color-mix(in srgb, var(--blue) 40%, transparent);
   border-radius: var(--radius-full);
   padding: 10px 20px;
   width: fit-content;
@@ -1015,7 +1012,7 @@ const testimonials = [
 }
 .btn-outline:hover {
   background: var(--blue-muted);
-  border-color: rgba(30, 136, 229, 0.6);
+  border-color: color-mix(in srgb, var(--blue) 60%, transparent);
 }
 
 /* ── FEATURES LIST ── */
@@ -1036,7 +1033,7 @@ const testimonials = [
   background: var(--bg);
   transition: border-color 0.2s;
 }
-.feature-item:hover { border-color: rgba(30, 136, 229, 0.35); }
+.feature-item:hover { border-color: color-mix(in srgb, var(--blue) 35%, transparent); }
 .feature-check {
   color: var(--success);
   font-weight: 700;
@@ -1059,7 +1056,7 @@ const testimonials = [
   gap: 20px;
   transition: border-color 0.2s;
 }
-.testimonial:hover { border-color: rgba(30, 136, 229, 0.35); }
+.testimonial:hover { border-color: color-mix(in srgb, var(--blue) 35%, transparent); }
 .testimonial-text {
   font-size: 0.92rem;
   color: var(--text-dim);
@@ -1077,7 +1074,7 @@ const testimonials = [
   height: 38px;
   border-radius: 50%;
   background: var(--blue-muted);
-  border: 1px solid rgba(30, 136, 229, 0.3);
+  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
   color: var(--blue);
   font-size: 0.75rem;
   font-weight: 700;
@@ -1112,7 +1109,7 @@ const testimonials = [
   transform: translateX(-50%);
   width: 700px;
   height: 300px;
-  background: radial-gradient(ellipse, rgba(30, 136, 229, 0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--blue) 10%, transparent) 0%, transparent 70%);
   pointer-events: none;
 }
 .cta-inner {
@@ -1123,7 +1120,7 @@ const testimonials = [
   align-items: center;
   gap: 16px;
 }
-.eyebrow-light { color: rgba(30, 136, 229, 0.8); }
+.eyebrow-light { color: color-mix(in srgb, var(--blue) 80%, transparent); }
 .cta-title {
   font-size: clamp(1.6rem, 3.5vw, 2.4rem);
   font-weight: 700;
@@ -1191,7 +1188,7 @@ const testimonials = [
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(circle, rgba(30, 136, 229, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--blue) 7%, transparent) 1px, transparent 1px);
   background-size: 28px 28px;
   pointer-events: none;
 }
@@ -1221,7 +1218,7 @@ const testimonials = [
   height: 7px;
   border-radius: 50%;
   background: var(--blue);
-  box-shadow: 0 0 8px var(--blue);
+  box-shadow: var(--shadow-sm);
   animation: pulse 2s ease-in-out infinite;
 }
 .install-title {
@@ -1285,7 +1282,7 @@ const testimonials = [
   line-height: 1.5;
   padding: 10px 14px;
   background: var(--blue-muted);
-  border: 1px solid rgba(30, 136, 229, 0.2);
+  border: 1px solid color-mix(in srgb, var(--blue) 20%, transparent);
   border-radius: var(--radius);
 }
 .install-sync-note strong { color: var(--blue); }
@@ -1293,13 +1290,13 @@ const testimonials = [
 /* card direito */
 .install-card {
   background: var(--bg);
-  border: 1px solid rgba(30, 136, 229, 0.25);
+  border: 1px solid color-mix(in srgb, var(--blue) 25%, transparent);
   border-radius: 20px;
   padding: 28px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 0 0 1px rgba(30, 136, 229, 0.06), 0 16px 48px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-modal);
 }
 .install-card-header {
   display: flex;
@@ -1333,7 +1330,7 @@ const testimonials = [
 }
 .install-url-copy {
   background: var(--blue-muted);
-  border: 1px solid rgba(30, 136, 229, 0.3);
+  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
   color: var(--blue);
   font-size: 0.75rem;
   font-weight: 600;
@@ -1347,7 +1344,7 @@ const testimonials = [
 }
 .install-url-copy.copied {
   background: var(--success-muted);
-  border-color: rgba(67, 160, 71, 0.4);
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
   color: var(--success);
 }
 .install-card-hint {
@@ -1381,7 +1378,7 @@ const testimonials = [
   text-align: left;
 }
 .btn-pc:hover {
-  border-color: rgba(30, 136, 229, 0.45);
+  border-color: color-mix(in srgb, var(--blue) 45%, transparent);
   color: var(--text);
   background: var(--blue-muted);
 }

@@ -1,51 +1,17 @@
 /* ===== DESIGN SYSTEM ===== */
 :root {
-  /* Backgrounds */
-  --bg:        #0A1628;
-  --bg-card:   #111d32;
-  --bg-input:  #162033;
-  --bg-hover:  #1a2844;
-
-  /* Brand */
-  --blue:      #1E88E5;
-  --blue-dark: #1565C0;
-  --blue-muted:rgba(30, 136, 229, 0.12);
-  --blue-faint:rgba(30, 136, 229, 0.16);
-
-  /* Text */
-  --text:      #EAEEF3;
-  --text-dim:  #8899AA;
-  --text-muted:#556677;
-  --text-on-accent: #ffffff;
+  /* Theme palette tokens are injected by useTheme.js */
   --text-soft: var(--text-dim);
   --text-faint: var(--text-muted);
   --text-info: color-mix(in srgb, var(--blue) 72%, var(--text) 28%);
   --text-warning: var(--warning);
   --text-danger-soft: color-mix(in srgb, var(--danger) 62%, var(--text) 38%);
   --text-success-soft: color-mix(in srgb, var(--success) 62%, var(--text) 38%);
-
-  /* Semantic */
-  --danger:         #E53935;
-  --danger-muted:   rgba(229, 57, 53, 0.1);
-  --success:        #43A047;
-  --success-muted:  rgba(67, 160, 71, 0.1);
-  --warning:        #FFC107;
-  --warning-muted:  rgba(255, 193, 7, 0.08);
-  --info:           #29B6F6;
-  --info-muted:     rgba(41, 182, 246, 0.1);
-
-  /* Structure */
-  --border:      #1e3050;
   --radius:      10px;
   --radius-lg:   16px;
   --radius-full: 9999px;
 
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.14);
-  --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 18px 36px rgba(0, 0, 0, 0.26);
-  --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --shadow-glow-blue: 0 10px 22px color-mix(in srgb, var(--blue) 30%, transparent);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -180,9 +146,9 @@ body {
 .radio-btn input:checked + span {
   background: linear-gradient(180deg, var(--blue-faint), var(--blue-muted));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   font-weight: 600;
-  box-shadow: 0 6px 18px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 
 .radio-group.vertical .radio-btn span { width: 100%; }
@@ -222,18 +188,24 @@ body {
 .checkbox-label:has(input:checked)::before {
   background: var(--blue);
   border-color: var(--blue);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-accent);
+  content: '✓';
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 .checkbox-label.checked::before {
   background: var(--blue);
   border-color: var(--blue);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-accent);
+  content: '✓';
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 /* ===== BOTÕES ===== */
@@ -254,14 +226,14 @@ body {
   min-height: 52px;
 }
 
-.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary { background: var(--blue); color: var(--text-on-accent); }
 .btn-primary:active { background: var(--blue-dark); transform: scale(0.98); }
 .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .btn-generate {
   min-height: 56px;
   border-radius: 16px;
-  box-shadow: 0 14px 28px rgba(21, 101, 192, 0.24);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-generate svg {
@@ -285,12 +257,12 @@ body {
   border: 1px dashed var(--border);
 }
 .btn-tertiary:active {
-  background: rgba(255,255,255,0.03);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   color: var(--text-dim);
   border-color: var(--text-muted);
 }
 
-.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger { background: var(--danger); color: var(--text-on-accent); }
 .btn-ghost {
   background: transparent;
   color: var(--text-dim);
@@ -354,7 +326,7 @@ body {
   white-space: nowrap;
   pointer-events: none;
   z-index: 9999;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-modal);
 }
 
 .toast-enter-active,
@@ -424,5 +396,5 @@ body {
   opacity: 0.9;
   transition: all 0.15s;
 }
-.btn-clara:hover { opacity: 1; background: rgba(30, 136, 229, 0.08); }
+.btn-clara:hover { opacity: 1; background: color-mix(in srgb, var(--blue) 14%, transparent); }
 .btn-clara:disabled { opacity: 0.45; cursor: not-allowed; }

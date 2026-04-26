@@ -18,6 +18,14 @@
 
 ## Concluídos
 
+### [x] Deep sweep de temas: tokens dinamicos + guia (2026-04-26)
+- `useTheme.js` passou a concentrar tambem tokens de contraste e elevacao por tema (`--text`, `--text-on-accent`, `--shadow-sm/md/lg/modal`)
+- `style.css` deixou de carregar sombras fixas no `:root` (sombras agora variam por tema)
+- Hardcodes de cores/sombras removidos de componentes compartilhados criticos e de modulos de anotacao prioritarios
+- Criado `THEME_GUIDE.md` na raiz com dicionario oficial de variaveis e regra anti-hardcode
+
+---
+
 ### [x] Varredura hardcoded de cores para temas claros (2026-04-25)
 - Removidos hardcodes de texto (`#fff`, `#eef4ff`, `#f5f8ff`, `#a6c4d8`, `#d9ecfb`) em views/components e substituidos por tokens de tipografia
 - Criado token `--text-on-accent` e aplicado nos botões/chips com fundo semântico (`--blue`, `--success`, `--danger`)

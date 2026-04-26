@@ -339,7 +339,7 @@ function tipoLabel(tipo) {
 .calc-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.65);
   z-index: 1000;
   display: flex;
   align-items: flex-end;
@@ -423,7 +423,7 @@ function tipoLabel(tipo) {
 .calc-aba-on {
   background: var(--blue);
   border-color: var(--blue);
-  color: white;
+  color: var(--text-on-accent);
 }
 
 /* ── Corpo ───────────────────────────────────────────────────────────────── */
@@ -697,7 +697,7 @@ function tipoLabel(tipo) {
 
 .calc-overlay {
   padding: 16px 12px 0;
-  background: rgba(3, 9, 19, 0.78);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
 }
 
 .calc-sheet {
@@ -707,9 +707,7 @@ function tipoLabel(tipo) {
   border-bottom: none;
   border-radius: 30px 30px 0 0;
   background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
-  box-shadow:
-    0 -18px 60px rgba(2, 8, 20, 0.58),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-modal);
   padding-bottom: calc(28px + env(safe-area-inset-bottom));
 }
 
@@ -747,9 +745,7 @@ function tipoLabel(tipo) {
   color: var(--text);
   background: linear-gradient(180deg, var(--blue-muted), var(--bg-input));
   border: 1px solid var(--border);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 12px 26px rgba(6, 13, 28, 0.3);
+  box-shadow: var(--shadow-md);
   flex-shrink: 0;
 }
 
@@ -809,7 +805,7 @@ function tipoLabel(tipo) {
   border-radius: 18px;
   background: var(--bg-input);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-inset-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .calc-aba {
@@ -831,7 +827,7 @@ function tipoLabel(tipo) {
   color: var(--text-on-accent);
   border-color: var(--blue);
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .calc-corpo {
@@ -871,9 +867,7 @@ function tipoLabel(tipo) {
   border-radius: 16px;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 8px 18px rgba(2, 8, 20, 0.18);
+  box-shadow: var(--shadow-sm);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -888,9 +882,7 @@ function tipoLabel(tipo) {
 .calc-input:focus,
 .calc-select:focus {
   border-color: var(--blue);
-  box-shadow:
-    0 0 0 4px var(--blue-faint),
-    0 10px 22px rgba(8, 19, 37, 0.28);
+  box-shadow: var(--shadow-md);
 }
 
 .calc-unid-fixo {
@@ -918,9 +910,7 @@ function tipoLabel(tipo) {
   border-radius: 18px;
   border: 1px solid var(--border);
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 18px 32px rgba(4, 11, 24, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .calc-resultado {
@@ -1101,7 +1091,7 @@ function tipoLabel(tipo) {
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   color: var(--text-dim);
   font-weight: 700;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
@@ -1118,7 +1108,7 @@ function tipoLabel(tipo) {
   border-color: var(--blue);
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .calc-slide-enter-active,

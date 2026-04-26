@@ -561,8 +561,8 @@ async function excluirPend(pac, pend) {
 <style scoped>
 /* Dica notificação background */
 .dica-notif {
-  background: var(--info-muted, rgba(56, 178, 172, 0.1));
-  border: 1px solid var(--info, #38b2ac);
+  background: var(--info-muted);
+  border: 1px solid var(--info);
   border-radius: var(--radius-lg, 12px);
   padding: 14px 16px;
   margin-bottom: 16px;
@@ -603,7 +603,7 @@ async function excluirPend(pac, pend) {
 .dica-plataforma {
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
 }
 .dica-plataforma-tag {
   display: inline-block;
@@ -614,8 +614,8 @@ async function excluirPend(pac, pend) {
   margin-bottom: 6px;
   letter-spacing: 0.02em;
 }
-.dica-plataforma-tag.android { background: rgba(61,220,132,0.12); color: var(--text-success-soft); }
-.dica-plataforma-tag.ios     { background: rgba(120,160,255,0.12); color: var(--text-info); }
+.dica-plataforma-tag.android { background: var(--success-muted); color: var(--text-success-soft); }
+.dica-plataforma-tag.ios     { background: var(--info-muted); color: var(--text-info); }
 .dica-plataforma-texto {
   margin: 0 0 6px;
   color: var(--text-dim);
@@ -660,8 +660,8 @@ async function excluirPend(pac, pend) {
 .pag-titulo { font-size: 1.3rem; font-weight: 700; color: var(--text); }
 .pag-subtitulo { font-size: 0.8rem; color: var(--text-muted); }
 .btn-limpar-todos {
-  background: none; border: 1px solid var(--danger, #e53e3e);
-  color: var(--danger, #e53e3e); border-radius: 8px;
+  background: none; border: 1px solid var(--danger);
+  color: var(--danger); border-radius: 8px;
   padding: 4px 10px; font-size: 0.75rem; cursor: pointer;
   font-family: inherit; white-space: nowrap;
 }

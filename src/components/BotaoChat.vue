@@ -21,12 +21,12 @@ const { aberto, novaResposta, toggleChat } = useChat()
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #1e6fbf;
+  background: var(--blue);
   border: none;
-  color: white;
+  color: var(--text-on-accent);
   font-size: 1.4rem;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@ const { aberto, novaResposta, toggleChat } = useChat()
 }
 .botao-chat:active {
   transform: scale(0.92);
-  background: #155a9e;
+  background: var(--blue-dark);
 }
 .botao-chat-badge {
   position: absolute;
@@ -42,7 +42,7 @@ const { aberto, novaResposta, toggleChat } = useChat()
   right: 6px;
   width: 10px;
   height: 10px;
-  background: #e57373;
+  background: var(--danger);
   border-radius: 50%;
   border: 2px solid var(--bg);
 }

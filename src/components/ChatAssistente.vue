@@ -161,7 +161,7 @@ watch(aberto, async (val) => {
 .chat-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.65);
   z-index: 1000;
   display: flex;
   align-items: flex-end;
@@ -339,7 +339,7 @@ watch(aberto, async (val) => {
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  color: white;
+  color: var(--text-on-accent);
   font-size: 1rem;
   cursor: pointer;
   display: flex;

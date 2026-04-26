@@ -1478,7 +1478,7 @@ function novaAnotacao() {
   background: linear-gradient(135deg, var(--blue-faint), transparent);
   border-color: var(--blue-muted);
   color: var(--text);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .med-choice-spaced {
@@ -1554,14 +1554,14 @@ function novaAnotacao() {
 
 .med-meta-chip-warm {
   color: var(--text-warning);
-  border-color: rgba(244, 201, 93, 0.26);
-  background: rgba(244, 201, 93, 0.12);
+  border-color: color-mix(in srgb, var(--warning) 32%, transparent);
+  background: var(--warning-muted);
 }
 
 .med-meta-chip-danger {
   color: var(--text-danger-soft);
-  border-color: rgba(229, 57, 53, 0.28);
-  background: rgba(229, 57, 53, 0.12);
+  border-color: color-mix(in srgb, var(--danger) 32%, transparent);
+  background: var(--danger-muted);
 }
 
 .med-item-acoes {
@@ -1586,9 +1586,9 @@ function novaAnotacao() {
 
 .btn-favorite-on {
   color: var(--text-warning);
-  border-color: rgba(244, 201, 93, 0.4);
-  background: rgba(244, 201, 93, 0.14);
-  box-shadow: inset 0 0 0 1px rgba(244, 201, 93, 0.14);
+  border-color: color-mix(in srgb, var(--warning) 46%, transparent);
+  background: var(--warning-muted);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ── Botão adicionar medicamento ── */
@@ -1638,9 +1638,9 @@ function novaAnotacao() {
   border-color: var(--blue);
   color: var(--text-on-accent);
   font-weight: 700;
-  box-shadow: 0 4px 14px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
-.chip:not(.ativo):active { background: rgba(30, 50, 90, 0.75); }
+.chip:not(.ativo):active { background: var(--bg-hover); }
 
 .chip-sm {
   padding: 7px 12px;
@@ -1755,7 +1755,7 @@ select.campo-inline {
   max-height: 90dvh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -12px 40px rgba(2, 8, 20, 0.5);
+  box-shadow: var(--shadow-modal);
 }
 .modal-header {
   display: flex;
@@ -1826,7 +1826,7 @@ select.campo-inline {
 
 .autocomplete-wrap > input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 .autocomplete-dropdown {
   position: absolute;
@@ -1838,7 +1838,7 @@ select.campo-inline {
   border-radius: var(--radius);
   z-index: 300;
   overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow-md);
 }
 .autocomplete-item {
   width: 100%;
@@ -1931,7 +1931,7 @@ select.campo-inline {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: var(--shadow-inset-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .module-hero-icon img {
@@ -1960,7 +1960,7 @@ select.campo-inline {
   min-height: 62px;
   border-radius: 18px;
   font-size: 1.06rem;
-  box-shadow: 0 16px 30px var(--blue-faint);
+  box-shadow: var(--shadow-lg);
 }
 
 .chips-scroll .chip {
@@ -1977,6 +1977,6 @@ select.campo-inline {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
   border-color: var(--blue);
-  box-shadow: 0 8px 20px var(--blue-faint);
+  box-shadow: var(--shadow-md);
 }
 </style>

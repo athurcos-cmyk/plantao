@@ -42,13 +42,15 @@
       <!-- Aparência -->
       <section class="config-section">
         <h2 class="config-section-titulo">Aparência</h2>
+
+        <h3 class="config-sub-titulo">🌙 Escuros</h3>
         <div class="temas-grid">
           <button
-            v-for="(tema, id) in temas"
-            :key="id"
+            v-for="tema in temasDark"
+            :key="tema.id"
             class="tema-card"
-            :class="{ 'tema-card-on': temaAtivo === id }"
-            @click="aplicarTema(id)"
+            :class="{ 'tema-card-on': temaAtivo === tema.id }"
+            @click="aplicarTema(tema.id)"
           >
             <div class="tema-preview-wrap">
               <div class="tema-prev-bg" :style="{ background: tema.preview.bg }">
@@ -59,10 +61,33 @@
               </div>
             </div>
             <span class="tema-nome">{{ tema.nome }}</span>
-            <span v-if="temaAtivo === id" class="tema-check">✓</span>
+            <span v-if="temaAtivo === tema.id" class="tema-check">✓</span>
+          </button>
+        </div>
+
+        <h3 class="config-sub-titulo" style="margin-top:16px">☀️ Claros</h3>
+        <div class="temas-grid">
+          <button
+            v-for="tema in temasLight"
+            :key="tema.id"
+            class="tema-card"
+            :class="{ 'tema-card-on': temaAtivo === tema.id }"
+            @click="aplicarTema(tema.id)"
+          >
+            <div class="tema-preview-wrap">
+              <div class="tema-prev-bg" :style="{ background: tema.preview.bg }">
+                <div class="tema-prev-card" :style="{ background: tema.preview.card }">
+                  <div class="tema-prev-accent" :style="{ background: tema.preview.accent }"></div>
+                  <div class="tema-prev-line" :style="{ background: tema.preview.accent, opacity: 0.4 }"></div>
+                </div>
+              </div>
+            </div>
+            <span class="tema-nome">{{ tema.nome }}</span>
+            <span v-if="temaAtivo === tema.id" class="tema-check">✓</span>
           </button>
         </div>
       </section>
+
 
       <!-- Senha (para quem logou com Google) -->
       <section v-if="!temSenha" class="config-section">
@@ -174,7 +199,9 @@ import { useTheme } from '../composables/useTheme.js'
 const router = useRouter()
 const auth = useAuthStore()
 const { copiar } = useCopia()
-const { temas, temaAtivo, aplicarTema } = useTheme()
+const { temas, temaAtivo, aplicarTema, temasAgrupados } = useTheme()
+const { dark: temasDark, light: temasLight } = temasAgrupados()
+
 
 const copiou = ref(false)
 const erro = ref('')
@@ -512,9 +539,10 @@ async function confirmarDelete() {
 }
 
 .btn-danger {
-  background: rgba(239, 83, 80, 0.12);
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
   border: 1px solid var(--danger);
   color: var(--danger);
+
   padding: 12px;
   border-radius: 10px;
   font-size: 0.92rem;
@@ -525,10 +553,20 @@ async function confirmarDelete() {
 .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .config-danger {
-  border-color: rgba(239, 83, 80, 0.3);
+  border-color: color-mix(in srgb, var(--danger) 30%, transparent);
 }
 
+.config-sub-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  margin-top: 12px;
+}
+.config-sub-titulo:first-of-type { margin-top: 0; }
+
 .danger-titulo {
+
   color: var(--danger) !important;
 }
 

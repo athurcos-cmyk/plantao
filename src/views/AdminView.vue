@@ -627,20 +627,20 @@ function barraLargura(count, lista) {
 
 /* ── Badges ── */
 .badge { display: inline-block; padding: 2px 7px; border-radius: 9999px; font-size: 0.68rem; font-weight: 600; white-space: nowrap; }
-.badge-ok { background: rgba(67,160,71,0.15); color: var(--success); }
-.badge-dim { background: rgba(136,153,170,0.1); color: var(--text-dim); }
+.badge-ok { background: var(--success-muted); color: var(--success); }
+.badge-dim { background: color-mix(in srgb, var(--text-dim) 16%, transparent); color: var(--text-dim); }
 .badge-new { background: var(--blue-muted); color: var(--blue); }
-.badge-ativo { background: rgba(67,160,71,0.2); color: var(--success); }
-.badge-semana { background: rgba(255,193,7,0.15); color: var(--warning); }
-.badge-mes { background: rgba(255,152,0,0.15); color: var(--warning); }
-.badge-inativo { background: rgba(229,57,53,0.12); color: var(--danger); }
+.badge-ativo { background: var(--success-muted); color: var(--success); }
+.badge-semana { background: var(--warning-muted); color: var(--warning); }
+.badge-mes { background: var(--warning-muted); color: var(--warning); }
+.badge-inativo { background: var(--danger-muted); color: var(--danger); }
 
 /* ── Botões de ação por usuário ── */
 .btn-icon { border-radius: 8px; border: 1px solid; padding: 8px 10px; font-size: 0.9rem; cursor: pointer; min-height: 38px; min-width: 38px; transition: background 0.15s; }
 .btn-email { background: var(--blue-muted); border-color: var(--blue); color: var(--blue); }
 .btn-email:hover:not(:disabled) { background: color-mix(in srgb, var(--blue) 18%, transparent); }
-.btn-del { background: rgba(229,57,53,0.08); border-color: rgba(229,57,53,0.25); color: var(--danger); }
-.btn-del:hover:not(:disabled) { background: rgba(229,57,53,0.18); }
+.btn-del { background: var(--danger-muted); border-color: color-mix(in srgb, var(--danger) 30%, transparent); color: var(--danger); }
+.btn-del:hover:not(:disabled) { background: color-mix(in srgb, var(--danger) 18%, transparent); }
 .btn-icon:disabled { opacity: 0.4; cursor: default; }
 
 /* ── Feedbacks ── */
@@ -679,7 +679,7 @@ function barraLargura(count, lista) {
 .monitor-val { font-weight: 600; }
 .status-ok { color: var(--success); }
 .status-err { color: var(--danger); }
-.monitor-alerta { margin: 0; font-size: 0.8rem; color: var(--warning); background: rgba(255,193,7,0.08); border: 1px solid rgba(255,193,7,0.2); border-radius: 8px; padding: 8px 12px; }
+.monitor-alerta { margin: 0; font-size: 0.8rem; color: var(--warning); background: var(--warning-muted); border: 1px solid color-mix(in srgb, var(--warning) 28%, transparent); border-radius: 8px; padding: 8px 12px; }
 .broadcasts-lista { display: flex; flex-direction: column; gap: 8px; }
 .broadcast-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
 .broadcast-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
@@ -706,8 +706,8 @@ function barraLargura(count, lista) {
 .btn-enviar:hover:not(:disabled) { background: var(--blue-dark); }
 .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
 .resultado { border-radius: 10px; padding: 14px; }
-.resultado-ok { background: rgba(67,160,71,0.1); border: 1px solid rgba(67,160,71,0.25); }
-.resultado-erro { background: rgba(229,57,53,0.1); border: 1px solid rgba(229,57,53,0.25); }
+.resultado-ok { background: var(--success-muted); border: 1px solid color-mix(in srgb, var(--success) 30%, transparent); }
+.resultado-erro { background: var(--danger-muted); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); }
 .resultado-linha { margin: 0 0 4px; font-size: 0.875rem; }
 .erros-lista { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
 .erro-item { display: flex; gap: 6px; font-size: 0.8rem; }
@@ -716,7 +716,7 @@ function barraLargura(count, lista) {
 .erro-msg { color: var(--text-dim); }
 
 /* ── Modal ── */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: flex-end; justify-content: center; z-index: 100; padding: 0; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); display: flex; align-items: flex-end; justify-content: center; z-index: 100; padding: 0; }
 .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
 .modal-titulo { margin: 0; font-size: 1.05rem; font-weight: 700; }
 .modal-sub { margin: -8px 0 0; font-size: 0.82rem; color: var(--text-dim); }

@@ -48,11 +48,11 @@ Firebase Auth é o sistema de autenticação ativo.
 - Para a próxima sessão, assumir que o ciclo de fechamento visual dos cards terminou e priorizar backlog funcional, refinamentos clínicos e fluxos operacionais
 
 ## Skills disponíveis
-@.Codex/skills/planner.md
-@.Codex/skills/build-error-resolver.md
-@.Codex/skills/revisao-seguranca.md
-@.Codex/skills/refactor-cleaner.md
-@.Codex/skills/pwa-plantao.md
-@.Codex/skills/economia-tokens.md
-@.Codex/skills/criar-skill.md
-@.Codex/skills/modularizacao.md
+@.clinerules/planner.md
+@.clinerules/build-error-resolver.md
+@.clinerules/revisao-seguranca.md
+@.clinerules/refactor-cleaner.md
+@.clinerules/pwa-plantao.md
+@.clinerules/economia-tokens.md
+@.clinerules/criar-skill.md
+@.clinerules/modularizacao.md

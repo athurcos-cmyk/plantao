@@ -55,6 +55,18 @@
 - `npm test` passou com 60 testes
 - `npm run build` passou
 
+## Sessao 2026-04-26
+
+### Varredura fina de theming (deep sweep parcial em lote)
+
+- Estrutura de temas reforcada em `src/composables/useTheme.js` para todos os temas ativos (`noturno`, `rosa`, `floresta`, `roxo`, `carbono`, `cobalto`) com tokens de contraste e elevacao: `--text`, `--text-on-accent`, `--shadow-sm`, `--shadow-md`, `--shadow-lg`, `--shadow-modal`
+- `src/assets/style.css` deixou de declarar sombras estaticas no `:root`; agora o CSS global consome os tokens injetados por tema
+- Sombras legadas (`--shadow-soft`, `--shadow-inset-soft`, `--shadow-glow-blue`) foram removidas dos modulos revisados e mapeadas para o novo padrao
+- Overlays de modais revisados para o padrao `rgba(0, 0, 0, 0.65)` em componentes compartilhados
+- Hardcodes criticos removidos de componentes-chave (`BotaoChat`, `ChatAssistente`, `CalculadoraModal`, `TourDashboard`) para usar apenas variaveis de tema
+- Modulos de anotacao priorizados na revisao final (`AnotacaoInicial`, `SinaisVitais`, `AnotacaoMedicacao`) receberam normalizacao adicional de sombras e estados visuais
+- Novo guia de design system criado em `THEME_GUIDE.md` com regras de uso obrigatorio dos tokens
+
 ## Sessao 2026-04-24
 
 ### Notas Livres: tela fechada no padrao premium

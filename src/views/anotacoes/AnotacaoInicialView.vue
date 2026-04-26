@@ -1012,7 +1012,7 @@ function selecionarPaciente(p) {
 
 .inicial-progress .progress-fill {
   background: linear-gradient(90deg, var(--blue-faint), var(--blue));
-  box-shadow: 0 0 12px color-mix(in srgb, var(--blue) 22%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .paciente-atalho {
@@ -1061,7 +1061,7 @@ function selecionarPaciente(p) {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: var(--shadow-inset-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .module-hero-icon img {
@@ -1127,7 +1127,7 @@ textarea:focus {
 .checkbox-label:has(input:checked) {
   border-color: color-mix(in srgb, var(--blue) 78%, transparent);
   background: color-mix(in srgb, var(--blue) 18%, transparent);
-  box-shadow: 0 7px 15px color-mix(in srgb, var(--blue) 12%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .chip {
@@ -1144,13 +1144,13 @@ textarea:focus {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
   font-weight: 700;
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-generate {
   min-height: 58px;
   border-radius: 18px;
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-limpar {
@@ -1304,7 +1304,7 @@ textarea:focus {
   max-height: min(78dvh, 680px);
   border-radius: 24px 24px 0 0;
   overflow: hidden;
-  box-shadow: 0 -18px 42px rgba(1, 6, 16, 0.34);
+  box-shadow: var(--shadow-modal);
 }
 
 .modal-header {
@@ -1339,7 +1339,7 @@ textarea:focus {
 .modal-footer {
   padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
   background: rgba(9, 21, 38, 0.92);
-  box-shadow: 0 -10px 24px rgba(2, 8, 18, 0.2);
+  box-shadow: var(--shadow-modal);
 }
 
 .modal-cancel {
@@ -1352,7 +1352,7 @@ textarea:focus {
   flex: 1;
   min-height: 52px;
   border-radius: 16px;
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .modal-body :deep(.campo) {
@@ -1393,7 +1393,7 @@ textarea:focus {
 .modal-body :deep(.checkbox-label:has(input:checked)) {
   border-color: var(--blue);
   background: var(--blue-faint);
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
 }
 
 .modal-body :deep(.radio-btn:has(input:checked) span),
@@ -1651,12 +1651,12 @@ textarea:focus {
   border: 1px solid rgba(76, 116, 150, 0.48);
   background: linear-gradient(180deg, rgba(17, 37, 63, 0.9), rgba(11, 26, 49, 0.94));
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .modelo-list-item-on {
   border-color: color-mix(in srgb, var(--blue) 78%, transparent);
-  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 15%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .modelo-main-btn {
@@ -1816,7 +1816,7 @@ textarea:focus {
 
 .inicial-progress .progress-fill {
   background: linear-gradient(90deg, var(--blue-dark), var(--blue));
-  box-shadow: 0 0 14px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 
 .paciente-atalho,
@@ -1845,7 +1845,7 @@ textarea:focus {
 .chip.ativo {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .estado-card-on,
@@ -1853,7 +1853,7 @@ textarea:focus {
 .modelo-list-item-on {
   border-color: var(--blue);
   background: var(--blue-muted);
-  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 14%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-novo-modelo-topo,
@@ -1896,7 +1896,7 @@ textarea:focus {
 }
 
 .inicial-progress .progress-fill {
-  box-shadow: 0 0 14px var(--blue-faint);
+  box-shadow: var(--shadow-sm);
 }
 
 .paciente-atalho,

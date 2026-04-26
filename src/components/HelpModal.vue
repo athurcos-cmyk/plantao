@@ -37,7 +37,7 @@ defineEmits(['fechar'])
 <style scoped>
 .help-overlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.65);
   z-index: 300;
   display: flex; align-items: flex-end;
 }

@@ -419,7 +419,7 @@ function mostrarFeedback(msg) {
   --hist-surface-2: color-mix(in srgb, var(--bg-input) 72%, var(--bg) 28%);
   --hist-border-soft: color-mix(in srgb, var(--border) 82%, var(--blue) 18%);
   --hist-border-strong: color-mix(in srgb, var(--border) 68%, var(--blue) 32%);
-  --hist-shadow: color-mix(in srgb, #000 78%, var(--bg) 22%);
+  --hist-shadow: color-mix(in srgb, var(--text) 78%, var(--bg) 22%);
   background:
     radial-gradient(circle at top center, var(--blue-faint), transparent 34%),
     var(--bg);

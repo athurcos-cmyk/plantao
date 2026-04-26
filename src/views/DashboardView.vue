@@ -602,7 +602,7 @@ function navegar(tipo) {
   object-fit: contain;
   display: block;
   flex-shrink: 0;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.18));
+  filter: none;
 }
 
 .sync-card {
@@ -615,7 +615,7 @@ function navegar(tipo) {
   border-radius: 18px;
   padding: 12px 14px;
   margin-bottom: 10px;
-  box-shadow: 0 12px 24px rgba(4, 10, 22, 0.18);
+  box-shadow: var(--shadow-md);
 }
 
 .sync-status-badge {
@@ -628,12 +628,12 @@ function navegar(tipo) {
 }
 
 .sync-status-ok {
-  background: rgba(45, 165, 103, 0.14);
+  background: color-mix(in srgb, var(--success) 14%, transparent);
   color: var(--text-success-soft);
 }
 
 .sync-status-pending {
-  background: rgba(255, 189, 74, 0.14);
+  background: color-mix(in srgb, var(--warning) 14%, transparent);
   color: var(--text-warning);
 }
 
@@ -681,8 +681,8 @@ function navegar(tipo) {
   min-height: 26px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
   color: var(--text-dim);
   font-size: 0.76rem;
   font-weight: 600;
@@ -693,9 +693,9 @@ function navegar(tipo) {
   min-width: 0;
   min-height: 30px;
   padding: 0 10px;
-  border: 1px solid rgba(91, 173, 255, 0.9);
+  border: 1px solid color-mix(in srgb, var(--blue) 90%, transparent);
   border-radius: 8px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--blue) 86%, white 14%), var(--blue-dark));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--blue) 86%, var(--text-on-accent) 14%), var(--blue-dark));
   color: var(--text-on-accent);
   font-family: inherit;
   font-size: 0.72rem;
@@ -705,7 +705,7 @@ function navegar(tipo) {
   justify-content: center;
   gap: 5px;
   cursor: pointer;
-  box-shadow: var(--shadow-glow-blue);
+  box-shadow: var(--shadow-md);
   white-space: nowrap;
 }
 
@@ -794,7 +794,7 @@ function navegar(tipo) {
   text-align: center;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-  box-shadow: 0 14px 28px rgba(5, 12, 25, 0.16);
+  box-shadow: var(--shadow-md);
 }
 
 .tipo-card:active {
@@ -814,7 +814,7 @@ function navegar(tipo) {
   height: 56px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 10px 18px rgba(8, 16, 34, 0.24));
+  filter: none;
 }
 
 .tipo-nome {
@@ -858,7 +858,7 @@ function navegar(tipo) {
   gap: 12px;
   text-align: left;
   cursor: pointer;
-  box-shadow: 0 14px 28px rgba(5, 12, 25, 0.14);
+  box-shadow: var(--shadow-md);
 }
 
 .atalho-icon {
@@ -904,7 +904,7 @@ function navegar(tipo) {
 .feedback-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(3, 8, 18, 0.5);
+  background: color-mix(in srgb, var(--bg) 50%, transparent);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
@@ -916,11 +916,11 @@ function navegar(tipo) {
 .feedback-modal {
   width: 100%;
   max-width: 420px;
-  background: linear-gradient(180deg, rgba(23, 43, 78, 0.98), rgba(18, 35, 67, 0.99));
-  border: 1px solid rgba(124, 147, 194, 0.14);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 94%, var(--blue) 6%), color-mix(in srgb, var(--bg-input) 94%, var(--blue-dark) 6%));
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
   border-radius: 22px;
   padding: 18px;
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.34);
+  box-shadow: var(--shadow-modal);
 }
 
 .pulso-header {
@@ -942,7 +942,7 @@ function navegar(tipo) {
   height: 32px;
   border: none;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
   color: var(--text-dim);
   font-size: 1.1rem;
   cursor: pointer;
@@ -959,8 +959,8 @@ function navegar(tipo) {
   min-height: 110px;
   padding: 12px;
   border-radius: 14px;
-  border: 1px solid rgba(124, 147, 194, 0.14);
-  background: rgba(7, 16, 32, 0.48);
+  border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+  background: color-mix(in srgb, var(--bg-input) 72%, transparent);
   color: var(--text);
   font-family: inherit;
   font-size: 0.92rem;
@@ -970,7 +970,7 @@ function navegar(tipo) {
 
 .pulso-input:focus {
   outline: none;
-  border-color: rgba(78, 149, 255, 0.72);
+  border-color: color-mix(in srgb, var(--blue) 72%, transparent);
 }
 
 .pulso-actions {
@@ -988,7 +988,7 @@ function navegar(tipo) {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.58);
+  background: color-mix(in srgb, var(--bg) 58%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1023,7 +1023,7 @@ function navegar(tipo) {
   margin: 0 0 12px;
   padding: 12px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
   color: var(--blue);
   font-size: 1.35rem;
   font-weight: 800;

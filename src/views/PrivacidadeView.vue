@@ -60,7 +60,7 @@
 .doc-wrap {
   min-height: 100vh;
   background: var(--bg);
-  color: var(--text, #e2e8f0);
+  color: var(--text);
   padding-bottom: 60px;
 }
 

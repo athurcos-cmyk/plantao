@@ -54,7 +54,7 @@ function salvar() {
 <style scoped>
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.65);
   display: flex; align-items: flex-end; justify-content: center;
 }
 .modal-box {

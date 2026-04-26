@@ -432,7 +432,7 @@ onUnmounted(() => {
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 3px;
   z-index: 220;
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-lg);
 }
 
 .bottom-nav-item {
@@ -470,8 +470,8 @@ onUnmounted(() => {
   height: 18px;
   padding: 0 5px;
   border-radius: 999px;
-  background: #ff6a67;
-  color: #fff;
+  background: var(--danger);
+  color: var(--text-on-accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -500,7 +500,7 @@ onUnmounted(() => {
 
 .offline-badge {
   background: var(--danger);
-  color: #fff;
+  color: var(--text-on-accent);
   border-radius: 10px;
   padding: 1px 7px;
   font-size: 0.75rem;
@@ -529,7 +529,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow-modal);
 }
 .install-icon { font-size: 1.2rem; flex-shrink: 0; }
 .install-texto {
@@ -550,7 +550,7 @@ onUnmounted(() => {
 }
 .install-btn {
   background: var(--blue);
-  color: white;
+  color: var(--text-on-accent);
   border: none;
   border-radius: 8px;
   padding: 6px 16px;
@@ -596,13 +596,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow-modal);
 }
 .safari-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
 .safari-bar-texto { flex: 1; }
 .safari-bar-btn {
   background: var(--blue);
-  color: white;
+  color: var(--text-on-accent);
   border: none;
   border-radius: 8px;
   padding: 6px 14px;
@@ -620,7 +620,7 @@ onUnmounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.65);
   z-index: 10001;
   display: flex;
   align-items: flex-end;
@@ -664,7 +664,7 @@ onUnmounted(() => {
   height: 26px;
   border-radius: 50%;
   background: var(--blue);
-  color: white;
+  color: var(--text-on-accent);
   font-size: 0.8rem;
   font-weight: 800;
   display: flex;
@@ -692,7 +692,7 @@ onUnmounted(() => {
 .btn-tutorial-ok {
   width: 100%;
   background: var(--blue);
-  color: white;
+  color: var(--text-on-accent);
   border: none;
   border-radius: 12px;
   padding: 13px;
@@ -723,13 +723,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow-modal);
 }
 .ios-bar-icon { font-size: 1.2rem; flex-shrink: 0; }
 .ios-bar-texto { flex: 1; }
 .ios-bar-btn {
   background: var(--blue);
-  color: white;
+  color: var(--text-on-accent);
   border: none;
   border-radius: 8px;
   padding: 6px 14px;
@@ -767,7 +767,7 @@ onUnmounted(() => {
 }
 .update-btn {
   background: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   border: none;
   border-radius: 8px;
   padding: 5px 14px;
