@@ -67,6 +67,13 @@
 - Modulos de anotacao priorizados na revisao final (`AnotacaoInicial`, `SinaisVitais`, `AnotacaoMedicacao`) receberam normalizacao adicional de sombras e estados visuais
 - Novo guia de design system criado em `THEME_GUIDE.md` com regras de uso obrigatorio dos tokens
 
+### Varredura final de rgba fixo em AnotacaoInicialView
+
+- `AnotacaoInicialView.vue` passou por varredura final que eliminou ~35 ocorrências de `rgba()` fixo do CSS scoped, substituindo por variáveis de tema locais (`--inicial-surface-*`, `--inicial-border-*`) e `color-mix()` com tokens do tema ativo
+- Com isso o CSS scoped da view ficou **zero `rgba` fixo**, respondendo corretamente a qualquer tema (escuro ou claro) sem reter cor azul residual
+- Único `rgba` mantido foi o do `modal-overlay` (`rgba(0,0,0,0.55)`), por ser universal e aplicar-se igualmente a todos os temas
+- Build confirmado (`npm run build`) sem erros
+
 ## Sessao 2026-04-24
 
 ### Notas Livres: tela fechada no padrao premium

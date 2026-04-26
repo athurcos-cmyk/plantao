@@ -708,7 +708,6 @@ const {
   router
 } = useAnotacaoInicial()
 
-
 const pacientesStore = usePacientesStore()
 onMounted(() => {
   pacientesStore.iniciar()
@@ -853,7 +852,6 @@ function selecionarPaciente(p) {
 
 .drag-over {
   border-color: var(--blue) !important;
-  background: rgba(41,98,255,0.08) !important;
 }
 
 .pulseira-label {
@@ -926,7 +924,7 @@ function selecionarPaciente(p) {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0,0,0,0.55);
   display: flex;
   align-items: flex-end;
   z-index: 200;
@@ -996,8 +994,6 @@ function selecionarPaciente(p) {
 }
 
 .inicial-header {
-  border-bottom: 1px solid rgba(86, 154, 178, 0.24);
-  background: rgba(7, 18, 34, 0.82);
   backdrop-filter: blur(16px);
 }
 
@@ -1007,7 +1003,6 @@ function selecionarPaciente(p) {
 }
 
 .inicial-progress {
-  background: rgba(45, 84, 100, 0.55);
 }
 
 .inicial-progress .progress-fill {
@@ -1019,8 +1014,6 @@ function selecionarPaciente(p) {
   padding: 14px 16px;
   margin-bottom: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(73, 128, 154, 0.52);
-  background: linear-gradient(180deg, rgba(17, 38, 62, 0.92), rgba(12, 27, 47, 0.96));
   box-shadow: var(--shadow-md);
 }
 
@@ -1088,14 +1081,11 @@ function selecionarPaciente(p) {
 .inicial-card {
   padding: 18px;
   border-radius: 22px;
-  border: 1px solid rgba(55, 95, 133, 0.55);
-  background: linear-gradient(180deg, rgba(18, 38, 64, 0.97), rgba(13, 29, 52, 0.98));
   box-shadow: var(--shadow-lg);
 }
 
 .bloco-titulo {
   color: var(--text);
-  border-bottom-color: rgba(77, 130, 160, 0.5);
   font-size: 1.22rem;
 }
 
@@ -1103,8 +1093,6 @@ function selecionarPaciente(p) {
 .input-suffix-wrap input,
 input,
 textarea {
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(11, 25, 46, 0.92);
 }
 
 .campo-inline:focus,
@@ -1117,8 +1105,6 @@ textarea:focus {
 
 .radio-btn,
 .checkbox-label {
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.82);
   border-radius: 16px;
 }
 
@@ -1133,8 +1119,6 @@ textarea:focus {
 .chip {
   min-height: 42px;
   border-radius: 14px;
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.9);
   color: var(--text-dim);
 }
 
@@ -1159,8 +1143,6 @@ textarea:focus {
 }
 
 .disp-item {
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.86);
   border-radius: 16px;
 }
 
@@ -1171,7 +1153,6 @@ textarea:focus {
   gap: 14px;
   margin-bottom: 16px;
   padding-bottom: 14px;
-  border-bottom: 1px solid rgba(77, 130, 160, 0.5);
 }
 
 .disp-head .bloco-titulo {
@@ -1210,7 +1191,6 @@ textarea:focus {
   padding: 14px 16px;
   border-radius: 16px;
   border: 1px dashed var(--blue-muted);
-  background: rgba(11, 25, 46, 0.62);
 }
 
 .disp-empty strong {
@@ -1242,8 +1222,6 @@ textarea:focus {
   height: 32px;
   padding: 0;
   border-radius: 10px;
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(10, 24, 43, 0.72);
   color: var(--text-dim);
   font-size: 0.9rem;
 }
@@ -1256,15 +1234,13 @@ textarea:focus {
 
 .btn-danger-sm:not(:disabled):active {
   color: var(--text-danger-soft);
-  border-color: rgba(255, 126, 145, 0.72);
-  background: rgba(255, 126, 145, 0.12);
 }
 
 .btn-disp {
   min-height: 48px;
   border-radius: 14px;
-  border-color: var(--border);
-  background: linear-gradient(180deg, rgba(17, 37, 63, 0.92), rgba(11, 26, 49, 0.96));
+  border-color: var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 90%, var(--bg) 10%);
   color: var(--text-dim);
   display: inline-flex;
   align-items: center;
@@ -1288,19 +1264,17 @@ textarea:focus {
 }
 
 .btn-disp:active {
-  background: linear-gradient(180deg, rgba(17, 37, 63, 0.92), rgba(11, 26, 49, 0.96));
+  background: var(--inicial-surface-2);
   border-color: var(--blue);
 }
 
 .modal-overlay {
-  background: rgba(1, 8, 18, 0.72);
-  backdrop-filter: blur(6px);
-  padding-top: env(safe-area-inset-top, 0px);
+  backdrop-filter: blur(4px);
 }
 
 .modal-box {
-  border-color: rgba(78, 137, 168, 0.54);
-  background: linear-gradient(180deg, rgba(17, 37, 62, 0.98), rgba(10, 24, 43, 0.99));
+  border-color: var(--inicial-border-soft);
+  background: linear-gradient(180deg, var(--inicial-surface-1), var(--inicial-surface-2));
   max-height: min(78dvh, 680px);
   border-radius: 24px 24px 0 0;
   overflow: hidden;
@@ -1328,17 +1302,15 @@ textarea:focus {
 .modal-body {
   padding: 18px 20px 20px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(105, 158, 190, 0.7) transparent;
 }
 
 .modal-header,
 .modal-footer {
-  border-color: rgba(76, 116, 150, 0.42);
 }
 
 .modal-footer {
   padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
-  background: rgba(9, 21, 38, 0.92);
+  background: var(--inicial-surface-2);
   box-shadow: var(--shadow-modal);
 }
 
@@ -1378,14 +1350,14 @@ textarea:focus {
 .modal-body :deep(.checkbox-label) {
   min-height: 48px;
   border-radius: 14px;
-  border-color: rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.86);
+  border-color: var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 84%, var(--bg) 16%);
 }
 
 .modal-body :deep(.radio-btn span),
 .modal-body :deep(.checkbox-label span) {
   font-weight: 800;
-  color: var(--text-dim);
+  color: var(--text);
 }
 
 .modal-body :deep(.radio-btn:has(input:checked)),
@@ -1406,8 +1378,8 @@ textarea:focus {
   padding: 14px;
   margin-bottom: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(76, 116, 150, 0.44);
-  background: rgba(11, 25, 46, 0.48);
+  border: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 82%, transparent);
 }
 
 .estado-section:last-of-type {
@@ -1441,8 +1413,8 @@ textarea:focus {
 
 .estado-section-resp + .estado-section-resp-main {
   margin-top: 10px;
-  border-top-color: color-mix(in srgb, var(--blue) 34%, transparent);
-  background: rgba(15, 32, 57, 0.62);
+  border-top-color: var(--inicial-border-strong);
+  background: color-mix(in srgb, var(--bg-input) 78%, var(--bg) 22%);
 }
 
 .estado-options {
@@ -1477,8 +1449,8 @@ textarea:focus {
   margin-bottom: 16px;
   padding: 14px;
   border-radius: 18px;
-  border: 1px solid rgba(76, 116, 150, 0.44);
-  background: rgba(11, 25, 46, 0.48);
+  border: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 82%, transparent);
 }
 
 .fechamento-modos .chip {
@@ -1494,8 +1466,8 @@ textarea:focus {
 .fechamento-vazio {
   padding: 16px;
   border-radius: 16px;
-  border: 1px dashed rgba(92, 153, 186, 0.52);
-  background: rgba(11, 25, 46, 0.62);
+  border: 1px dashed var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 82%, transparent);
   color: var(--text-dim);
   font-size: 0.92rem;
   line-height: 1.35;
@@ -1508,7 +1480,6 @@ textarea:focus {
   gap: 12px;
   margin-top: 18px;
   padding-top: 16px;
-  border-top: 1px solid rgba(76, 116, 150, 0.42);
 }
 
 .fechamento-modelos-head p {
@@ -1533,8 +1504,8 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border: 1px solid rgba(76, 116, 150, 0.58);
-  background: rgba(15, 32, 57, 0.88);
+  border: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 86%, var(--bg) 14%);
   color: var(--text-dim);
   font-family: inherit;
   font-size: 0.82rem;
@@ -1563,9 +1534,9 @@ textarea:focus {
   min-height: 48px;
   padding: 0 14px;
   border-radius: 16px;
-  border: 1px solid rgba(76, 116, 150, 0.58);
-  background: rgba(11, 25, 46, 0.78);
-  color: var(--text-info);
+  border: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 84%, var(--bg) 16%);
+  color: var(--blue);
 }
 
 .modelo-search-wrap input {
@@ -1614,8 +1585,8 @@ textarea:focus {
   min-height: 40px;
   padding: 0 14px;
   border-radius: 14px;
-  border: 1px solid rgba(89, 153, 190, 0.5);
-  background: rgba(15, 32, 57, 0.88);
+  border: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 86%, var(--bg) 14%);
   color: var(--text);
   font-family: inherit;
   font-size: 0.86rem;
@@ -1648,8 +1619,8 @@ textarea:focus {
   align-items: stretch;
   min-height: 48px;
   border-radius: 15px;
-  border: 1px solid rgba(76, 116, 150, 0.48);
-  background: linear-gradient(180deg, rgba(17, 37, 63, 0.9), rgba(11, 26, 49, 0.94));
+  border: 1px solid var(--inicial-border-soft);
+  background: linear-gradient(180deg, var(--inicial-surface-1), var(--inicial-surface-2));
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
@@ -1685,15 +1656,14 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   border: none;
-  border-left: 1px solid rgba(76, 116, 150, 0.42);
-  background: rgba(10, 22, 40, 0.34);
+  border-left: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg) 92%, var(--blue-muted) 8%);
   color: var(--text-muted);
   font-family: inherit;
 }
 
 .modelo-fav-btn-on {
   color: var(--text-warning);
-  background: rgba(246, 200, 95, 0.1);
 }
 
 .modelos-vazio-row {
@@ -1720,7 +1690,6 @@ textarea:focus {
 }
 
 .modal-fechamentos {
-  border-color: rgba(78, 137, 168, 0.54);
 }
 
 .modal-search-wrap {
@@ -1742,8 +1711,8 @@ textarea:focus {
   min-height: 52px;
   padding: 8px;
   border-radius: 16px;
-  border: 1px solid rgba(76, 116, 150, 0.44);
-  background: rgba(10, 22, 40, 0.58);
+  border: 1px solid var(--inicial-border-soft);
+  background: color-mix(in srgb, var(--bg-input) 82%, var(--bg) 18%);
 }
 
 .modal-modelo-txt {
@@ -1757,7 +1726,6 @@ textarea:focus {
 .modal-fav-btn {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(76, 116, 150, 0.44);
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -1765,10 +1733,10 @@ textarea:focus {
 .btn-del-modal {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(255, 126, 145, 0.24);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
   border-radius: 12px;
-  background: rgba(255, 126, 145, 0.08);
-  color: var(--text-danger-soft);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  color: var(--danger);
   font-family: inherit;
   font-size: 1.2rem;
   line-height: 1;
@@ -1778,11 +1746,8 @@ textarea:focus {
   margin: 0;
   padding: 16px;
   border-radius: 16px;
-  border: 1px dashed rgba(92, 153, 186, 0.52);
   color: var(--text-dim);
-  background: rgba(11, 25, 46, 0.62);
 }
-
 
 @media (max-width: 380px) {
   .module-hero {
