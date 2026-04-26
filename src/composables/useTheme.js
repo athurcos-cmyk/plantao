@@ -19,42 +19,49 @@ export const TEMAS = {
     },
   },
   rosa: {
-    nome: 'Rosa',
-    preview: { bg: '#1a0a14', card: '#251120', accent: '#ffcbdb' },
+    nome: 'Rosa Bebê (Clean)',
+    preview: { bg: '#F498B7', card: '#FFFFFF', accent: '#E05A87' },
     vars: {
-      '--bg':          '#f498b7',
-      '--bg-card':     '#f5b3d0',
-      '--bg-input':    '#fff0f5',
-      '--bg-hover':    '#fff0f5',
-      '--blue':        '#ffcbdb',
-      '--blue-dark':   '#f2a9bf',
-      '--blue-muted':  'rgba(255,203,219,0.12)',
-      '--blue-faint':  'rgba(255,203,219,0.14)',
-      '--border':      '#1e3050',
-      '--text-dim':    '#ffcbdb',
-      '--text-muted':  '#f28bc4',
+      // Fundos
+      '--bg':          '#f498b7', // O seu fundo rosa bebê original mantido!
+      '--bg-card':     '#FFFFFF', // Cards totalmente brancos para dar "respiro" e um visual clean
+      '--bg-input':    '#FFF0F5', // Caixas de texto com um fundinho rosa quase invisível (Lavender blush)
+      '--bg-hover':    '#FCE8EE', // Fundo leve ao passar o mouse ou selecionar opções
+
+      // Destaques (Como o fundo já é rosa, os botões precisam ser de um Rosa mais forte/Cereja para dar contraste no card branco)
+      '--blue':        '#E05A87', // Cor principal (Botões, ícones, cabeçalho)
+      '--blue-dark':   '#C7416E', // Botão pressionado (mais escuro)
+      '--blue-muted':  'rgba(224, 90, 135, 0.12)', // Fundo translúcido 
+      '--blue-faint':  'rgba(224, 90, 135, 0.05)', // Fundo translúcido fraco
+
+      // Bordas e Textos
+      '--border':      '#F2D1DC', // Borda dos cards rosada bem clarinha
+      '--text':        '#361522', // CORRIGIDO: Texto principal (um vinho muito escuro, muito mais elegante que preto puro)
+      '--text-dim':    '#633647', // Texto secundário (rótulos e descrições)
+      '--text-muted':  '#916876', // Texto apagado (dicas e placeholders)
     },
   },
   floresta: {
     nome: 'Verde Água (Clean)',
     preview: { bg: '#F2F9F8', card: '#FFFFFF', accent: '#18B89E' },
     vars: {
-      // Fundos: Quase brancos, com um toque levíssimo de verde para dar o clima "clean"
-      '--bg':          '#F2F9F8', // Fundo principal da tela (off-white menta)
-      '--bg-card':     '#FFFFFF', // Fundo dos cards (branco puro para dar contraste)
-      '--bg-input':    '#E8F4F1', // Fundo de caixas de texto
-      '--bg-hover':    '#DDF0EB', // Fundo ao passar o mouse em itens de lista
+      // Fundos
+      '--bg':          '#F2F9F8', 
+      '--bg-card':     '#FFFFFF', 
+      '--bg-input':    '#E8F4F1', 
+      '--bg-hover':    '#DDF0EB', 
 
-      // Destaques (O seu Verde Água / Turquesa)
-      '--blue':        '#18B89E', // Cor principal (Botões, ícones, links)
-      '--blue-dark':   '#0E947E', // Cor para o hover do botão (um tom mais escuro)
-      '--blue-muted':  'rgba(24, 184, 158, 0.12)', // Fundo translúcido para tags ou botões secundários
-      '--blue-faint':  'rgba(24, 184, 158, 0.05)', // Fundo translúcido super fraco
+      // Destaques 
+      '--blue':        '#18B89E', 
+      '--blue-dark':   '#0E947E', 
+      '--blue-muted':  'rgba(24, 184, 158, 0.12)', 
+      '--blue-faint':  'rgba(24, 184, 158, 0.05)', 
 
-      // Bordas e Textos
-      '--border':      '#CBE3DE', // Borda suave, levemente esverdeada
-      '--text-dim':    '#3D544F', // Texto principal (um cinza escuro azulado/esverdeado, mais elegante que o preto puro)
-      '--text-muted':  '#738F8A', // Texto secundário (cinza claro para legendas)
+      // Bordas e Textos (Aqui estava o segredo!)
+      '--border':      '#CBE3DE', 
+      '--text':        '#1A2F2B', // <- CORRIGIDO: Texto principal escuro (quase preto/esverdeado)
+      '--text-dim':    '#445F5A', // Texto secundário (cinza esverdeado)
+      '--text-muted':  '#6D8B85', // Texto para legendas e dicas
     },
   },
   roxo: {
