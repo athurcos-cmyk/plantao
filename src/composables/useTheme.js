@@ -240,7 +240,17 @@ function _aplicarVars(id) {
   for (const [prop, val] of Object.entries(tema.vars)) {
     root.style.setProperty(prop, val)
   }
+  // Força repaint em todos os elementos do DOM (corrige delay visual em mobile)
+  // Chrome/Safari iOS não repintam nós fora da viewport sem esse trigger
+  void requestAnimationFrame(() => {
+    root.style.transition = 'opacity 0.01s'
+    void document.body.offsetHeight
+    requestAnimationFrame(() => {
+      root.style.transition = ''
+    })
+  })
 }
+
 
 export function initTheme() {
   const salvo = localStorage.getItem(STORAGE_KEY) || TEMA_PADRAO
