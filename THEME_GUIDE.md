@@ -51,23 +51,28 @@ Este aplicativo utiliza um sistema de temas dinâmico injetado via CSS Variables
 
 ---
 
-## 🎯 Temas Disponíveis (8)
+## 🎯 Temas Disponíveis (12)
 
-### 🌙 Temas Escuros
+### 🌙 Temas Escuros (6)
 | Tema | Acabamento | Fundo | Card | Destaque |
 |------|-----------|-------|------|----------|
 | **Noturno** | Azul escuro clássico | `#0A1628` | `#111d32` | `#1E88E5` |
 | **Carbono** | Cinza/preto minimalista | `#0f0f12` | `#1a1a1f` | `#00bcd4` |
 | **Cobalto** | Azul marinho profundo | `#070d1f` | `#0d1530` | `#2979ff` |
 | **Ametista** | Roxo escuro envolvente | `#1a1028` | `#241638` | `#b388ff` |
+| **Grafite** | Cinza azulado frio | `#16161a` | `#222228` | `#7a8ba8` |
+| **Vinho** | Borgonha elegante | `#1c0e12` | `#28151b` | `#c25a6c` |
 
-### ☀️ Temas Claros
+### ☀️ Temas Claros (6)
 | Tema | Acabamento | Fundo | Card | Destaque |
 |------|-----------|-------|------|----------|
-| **Rosa** | Rosa bebê fofo | `#fef5f7` | `#FFFFFF` | `#f06292` |
+| **Rosa** | Rosa vibrante | `#fce4ec` | `#fff5f7` | `#e84f7a` |
+| **Pérola** | Cinza azulado suave | `#edf2f7` | `#FFFFFF` | `#5b7fa5` |
 | **Floresta** | Verde sálvia fresco | `#ECF8F4` | `#FFFFFF` | `#229E87` |
 | **Lavanda** | Lilás suave | `#F2EEFA` | `#FFFFFF` | `#7A5CCF` |
+| **Pêssego** | Coral alaranjado | `#fef2ed` | `#FFFFFF` | `#e8825a` |
 | **Areia** | Bege quente neutro | `#FAF6F0` | `#FFFFFF` | `#C8A566` |
+
 
 ---
 
