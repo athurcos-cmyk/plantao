@@ -1037,7 +1037,7 @@ function novaAnotacao() {
   display: flex; align-items: center; gap: 4px;
 }
 .chip:active { opacity: 0.8; }
-.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 
 .chip-custom { padding-right: 6px; }
@@ -1248,7 +1248,7 @@ function novaAnotacao() {
 .chip-on {
   border-color: var(--blue);
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 7px 15px color-mix(in srgb, var(--blue) 18%, transparent);
 }
 

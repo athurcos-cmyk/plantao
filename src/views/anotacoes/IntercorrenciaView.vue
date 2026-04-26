@@ -912,7 +912,7 @@ watch(notaTexto, (txt) => {
   font-size: 0.7rem; font-weight: 700;
   border-radius: 10px; padding: 1px 7px;
 }
-.badge-count.azul { background: var(--blue); color: #fff; }
+.badge-count.azul { background: var(--blue); color: var(--text-on-accent); }
 
 /* Botão gerenciar modelos */
 .modelos-acoes { display: flex; align-items: center; gap: 6px; }
@@ -927,7 +927,7 @@ watch(notaTexto, (txt) => {
 .btn-novo-modelo-topo {
   display: flex; align-items: center; gap: 5px;
   background: var(--blue); border: 1px solid var(--blue);
-  border-radius: 20px; color: #fff;
+  border-radius: 20px; color: var(--text-on-accent);
   font-size: 0.75rem; font-family: inherit;
   padding: 4px 10px; cursor: pointer; transition: all 0.15s;
 }
@@ -942,7 +942,7 @@ watch(notaTexto, (txt) => {
   cursor: pointer; font-family: inherit; transition: all 0.15s;
 }
 .chip:active { opacity: 0.8; }
-.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); }
 
 /* Modelos: chips com quebra de linha */
 .modelos-chips-row {
@@ -1013,7 +1013,7 @@ watch(notaTexto, (txt) => {
 }
 .nc-btn-add {
   display: flex; align-items: center; gap: 5px;
-  background: var(--blue); color: #fff; border: none;
+  background: var(--blue); color: var(--text-on-accent); border: none;
   border-radius: 20px; font-family: inherit; font-size: 0.82rem;
   font-weight: 600; padding: 7px 14px; cursor: pointer;
   transition: all 0.15s;
@@ -1155,7 +1155,7 @@ watch(notaTexto, (txt) => {
 }
 
 .btn-home-logo {
-  color: #eef4ff;
+  color: var(--text);
   font-size: 0.95rem;
   letter-spacing: 0.03em;
 }
@@ -1181,7 +1181,7 @@ watch(notaTexto, (txt) => {
 
 .paciente-atalho label {
   display: block;
-  color: #9fb4d9;
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -1233,7 +1233,7 @@ watch(notaTexto, (txt) => {
   font-size: 1.9rem;
   line-height: 1;
   font-weight: 800;
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .module-hero-copy p {
@@ -1275,7 +1275,7 @@ watch(notaTexto, (txt) => {
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 16px;
-  color: #eff4ff;
+  color: var(--text);
   font-family: inherit;
   font-size: 1rem;
   padding: 0 16px;
@@ -1313,7 +1313,7 @@ watch(notaTexto, (txt) => {
 .chip-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 6px 14px rgba(30, 100, 230, 0.15);
 }
 
@@ -1329,7 +1329,7 @@ watch(notaTexto, (txt) => {
 
 .badge-count {
   background: rgba(58, 84, 128, 0.7);
-  color: #d5e3ff;
+  color: var(--text-dim);
 }
 
 .badge-count.azul {
@@ -1467,7 +1467,7 @@ watch(notaTexto, (txt) => {
 .chip-modelo-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 6px 14px rgba(30, 100, 230, 0.13);
 }
 
@@ -1555,7 +1555,7 @@ watch(notaTexto, (txt) => {
 .modelo-fav-chip-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .modelos-lista {
@@ -1608,7 +1608,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modelo-title {
-  color: #f2f7ff;
+  color: var(--text);
   font-size: 0.96rem;
   font-weight: 800;
   overflow: hidden;
@@ -1623,12 +1623,12 @@ watch(notaTexto, (txt) => {
   border: none;
   border-left: 1px solid rgba(53, 82, 129, 0.42);
   background: rgba(10, 22, 40, 0.34);
-  color: #52698f;
+  color: var(--text-muted);
   font-family: inherit;
 }
 
 .modelo-fav-btn-on {
-  color: #f6c85f;
+  color: var(--text-warning);
   background: rgba(246, 200, 95, 0.1);
 }
 
@@ -1663,7 +1663,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modal-modelos-header h3 {
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .modal-modelo-item {
@@ -1673,7 +1673,7 @@ watch(notaTexto, (txt) => {
 }
 
 .modal-modelo-txt {
-  color: #dce8ff;
+  color: var(--text-dim);
 }
 
 .modal-fav-btn {
@@ -1690,7 +1690,7 @@ watch(notaTexto, (txt) => {
 }
 
 .erro-msg {
-  color: #ff8f8f;
+  color: var(--text-danger-soft);
   font-size: 0.94rem;
   margin: 10px 0 0;
 }

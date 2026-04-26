@@ -253,7 +253,7 @@ async function confirmar() {
   width: 100%;
   padding: 14px;
   background: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   border: none;
   border-radius: 10px;
   font-size: 0.95rem;

@@ -16,6 +16,7 @@ export const TEMAS = {
       '--border':      '#1e3050',
       '--text-dim':    '#8899AA',
       '--text-muted':  '#556677',
+      '--text-on-accent': '#FFFFFF',
     },
   },
   rosa: {
@@ -39,6 +40,7 @@ export const TEMAS = {
       '--text':        '#361522', // CORRIGIDO: Texto principal (um vinho muito escuro, muito mais elegante que preto puro)
       '--text-dim':    '#633647', // Texto secundário (rótulos e descrições)
       '--text-muted':  '#916876', // Texto apagado (dicas e placeholders)
+      '--text-on-accent': '#FFFFFF',
     },
   },
   floresta: {
@@ -62,6 +64,7 @@ export const TEMAS = {
       '--text':        '#1A2F2B', // <- CORRIGIDO: Texto principal escuro (quase preto/esverdeado)
       '--text-dim':    '#445F5A', // Texto secundário (cinza esverdeado)
       '--text-muted':  '#6D8B85', // Texto para legendas e dicas
+      '--text-on-accent': '#FFFFFF',
     },
   },
   roxo: {
@@ -79,6 +82,7 @@ export const TEMAS = {
       '--border':      '#2d1a4a',
       '--text-dim':    '#9988aa',
       '--text-muted':  '#665577',
+      '--text-on-accent': '#FFFFFF',
     },
   },
   carbono: {
@@ -96,6 +100,7 @@ export const TEMAS = {
       '--border':      '#2a2a35',
       '--text-dim':    '#888898',
       '--text-muted':  '#555565',
+      '--text-on-accent': '#FFFFFF',
     },
   },
   cobalto: {
@@ -113,6 +118,7 @@ export const TEMAS = {
       '--border':      '#182a50',
       '--text-dim':    '#8899bb',
       '--text-muted':  '#445577',
+      '--text-on-accent': '#FFFFFF',
     },
   },
 }

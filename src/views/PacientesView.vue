@@ -614,8 +614,8 @@ async function excluirPend(pac, pend) {
   margin-bottom: 6px;
   letter-spacing: 0.02em;
 }
-.dica-plataforma-tag.android { background: rgba(61,220,132,0.12); color: #3ddc84; }
-.dica-plataforma-tag.ios     { background: rgba(120,160,255,0.12); color: #78a0ff; }
+.dica-plataforma-tag.android { background: rgba(61,220,132,0.12); color: var(--text-success-soft); }
+.dica-plataforma-tag.ios     { background: rgba(120,160,255,0.12); color: var(--text-info); }
 .dica-plataforma-texto {
   margin: 0 0 6px;
   color: var(--text-dim);
@@ -667,7 +667,7 @@ async function excluirPend(pac, pend) {
 }
 .btn-limpar-todos:active { opacity: 0.7; }
 .btn-add-pac {
-  background: var(--blue); color: #fff; border: none;
+  background: var(--blue); color: var(--text-on-accent); border: none;
   border-radius: 8px; padding: 5px 12px; font-size: 0.8rem;
   font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap;
 }
@@ -697,7 +697,7 @@ async function excluirPend(pac, pend) {
 }
 .pac-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .pac-leito-badge {
-  background: var(--blue); color: #fff;
+  background: var(--blue); color: var(--text-on-accent);
   font-size: 0.72rem; font-weight: 700;
   padding: 2px 7px; border-radius: 6px;
   flex-shrink: 0;
@@ -745,7 +745,7 @@ async function excluirPend(pac, pend) {
   transition: all 0.15s;
 }
 .pend-item.feito .pend-check {
-  background: var(--success); border-color: var(--success); color: #fff;
+  background: var(--success); border-color: var(--success); color: var(--text-on-accent);
 }
 
 .pend-texto {
@@ -765,7 +765,7 @@ async function excluirPend(pac, pend) {
   cursor: pointer;
 }
 .pend-horario-ok      { background: var(--blue-muted); color: var(--blue); }
-.pend-horario-proxima { background: rgba(255,152,0,0.15); color: #f57c00; }
+.pend-horario-proxima { background: rgba(255,152,0,0.15); color: var(--text-warning); }
 .pend-horario-vencida { background: rgba(229,57,53,0.12); color: var(--danger); }
 
 .pend-time-input {
@@ -803,7 +803,7 @@ async function excluirPend(pac, pend) {
 }
 .pend-add-input::placeholder { color: var(--text-muted); }
 .pend-add-btn {
-  background: var(--blue); color: #fff;
+  background: var(--blue); color: var(--text-on-accent);
   border: none; border-radius: 6px;
   font-size: 0.78rem; font-weight: 600;
   padding: 4px 10px; cursor: pointer; font-family: inherit;
@@ -813,7 +813,7 @@ async function excluirPend(pac, pend) {
 .fab {
   position: fixed; bottom: calc(24px + var(--safe-bottom)); right: 20px;
   width: 52px; height: 52px; border-radius: 50%;
-  background: var(--blue); color: #fff; border: none;
+  background: var(--blue); color: var(--text-on-accent); border: none;
   box-shadow: 0 4px 16px color-mix(in srgb, var(--blue) 50%, transparent);
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   z-index: 90; transition: transform 0.15s;
@@ -906,7 +906,7 @@ async function excluirPend(pac, pend) {
   padding: 0 14px;
   background: rgba(255, 106, 103, 0.08);
   border: 1px solid rgba(255, 106, 103, 0.24);
-  color: #ffb4b2;
+  color: var(--text-danger-soft);
   border-radius: 13px;
   font-size: 0.8rem;
   font-weight: 700;
@@ -997,8 +997,8 @@ async function excluirPend(pac, pend) {
   border-top-color: var(--border);
 }
 
-.dica-plataforma-tag.android { background: rgba(67, 160, 71, 0.14); color: #7fe58d; }
-.dica-plataforma-tag.ios     { background: rgba(94, 166, 255, 0.14); color: #9fc5ff; }
+.dica-plataforma-tag.android { background: rgba(67, 160, 71, 0.14); color: var(--text-success-soft); }
+.dica-plataforma-tag.ios     { background: rgba(94, 166, 255, 0.14); color: var(--text-info); }
 
 .empty-pac {
   padding: 56px 20px;
@@ -1073,7 +1073,7 @@ async function excluirPend(pac, pend) {
 }
 
 .btn-icon-sm:active { background: var(--bg-card); }
-.btn-icon-danger { color: #ff9d9a; }
+.btn-icon-danger { color: var(--text-danger-soft); }
 
 .pend-lista { padding: 8px 0; }
 

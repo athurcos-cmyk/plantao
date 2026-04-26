@@ -506,7 +506,7 @@ function navegar(tipo) {
 }
 
 .header-brand-title {
-  color: #f6f8ff;
+  color: var(--text);
   font-size: 1.05rem;
   font-weight: 800;
 }
@@ -523,7 +523,7 @@ function navegar(tipo) {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg-input);
-  color: #a8b7de;
+  color: var(--text-dim);
   font-family: inherit;
   font-size: 0.66rem;
   font-weight: 700;
@@ -548,7 +548,7 @@ function navegar(tipo) {
   border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--bg-input);
-  color: #a8b7de;
+  color: var(--text-dim);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -575,14 +575,14 @@ function navegar(tipo) {
 
 .hero-greeting {
   margin: 0 0 4px;
-  color: #b8c5e6;
+  color: var(--text-dim);
   font-size: 0.95rem;
   font-weight: 600;
 }
 
 .hero-name {
   margin: 0;
-  color: #f7f9ff;
+  color: var(--text);
   font-size: 2.2rem;
   line-height: 0.94;
   font-weight: 800;
@@ -591,7 +591,7 @@ function navegar(tipo) {
 
 .hero-subtitle {
   margin: 8px 0 0;
-  color: #a5b4d6;
+  color: var(--text-dim);
   font-size: 0.92rem;
   line-height: 1.4;
 }
@@ -629,12 +629,12 @@ function navegar(tipo) {
 
 .sync-status-ok {
   background: rgba(45, 165, 103, 0.14);
-  color: #59de8d;
+  color: var(--text-success-soft);
 }
 
 .sync-status-pending {
   background: rgba(255, 189, 74, 0.14);
-  color: #ffcb69;
+  color: var(--text-warning);
 }
 
 .sync-copy {
@@ -643,14 +643,14 @@ function navegar(tipo) {
 
 .sync-title {
   margin: 0;
-  color: #f7f9ff;
+  color: var(--text);
   font-size: 0.98rem;
   font-weight: 800;
 }
 
 .sync-subtitle {
   margin: 4px 0 0;
-  color: #a9b7d8;
+  color: var(--text-dim);
   font-size: 0.84rem;
   line-height: 1.35;
 }
@@ -683,7 +683,7 @@ function navegar(tipo) {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #d5def5;
+  color: var(--text-dim);
   font-size: 0.76rem;
   font-weight: 600;
 }
@@ -695,8 +695,8 @@ function navegar(tipo) {
   padding: 0 10px;
   border: 1px solid rgba(91, 173, 255, 0.9);
   border-radius: 8px;
-  background: linear-gradient(180deg, #2f90ff, #1e6fe9);
-  color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--blue) 86%, white 14%), var(--blue-dark));
+  color: var(--text-on-accent);
   font-family: inherit;
   font-size: 0.72rem;
   font-weight: 700;
@@ -705,7 +705,7 @@ function navegar(tipo) {
   justify-content: center;
   gap: 5px;
   cursor: pointer;
-  box-shadow: 0 8px 16px rgba(30, 111, 233, 0.18);
+  box-shadow: var(--shadow-glow-blue);
   white-space: nowrap;
 }
 
@@ -731,7 +731,7 @@ function navegar(tipo) {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg-input);
-  color: #a8b7de;
+  color: var(--text-dim);
   font-family: inherit;
   font-size: 0.8rem;
   font-weight: 600;
@@ -740,7 +740,7 @@ function navegar(tipo) {
 
 .utility-chip-icon {
   flex-shrink: 0;
-  color: #8fc4ff;
+  color: var(--text-info);
 }
 
 .dashboard-section {
@@ -761,14 +761,14 @@ function navegar(tipo) {
 
 .section-title {
   margin: 0;
-  color: #f5f8ff;
+  color: var(--text);
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 .section-link {
-  color: #3690ff;
+  color: var(--blue);
   font-size: 0.98rem;
   font-weight: 600;
 }
@@ -818,7 +818,7 @@ function navegar(tipo) {
 }
 
 .tipo-nome {
-  color: #f7f9ff;
+  color: var(--text);
   font-size: 0.84rem;
   line-height: 1.15;
   font-weight: 700;
@@ -884,19 +884,19 @@ function navegar(tipo) {
 }
 
 .atalho-title {
-  color: #f7f9ff;
+  color: var(--text);
   font-size: 0.98rem;
   font-weight: 700;
 }
 
 .atalho-sub {
-  color: #9eadd0;
+  color: var(--text-dim);
   font-size: 0.82rem;
   line-height: 1.35;
 }
 
 .atalho-arrow {
-  color: #9aacd1;
+  color: var(--text-dim);
   font-size: 1.8rem;
   line-height: 1;
 }
@@ -932,7 +932,7 @@ function navegar(tipo) {
 }
 
 .pulso-title {
-  color: #f7f9ff;
+  color: var(--text);
   font-size: 1rem;
   font-weight: 700;
 }
@@ -943,14 +943,14 @@ function navegar(tipo) {
   border: none;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.04);
-  color: #9aacd1;
+  color: var(--text-dim);
   font-size: 1.1rem;
   cursor: pointer;
 }
 
 .pulso-sub {
   margin: 0 0 10px;
-  color: #9eadd0;
+  color: var(--text-dim);
   font-size: 0.86rem;
 }
 
@@ -961,7 +961,7 @@ function navegar(tipo) {
   border-radius: 14px;
   border: 1px solid rgba(124, 147, 194, 0.14);
   background: rgba(7, 16, 32, 0.48);
-  color: #f7f9ff;
+  color: var(--text);
   font-family: inherit;
   font-size: 0.92rem;
   resize: none;
@@ -1024,7 +1024,7 @@ function navegar(tipo) {
   padding: 12px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.04);
-  color: #4f9cff;
+  color: var(--blue);
   font-size: 1.35rem;
   font-weight: 800;
   text-align: center;

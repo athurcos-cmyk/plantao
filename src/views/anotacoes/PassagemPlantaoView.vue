@@ -574,7 +574,7 @@ function novaAnotacao() {
   display: flex; align-items: center; gap: 4px;
 }
 .chip:active { opacity: 0.8; }
-.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 
 .radio-group { display: flex; gap: 8px; }
@@ -672,7 +672,7 @@ function novaAnotacao() {
 
 /* Modal */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65);
   display: flex; align-items: flex-end; justify-content: center;
   z-index: 1000; padding: 16px;
 }
@@ -701,7 +701,7 @@ function novaAnotacao() {
 }
 
 .passagem-header {
-  background: rgba(8, 20, 37, 0.92);
+  background: var(--bg-card);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, var(--blue) 30%);
   backdrop-filter: blur(14px);
 }
@@ -737,7 +737,7 @@ function novaAnotacao() {
   border: 1px solid var(--border);
   border-radius: 24px;
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
-  box-shadow: 0 20px 38px rgba(3, 10, 22, 0.26);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
 }
 
@@ -771,7 +771,7 @@ function novaAnotacao() {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-inset-soft);
 }
 
 .module-hero-icon img {
@@ -800,7 +800,7 @@ function novaAnotacao() {
   border-radius: 22px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 16px 34px rgba(2, 8, 18, 0.2);
+  box-shadow: var(--shadow-lg);
 }
 
 .passagem-card + .passagem-card {
@@ -861,13 +861,13 @@ function novaAnotacao() {
   border-color: var(--border);
   background: var(--bg-input);
   color: var(--text-dim);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-inset-soft);
 }
 
 .chip-on {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
@@ -892,7 +892,7 @@ function novaAnotacao() {
 .radio-btn.radio-on span {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 8px 16px color-mix(in srgb, var(--blue) 15%, transparent);
 }
 
@@ -908,7 +908,7 @@ function novaAnotacao() {
 .checkbox-label.checked {
   border-color: var(--blue);
   background: linear-gradient(135deg, color-mix(in srgb, var(--blue-dark) 92%, transparent), color-mix(in srgb, var(--blue) 82%, transparent));
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 8px 16px color-mix(in srgb, var(--blue) 15%, transparent);
 }
 
@@ -961,33 +961,31 @@ function novaAnotacao() {
 
 .bloco-nav .btn-primary,
 .btn-generate {
-  box-shadow: 0 10px 20px rgba(35, 111, 225, 0.18);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .rascunho-banner {
-  border-color: rgba(78, 147, 255, 0.55);
-  background: linear-gradient(180deg, rgba(20, 42, 78, 0.96), rgba(14, 28, 53, 0.98));
+  border-color: var(--border);
+  background: var(--bg-input);
   border-radius: 18px;
 }
 
 .modal-overlay {
-  background: rgba(1, 8, 18, 0.72);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(8px);
 }
 
 .modal-box {
-  background:
-    radial-gradient(circle at top left, rgba(50, 128, 238, 0.12), transparent 36%),
-    linear-gradient(180deg, #10203d, #0b172c);
-  border: 1px solid rgba(76, 121, 190, 0.45);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 24px 24px 0 0;
   box-shadow: 0 -20px 42px rgba(0, 0, 0, 0.35);
 }
 
 .modal-header,
 .modal-footer {
-  background: rgba(12, 25, 48, 0.95);
-  border-color: rgba(68, 101, 157, 0.46);
+  background: var(--bg-input);
+  border-color: var(--border);
 }
 
 .modal-body {
@@ -995,12 +993,12 @@ function novaAnotacao() {
 }
 
 .modal-footer {
-  border-top: 1px solid rgba(68, 101, 157, 0.46);
+  border-top: 1px solid var(--border);
   padding-bottom: 16px;
 }
 
 .modal-header h3 {
-  color: #f4f7ff;
+  color: var(--text);
   font-size: 1.08rem;
 }
 

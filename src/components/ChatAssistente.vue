@@ -248,7 +248,7 @@ watch(aberto, async (val) => {
 }
 .msg-usuario {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: #fff;
+  color: var(--text-on-accent);
   align-self: flex-end;
   border-bottom-right-radius: 4px;
 }

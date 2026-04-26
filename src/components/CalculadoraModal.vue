@@ -687,7 +687,7 @@ function tipoLabel(tipo) {
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 .chip:active { opacity: 0.8; }
-.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+.chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); font-weight: 600; }
 
 /* ── Transição ───────────────────────────────────────────────────────────── */
 .calc-slide-enter-active,
@@ -809,7 +809,7 @@ function tipoLabel(tipo) {
   border-radius: 18px;
   background: var(--bg-input);
   border: 1px solid var(--border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-inset-soft);
 }
 
 .calc-aba {
@@ -828,10 +828,10 @@ function tipoLabel(tipo) {
 }
 
 .calc-aba-on {
-  color: #fff;
+  color: var(--text-on-accent);
   border-color: var(--blue);
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  box-shadow: 0 10px 22px rgba(16, 49, 110, 0.34);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .calc-corpo {
@@ -1000,13 +1000,13 @@ function tipoLabel(tipo) {
   color: var(--text);
   font-size: 0.84rem;
   font-weight: 700;
-  box-shadow: 0 10px 22px rgba(5, 14, 30, 0.24);
+  box-shadow: var(--shadow-md);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .calc-btn-salvar:hover {
   border-color: var(--blue);
-  box-shadow: 0 16px 28px rgba(8, 20, 41, 0.28);
+  box-shadow: var(--shadow-lg);
 }
 
 .calc-tabela {
@@ -1101,7 +1101,7 @@ function tipoLabel(tipo) {
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   color: var(--text-dim);
   font-weight: 700;
-  box-shadow: 0 8px 18px rgba(2, 8, 20, 0.16);
+  box-shadow: var(--shadow-soft);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
@@ -1117,8 +1117,8 @@ function tipoLabel(tipo) {
 .chip-on {
   border-color: var(--blue);
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: #fff;
-  box-shadow: 0 12px 22px rgba(16, 49, 110, 0.3);
+  color: var(--text-on-accent);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .calc-slide-enter-active,

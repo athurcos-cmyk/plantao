@@ -666,7 +666,7 @@ function mostrarFeedback(msg) {
 .chip.ativo {
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
 }
 
@@ -877,7 +877,7 @@ function mostrarFeedback(msg) {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(2, 8, 18, 0.72);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
   z-index: 200;
 }

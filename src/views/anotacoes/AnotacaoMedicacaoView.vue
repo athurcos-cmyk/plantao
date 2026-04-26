@@ -1377,7 +1377,7 @@ function novaAnotacao() {
   background: var(--bg-card);
   padding: 20px;
   margin-bottom: 16px;
-  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .med-card-medicamentos {
@@ -1393,8 +1393,8 @@ function novaAnotacao() {
 }
 
 .med-quick-block {
-  background: rgba(10, 22, 40, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
 }
@@ -1452,7 +1452,7 @@ function novaAnotacao() {
 .med-section-title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .med-section-sub {
@@ -1469,8 +1469,8 @@ function novaAnotacao() {
 .med-choice {
   border-radius: 16px;
   padding: 14px 16px;
-  background: rgba(18, 32, 58, 0.75);
-  border: 1px solid rgba(53, 78, 124, 0.45);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   transition: all 0.18s ease;
 }
 
@@ -1478,7 +1478,7 @@ function novaAnotacao() {
   background: linear-gradient(135deg, var(--blue-faint), transparent);
   border-color: var(--blue-muted);
   color: var(--text);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-soft);
 }
 
 .med-choice-spaced {
@@ -1503,8 +1503,8 @@ function novaAnotacao() {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(10, 22, 40, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 10px 12px;
 }
@@ -1543,8 +1543,8 @@ function novaAnotacao() {
   justify-content: center;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
   color: var(--text-dim);
   font-size: 0.7rem;
   font-weight: 700;
@@ -1553,13 +1553,13 @@ function novaAnotacao() {
 }
 
 .med-meta-chip-warm {
-  color: #f4c95d;
+  color: var(--text-warning);
   border-color: rgba(244, 201, 93, 0.26);
   background: rgba(244, 201, 93, 0.12);
 }
 
 .med-meta-chip-danger {
-  color: #ff8d8d;
+  color: var(--text-danger-soft);
   border-color: rgba(229, 57, 53, 0.28);
   background: rgba(229, 57, 53, 0.12);
 }
@@ -1585,7 +1585,7 @@ function novaAnotacao() {
 .btn-danger-sm:active { color: var(--danger); border-color: var(--danger); }
 
 .btn-favorite-on {
-  color: #f4c95d;
+  color: var(--text-warning);
   border-color: rgba(244, 201, 93, 0.4);
   background: rgba(244, 201, 93, 0.14);
   box-shadow: inset 0 0 0 1px rgba(244, 201, 93, 0.14);
@@ -1636,7 +1636,7 @@ function novaAnotacao() {
 .chip.ativo {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   font-weight: 700;
   box-shadow: 0 4px 14px var(--blue-faint);
 }
@@ -1740,7 +1740,7 @@ select.campo-inline {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: flex-end;
@@ -1762,10 +1762,10 @@ select.campo-inline {
   align-items: center;
   justify-content: space-between;
   padding: 18px 20px 14px;
-  border-bottom: 1px solid rgba(55, 85, 140, 0.45);
+  border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
-.modal-header h3 { font-size: 1.15rem; font-weight: 800; color: #f0f6ff; }
+.modal-header h3 { font-size: 1.15rem; font-weight: 800; color: var(--text); }
 .modal-body {
   overflow-y: auto;
   padding: 18px 20px;
@@ -1775,7 +1775,7 @@ select.campo-inline {
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
   display: flex;
   gap: 10px;
-  border-top: 1px solid rgba(55, 85, 140, 0.45);
+  border-top: 1px solid var(--border);
   flex-shrink: 0;
   flex-wrap: wrap;
 }
@@ -1802,7 +1802,7 @@ select.campo-inline {
 .btn-avancado:active {
   background: var(--bg-hover);
   border-color: var(--blue-muted);
-  color: #b0c8f0;
+  color: var(--text-dim);
 }
 
 /* ── Autocomplete ── */
@@ -1815,8 +1815,8 @@ select.campo-inline {
   font-size: 1.05rem;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(20, 36, 68, 0.97), rgba(16, 28, 54, 0.98));
-  color: #eef4ff;
+  background: var(--bg-input);
+  color: var(--text);
   padding: 0 16px;
   width: 100%;
   font-family: inherit;
@@ -1897,7 +1897,7 @@ select.campo-inline {
   padding: 7px 13px; cursor: pointer; white-space: nowrap;
   flex-shrink: 0; transition: all 0.15s;
 }
-.chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+.chip.ativo { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); font-weight: 600; }
 
 /* ── Premium upgrade ─────────────────────────────────────── */
 
@@ -1918,7 +1918,7 @@ select.campo-inline {
   border-radius: 22px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
+  box-shadow: var(--shadow-lg);
 }
 
 .module-hero-icon {
@@ -1931,7 +1931,7 @@ select.campo-inline {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-inset-soft);
 }
 
 .module-hero-icon img {
@@ -1945,7 +1945,7 @@ select.campo-inline {
   font-size: 1.9rem;
   line-height: 1;
   font-weight: 800;
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .module-hero-copy p {
@@ -1975,7 +1975,7 @@ select.campo-inline {
 }
 .chips-scroll .chip.ativo {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: #fff;
+  color: var(--text-on-accent);
   border-color: var(--blue);
   box-shadow: 0 8px 20px var(--blue-faint);
 }

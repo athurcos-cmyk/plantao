@@ -986,7 +986,7 @@ function selecionarPaciente(p) {
   padding: 7px 13px; cursor: pointer; white-space: nowrap;
   flex-shrink: 0; transition: all 0.15s;
 }
-.chip.ativo { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+.chip.ativo { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); font-weight: 600; }
 
 .inicial-screen {
   background:
@@ -1021,12 +1021,12 @@ function selecionarPaciente(p) {
   border-radius: 18px;
   border: 1px solid rgba(73, 128, 154, 0.52);
   background: linear-gradient(180deg, rgba(17, 38, 62, 0.92), rgba(12, 27, 47, 0.96));
-  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
+  box-shadow: var(--shadow-md);
 }
 
 .paciente-atalho label {
   display: block;
-  color: #a6c4d8;
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -1048,7 +1048,7 @@ function selecionarPaciente(p) {
   border-radius: 22px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 18px 36px rgba(2, 7, 16, 0.24);
+  box-shadow: var(--shadow-lg);
 }
 
 .module-hero-icon {
@@ -1061,7 +1061,7 @@ function selecionarPaciente(p) {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-inset-soft);
 }
 
 .module-hero-icon img {
@@ -1072,7 +1072,7 @@ function selecionarPaciente(p) {
 
 .module-hero-copy h1 {
   margin: 0;
-  color: #f5f8ff;
+  color: var(--text);
   font-size: 1.72rem;
   line-height: 1.04;
   font-weight: 850;
@@ -1080,7 +1080,7 @@ function selecionarPaciente(p) {
 
 .module-hero-copy p {
   margin: 8px 0 0;
-  color: #a6c4d8;
+  color: var(--text-dim);
   font-size: 0.95rem;
   line-height: 1.35;
 }
@@ -1090,11 +1090,11 @@ function selecionarPaciente(p) {
   border-radius: 22px;
   border: 1px solid rgba(55, 95, 133, 0.55);
   background: linear-gradient(180deg, rgba(18, 38, 64, 0.97), rgba(13, 29, 52, 0.98));
-  box-shadow: 0 16px 32px rgba(3, 10, 22, 0.22);
+  box-shadow: var(--shadow-lg);
 }
 
 .bloco-titulo {
-  color: #f3f7ff;
+  color: var(--text);
   border-bottom-color: rgba(77, 130, 160, 0.5);
   font-size: 1.22rem;
 }
@@ -1135,22 +1135,22 @@ textarea:focus {
   border-radius: 14px;
   border-color: rgba(76, 116, 150, 0.58);
   background: rgba(15, 32, 57, 0.9);
-  color: #c2d8ea;
+  color: var(--text-dim);
 }
 
 .chip-on,
 .chip.ativo {
   border-color: var(--blue);
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: #fff;
+  color: var(--text-on-accent);
   font-weight: 700;
-  box-shadow: 0 7px 15px rgba(30,100,230,0.12);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .btn-generate {
   min-height: 58px;
   border-radius: 18px;
-  box-shadow: 0 10px 20px rgba(25, 126, 201, 0.16);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .btn-limpar {
@@ -1182,7 +1182,7 @@ textarea:focus {
 
 .disp-head p {
   margin: 0;
-  color: #9eb9cf;
+  color: var(--text-dim);
   font-size: 0.92rem;
   line-height: 1.35;
 }
@@ -1195,7 +1195,7 @@ textarea:focus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #eaf8ff;
+  color: var(--text);
   font-size: 0.95rem;
   font-weight: 850;
   border: 1px solid color-mix(in srgb, var(--blue) 68%, transparent);
@@ -1214,12 +1214,12 @@ textarea:focus {
 }
 
 .disp-empty strong {
-  color: #eaf3ff;
+  color: var(--text);
   font-size: 0.94rem;
 }
 
 .disp-empty span {
-  color: #9eb9cf;
+  color: var(--text-dim);
   font-size: 0.86rem;
 }
 
@@ -1229,7 +1229,7 @@ textarea:focus {
 }
 
 .disp-texto {
-  color: #eaf3ff;
+  color: var(--text);
   font-weight: 650;
 }
 
@@ -1244,18 +1244,18 @@ textarea:focus {
   border-radius: 10px;
   border-color: rgba(76, 116, 150, 0.58);
   background: rgba(10, 24, 43, 0.72);
-  color: #b8d0e4;
+  color: var(--text-dim);
   font-size: 0.9rem;
 }
 
 .btn-icon-sm:not(:disabled):active {
   border-color: color-mix(in srgb, var(--blue) 72%, transparent);
   background: color-mix(in srgb, var(--blue) 18%, transparent);
-  color: #f5fbff;
+  color: var(--text);
 }
 
 .btn-danger-sm:not(:disabled):active {
-  color: #ffb4bd;
+  color: var(--text-danger-soft);
   border-color: rgba(255, 126, 145, 0.72);
   background: rgba(255, 126, 145, 0.12);
 }
@@ -1313,14 +1313,14 @@ textarea:focus {
 
 .modal-header h3 {
   margin: 0;
-  color: #f5f8ff;
+  color: var(--text);
   font-size: 1.2rem;
   font-weight: 850;
 }
 
 .modal-header p {
   margin: 4px 0 0;
-  color: #9eb9cf;
+  color: var(--text-dim);
   font-size: 0.84rem;
   font-weight: 650;
 }
@@ -1352,7 +1352,7 @@ textarea:focus {
   flex: 1;
   min-height: 52px;
   border-radius: 16px;
-  box-shadow: 0 9px 18px rgba(25, 126, 201, 0.16);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .modal-body :deep(.campo) {
@@ -1364,7 +1364,7 @@ textarea:focus {
 }
 
 .modal-body :deep(.campo > label:not(.checkbox-label)) {
-  color: #a9c2d7;
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 850;
   letter-spacing: 0.05em;
@@ -1385,7 +1385,7 @@ textarea:focus {
 .modal-body :deep(.radio-btn span),
 .modal-body :deep(.checkbox-label span) {
   font-weight: 800;
-  color: #bcd3e7;
+  color: var(--text-dim);
 }
 
 .modal-body :deep(.radio-btn:has(input:checked)),
@@ -1393,13 +1393,13 @@ textarea:focus {
 .modal-body :deep(.checkbox-label:has(input:checked)) {
   border-color: var(--blue);
   background: var(--blue-faint);
-  box-shadow: 0 7px 15px rgba(30,100,230,0.12);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .modal-body :deep(.radio-btn:has(input:checked) span),
 .modal-body :deep(.checkbox-label.checked span),
 .modal-body :deep(.checkbox-label:has(input:checked) span) {
-  color: #ffffff;
+  color: var(--text-on-accent);
 }
 
 .estado-section {
@@ -1420,7 +1420,7 @@ textarea:focus {
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 10px;
-  color: #d9ecfb;
+  color: var(--text-dim);
   font-size: 0.86rem;
   font-weight: 850;
   letter-spacing: 0.05em;
@@ -1496,7 +1496,7 @@ textarea:focus {
   border-radius: 16px;
   border: 1px dashed rgba(92, 153, 186, 0.52);
   background: rgba(11, 25, 46, 0.62);
-  color: #9eb9cf;
+  color: var(--text-dim);
   font-size: 0.92rem;
   line-height: 1.35;
 }
@@ -1513,7 +1513,7 @@ textarea:focus {
 
 .fechamento-modelos-head p {
   margin: 5px 0 0;
-  color: #9eb9cf;
+  color: var(--text-dim);
   font-size: 0.86rem;
   line-height: 1.35;
 }
@@ -1535,7 +1535,7 @@ textarea:focus {
   gap: 6px;
   border: 1px solid rgba(76, 116, 150, 0.58);
   background: rgba(15, 32, 57, 0.88);
-  color: #c2d8ea;
+  color: var(--text-dim);
   font-family: inherit;
   font-size: 0.82rem;
   font-weight: 800;
@@ -1543,7 +1543,7 @@ textarea:focus {
 
 .btn-novo-modelo-topo {
   border-color: color-mix(in srgb, var(--blue) 58%, transparent);
-  color: #eaf8ff;
+  color: var(--text);
 }
 
 .fechamento-library {
@@ -1565,7 +1565,7 @@ textarea:focus {
   border-radius: 16px;
   border: 1px solid rgba(76, 116, 150, 0.58);
   background: rgba(11, 25, 46, 0.78);
-  color: #8ecbd4;
+  color: var(--text-info);
 }
 
 .modelo-search-wrap input {
@@ -1573,13 +1573,13 @@ textarea:focus {
   border: none;
   outline: none;
   background: transparent;
-  color: #eef8ff;
+  color: var(--text);
   font-family: inherit;
   font-size: 0.96rem;
 }
 
 .modelo-search-wrap input::placeholder {
-  color: #7899ad;
+  color: var(--text-muted);
 }
 
 .modelos-favoritos {
@@ -1589,7 +1589,7 @@ textarea:focus {
 }
 
 .modelos-subtitle {
-  color: #a6c4d8;
+  color: var(--text-dim);
   font-size: 0.74rem;
   font-weight: 850;
   letter-spacing: 0.07em;
@@ -1616,7 +1616,7 @@ textarea:focus {
   border-radius: 14px;
   border: 1px solid rgba(89, 153, 190, 0.5);
   background: rgba(15, 32, 57, 0.88);
-  color: #d7efff;
+  color: var(--text);
   font-family: inherit;
   font-size: 0.86rem;
   font-weight: 800;
@@ -1628,7 +1628,7 @@ textarea:focus {
 .modelo-fav-chip-on {
   background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
   border-color: color-mix(in srgb, var(--blue) 84%, transparent);
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .modelos-lista {
@@ -1651,7 +1651,7 @@ textarea:focus {
   border: 1px solid rgba(76, 116, 150, 0.48);
   background: linear-gradient(180deg, rgba(17, 37, 63, 0.9), rgba(11, 26, 49, 0.94));
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(3, 10, 22, 0.12);
+  box-shadow: var(--shadow-soft);
 }
 
 .modelo-list-item-on {
@@ -1672,7 +1672,7 @@ textarea:focus {
 }
 
 .modelo-title {
-  color: #f2f9ff;
+  color: var(--text);
   font-size: 0.96rem;
   font-weight: 800;
   overflow: hidden;
@@ -1687,12 +1687,12 @@ textarea:focus {
   border: none;
   border-left: 1px solid rgba(76, 116, 150, 0.42);
   background: rgba(10, 22, 40, 0.34);
-  color: #526f83;
+  color: var(--text-muted);
   font-family: inherit;
 }
 
 .modelo-fav-btn-on {
-  color: #f6c85f;
+  color: var(--text-warning);
   background: rgba(246, 200, 95, 0.1);
 }
 
@@ -1700,7 +1700,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #9eb9cf;
+  color: var(--text-dim);
   min-height: 40px;
   padding: 0 2px;
   font-size: 0.9rem;
@@ -1713,7 +1713,7 @@ textarea:focus {
 .btn-link {
   border: 0;
   background: transparent;
-  color: #75d9e8;
+  color: var(--text-info);
   font-family: inherit;
   font-weight: 800;
   padding: 0;
@@ -1747,7 +1747,7 @@ textarea:focus {
 }
 
 .modal-modelo-txt {
-  color: #dcefff;
+  color: var(--text);
   font-weight: 800;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1768,7 +1768,7 @@ textarea:focus {
   border: 1px solid rgba(255, 126, 145, 0.24);
   border-radius: 12px;
   background: rgba(255, 126, 145, 0.08);
-  color: #ffb4bd;
+  color: var(--text-danger-soft);
   font-family: inherit;
   font-size: 1.2rem;
   line-height: 1;
@@ -1779,7 +1779,7 @@ textarea:focus {
   padding: 16px;
   border-radius: 16px;
   border: 1px dashed rgba(92, 153, 186, 0.52);
-  color: #9eb9cf;
+  color: var(--text-dim);
   background: rgba(11, 25, 46, 0.62);
 }
 

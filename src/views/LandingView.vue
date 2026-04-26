@@ -455,7 +455,7 @@ const testimonials = [
 
 /* ── BARRA DE URGÊNCIA ── */
 .urgencia-bar {
-  background: linear-gradient(90deg, #7c3aed22, #1E88E522);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 30%, #7c3aed 70%, transparent), color-mix(in srgb, var(--blue) 22%, transparent));
   border-bottom: 1px solid #7c3aed44;
   text-align: center;
   padding: 9px 16px;
@@ -519,7 +519,7 @@ const testimonials = [
 }
 .nav-cta {
   background: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.88rem;
@@ -631,7 +631,7 @@ const testimonials = [
   display: inline-flex;
   align-items: center;
   background: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
   text-decoration: none;
   font-weight: 800;
   font-size: 1.05rem;
@@ -696,7 +696,7 @@ const testimonials = [
 .phone {
   width: 258px;
   background: #0d1e38;
-  border: 2px solid #1e3050;
+  border: 2px solid var(--border);
   border-radius: 44px;
   padding: 14px 12px 20px;
   box-shadow:
@@ -709,7 +709,7 @@ const testimonials = [
 .phone-notch {
   width: 80px;
   height: 6px;
-  background: #1e3050;
+  background: var(--border);
   border-radius: 3px;
   margin: 0 auto 12px;
 }
@@ -811,7 +811,7 @@ const testimonials = [
 }
 .sim-copy-btn {
   background: var(--success);
-  color: #fff;
+  color: var(--text-on-accent);
   font-size: 0.62rem;
   font-weight: 700;
   padding: 7px 12px;
@@ -1100,7 +1100,7 @@ const testimonials = [
 .cta-section {
   position: relative;
   padding: 96px 32px;
-  background: linear-gradient(180deg, var(--bg-card) 0%, #0a1628 100%);
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
   border-top: 1px solid var(--border);
   overflow: hidden;
   text-align: center;

@@ -8,6 +8,18 @@
 
 ## Sessao 2026-04-25
 
+### Varredura de hardcoded de cores para suportar temas claros
+
+- Foi realizada uma varredura ampla em `src/views/**/*.vue` e `src/components/**/*.vue` para remover cores fixas de texto que quebravam nos temas claros
+- Cores de texto hardcoded como `#fff`, `#eef4ff`, `#f5f8ff`, `#a6c4d8` e `#d9ecfb` foram substituidas por tokens (`--text`, `--text-dim` e `--text-on-accent`)
+- Foi criado o token global `--text-on-accent` em `src/assets/style.css` e propagado para todos os temas em `src/composables/useTheme.js`
+- Em telas criticas (`AnotacaoInicial`, `AnotacaoMedicacao`, `SinaisVitais`, `PassagemPlantao`, `Historico`) foram normalizados overlays, fundos e bordas para tokens (`--bg-card`, `--bg-input`, `--border`) conforme o design system
+- Admin, Dashboard, Pacientes, Organizador, Landing e componentes compartilhados (como `CalculadoraModal`, `ChatAssistente`, `TourDashboard` e `BotaoChat`) tambem receberam ajuste para remover hardcodes residuais
+- Varredura final confirmou ausencia dos hardcodes-alvo em views/components e linter sem erros
+- Segunda passada de theming adaptou micro-glows para tokens globais (`--shadow-glow-blue`, `--shadow-md`, `--shadow-lg`, `--shadow-inset-soft`) nos modulos criticos e componentes compartilhados
+- Foram adicionados tokens contextuais de tipografia (`--text-soft`, `--text-faint`, `--text-info`, `--text-warning`, `--text-danger-soft`, `--text-success-soft`) para eliminar tons fixos de texto e manter coerencia nos temas claros/escuros
+- Busca final confirmou ausencia de `color`/`border-color`/gradientes com hex hardcoded em `views/components`
+
 ### Correcao de tema dinamico em telas com hardcolor
 
 - `HistoricoView` foi ajustada para parar de usar tons fixos de azul em superficies, bordas e sombras, passando a derivar tudo de tokens do tema ativo

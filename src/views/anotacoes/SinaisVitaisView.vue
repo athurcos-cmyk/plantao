@@ -462,7 +462,7 @@ function novaAfericao() {
 .sv-brand-mark {
   border-radius: 6px;
   display: block;
-  box-shadow: 0 10px 20px rgba(10, 18, 36, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .sv-header-spacer {
@@ -509,9 +509,9 @@ function novaAfericao() {
 
 .patient-chip-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: #fff;
+  color: var(--text-on-accent);
   border-color: var(--blue);
-  box-shadow: 0 10px 22px rgba(26, 97, 194, 0.26);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .module-hero {
@@ -525,7 +525,7 @@ function novaAfericao() {
   border-radius: 22px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 18px 34px rgba(2, 7, 16, 0.22);
+  box-shadow: var(--shadow-lg);
 }
 
 .module-hero-preview {
@@ -542,7 +542,7 @@ function novaAfericao() {
   flex-shrink: 0;
   border: 1px solid var(--border);
   background: radial-gradient(circle at top, color-mix(in srgb, var(--blue) 18%, transparent), color-mix(in srgb, var(--blue-dark) 36%, var(--bg-input) 64%));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: var(--shadow-inset-soft);
 }
 
 .module-hero-icon img {
@@ -556,7 +556,7 @@ function novaAfericao() {
   font-size: 1.9rem;
   line-height: 1;
   font-weight: 800;
-  color: #f5f8ff;
+  color: var(--text);
 }
 
 .module-hero-copy p {
@@ -585,7 +585,7 @@ function novaAfericao() {
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 18px;
-  color: #eef4ff;
+  color: var(--text);
   font-size: 1.16rem;
   font-family: inherit;
   outline: none;
@@ -602,7 +602,7 @@ function novaAfericao() {
   border-radius: 20px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
+  box-shadow: var(--shadow-md);
 }
 
 .vital-card input {
@@ -611,7 +611,7 @@ function novaAfericao() {
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: 15px;
-  color: #eff4ff;
+  color: var(--text);
   font-size: 1rem;
   font-family: inherit;
   padding: 0 16px;
@@ -646,37 +646,37 @@ function novaAfericao() {
 }
 
 .vital-badge-blue {
-  color: #7ec7ff;
+  color: var(--text-info);
   background: rgba(42, 124, 235, 0.2);
 }
 
 .vital-badge-sky {
-  color: #8ed8ff;
+  color: var(--text-info);
   background: rgba(44, 142, 255, 0.18);
 }
 
 .vital-badge-heart {
-  color: #8cb7ff;
+  color: var(--text-info);
   background: rgba(77, 110, 255, 0.18);
 }
 
 .vital-badge-cyan {
-  color: #6fd8ff;
+  color: var(--text-info);
   background: rgba(43, 171, 210, 0.17);
 }
 
 .vital-badge-teal {
-  color: #48d2d0;
+  color: var(--text-info);
   background: rgba(28, 141, 159, 0.18);
 }
 
 .vital-badge-o2 {
-  color: #70b8ff;
+  color: var(--text-info);
   background: rgba(48, 115, 255, 0.18);
 }
 
 .vital-badge-drop {
-  color: #5ea1ff;
+  color: var(--text-info);
   background: rgba(39, 121, 255, 0.18);
 }
 
@@ -685,12 +685,12 @@ function novaAfericao() {
   font-size: 0.98rem;
   font-weight: 800;
   letter-spacing: 0.02em;
-  color: #eef4ff;
+  color: var(--text);
 }
 
 .vital-unit,
 .sv-unit {
-  color: #91a5cf;
+  color: var(--text-dim);
   font-size: 0.72rem;
   font-weight: 500;
 }
@@ -698,7 +698,7 @@ function novaAfericao() {
 .vital-hint {
   margin: 2px 0 0;
   font-size: 0.78rem;
-  color: #7386ad;
+  color: var(--text-muted);
 }
 
 .pressure-row {
@@ -709,7 +709,7 @@ function novaAfericao() {
 }
 
 .pressure-sep {
-  color: #98a7ca;
+  color: var(--text-dim);
   font-size: 1.8rem;
   line-height: 1;
   font-weight: 300;
@@ -727,7 +727,7 @@ function novaAfericao() {
   border-radius: 22px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 16px 30px rgba(3, 10, 22, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .segmented-row {
@@ -754,8 +754,8 @@ function novaAfericao() {
 .segmented-btn-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
-  color: #fff;
-  box-shadow: 0 10px 22px rgba(28, 101, 214, 0.24);
+  color: var(--text-on-accent);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .sv-subcampo {
@@ -823,7 +823,7 @@ function novaAfericao() {
 .chip-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .details-stack {
@@ -856,13 +856,13 @@ function novaAfericao() {
 }
 
 .chip-escala.chip-escala-medio:not(.chip-on) {
-  border-color: #d78a10;
-  color: #d78a10;
+  border-color: var(--warning);
+  color: var(--warning);
 }
 
 .chip-escala.chip-escala-alto:not(.chip-on) {
-  border-color: #ef7373;
-  color: #ef7373;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .sv-submit-btn {
@@ -870,11 +870,11 @@ function novaAfericao() {
   min-height: 62px;
   border-radius: 18px;
   font-size: 1.06rem;
-  box-shadow: 0 16px 30px rgba(25, 96, 201, 0.28);
+  box-shadow: var(--shadow-glow-blue);
 }
 
 .erro-msg {
-  color: #ff8f8f;
+  color: var(--text-danger-soft);
   font-size: 0.94rem;
   margin: 10px 0 0;
 }
@@ -893,7 +893,7 @@ function novaAfericao() {
   width: 100%;
   font-size: 0.98rem;
   line-height: 1.7;
-  color: #eef4ff;
+  color: var(--text);
   font-family: inherit;
   white-space: pre-wrap;
   resize: vertical;

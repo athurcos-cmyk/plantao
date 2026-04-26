@@ -18,6 +18,16 @@
 
 ## Concluídos
 
+### [x] Varredura hardcoded de cores para temas claros (2026-04-25)
+- Removidos hardcodes de texto (`#fff`, `#eef4ff`, `#f5f8ff`, `#a6c4d8`, `#d9ecfb`) em views/components e substituidos por tokens de tipografia
+- Criado token `--text-on-accent` e aplicado nos botões/chips com fundo semântico (`--blue`, `--success`, `--danger`)
+- Arquivos críticos de anotação (`AnotacaoInicial`, `AnotacaoMedicacao`, `SinaisVitais`, `PassagemPlantao` e `Historico`) revisados com normalização de fundos, bordas e overlays para variáveis CSS globais
+- Validação final com busca global e linter sem pendências
+- Segunda passada: glows/sombras de botões e cards migrados para tokens reutilizáveis (`--shadow-glow-blue`, `--shadow-md`, `--shadow-lg`, `--shadow-inset-soft`)
+- Textos com paleta múltipla migrados para tokens contextuais (`--text-info`, `--text-warning`, `--text-danger-soft`, `--text-success-soft`) para estabilidade visual em todos os temas
+
+---
+
 ### [x] Corrigir hardcolor azul em Historico e Anotacao Inicial (2026-04-25)
 - `HistoricoView.vue` deixou de depender de tons azuis fixos em hero/cards/modal e passou a usar tokens dinâmicos do tema
 - `AnotacaoInicialView.vue` ganhou camada de unificação para forçar superfícies, bordas e textos a seguirem as variáveis do tema ativo

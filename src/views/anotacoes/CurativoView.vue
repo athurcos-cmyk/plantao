@@ -1145,7 +1145,7 @@ function novaAnotacao() {
 .chip:active { opacity: 0.8; }
 .chip:focus,
 .chip:focus-visible { outline: none; }
-.chip-on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); }
 .chip-sm { padding: 6px 12px; font-size: 0.85rem; }
 .chip-add { border-style: dashed; color: var(--text-muted); }
 .chip-material { padding: 10px 16px; border-radius: 14px; font-size: 0.9rem; }
@@ -1248,7 +1248,7 @@ function novaAnotacao() {
 }
 
 .curativo-progress .progress-fill {
-  background: linear-gradient(90deg, #37c58a, #6ee7b7);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--success) 80%, #ffffff 20%), color-mix(in srgb, var(--success) 55%, #ffffff 45%));
   box-shadow: 0 0 18px rgba(55, 197, 138, 0.38);
 }
 
@@ -1322,7 +1322,7 @@ function novaAnotacao() {
 
 .module-hero-copy h1 {
   margin: 0 0 6px;
-  color: #f0fdf4;
+  color: var(--text);
   font-size: 1.5rem;
   line-height: 1.05;
   letter-spacing: 0;
@@ -1350,7 +1350,7 @@ function novaAnotacao() {
 }
 
 .bloco-titulo {
-  color: #f0fdf4;
+  color: var(--text);
   border-bottom-color: rgba(92, 185, 139, 0.18);
   font-size: 1.08rem;
 }
@@ -1374,7 +1374,7 @@ function novaAnotacao() {
   border-radius: 14px;
   border: 1px solid rgba(92, 185, 139, 0.2);
   background: rgba(2, 12, 10, 0.5);
-  color: #f8fafc;
+  color: var(--text);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -1406,20 +1406,20 @@ function novaAnotacao() {
 
 .chip-on {
   border-color: rgba(110, 231, 183, 0.72);
-  background: linear-gradient(135deg, #16845c, #23b17a);
-  color: #ffffff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--success) 92%, #000000 8%), var(--success));
+  color: var(--text-on-accent);
   box-shadow: 0 10px 26px rgba(35, 177, 122, 0.22);
 }
 
 .chip.chip-on:hover {
   border-color: rgba(110, 231, 183, 0.72);
-  background: linear-gradient(135deg, #16845c, #23b17a);
-  color: #ffffff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--success) 92%, #000000 8%), var(--success));
+  color: var(--text-on-accent);
 }
 
 .chip-add {
   border-color: rgba(110, 231, 183, 0.38);
-  color: #86efac;
+  color: var(--text-success-soft);
   background: rgba(13, 45, 33, 0.5);
 }
 
@@ -1445,7 +1445,7 @@ function novaAnotacao() {
   border-radius: 16px;
   border-color: rgba(92, 185, 139, 0.22);
   background: linear-gradient(135deg, rgba(11, 33, 25, 0.96), rgba(8, 23, 20, 0.92));
-  color: #d1fae5;
+  color: var(--text-dim);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
 }
 
@@ -1631,14 +1631,14 @@ function novaAnotacao() {
 .chip-on {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  color: #fff;
+  color: var(--text-on-accent);
   box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .chip.chip-on:hover {
   border-color: var(--blue);
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .chip-add {

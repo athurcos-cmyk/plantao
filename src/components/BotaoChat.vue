@@ -44,7 +44,7 @@ const { aberto, novaResposta, toggleChat } = useChat()
   height: 10px;
   background: #e57373;
   border-radius: 50%;
-  border: 2px solid #0a1628;
+  border: 2px solid var(--bg);
 }
 
 @media (min-width: 768px) {

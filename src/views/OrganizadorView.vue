@@ -648,11 +648,11 @@ async function adicionarTemplate() {
   align-items: center;
   justify-content: center;
   transition: all 0.18s ease;
-  color: #fff;
+  color: var(--text-on-accent);
 }
 
 .tarefa-check.checked {
-  background: linear-gradient(135deg, #37a45f, #53c57f);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--success) 72%, #ffffff 28%), var(--success));
   border-color: rgba(116, 221, 154, 0.82);
   box-shadow: 0 8px 16px rgba(45, 136, 82, 0.24);
 }
@@ -684,7 +684,7 @@ async function adicionarTemplate() {
 }
 
 .btn-icon-danger {
-  color: #ff8e89;
+  color: var(--text-danger-soft);
   border-color: rgba(229, 57, 53, 0.24);
 }
 
@@ -734,7 +734,7 @@ async function adicionarTemplate() {
   min-height: 42px;
   padding: 0 14px;
   background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  color: #fff;
+  color: var(--text-on-accent);
   border: 1px solid var(--blue);
   border-radius: 12px;
   font-size: 0.82rem;
@@ -796,7 +796,7 @@ async function adicionarTemplate() {
 }
 
 .btn-outline-danger {
-  color: #ff9a94;
+  color: var(--text-danger-soft);
   border-color: rgba(229, 57, 53, 0.34);
 }
 

@@ -16,6 +16,13 @@
   --text:      #EAEEF3;
   --text-dim:  #8899AA;
   --text-muted:#556677;
+  --text-on-accent: #ffffff;
+  --text-soft: var(--text-dim);
+  --text-faint: var(--text-muted);
+  --text-info: color-mix(in srgb, var(--blue) 72%, var(--text) 28%);
+  --text-warning: var(--warning);
+  --text-danger-soft: color-mix(in srgb, var(--danger) 62%, var(--text) 38%);
+  --text-success-soft: color-mix(in srgb, var(--success) 62%, var(--text) 38%);
 
   /* Semantic */
   --danger:         #E53935;
@@ -34,6 +41,11 @@
   --radius-full: 9999px;
 
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.14);
+  --shadow-md: 0 12px 24px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 18px 36px rgba(0, 0, 0, 0.26);
+  --shadow-inset-soft: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-glow-blue: 0 10px 22px color-mix(in srgb, var(--blue) 30%, transparent);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
