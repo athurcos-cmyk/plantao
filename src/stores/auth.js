@@ -162,17 +162,26 @@ export const useAuthStore = defineStore('auth', () => {
             console.warn('[Auth] uid_map lookup failed:', e.message)
           }
         } else {
-          const hasCachedSession = _lerSessaoCacheSegura().hasSession
-          const eraLogado = !!uid.value
+          // Offline ou sessão inexistente: se já tem cache local, mantém.
+          // O cache local foi restaurado em startupCache acima — não desloga.
+          const localSession = _lerSessaoCacheSegura()
+          const temCache = localSession.hasSession
 
-          if (eraLogado) {
+          if (temCache) {
+            // Mesmo sem Firebase Auth (offline), restaura do cache
+            uid.value = localSession.uid
+            syncCode.value = localSession.syncCode
+            userName.value = localSession.userName
+            userEmail.value = localSession.userEmail
+          } else if (!!uid.value) {
+            // Só desloga se não tem cache E estava logado
             uid.value = ''
             userEmail.value = ''
             syncCode.value = ''
             userName.value = ''
             _limparSessaoSegura()
             window.location.replace('/')
-          } else if (!hasCachedSession) {
+          } else {
             uid.value = ''
             userEmail.value = ''
             syncCode.value = ''
