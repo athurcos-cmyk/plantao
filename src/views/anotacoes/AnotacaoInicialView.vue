@@ -48,7 +48,7 @@
             class="chip"
             :class="{ 'chip-on': form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
             @click="selecionarPaciente(p)"
-          >{{ p.leito ? p.leito + ' ' : '' }}<span v-if="p.leito" aria-hidden="true">&middot;</span>{{ p.leito ? ' ' : '' }}{{ p.nome }}</button>
+          >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
         </div>
       </section>
 

@@ -28,18 +28,16 @@
       </div>
 
       <div v-if="!gerado">
-        <section v-if="pacientesStore.pacientes.length > 0" class="sv-section">
-          <label class="section-eyebrow">Paciente registrado</label>
-          <div class="chips-scroll patient-chip-row">
+        <section v-if="pacientesStore.pacientes.length > 0" class="paciente-atalho">
+          <label>Paciente registrado</label>
+          <div class="chips-scroll">
             <button
               v-for="p in pacientesStore.pacientes"
               :key="p._key"
-              class="patient-chip"
-              :class="{ 'patient-chip-on': form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
+              class="chip"
+              :class="{ 'chip-on': form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
               @click="selecionarPaciente(p)"
-            >
-              {{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}
-            </button>
+            >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
           </div>
         </section>
 
@@ -488,30 +486,30 @@ function novaAfericao() {
   color: var(--text-dim);
 }
 
-.patient-chip-row {
-  gap: 10px;
-}
-
-.patient-chip {
-  min-height: 44px;
-  padding: 0 18px;
+.paciente-atalho {
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: 18px;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
-  color: var(--text-dim);
-  font-size: 0.92rem;
-  font-family: inherit;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.18s ease;
+  background: var(--bg-card);
+  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
 }
 
-.patient-chip-on {
-  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
-  color: var(--text-on-accent);
-  border-color: var(--blue);
-  box-shadow: var(--shadow-md);
+.paciente-atalho label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.paciente-atalho .chips-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
 }
 
 .module-hero {

@@ -29,18 +29,18 @@
 
       <!-- ── Formulário ── -->
       <div v-if="!gerado">
-        <div v-if="pacientesStore.pacientes.length > 0" style="margin-bottom:16px">
-          <label class="label-small">Paciente registrado</label>
-          <div class="chips-scroll" style="margin-top:6px">
+        <section v-if="pacientesStore.pacientes.length > 0" class="paciente-atalho">
+          <label>Paciente registrado</label>
+          <div class="chips-scroll">
             <button
               v-for="p in pacientesStore.pacientes"
               :key="p._key"
               class="chip"
-              :class="{ ativo: form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
+              :class="{ 'chip-on': form.nomePaciente === p.nome && form.leitoPaciente === (p.leito || '') }"
               @click="selecionarPaciente(p)"
             >{{ p.leito ? p.leito + ' · ' : '' }}{{ p.nome }}</button>
           </div>
-        </div>
+        </section>
 
         <section class="module-hero">
           <div class="module-hero-icon">
@@ -279,7 +279,7 @@
             <div class="chips-wrap">
               <button
                  data-testid="auto-btn-anotacaomedicacaoview-16" v-for="v in vias" :key="v"
-                class="chip" :class="{ ativo: modal.d.via === v }"
+                class="chip" :class="{ 'chip-on': modal.d.via === v }"
                 @click="selecionarVia(v)">{{ v }}</button>
             </div>
           </div>
@@ -292,7 +292,7 @@
             <div class="chips-wrap">
               <button
                 v-for="loc in locaisAnatomicos[modal.d.via]" :key="loc"
-                class="chip" :class="{ ativo: modal.d.localAnatomico === loc }"
+                class="chip" :class="{ 'chip-on': modal.d.localAnatomico === loc }"
                 @click="modal.d.localAnatomico = modal.d.localAnatomico === loc ? '' : loc">
                 {{ loc }}
               </button>
@@ -315,7 +315,7 @@
             <div class="chips-wrap" style="margin-top:8px">
               <button
                  data-testid="auto-btn-anotacaomedicacaoview-17" v-for="u in unidades" :key="u"
-                class="chip chip-sm" :class="{ ativo: modal.d.unidade === u }"
+                class="chip chip-sm" :class="{ 'chip-on': modal.d.unidade === u }"
                 @click="modal.d.unidade = u">{{ u }}</button>
             </div>
           </div>
@@ -335,7 +335,7 @@
             <div class="chips-wrap">
               <button
                  data-testid="auto-btn-anotacaomedicacaoview-18" v-for="op in ['direito','esquerdo','ambos']" :key="op"
-                class="chip" :class="{ ativo: modal.d.oftOlho === op }"
+                class="chip" :class="{ 'chip-on': modal.d.oftOlho === op }"
                 @click="modal.d.oftOlho = op">
                 {{ op.charAt(0).toUpperCase() + op.slice(1) }}
               </button>
@@ -349,13 +349,13 @@
               <button
                 data-testid="auto-btn-anotacaomedicacaoview-19"
                 class="chip"
-                :class="{ ativo: !modal.d.evDiluicao }"
+                :class="{ 'chip-on': !modal.d.evDiluicao }"
                 @click="selecionarModoEv(false)"
               >Direto</button>
               <button
                 data-testid="auto-btn-anotacaomedicacaoview-20"
                 class="chip"
-                :class="{ ativo: modal.d.evDiluicao }"
+                :class="{ 'chip-on': modal.d.evDiluicao }"
                 @click="selecionarModoEv(true)"
               >Diluído</button>
             </div>
@@ -378,10 +378,10 @@
             <div class="campo">
               <label>Solução </label>
               <div class="chips-wrap">
-                <button  data-testid="auto-btn-anotacaomedicacaoview-21" class="chip" :class="{ ativo: modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
-                <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip" :class="{ ativo: modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
-                <button  data-testid="auto-btn-anotacaomedicacaoview-23" class="chip" :class="{ ativo: modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
-                <button  data-testid="auto-btn-anotacaomedicacaoview-24" class="chip" :class="{ ativo: modal.d.evSolucao === 'outra' }" @click="modal.d.evSolucao = 'outra'">Outra</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-21" class="chip" :class="{ 'chip-on': modal.d.evSolucao === 'SF' }" @click="modal.d.evSolucao = 'SF'">SF 0,9%</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-22" class="chip" :class="{ 'chip-on': modal.d.evSolucao === 'SG' }" @click="modal.d.evSolucao = 'SG'">SG 5%</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-23" class="chip" :class="{ 'chip-on': modal.d.evSolucao === 'agua' }" @click="modal.d.evSolucao = 'agua'">Água destilada</button>
+                <button  data-testid="auto-btn-anotacaomedicacaoview-24" class="chip" :class="{ 'chip-on': modal.d.evSolucao === 'outra' }" @click="modal.d.evSolucao = 'outra'">Outra</button>
               </div>
               <input v-if="modal.d.evSolucao === 'outra'"
                 data-testid="auto-input-anotacaomedicacaoview-22"
@@ -1633,14 +1633,14 @@ function novaAnotacao() {
   cursor: pointer;
   transition: all 0.18s ease;
 }
-.chip.ativo {
+.chip-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
   color: var(--text-on-accent);
   font-weight: 700;
   box-shadow: var(--shadow-sm);
 }
-.chip:not(.ativo):active { background: var(--bg-hover); }
+.chip:not(.chip-on):active { background: var(--bg-hover); }
 
 .chip-sm {
   padding: 7px 12px;
@@ -1897,7 +1897,7 @@ select.campo-inline {
   padding: 7px 13px; cursor: pointer; white-space: nowrap;
   flex-shrink: 0; transition: all 0.15s;
 }
-.chip.ativo { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); font-weight: 600; }
+.chip-on { background: linear-gradient(180deg, var(--blue), var(--blue-dark)); border-color: var(--blue); color: var(--text-on-accent); font-weight: 600; }
 
 /* ── Premium upgrade ─────────────────────────────────────── */
 
@@ -1973,7 +1973,7 @@ select.campo-inline {
   font-size: 0.92rem;
   font-weight: 600;
 }
-.chips-scroll .chip.ativo {
+.chips-scroll .chip-on {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
   border-color: var(--blue);
