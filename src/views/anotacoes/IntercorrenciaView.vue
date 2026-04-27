@@ -1348,8 +1348,8 @@ watch(notaTexto, (txt) => {
 }
 
 .btn-gerenciar {
-  background: rgba(18, 33, 60, 0.76);
-  border-color: rgba(60, 86, 131, 0.58);
+  background: color-mix(in srgb, var(--bg-input) 88%, var(--bg) 12%);
+  border-color: color-mix(in srgb, var(--border) 80%, var(--blue) 20%);
   color: var(--text-dim);
 }
 

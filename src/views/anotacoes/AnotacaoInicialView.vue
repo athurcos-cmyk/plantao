@@ -1809,8 +1809,10 @@ textarea:focus {
 .chip-on,
 .chip.ativo {
   border-color: var(--blue);
-  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  color: var(--text-on-accent);
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
 }
 
 .estado-card-on,
@@ -1922,5 +1924,15 @@ textarea,
 
 .chip {
   color: var(--text-dim);
+}
+
+/* Re-apply chip-on gradient after unification block above */
+.chip-on,
+.chip.ativo {
+  border-color: var(--blue);
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+  color: var(--text-on-accent);
+  font-weight: 700;
+  box-shadow: var(--shadow-md);
 }
 </style>

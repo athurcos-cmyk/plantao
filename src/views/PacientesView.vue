@@ -682,15 +682,6 @@ async function excluirPend(pac, pend) {
 .empty-pac-titulo { font-size: 1.05rem; font-weight: 700; color: var(--text); }
 .empty-pac-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; line-height: 1.5; max-width: 280px; }
 
-/* Patient card */
-.pac-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
-  overflow: hidden;
-}
-
 .pac-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 14px; border-bottom: 1px solid var(--border);
