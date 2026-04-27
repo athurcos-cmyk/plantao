@@ -6,6 +6,19 @@
 
 ---
 
+## Sessao 2026-04-27
+
+### Padronização visual: progress bars e chips
+
+- **PassagemPlantaoView**: glow da barra de progresso corrigido de `var(--shadow-sm)` para `0 0 14px var(--blue-faint)`; chip-on trocado de `linear-gradient(135deg, ...)` para `linear-gradient(180deg, ...)` com `box-shadow: 0 7px 16px color-mix(...)` padronizado
+- **AnotacaoInicialView**: progress-fill recebeu gradiente `var(--blue-dark) → var(--blue)` e glow `0 0 14px var(--blue-faint)`, substituindo o `box-shadow: var(--shadow-sm)` genérico anterior
+- **CurativoView**: chip-on migrado do tema verde (`var(--success)`) para o padrão navy/azul do restante do app (`linear-gradient(180deg, var(--blue), var(--blue-dark))`), com sombra azul consistente
+- **SinaisVitaisView**: chip-on ganhou `box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent)` para alinhar visualmente com as demais views
+
+### Validacao
+
+- `npm run build` passou
+
 ## Sessao 2026-04-25
 
 ### Varredura de hardcoded de cores para suportar temas claros
