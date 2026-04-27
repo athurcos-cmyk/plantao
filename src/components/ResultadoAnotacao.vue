@@ -1,15 +1,7 @@
 <template>
   <div class="resultado-flow">
-    <section class="resultado-hero">
-      <div class="resultado-hero-icon">
-        <img :src="icon" alt="" />
-      </div>
-      <div class="resultado-hero-copy">
-        <h1>Texto pronto</h1>
-        <p>Revise, copie ou salve no histórico.</p>
-      </div>
-    </section>
 
+    <!-- 1. Textarea — o mais importante, ver o texto gerado -->
     <textarea
       class="resultado-box"
       rows="8"
@@ -17,6 +9,31 @@
       @input="$emit('update:texto', $event.target.value)"
     ></textarea>
 
+    <!-- 2. Ações — copiar e salvar sem precisar rolar -->
+    <div class="resultado-acoes">
+      <button class="btn btn-primary resultado-btn-copiar" @click="$emit('copiar')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+        Copiar texto
+      </button>
+      <button class="btn btn-secondary" @click="$emit('salvar')" :disabled="salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
+      </button>
+      <button class="btn btn-secondary" @click="$emit('compartilhar')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+          <polyline points="16 6 12 2 8 6" />
+          <line x1="12" y1="2" x2="12" y2="15" />
+        </svg>
+        Compartilhar
+      </button>
+      <button class="btn btn-secondary" @click="$emit('nova')">{{ labelNova }}</button>
+      <button class="btn btn-tertiary" @click="$emit('editar')">Editar dados</button>
+    </div>
+
+    <!-- 3. Identidade do paciente — secundário, ajustes finos -->
     <section class="resultado-identidade">
       <div class="resultado-identidade-grid">
         <div>
@@ -42,28 +59,17 @@
       </div>
     </section>
 
-    <div class="resultado-acoes">
-      <button class="btn btn-primary resultado-btn-copiar" @click="$emit('copiar')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="9" y="9" width="13" height="13" rx="2" />
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-        </svg>
-        Copiar texto
-      </button>
-      <button class="btn btn-secondary" @click="$emit('salvar')" :disabled="salvando">
-        {{ salvando ? 'Salvando...' : 'Salvar no histórico' }}
-      </button>
-      <button class="btn btn-secondary" @click="$emit('compartilhar')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-          <polyline points="16 6 12 2 8 6" />
-          <line x1="12" y1="2" x2="12" y2="15" />
-        </svg>
-        Compartilhar
-      </button>
-      <button class="btn btn-secondary" @click="$emit('nova')">{{ labelNova }}</button>
-      <button class="btn btn-tertiary" @click="$emit('editar')">Editar dados</button>
-    </div>
+    <!-- 4. Hero no final — confirmação visual, não atrapalha -->
+    <section class="resultado-hero">
+      <div class="resultado-hero-icon">
+        <img :src="icon" alt="" />
+      </div>
+      <div class="resultado-hero-copy">
+        <h1>Texto pronto</h1>
+        <p>Revise, copie ou salve no histórico.</p>
+      </div>
+    </section>
+
   </div>
 </template>
 
