@@ -1863,7 +1863,8 @@ textarea:focus {
 }
 
 .inicial-progress .progress-fill {
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(90deg, var(--blue-dark), var(--blue));
+  box-shadow: 0 0 14px var(--blue-faint);
 }
 
 .paciente-atalho,

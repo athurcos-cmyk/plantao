@@ -718,7 +718,7 @@ function novaAnotacao() {
 
 .passagem-progress .progress-fill {
   background: linear-gradient(90deg, var(--blue-dark), var(--blue));
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 14px var(--blue-faint);
 }
 
 .passagem-progress .progress-label {
@@ -866,9 +866,9 @@ function novaAnotacao() {
 
 .chip-on {
   border-color: var(--blue);
-  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .radio-btn {

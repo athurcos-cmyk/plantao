@@ -822,6 +822,7 @@ function novaAfericao() {
   background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   border-color: var(--blue);
   color: var(--text-on-accent);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .details-stack {

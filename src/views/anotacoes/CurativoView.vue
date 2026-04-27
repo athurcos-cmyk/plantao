@@ -1404,19 +1404,6 @@ function novaAnotacao() {
   background: rgba(10, 37, 29, 0.82);
 }
 
-.chip-on {
-  border-color: rgba(110, 231, 183, 0.72);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--success) 92%, #000000 8%), var(--success));
-  color: var(--text-on-accent);
-  box-shadow: 0 10px 26px rgba(35, 177, 122, 0.22);
-}
-
-.chip.chip-on:hover {
-  border-color: rgba(110, 231, 183, 0.72);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--success) 92%, #000000 8%), var(--success));
-  color: var(--text-on-accent);
-}
-
 .chip-add {
   border-color: rgba(110, 231, 183, 0.38);
   color: var(--text-success-soft);
@@ -1630,14 +1617,14 @@ function novaAnotacao() {
 
 .chip-on {
   border-color: var(--blue);
-  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
   box-shadow: 0 7px 16px color-mix(in srgb, var(--blue) 16%, transparent);
 }
 
 .chip.chip-on:hover {
   border-color: var(--blue);
-  background: linear-gradient(135deg, var(--blue-dark), var(--blue));
+  background: linear-gradient(180deg, var(--blue), var(--blue-dark));
   color: var(--text-on-accent);
 }
 
