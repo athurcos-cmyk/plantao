@@ -506,25 +506,6 @@ onUnmounted(() => {
   font-weight: 800;
 }
 
-.offline-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--bg-card);
-  border-top: 1px solid var(--danger);
-  color: var(--text);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 10px 16px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
 .offline-badge {
   background: var(--danger);
   color: var(--text-on-accent);
