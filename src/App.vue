@@ -68,7 +68,7 @@
     <div v-if="toastMsg" class="toast-central">{{ toastMsg }}</div>
   </Transition>
   <Transition name="offline-bar">
-    <div v-if="!isOnline" class="offline-bar">
+    <div v-if="!isOnline" class="offline-bar" :class="{ 'offline-bar-with-nav': mostrarBottomNav }">
       <span>📵</span> Sem internet — dados salvos localmente
       <span v-if="totalPendentes > 0" class="offline-badge">{{ totalPendentes }}</span>
     </div>
@@ -437,11 +437,11 @@ onUnmounted(() => {
   gap: 6px;
 }
 
-.app-shell-with-nav .offline-bar {
+.offline-bar-with-nav {
   bottom: 62px;
 }
 
-.app-shell:not(.app-shell-with-nav) .offline-bar {
+.offline-bar:not(.offline-bar-with-nav) {
   bottom: 0;
 }
 
