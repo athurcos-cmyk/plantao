@@ -75,7 +75,20 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const path = dbRef(db, `pacientes/${code}`)
 
     _stopAdded = onChildAdded(path, (snap) => {
-      _pacMap.set(snap.key, _parsePaciente(snap))
+      const novo = _parsePaciente(snap)
+      // Dedup: se já temos um paciente temporário (offline) com os mesmos dados,
+      // remove a entrada antiga para não duplicar quando onChildAdded dispara
+      _pacMap.forEach((v, k) => {
+        if (
+          k !== snap.key &&
+          v.nome === novo.nome &&
+          v.leito === novo.leito &&
+          v.criadoEm === novo.criadoEm
+        ) {
+          _pacMap.delete(k)
+        }
+      })
+      _pacMap.set(snap.key, novo)
       _reconstruir(code)
     })
 
@@ -249,8 +262,20 @@ export const usePacientesStore = defineStore('pacientes', () => {
         const realPacP = item.pacKey ? (keyMap[item.pacKey] || item.pacKey) : undefined
 
         if (item.op === 'add') {
-          const r = await push(dbRef(db, `pacientes/${code}`), item.data)
-          keyMap[item.key] = r.key
+          // Evita duplicar se onChildAdded já trouxe esse paciente
+          const jaExiste = Array.from(_pacMap.values()).some(
+            v => v.nome === item.data.nome && v.leito === item.data.leito && v.criadoEm === item.data.criadoEm
+          )
+          if (jaExiste) {
+            // Só mapeia a tempKey → key real que já chegou pelo listener
+            const real = Array.from(_pacMap.values()).find(
+              v => v.nome === item.data.nome && v.leito === item.data.leito && v.criadoEm === item.data.criadoEm
+            )
+            keyMap[item.key] = real._key
+          } else {
+            const r = await push(dbRef(db, `pacientes/${code}`), item.data)
+            keyMap[item.key] = r.key
+          }
 
         } else if (item.op === 'edit') {
           await update(dbRef(db, `pacientes/${code}/${realPac}`), item.data)
@@ -278,6 +303,25 @@ export const usePacientesStore = defineStore('pacientes', () => {
         console.warn('[pacientes sync] erro na op', item.op, e)
       }
     }
+
+    // Remove chaves temporárias do cache local para não duplicar com onChildAdded
+    for (const [tempKey, realKey] of Object.entries(keyMap)) {
+      _pacMap.delete(tempKey)
+    }
+    for (const key of Object.keys(pendKeyMap)) {
+      const [pacKey] = key.split(':')
+      const realPacKey = keyMap[pacKey] || pacKey
+      const tempPendKey = key.split(':')[1]
+      const realPendKey = pendKeyMap[key]
+      const pac = _pacMap.get(realPacKey)
+      if (pac && tempPendKey !== realPendKey) {
+        _pacMap.set(realPacKey, {
+          ...pac,
+          pendencias: pac.pendencias.map(p => p._key === tempPendKey ? { ...p, _key: realPendKey } : p)
+        })
+      }
+    }
+    _reconstruir(code)
 
     _salvarQueue(code, [])
     pendentesCount.value = 0
