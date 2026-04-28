@@ -118,7 +118,7 @@
 
 
       <!-- Senha (para quem logou com Google) -->
-      <section v-if="!temSenha" class="config-section">
+      <section v-if="providersReady && !temSenha" class="config-section">
         <h2 class="config-section-titulo">Criar senha</h2>
         <p class="config-sub">Você entrou com Google. Nos computadores do hospital o login com Google pode não funcionar — com uma senha cadastrada você entra com seu e-mail e senha em qualquer lugar.</p>
 
@@ -139,7 +139,7 @@
       </section>
 
       <!-- Vincular Google (para quem criou com email) -->
-      <section v-if="!temGoogle" class="config-section">
+      <section v-if="providersReady && !temGoogle" class="config-section">
         <h2 class="config-section-titulo">Vincular conta Google</h2>
         <p class="config-sub">Vincule sua conta Google para poder entrar com um toque, sem digitar email e senha.</p>
         <button
@@ -236,7 +236,8 @@ const erro = ref('')
 const sucesso = ref('')
 
 // Providers vinculados
-const temSenha = ref(true)
+const providersReady = ref(false)
+const temSenha = ref(false)
 const temGoogle = ref(false)
 const vinculandoGoogle = ref(false)
 
@@ -252,15 +253,18 @@ const salvandoNome = ref(false)
 // Delete
 const deletando = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
   novoNome.value = auth.userName || ''
 
+  // Aguarda auth estar pronto antes de ler providers
+  await auth.initAuthListener()
   const user = firebaseAuth.currentUser
   if (user) {
     const providers = user.providerData.map(p => p.providerId)
     temSenha.value = providers.includes('password')
     temGoogle.value = providers.includes('google.com')
   }
+  providersReady.value = true
 })
 
 async function copiarCodigo() {
