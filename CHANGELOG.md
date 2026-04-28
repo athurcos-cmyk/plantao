@@ -26,6 +26,12 @@
 
 - `twilio` instalado (preparado para uso futuro de SMS)
 
+### PWA: auto-update agressivo
+
+- `onNeedRefresh()` agora chama `updateSW().then(() => location.reload())` em vez de só mostrar banner — atualização aplicada automaticamente sem clique
+- Adicionado `setInterval` 30min no `onRegisteredSW` para verificar atualizações durante plantões longos (browser só checa em navegação, insuficiente em SPA)
+- **Problema resolvido:** usuários com versão antiga instalada há meses agora recebem atualização automaticamente ao abrir o app
+
 ### Validacao
 
 - `npm run build` passou

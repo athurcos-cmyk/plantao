@@ -6,7 +6,7 @@ App PWA de anotações de enfermagem, em produção em plantao.net. Design syste
 
 ## Última sessão (2026-04-28 noite — parte 4)
 
-AdminView repaginada: auto-refresh 20s, métricas avançadas (retenção, crescimento, anotações por tipo), push notification individual via FCM, modal de detalhe do usuário, filtros rápidos (hoje/7d/inativos), barra compacta de métricas. api/admin.js enriquecido com novos endpoints de comunicação. Build validado. Commit/push: próximo.
+AdminView repaginada: auto-refresh 20s, métricas avançadas (retenção, crescimento, anotações por tipo), push notification individual via FCM, modal de detalhe do usuário, filtros rápidos (hoje/7d/inativos), barra compacta de métricas. api/admin.js enriquecido com novos endpoints de comunicação. PWA auto-update: agora atualiza automaticamente sem depender de clique do usuário, com check periódico a cada 30min. Build validado. Commit/push admin: `32a49c3`.
 
 ## Stack
 

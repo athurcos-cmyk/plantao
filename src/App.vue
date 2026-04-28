@@ -304,13 +304,19 @@ const temAtualizacao = ref(false)
 function recarregarApp() { window.location.reload() }
 const updateSW = registerSW({
   immediate: true,
-  onNeedRefresh() { temAtualizacao.value = true },
+  onNeedRefresh() {
+    // Auto-aplica a atualização e recarrega sem depender do clique do usuário
+    updateSW().then(() => window.location.reload())
+  },
   onRegisteredSW(swUrl, registration) {
-    // Check de update ao voltar à aba (visibilitychange)
     if (registration) {
+      // Check ao voltar à aba
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) registration.update()
       })
+      // Check periódico a cada 30 min — essencial para plantões longos
+      // onde o usuário mantém o app aberto sem navegar
+      setInterval(() => registration.update(), 30 * 60 * 1000)
     }
   },
 })
