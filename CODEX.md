@@ -6,31 +6,29 @@ Ler no início da sessão e atualizar no fim quando a tarefa mexer nesses assunt
 
 1. `CHANGELOG.md`
 2. `TODOS.md`
-3. `.codex/memory/MEMORY.md`
-4. `.codex/memory/project_status.md`
-5. `.codex/memory/project_overview.md`
+3. `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
+4. `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
+5. `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
 6. `DESIGN.md` quando a tarefa envolver UI, layout ou componentes visuais
 7. Design doc gstack mais recente em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\*-design-*.md`
 
 Último design doc confirmado nesta base:
 `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\Thurcos-main-design-20260326-gtm.md`
 
-Arquivos originais do Claude, mantidos apenas como referência e sem edição por este fluxo:
-- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
-- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md`
-- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md`
+> **Memória compartilhada:** Claude e Codex usam o mesmo diretório de memória em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\`. Qualquer ferramenta pode ler e atualizar. Mantenha sempre consistente.
 
 ## Início de sessão — leitura obrigatória
 
-Antes de implementar qualquer coisa:
+**Ler `SESSAO.md` primeiro** — contém o brief do projeto (~30 linhas).
 
-1. Ler `CHANGELOG.md` para entender o estado recente do app
-2. Ler `TODOS.md` para ver pendências abertas e itens concluídos
-3. Ler `.codex/memory/MEMORY.md`
-4. Ler `.codex/memory/project_status.md`
-5. Ler `.codex/memory/project_overview.md`
-6. Se a tarefa envolver produto, estratégia, roadmap ou rollout, ler também o design doc gstack mais recente
-7. Se a tarefa envolver UI, ler `DESIGN.md` antes de decidir qualquer direção visual
+**Demais arquivos: ler só quando relevante para a tarefa.**
+
+- `CHANGELOG.md` — contexto das últimas sessões
+- `TODOS.md` — pendências abertas
+- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md` — features, alertas
+- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md` — estrutura, rotas, stores
+- `DESIGN.md` — se a tarefa envolver UI
+- Design doc gstack — se for decisão de produto/arquitetura
 
 Comando útil para localizar o design doc mais recente:
 
@@ -45,12 +43,12 @@ Get-ChildItem C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\*-design-*
 Ao encerrar uma sessão relevante:
 
 - Atualizar `CHANGELOG.md` com o que foi feito
-- Atualizar `.codex/memory/MEMORY.md` com resumo curto da sessão
-- Atualizar `.codex/memory/project_status.md` se mudou produto, risco, operação, roadmap ou negócio
-- Atualizar `.codex/memory/project_overview.md` se mudou stack, estrutura, autenticação, rotas ou convenções
+- Atualizar `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md` com resumo curto da sessão
+- Atualizar `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md` se mudou produto, risco, operação, roadmap ou negócio
+- Atualizar `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md` se mudou stack, estrutura, autenticação, rotas ou convenções
 - Atualizar `TODOS.md` quando a sessão abrir ou fechar pendências reais
 
-Não editar o `CLAUDE.md` nem a memória do Claude, a menos que o usuário peça explicitamente.
+Não editar o `CLAUDE.md` a menos que o usuário peça explicitamente.
 
 ## Projeto
 

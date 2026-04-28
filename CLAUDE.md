@@ -1,32 +1,28 @@
 # Plantão — instruções do projeto
 
-## Início de sessão — leitura OBRIGATÓRIA (sem exceção)
+## Início de sessão — leitura obrigatória
 
-**REGRA ABSOLUTA:** Antes de qualquer tarefa, ler TODOS estes arquivos na ordem abaixo.
-Não iniciar nenhuma implementação sem ter lido todos. Contexto incompleto = trabalho errado.
+**Ler `SESSAO.md` primeiro** — contém o brief do projeto com estado atual, stack e convenções essenciais (~30 linhas).
 
-1. **CHANGELOG.md** — estado atual do app, funcionalidades completas, histórico de sessões recentes
-2. **TODOS.md** — pendências abertas e itens já concluídos
-3. **MEMORY.md** (índice) — `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md`
-4. **project_status.md** — `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md` — features prontas, alertas operacionais, pendentes técnicos, estratégia de negócio, conformidade legal
-5. **project_overview.md** — `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md` — stack, estrutura de pastas, convenções de código
-6. **Design doc gstack mais recente** — ler o arquivo `*-design-*.md` com timestamp mais novo em `C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\`. Contém decisões de produto, premissas confirmadas, estratégia de monetização e arquitetura das features em desenvolvimento.
+**Demais arquivos: ler só quando relevante para a tarefa.**
 
-**Como ler o design doc mais recente:**
-```
-ls -t C:\Users\Thurcos\.gstack\projects\athurcos-cmyk-plantao\*-design-*.md | head -1
-```
-Ler esse arquivo completo antes de qualquer decisão de produto ou arquitetura.
+- `TODOS.md` — se for mexer em pendências
+- `CHANGELOG.md` — se precisar de contexto das últimas sessões
+- `DESIGN.md` — se a tarefa envolver UI
+- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md` (índice) — histórico de sessões
+- `project_status.md` — features, alertas, pendências técnicas
+- `project_overview.md` — estrutura de pastas, rotas, stores
+- Design doc gstack mais recente — decisões de produto/arquitetura
 
-**Ao fim de cada sessão:** atualizar CHANGELOG.md, TODOS.md e o MEMORY.md em `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md` com o que foi feito.
-Não fechar sessão sem atualizar a memória do projeto.
+**Ao fim de cada sessão:**
+1. Atualizar `CHANGELOG.md` com o que foi feito (no topo, como nova sessão)
+2. Atualizar `SESSAO.md` — estado atual + resumo da última sessão
+3. Atualizar `TODOS.md` se abriu/fechou pendências
+4. Atualizar `MEMORY.md` com resumo curto
 
-## Status atual - 2026-04-25
-- O ciclo de fechamento visual dos cards principais de anotação está concluído nesta etapa
-- O padrão visual consolidado do app agora é: `paciente registrado` no topo quando aplicável, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
-- Módulos fechados nesta fase: `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial`
-- `Meus Pacientes` também foi polido no mesmo padrão e o FAB local foi removido para não competir com o rodapé global
-- Para a próxima sessão, assumir esse fechamento como baseline e focar mais em backlog funcional, refinamentos clínicos e fluxos
+**Manutenção do CHANGELOG:**
+- Quando passar de ~300 linhas, mover as sessões mais antigas para `CHANGELOG_HISTORICO.md` (manter só as últimas 3-4)
+- `CHANGELOG_HISTORICO.md` acumula todo o histórico sem precisar de poda
 
 ## Design System
 Sempre ler DESIGN.md antes de qualquer decisão visual ou de UI.
@@ -50,6 +46,9 @@ Vue 3 (script setup), Vite, Pinia, Firebase Auth + Firebase Realtime DB, vite-pl
 - `formatHora(h)` = `h.replace(':', 'h')` → "14h30"
 - Copiar: `navigator.clipboard.writeText()` + fallback `document.execCommand('copy')`
 - Chips: `<button class="chip" :class="{'chip-on': cond}">` com toggle
+- **Ler só o necessário p/ tarefa** — não ler o projeto inteiro
+- **Não carregar arquivos de memória que não sejam necessários** p/ tarefa atual
+- **Edição cirúrgica** — nunca reescrever arquivo inteiro p/ mudar 3 linhas
 
 ## Autenticação
 Firebase Auth — email/senha + Google (signInWithPopup, fallback signInWithRedirect).
@@ -140,7 +139,6 @@ Sistema de notificações com 3 camadas de confiabilidade:
 @.claude/skills/revisao-seguranca.md
 @.claude/skills/refactor-cleaner.md
 @.claude/skills/pwa-plantao.md
-@.claude/skills/economia-tokens.md
 @.claude/skills/criar-skill.md
 @.claude/skills/modularizacao.md
 @.claude/skills/frontend-vue.md

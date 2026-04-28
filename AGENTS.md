@@ -1,13 +1,32 @@
-# Plantão — instruções do projeto
+# Plantão — visão geral para qualquer agente
 
-## Projeto
-App PWA de anotações de enfermagem para uso no celular durante plantão hospitalar.
+App PWA de anotações de enfermagem para celular durante plantão hospitalar.
 Gera textos formatados prontos para copiar no sistema do hospital.
+Funciona offline, sincroniza via Firebase, instalável sem loja de apps.
+
+## Fontes da verdade
+
+**1. `SESSAO.md`** — brief do projeto (~30 linhas). Comece sempre aqui.
+
+**2. Ler só o que for relevante para a tarefa:**
+- `CHANGELOG.md` — contexto das últimas sessões
+- `TODOS.md` — pendências abertas
+- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\MEMORY.md` — índice da memória
+- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_status.md` — features, alertas
+- `C:\Users\Thurcos\.claude\projects\C--Users-Thurcos-Desktop-plantao\memory\project_overview.md` — estrutura, rotas
+- `DESIGN.md` — se a tarefa envolver UI
+- Design doc gstack mais recente — decisões de produto/arquitetura
+
+Ao fim da sessão: atualizar CHANGELOG.md, TODOS.md e a memória do projeto.
+
+**Regra:** não ler o projeto inteiro — só o necessário para a tarefa.
 
 ## Stack
-Vue 3 (script setup), Vite, Pinia, Firebase Auth, Firebase Realtime DB, vite-plugin-pwa, CSS puro.
 
-## Regras de código — SEMPRE seguir
+Vue 3 (script setup), Vite, Pinia, Firebase Auth + Realtime DB, vite-plugin-pwa, CSS puro.
+
+## Convenções de código
+
 - `reactive()` para forms, `ref()` para estado simples
 - Imports com extensão `.js` explícita
 - Travessão `–` após horário (não hífen `-`)
@@ -16,45 +35,32 @@ Vue 3 (script setup), Vite, Pinia, Firebase Auth, Firebase Realtime DB, vite-plu
 - Copiar: `navigator.clipboard.writeText()` + fallback `document.execCommand('copy')`
 - Chips: `<button class="chip" :class="{'chip-on': cond}">` com toggle
 
-## Autenticação
-Firebase Auth é o sistema de autenticação ativo.
-
-- Cadastro/login principal por email e senha em `src/stores/auth.js`
-- Login com Google via Firebase Auth em `src/stores/auth.js`
-- Login rápido por código usa `/api/login-by-code.js`: recebe `syncCode` + senha, resolve o email server-side, valida a senha via Identity Toolkit e retorna `customToken`
-- O client entra com `signInWithCustomToken()` em `loginComCustomToken()`
-- Sessão local cacheia `syncCode`, `uid`, `userEmail` e `userName` em `localStorage` via `src/utils/authSessionCache.js`
-- `syncCode` continua sendo a chave/partição dos dados no Realtime DB, mas a identidade autenticada vem do Firebase Auth
-- Vínculo entre Auth e dados: `uid_map/{uid}` aponta para o `syncCode`, e `owners/{syncCode}/{uid}` confirma posse
-
 ## Firebase — estrutura
-- `usuarios/{syncCode}/` — nome, email, criadoEm, ultimo_acesso
-- `uid_map/{uid}` — syncCode do usuário autenticado
-- `owners/{syncCode}/{uid}` — true para vincular UID ao syncCode
-- `anotacoes/{syncCode}/{pushKey}/` — tipo, texto, nome, leito, timestamp
-- `pacientes/{syncCode}/{pushKey}/` — nome, leito, criadoEm, pendencias/
-- `organizador/{syncCode}/` — template/, plantao/
 
-## Padrão do texto gerado
-```
-14h00 – [texto da anotação], sem intercorrências.
-```
+- `owners/{syncCode}/{uid}` — ownership (regras de segurança)
+- `uid_map/{uid}` — syncCode do usuário
+- `usuarios/{syncCode}/` — perfil, email, flags
+- `anotacoes/{syncCode}/` — anotações
+- `pacientes/{syncCode}/` — pacientes + pendências
+- `organizador/{syncCode}/` — template e plantão
+- `encaminhamento/{syncCode}/` — encaminhamentos
+- `livres/{syncCode}/` — notas livres + modelos
+- `curativo/{syncCode}/` — curativos, locais, materiais
+- `fcm_tokens/{syncCode}/{deviceId}/` — tokens push
+- `notificacoes_agendadas/{syncCode}/` — notificações
 
-## Estado atual do produto - 2026-04-27
-- Os cards principais de anotação do app podem ser considerados concluídos no novo padrão premium
-- O padrão atual consolidado é: `paciente registrado` no topo quando aplicável, hero apenas no primeiro bloco, cards navy/azul, chips premium e resultado final padronizado
-- Módulos revisados nesta fase: `Sinais Vitais`, `Medicacao`, `Notas Livres`, `Passagem de Plantao`, `Encaminhamento`, `Higienizacao/Banho`, `Curativos` e `Anotacao Inicial`
-- `Meus Pacientes` também foi elevado visualmente e o FAB local de adicionar paciente foi removido para não colidir com o rodapé global
-- **Padronização visual de progress bars e chips concluída**: barras de progresso agora usam gradiente `blue-dark→blue` com glow azul consistente em todas as views; chips `chip-on` padronizados com `linear-gradient(180deg, ...)` + `box-shadow` azul
-- **CurativoView** migrado do tema verde para o padrão navy/azul do restante do app
-- Para a próxima sessão, assumir que o ciclo de fechamento visual dos cards terminou e priorizar backlog funcional, refinamentos clínicos e fluxos operacionais
+## Serverless (api/)
 
-## Skills disponíveis
-@.clinerules/planner.md
-@.clinerules/build-error-resolver.md
-@.clinerules/revisao-seguranca.md
-@.clinerules/refactor-cleaner.md
-@.clinerules/pwa-plantao.md
-@.clinerules/economia-tokens.md
-@.clinerules/criar-skill.md
-@.clinerules/modularizacao.md
+- `cron.js` — FCM + email day 3
+- `chat.js` — proxy Clara via Groq
+- `login-by-code.js` — login rápido com customToken
+- `welcome.js`, `feedback.js`, `goodbye.js` — emails transacionais
+- `delete-account.js` — exclusão completa de dados
+- `broadcast.js` — push/email em massa (admin)
+- `admin.js` — dados do admin
+
+## Clarity notes
+
+- Este arquivo é um overview para qualquer IA (Claude, Codex, Gemini, etc.)
+- Cada ferramenta tem seu próprio arquivo de instruções (CLAUDE.md, CODEX.md)
+- A memória do projeto é compartilhada entre ferramentas no diretório do Claude
