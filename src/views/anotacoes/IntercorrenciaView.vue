@@ -1140,8 +1140,8 @@ watch(notaTexto, (txt) => {
 }
 
 .livre-header {
-  background: rgba(8, 18, 36, 0.82);
-  border-bottom-color: rgba(60, 86, 131, 0.34);
+  background: color-mix(in srgb, var(--bg-card) 85%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--border) 60%, transparent);
   backdrop-filter: blur(18px);
 }
 

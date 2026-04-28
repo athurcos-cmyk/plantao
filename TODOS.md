@@ -8,32 +8,6 @@
 
 ---
 
-### [ ] Botão de broadcast mais acessível no admin (P2)
-**O quê:** Com usuários crescendo, o botão de broadcast (📢) está no header do modal mas o usuário sente que precisa descer muito para alcançar a funcionalidade.
-**Como:** Avaliar se o botão fixo no topo da tab Monitor ou um FAB no AdminView resolve.
-**Prioridade:** P2
-
----
-
-### [ ] Métricas de anotações no painel admin (P2)
-**O quê:** Counters `config/total_anotacoes` e `config/usuarios_ativos_7d` incrementados nas stores ao criar anotação.
-**Por quê:** Métricas de engajamento real — "X anotações feitas" é melhor sinal de valor que "X cadastros" para decisão de paywall.
-**Prioridade:** P2
-
----
-
-### [ ] Configurar Resend em produção (P1)
-**O quê:** Criar conta no Resend, verificar domínio plantao.net e adicionar `RESEND_API_KEY` no Vercel.
-**Por quê:** Sem a chave, todos os emails transacionais (welcome, feedback, day3, goodbye) retornam `{ ok: false, reason: 'not_configured' }` silenciosamente.
-**Como:**
-1. resend.com → Sign Up → Domains → Add Domain → `plantao.net`
-2. Adicionar registros DNS no Cloudflare
-3. API Keys → Create → copiar chave `re_...`
-4. Vercel → Settings → Environment Variables → `RESEND_API_KEY` → Redeploy
-**Prioridade:** P1 — bloqueia todos os emails
-
----
-
 ### [ ] Paywall Stripe Checkout (após validação)
 **O quê:** 45 dias gratuitos → R$14,99/mês. Stripe Checkout (sem UI customizada).
 **Depende de:** Validação de disposição a pagar com usuários reais.
@@ -70,6 +44,26 @@
 ---
 
 ## Concluídos
+
+### [x] Botão de broadcast acessível no admin (2026-04-28)
+- 📢 já está no header do admin (linha 18), sempre visível. Fechado após verificação.
+
+---
+
+### [x] Verificação domínio Firebase para email de reset (2026-04-28)
+- Configurado no painel do Firebase Console por Arthur.
+
+---
+
+### [x] Métricas de anotações no painel admin (2026-04-28)
+- **Verificado:** `RESEND_API_KEY` configurada no Vercel — endpoint `/api/welcome` retorna `401` (passou na checagem da chave, barrou no auth), confirmando emails transacionais operacionais
+
+---
+
+### [x] Métricas de anotações no painel admin (2026-04-28)
+- `total_anotacoes` incrementado por usuário em `anotacoes.js:201` e somado no backend. `ativos7d` calculado de `ultimo_acesso`. AdminView exibe na tab Métricas + barra compacta + gráficos de crescimento e anotações por tipo
+
+---
 
 ### [x] Deep sweep de temas: tokens dinamicos + guia (2026-04-26)
 - `useTheme.js` passou a concentrar tambem tokens de contraste e elevacao por tema (`--text`, `--text-on-accent`, `--shadow-sm/md/lg/modal`)

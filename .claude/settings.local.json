@@ -33,7 +33,11 @@
       "WebSearch",
       "WebFetch(domain:www.notion.so)",
       "Bash(npm install *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(curl *)",
+      "Bash(nslookup -type=TXT plantao.net)",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
