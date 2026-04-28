@@ -1912,7 +1912,7 @@ select.campo-inline {
 .chip {
   background: var(--bg-input); border: 1px solid var(--border);
   border-radius: 20px; color: var(--text-muted);
-  font-size: 0.83rem; font-family: inherit;
+  font-size: 0.9rem; font-family: inherit;
   padding: 7px 13px; cursor: pointer; white-space: nowrap;
   flex-shrink: 0; transition: all 0.15s;
 }

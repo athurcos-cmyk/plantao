@@ -8,6 +8,34 @@
       <div style="width:34px"></div>
     </header>
 
+    <!-- Modal de deletar conta -->
+    <Teleport to="body">
+      <Transition name="del">
+        <div v-if="showDeleteModal" class="del-overlay" @click.self="showDeleteModal = false">
+          <div class="del-modal" role="dialog" aria-modal="true" aria-label="Deletar conta">
+            <div class="del-boneco">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="32" r="28" stroke="var(--danger)" stroke-width="2" fill="color-mix(in srgb, var(--danger) 10%, transparent)" />
+                <circle cx="23" cy="27" r="3" fill="var(--danger)" />
+                <circle cx="41" cy="27" r="3" fill="var(--danger)" />
+                <path d="M20 43c0-8 24-8 24 0" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" fill="none" />
+              </svg>
+            </div>
+            <p class="del-msg">Desculpa não ter sido suficiente pra você...</p>
+            <p class="del-sub">Suas anotações, pacientes e configurações serão apagados permanentemente. Não tem como desfazer.</p>
+            <div class="del-acoes">
+              <button class="btn btn-primary btn-block" style="background:var(--danger);border-color:var(--danger)" @click="confirmarDeleteSegundoPasso">
+                Quero deletar
+              </button>
+              <button class="btn btn-secondary btn-block" style="margin-top:8px" @click="showDeleteModal = false">
+                Mudei de ideia
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <main class="container" style="padding-top:20px;padding-bottom:60px">
 
       <!-- Perfil -->
@@ -333,15 +361,14 @@ function sair() {
   }
 }
 
-async function confirmarDelete() {
-  const msg = `Tem certeza? TODOS os dados serão apagados:\n\n` +
-    `• Anotações e histórico\n` +
-    `• Pacientes e pendências\n` +
-    `• Modelos e organizador\n` +
-    `• Configurações e notificações\n\n` +
-    `Esta ação NÃO pode ser desfeita.`
+const showDeleteModal = ref(false)
 
-  if (!confirm(msg)) return
+function confirmarDelete() {
+  showDeleteModal.value = true
+}
+
+async function confirmarDeleteSegundoPasso() {
+  showDeleteModal.value = false
 
   // Segunda confirmação
   const code = prompt(`Para confirmar, digite seu código: ${auth.syncCode}`)
@@ -658,5 +685,58 @@ async function confirmarDelete() {
   font-size: 0.75rem;
   color: var(--blue);
   font-weight: 700;
+}
+
+/* ── Modal deletar conta ── */
+.del-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+}
+
+.del-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 24px 20px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+
+.del-boneco {
+  margin-bottom: 12px;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.del-msg {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.del-sub {
+  font-size: 0.83rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.del-acoes {
+  display: flex;
+  flex-direction: column;
+}
+
+.del-enter-active,
+.del-leave-active {
+  transition: opacity 0.2s ease;
+}
+.del-enter-from,
+.del-leave-to {
+  opacity: 0;
 }
 </style>

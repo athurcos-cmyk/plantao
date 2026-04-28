@@ -31,7 +31,8 @@
   ```
 
 ## Color
-- **Approach:** Restrained — 1 acento principal (azul) + neutros escuros + semânticos. Cor é rara e significativa.
+- **Approach:** Restrained — 1 acento principal (--blue) + neutros + semânticos. Cor é rara e significativa.
+- **12 temas:** 6 dark (Noturno, Carbono, Cobalto, Ametista, Grafite, Vinho) + 6 light (Rosa, Pérola, Floresta, Lavanda, Pêssego, Areia). Tudo via variáveis CSS — cores abaixo são do tema **Noturno** (padrão).
 
 ### Backgrounds
 ```css
@@ -72,8 +73,13 @@
 --border:      #1e3050;  /* bordas sutis */
 ```
 
-### Dark mode
-Modo escuro é o padrão e o modo principal. Não há modo claro implementado no app. Se implementado futuramente: superfícies substituem navy por off-whites frios (#F0F4F8, #FFFFFF), texto inverte para #0D1B2A, saturação do azul reduz 10%.
+### Sistema de temas
+O app tem **12 temas** (6 dark + 6 light). Cada tema define todos os tokens via `useTheme.js`:
+
+- Temas dark: fundos escuros, texto claro, semânticos vibrantes, sombras profundas
+- Temas light: fundos claros, texto escuro, semânticos ajustados, sombras suaves
+
+Tema **Noturno** é o padrão. Usuário troca em Configurações. Persistência via `localStorage`. Nenhum token de cor é hardcoded no CSS — sempre `var(--token)`.
 
 ## Spacing
 - **Base unit:** 8px

@@ -348,6 +348,7 @@ const helpItens = [
   { icone: '🔑', titulo: 'Login com Google', desc: 'Faça login com sua conta Google — rápido e sem precisar criar senha.' },
   { icone: '📱', titulo: 'Múltiplos dispositivos', desc: 'Acesse pelo celular, tablet ou computador com o mesmo email. Todos os dados ficam sincronizados.' },
   { icone: '🔒', titulo: 'Segurança', desc: 'Seus dados são protegidos por autenticação Firebase. Só você pode acessar suas anotações.' },
+  { icone: '⚡', titulo: 'Login rápido por código', desc: 'Na tela de login, toque em "Entrar com código" e digite seu código de sincronização — acesso rápido sem precisar de email ou senha.' },
 ]
 
 async function entrar() {

@@ -2,11 +2,11 @@
 
 ## Estado atual (2026-04-28)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Padrão visual do "paciente registrado" unificado nas 8 views de anotação. Sync de pacientes migrado para `onValue` único (fim de pacientes fantasmas). Header do app adaptado a temas em BanhoView e CurativoView. Foco atual: backlog funcional, refinamentos clínicos.
+App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas (6 dark + 6 light) via variáveis CSS — cores nunca hardcoded. Padrão visual do "paciente registrado" unificado nas 8 views de anotação. Sync de pacientes migrado para `onValue` único (fim de pacientes fantasmas). Header do app adaptado a temas em BanhoView e CurativoView. Foco atual: backlog funcional, refinamentos clínicos.
 
 ## Última sessão (2026-04-28)
 
-Padronização visual completa do "paciente registrado" em todas as 8 views de anotação — mesmo card, mesmo gap, mesmos chips sem quebra de linha. Correção de header theming no BanhoView e CurativoView (usavam cores fixas em vez de variáveis de tema). Migração da store `pacientes.js` de 3 listeners `onChild*` para `onValue` único — elimina condição de corrida que gerava pacientes fantasmas no cache local após sincronizar entre dispositivos. Fix do login flash (rota `/` redireciona para dashboard quando já autenticado).
+Padronização visual do "paciente registrado" nas 8 views de anotação (card, chips, gap). Correção de header theming em BanhoView e CurativoView (hardcoded → variáveis de tema). Migração pacientes store de 3 listeners onChild\* para onValue único — fim de pacientes fantasmas. Fix login flash (rota `/` redireciona para dashboard). Font-size de chips de paciente padronizado em 0.9rem. Novo modal de exclusão de conta com SVG. Dashboard: botão de pendências no cabeçalho + modal com lista completa (novo composable `usePendenciasDashboard.js`). TourDashboard e helpItens atualizados (pendências, login-by-code, localização da ajuda).
 
 ## Stack
 

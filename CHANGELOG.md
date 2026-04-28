@@ -10,30 +10,40 @@
 
 ## Sessao 2026-04-28
 
-### Padronizacao do "paciente registrado" nas 8 views de anotacao
+### Design system: DESIGN.md e SESSAO.md atualizados para 12 temas
 
-- Todas as views (`SinaisVitais`, `AnotacaoMedicacao`, `Encaminhamento`, `Banho`, `Curativo`, `Intercorrencia`, `PassagemPlantao`, `AnotacaoInicial`) foram unificadas visualmente no card de paciente registrado
-- Padrao definido: `.paciente-atalho` com `background: var(--bg-card)`, `border: 1px solid var(--border)`, `border-radius: 16px`, `padding: 12px 16px`, `box-shadow: var(--shadow-md)`
-- Chips padronizados com `overflow-x: auto`, `white-space: nowrap`, `flex-shrink: 0`, `scrollbar-width: none` — sem quebra de linha e sem scrollbar visivel
-- Gap entre chips ajustado para 8px em todas as views
-- `SinaisVitaisView`: box-shadow hardcoded substituido por `var(--shadow-md)`
+- `DESIGN.md` e `SESSAO.md` revisados para refletir o sistema de 12 temas (6 dark + 6 light)
+- Secao "Dark mode" removida do DESIGN.md (que afirmava nao haver modo claro) — substituida por "Sistema de temas"
 
-### Correcao de header theming (BanhoView e CurativoView)
+### Ajuste de font-size nos chips de paciente
 
-- **BanhoView**: header migrado de `background: rgba(7,18,34,0.82)` e `border-bottom: rgba(86,154,178,0.24)` para `var(--bg-card)` e `var(--border)`
-- **CurativoView**: tema verde removido — header `background: rgba(6,22,15,0.86)` → `var(--bg-card)`, `border-bottom: rgba(92,185,139,0.16)` → `var(--border)`, `backdrop-filter: blur(18px)` → `blur(16px)`; chip-on e labels migrados do verde para o padrao navy/azul
-- Ambos agora respeitam qualquer tema ativo (claro, escuro, rosa, floresta, etc.)
+- `AnotacaoMedicacaoView.vue`: `0.83rem` → `0.9rem`
+- `AnotacaoInicialView.vue`: `0.83rem` → `0.9rem`  
+- `SinaisVitaisView.vue`: `0.92rem` → `0.9rem`
+- Padronizado em `0.9rem` em todas as views
 
-### Correcao de sync de pacientes — fantasma de cache antigo
+### Modal de exclusao de conta com SVG
 
-- Store `pacientes.js` migrada de 3 listeners separados (`onChildAdded` + `onChildChanged` + `onChildRemoved`) para unico `onValue()`
-- `onValue` SEMPRE devolve o estado completo do Firebase, eliminando condicoes de corrida que geravam pacientes fantasmas
-- Logica de dedup removida — nao e mais necessaria com `onValue`
-- Pacientes offline (tempKeys) sao preservados do pending queue ate sincronizarem
+- `ConfiguracoesView.vue`: novo modal de confirmacao com SVG de carinha triste e mensagem "Desculpa nao ter sido suficiente pra voce..."
+- Fluxo: modal → "Quero deletar" → prompt(codigo) → exclusao
+- Usa `Teleport` + `Transition("del")` + overlay pattern
 
-### Fix login flash
+### Dashboard: pendências no cabecalho + modal
 
-- Router guard em `src/router/index.js` agora redireciona rota `/` para dashboard quando usuario ja esta logado, eliminando flash de 1-2s da tela de login em reconexao
+- Novo composable `usePendenciasDashboard.js` — lista plana de pendencias pendentes com dados do paciente, ordenadas por horario
+- Botao vermelho no cabecalho do dashboard com contagem de pendencias abertas
+- Modal com lista completa das pendencias — tocar no item marca como concluido
+- Botao some automaticamente quando nao ha pendencias pendentes
+- Card de sync agora oculto quando nao ha pendencias (v-if totalPendencias > 0)
+- CSS morto removido (`.pend-card`, `.pend-titulo`, `.pend-ver-todas`)
+
+### TourDashboard e Ajuda atualizados
+
+- `TourDashboard.vue`: passo 4 agora menciona o badge de pendencias no dashboard
+- Passo 6 inclui Login rapido por codigo como alternativa ao Google em computadores do hospital
+- Passo 8 corrigido: "botao ❓ na tela de login" → "botao Ajuda no cabecalho do painel"
+- `LoginView.vue` helpItens: adicionado item "Login rapido por codigo"
+- `DashboardView.vue` helpItens: adicionado item "Pendencias" explicando o botao vermelho
 
 ### Validacao
 

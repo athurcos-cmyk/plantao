@@ -14,6 +14,14 @@
       </div>
 
       <div class="header-actions">
+        <button v-if="totalPendentes > 0" class="btn-pend-chip" @click="pendModalAberto = true" title="Pendencias">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+            <path d="M9 14l2 2 4-4"/>
+          </svg>
+          <span class="btn-pend-count">{{ totalPendentes }}</span>
+        </button>
         <button class="btn-icon" @click="router.push({ name: 'historico' })" title="Histórico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="9" />
@@ -41,7 +49,7 @@
         <img class="hero-illustration" :src="heroIllustration" alt="Profissional de enfermagem" />
       </section>
 
-      <section class="sync-card">
+      <section v-if="totalPendencias > 0" class="sync-card">
         <div class="sync-status-badge" :class="syncBadgeClass">
           <svg v-if="totalPendencias === 0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
             <circle cx="12" cy="12" r="9" />
@@ -197,6 +205,31 @@
           <button class="btn btn-primary modal-btn" @click="pcModalAberto = false">Entendi</button>
         </div>
       </div>
+
+      <!-- Modal: todas as pendências -->
+      <div v-if="pendModalAberto" class="modal-overlay" @click.self="pendModalAberto = false">
+        <div class="modal-box pend-modal-box">
+          <p class="modal-title">Todas as pendências</p>
+          <div class="pend-modal-lista">
+            <button
+              v-for="item in pendenciasPendentes"
+              :key="item.pacienteKey + item._key"
+              class="pend-item"
+              @click="pacientesStore.togglePendencia(item.pacienteKey, item._key, false)"
+            >
+              <span class="pend-check">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+              </span>
+              <span class="pend-texto">{{ item.texto }}</span>
+              <span class="pend-meta">{{ [item.horario ? item.horario.replace(':', 'h') : '', item.pacienteLeito, item.pacienteNome].filter(Boolean).join(' · ') }}</span>
+            </button>
+            <p v-if="totalPendentes === 0" class="pend-vazia">Nenhuma pendência pendente!</p>
+          </div>
+          <button class="btn btn-primary modal-btn" @click="pendModalAberto = false">Fechar</button>
+        </div>
+      </div>
     </main>
 
     <HelpModal :aberto="helpAberto" @fechar="helpAberto = false" titulo="Como usar o Plantão" :itens="helpItens" />
@@ -213,6 +246,7 @@ import { useAnotacoesStore } from '../stores/anotacoes.js'
 import { usePacientesStore } from '../stores/pacientes.js'
 import { useOrganizadorStore } from '../stores/organizador.js'
 import { useToast } from '../composables/useToast.js'
+import { usePendenciasDashboard } from '../composables/usePendenciasDashboard.js'
 import { useOnlineStatus } from '../composables/useOnlineStatus.js'
 import { db } from '../firebase.js'
 import { ref as dbRef, push, remove } from 'firebase/database'
@@ -237,6 +271,7 @@ const router = useRouter()
 const auth = useAuthStore()
 const anotacoesStore = useAnotacoesStore()
 const pacientesStore = usePacientesStore()
+const { pendenciasPendentes, totalPendentes, proximasPendencias, temMaisPendencias } = usePendenciasDashboard()
 const orgStore = useOrganizadorStore()
 const { showToast } = useToast()
 const { isOnline } = useOnlineStatus()
@@ -245,7 +280,7 @@ const pcModalAberto = ref(false)
 const helpAberto = ref(false)
 const tourRef = ref(null)
 const syncDetalhesAbertos = ref(false)
-
+const pendModalAberto = ref(false)
 const {
   visivel: pulsoVisivel,
   textoFeedback,
@@ -278,6 +313,7 @@ const helpItens = [
   { icone: '🔄', titulo: 'Passagem de plantão', desc: 'Gere a anotação de passagem de plantão com refeição, queixas, cama, grades, decúbito e observações.' },
   { icone: '📝', titulo: 'Notas Livres', desc: 'Crie seus próprios modelos de anotação e use com um toque. Funciona offline.' },
   { icone: '🛏️', titulo: 'Meus Pacientes', desc: 'Cadastre os pacientes do seu plantão por leito e acompanhe pendências.' },
+  { icone: '🔴', titulo: 'Pendências', desc: 'O botão vermelho no cabeçalho mostra o total de pendências abertas. Toque para abrir a lista completa e marcar como concluídas.' },
   { icone: '📋', titulo: 'Organizador', desc: 'Checklist de tarefas do turno com horários e alertas.' },
   { icone: '🕐', titulo: 'Histórico', desc: 'Busque, edite, copie e compartilhe anotações já geradas.' },
   { icone: '🔑', titulo: 'Código de sincronização', desc: 'Seu código único sincroniza os dados em qualquer dispositivo.' },
@@ -1154,5 +1190,101 @@ function navegar(tipo) {
   .tipo-card-banho .tipo-nome {
     font-size: 0.9rem;
   }
+}
+
+/* ── Pendências dashboard ── */
+.btn-pend-chip {
+  position: relative;
+  background: var(--danger);
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  margin-right: 2px;
+}
+.btn-pend-chip:active { opacity: 0.8; }
+
+.btn-pend-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+.pend-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 9px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s;
+}
+.pend-item:active { background: var(--bg-hover); }
+
+.pend-check {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.pend-texto {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.pend-meta {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Modal pendências */
+.pend-modal-box {
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+.pend-modal-lista {
+  flex: 1;
+  overflow-y: auto;
+  margin: 12px 0;
+  max-height: 55vh;
+}
+.pend-vazia {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  padding: 20px 0;
 }
 </style>
