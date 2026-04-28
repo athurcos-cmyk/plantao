@@ -136,6 +136,10 @@ router.beforeEach(async (to) => {
     await _authReadyPromise
   }
 
+  if (to.name === 'login' && auth.isLoggedIn) {
+    return { name: 'dashboard' }
+  }
+
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     return { name: 'login' }
   }

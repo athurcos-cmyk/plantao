@@ -492,7 +492,7 @@ function novaAfericao() {
   border-radius: 18px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
+  box-shadow: var(--shadow-md);
 }
 
 .paciente-atalho label {
@@ -815,6 +815,7 @@ function novaAfericao() {
   font-family: inherit;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap; flex-shrink: 0;
   transition: all 0.16s ease;
 }
 

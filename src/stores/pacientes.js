@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, push, onChildAdded, onChildChanged, onChildRemoved, remove, update } from 'firebase/database'
+import { ref as dbRef, push, onValue, remove, update } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
 const _cacheKey = code => `cache_pacientes_${code}`
@@ -39,9 +39,7 @@ export const usePacientesStore = defineStore('pacientes', () => {
   const pacientes      = ref([])
   const pendentesCount = ref(0)
   const _pacMap        = new Map()
-  let _stopAdded   = null
-  let _stopChanged = null
-  let _stopRemoved = null
+  let _stopValue = null
 
   function _ordenar(lista) {
     return lista.sort((a, b) => (a.leito || '').localeCompare(b.leito || '', undefined, { numeric: true }))
@@ -54,17 +52,16 @@ export const usePacientesStore = defineStore('pacientes', () => {
   }
 
   function _limparListeners() {
-    if (_stopAdded)   { _stopAdded();   _stopAdded   = null }
-    if (_stopChanged) { _stopChanged(); _stopChanged = null }
-    if (_stopRemoved) { _stopRemoved(); _stopRemoved = null }
+    if (_stopValue) { _stopValue(); _stopValue = null }
   }
 
   function iniciar() {
-    if (_stopAdded) return
+    if (_stopValue) return
     const auth = useAuthStore()
     if (!auth.syncCode) return
     const code = auth.syncCode
 
+    // Mostra cache imediatamente enquanto carrega do Firebase
     const cached = _lerCache(code)
     if (cached.length) {
       cached.forEach(p => _pacMap.set(p._key, p))
@@ -74,31 +71,28 @@ export const usePacientesStore = defineStore('pacientes', () => {
 
     const path = dbRef(db, `pacientes/${code}`)
 
-    _stopAdded = onChildAdded(path, (snap) => {
-      const novo = _parsePaciente(snap)
-      // Dedup: se já temos um paciente temporário (offline) com os mesmos dados,
-      // remove a entrada antiga para não duplicar quando onChildAdded dispara
+    // onValue SEMPRE devolve o estado completo do Firebase
+    // — sem condição de corrida, sem dedup, sem pacientes fantasmas
+    _stopValue = onValue(path, (snapshot) => {
+      const queue = _lerQueue(code)
+      const pendingAddKeys = new Set(queue.filter(i => i.op === 'add').map(i => i.key))
+
+      // Reconstrói o map a partir do Firebase
+      const novoMap = new Map()
+      snapshot.forEach((child) => {
+        novoMap.set(child.key, _parsePaciente(child))
+      })
+
+      // Preserva pacientes offline (tempKeys) que ainda estão na fila
+      // para não sumirem da UI até sincronizar
       _pacMap.forEach((v, k) => {
-        if (
-          k !== snap.key &&
-          v.nome === novo.nome &&
-          v.leito === novo.leito &&
-          v.criadoEm === novo.criadoEm
-        ) {
-          _pacMap.delete(k)
+        if (pendingAddKeys.has(k)) {
+          novoMap.set(k, v)
         }
       })
-      _pacMap.set(snap.key, novo)
-      _reconstruir(code)
-    })
 
-    _stopChanged = onChildChanged(path, (snap) => {
-      _pacMap.set(snap.key, _parsePaciente(snap))
-      _reconstruir(code)
-    })
-
-    _stopRemoved = onChildRemoved(path, (snap) => {
-      _pacMap.delete(snap.key)
+      _pacMap.clear()
+      novoMap.forEach((v, k) => _pacMap.set(k, v))
       _reconstruir(code)
     })
   }
@@ -147,7 +141,6 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const auth = useAuthStore()
     const code = auth.syncCode
 
-    // Otimista: remove do map e reconstrói antes de aguardar Firebase
     _pacMap.delete(key)
     _reconstruir(code)
 
@@ -164,7 +157,6 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const code = auth.syncCode
     const keys = Array.from(_pacMap.keys())
 
-    // Limpa tudo de uma vez localmente
     _pacMap.clear()
     pacientes.value = []
     _salvarCache(code, [])
@@ -232,7 +224,6 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const auth = useAuthStore()
     const code = auth.syncCode
 
-    // Otimista: remove do map antes de aguardar Firebase
     const pac = _pacMap.get(pacKey)
     if (pac) _pacMap.set(pacKey, { ...pac, pendencias: pac.pendencias.filter(p => p._key !== pendKey) })
     _reconstruir(code)
@@ -253,8 +244,8 @@ export const usePacientesStore = defineStore('pacientes', () => {
     const q = _lerQueue(code)
     if (!q.length) return 0
 
-    const keyMap     = {} // tempPacKey  → realPacKey
-    const pendKeyMap = {} // `pacKey:tempPendKey` → realPendKey
+    const keyMap     = {}
+    const pendKeyMap = {}
 
     for (const item of q) {
       try {
@@ -262,20 +253,8 @@ export const usePacientesStore = defineStore('pacientes', () => {
         const realPacP = item.pacKey ? (keyMap[item.pacKey] || item.pacKey) : undefined
 
         if (item.op === 'add') {
-          // Evita duplicar se onChildAdded já trouxe esse paciente
-          const jaExiste = Array.from(_pacMap.values()).some(
-            v => v.nome === item.data.nome && v.leito === item.data.leito && v.criadoEm === item.data.criadoEm
-          )
-          if (jaExiste) {
-            // Só mapeia a tempKey → key real que já chegou pelo listener
-            const real = Array.from(_pacMap.values()).find(
-              v => v.nome === item.data.nome && v.leito === item.data.leito && v.criadoEm === item.data.criadoEm
-            )
-            keyMap[item.key] = real._key
-          } else {
-            const r = await push(dbRef(db, `pacientes/${code}`), item.data)
-            keyMap[item.key] = r.key
-          }
+          const r = await push(dbRef(db, `pacientes/${code}`), item.data)
+          keyMap[item.key] = r.key
 
         } else if (item.op === 'edit') {
           await update(dbRef(db, `pacientes/${code}/${realPac}`), item.data)
@@ -303,25 +282,6 @@ export const usePacientesStore = defineStore('pacientes', () => {
         console.warn('[pacientes sync] erro na op', item.op, e)
       }
     }
-
-    // Remove chaves temporárias do cache local para não duplicar com onChildAdded
-    for (const [tempKey, realKey] of Object.entries(keyMap)) {
-      _pacMap.delete(tempKey)
-    }
-    for (const key of Object.keys(pendKeyMap)) {
-      const [pacKey] = key.split(':')
-      const realPacKey = keyMap[pacKey] || pacKey
-      const tempPendKey = key.split(':')[1]
-      const realPendKey = pendKeyMap[key]
-      const pac = _pacMap.get(realPacKey)
-      if (pac && tempPendKey !== realPendKey) {
-        _pacMap.set(realPacKey, {
-          ...pac,
-          pendencias: pac.pendencias.map(p => p._key === tempPendKey ? { ...p, _key: realPendKey } : p)
-        })
-      }
-    }
-    _reconstruir(code)
 
     _salvarQueue(code, [])
     pendentesCount.value = 0

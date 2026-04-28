@@ -572,6 +572,7 @@ function novaAnotacao() {
   color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; flex-shrink: 0;
 }
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); }
@@ -742,7 +743,12 @@ function novaAnotacao() {
 }
 
 .paciente-atalho {
+  padding: 14px 16px;
   margin-bottom: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
 }
 
 .paciente-atalho label {
@@ -752,13 +758,15 @@ function novaAnotacao() {
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .paciente-atalho .chips-scroll {
   display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
 }
 
 .module-hero-icon {

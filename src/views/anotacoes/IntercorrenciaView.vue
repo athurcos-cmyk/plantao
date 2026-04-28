@@ -934,7 +934,7 @@ watch(notaTexto, (txt) => {
 .btn-novo-modelo-topo:active { opacity: 0.85; transform: scale(0.98); }
 
 /* Chips paciente */
-.chips-scroll { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
 .chip {
   padding: 8px 14px; border-radius: 20px;
   border: 1px solid var(--border); background: var(--bg-card);
@@ -1176,7 +1176,12 @@ watch(notaTexto, (txt) => {
 }
 
 .paciente-atalho {
+  padding: 14px 16px;
   margin-bottom: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
 }
 
 .paciente-atalho label {
@@ -1308,6 +1313,8 @@ watch(notaTexto, (txt) => {
   color: var(--text-dim);
   font-size: 0.92rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .chip-on {

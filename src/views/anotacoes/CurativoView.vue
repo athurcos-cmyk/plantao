@@ -1139,6 +1139,7 @@ function novaAnotacao() {
   color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
@@ -1233,9 +1234,9 @@ function novaAnotacao() {
 }
 
 .curativo-header {
-  background: rgba(6, 22, 15, 0.86);
-  border-bottom: 1px solid rgba(92, 185, 139, 0.16);
-  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
 }
 
 .curativo-page {
@@ -1259,22 +1260,22 @@ function novaAnotacao() {
 }
 
 .paciente-atalho {
+  padding: 14px 16px;
   margin-bottom: 14px;
-  padding: 14px;
-  border: 1px solid rgba(92, 185, 139, 0.2);
   border-radius: 18px;
-  background: linear-gradient(135deg, rgba(11, 33, 25, 0.94), rgba(9, 25, 22, 0.9));
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
 }
 
 .paciente-atalho label {
   display: block;
-  margin-bottom: 10px;
-  color: rgba(236, 253, 245, 0.82);
+  color: var(--text-dim);
   font-size: 0.78rem;
   font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 0;
+  margin-bottom: 10px;
 }
 
 .chips-scroll {
@@ -1516,11 +1517,6 @@ function novaAnotacao() {
     var(--bg);
 }
 
-.curativo-header {
-  background: rgba(8, 20, 37, 0.92);
-  border-bottom-color: color-mix(in srgb, var(--border) 70%, var(--blue) 30%);
-}
-
 .curativo-progress {
   background: var(--bg-hover);
 }
@@ -1531,15 +1527,6 @@ function novaAnotacao() {
 }
 
 .curativo-progress .progress-label {
-  color: var(--text-dim);
-}
-
-.paciente-atalho {
-  border-color: var(--border);
-  background: linear-gradient(180deg, var(--bg-input), var(--bg-card));
-}
-
-.paciente-atalho label {
   color: var(--text-dim);
 }
 

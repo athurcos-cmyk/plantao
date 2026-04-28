@@ -8,6 +8,37 @@
 
 ---
 
+## Sessao 2026-04-28
+
+### Padronizacao do "paciente registrado" nas 8 views de anotacao
+
+- Todas as views (`SinaisVitais`, `AnotacaoMedicacao`, `Encaminhamento`, `Banho`, `Curativo`, `Intercorrencia`, `PassagemPlantao`, `AnotacaoInicial`) foram unificadas visualmente no card de paciente registrado
+- Padrao definido: `.paciente-atalho` com `background: var(--bg-card)`, `border: 1px solid var(--border)`, `border-radius: 16px`, `padding: 12px 16px`, `box-shadow: var(--shadow-md)`
+- Chips padronizados com `overflow-x: auto`, `white-space: nowrap`, `flex-shrink: 0`, `scrollbar-width: none` — sem quebra de linha e sem scrollbar visivel
+- Gap entre chips ajustado para 8px em todas as views
+- `SinaisVitaisView`: box-shadow hardcoded substituido por `var(--shadow-md)`
+
+### Correcao de header theming (BanhoView e CurativoView)
+
+- **BanhoView**: header migrado de `background: rgba(7,18,34,0.82)` e `border-bottom: rgba(86,154,178,0.24)` para `var(--bg-card)` e `var(--border)`
+- **CurativoView**: tema verde removido — header `background: rgba(6,22,15,0.86)` → `var(--bg-card)`, `border-bottom: rgba(92,185,139,0.16)` → `var(--border)`, `backdrop-filter: blur(18px)` → `blur(16px)`; chip-on e labels migrados do verde para o padrao navy/azul
+- Ambos agora respeitam qualquer tema ativo (claro, escuro, rosa, floresta, etc.)
+
+### Correcao de sync de pacientes — fantasma de cache antigo
+
+- Store `pacientes.js` migrada de 3 listeners separados (`onChildAdded` + `onChildChanged` + `onChildRemoved`) para unico `onValue()`
+- `onValue` SEMPRE devolve o estado completo do Firebase, eliminando condicoes de corrida que geravam pacientes fantasmas
+- Logica de dedup removida — nao e mais necessaria com `onValue`
+- Pacientes offline (tempKeys) sao preservados do pending queue ate sincronizarem
+
+### Fix login flash
+
+- Router guard em `src/router/index.js` agora redireciona rota `/` para dashboard quando usuario ja esta logado, eliminando flash de 1-2s da tela de login em reconexao
+
+### Validacao
+
+- `npm run build` passou
+
 ## Sessao 2026-04-27
 
 ### Padronização visual: progress bars e chips

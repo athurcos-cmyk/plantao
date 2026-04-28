@@ -1884,9 +1884,28 @@ select.campo-inline {
 /* Toast global — ver App.vue + style.css */
 /* Rascunho banner global — ver style.css */
 
+.paciente-atalho {
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
+}
+
+.paciente-atalho label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
 /* Chips para seletor de paciente */
 .chips-scroll {
-  display: flex; gap: 6px;
+  display: flex; gap: 8px;
   overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
 }
 .chips-scroll::-webkit-scrollbar { display: none; }

@@ -973,7 +973,7 @@ function selecionarPaciente(p) {
 
 /* Chips para seletor de paciente */
 .chips-scroll {
-  display: flex; gap: 6px;
+  display: flex; gap: 8px;
   overflow-x: auto; padding-bottom: 2px; scrollbar-width: none;
 }
 .chips-scroll::-webkit-scrollbar { display: none; }

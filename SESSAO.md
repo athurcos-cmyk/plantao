@@ -1,12 +1,12 @@
 # Brief — Plantão
 
-## Estado atual (2026-04-27)
+## Estado atual (2026-04-28)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Fechamento visual dos cards de anotação concluído. Foco atual: backlog funcional, refinamentos clínicos.
+App PWA de anotações de enfermagem, em produção em plantao.net. Padrão visual do "paciente registrado" unificado nas 8 views de anotação. Sync de pacientes migrado para `onValue` único (fim de pacientes fantasmas). Header do app adaptado a temas em BanhoView e CurativoView. Foco atual: backlog funcional, refinamentos clínicos.
 
-## Última sessão (2026-04-27)
+## Última sessão (2026-04-28)
 
-Limpeza de arquivos legados: `.clinerules/` removido, `AGENTS.md` atualizado, memória do Codex mesclada na do Claude (agora compartilhada), `TODOS.md` limpo, `CHANGELOG.md` truncado (histórico em `CHANGELOG_HISTORICO.md`), criado `SESSAO.md` como brief único de entrada. Skill `economia-tokens.md` removida (regras mescladas no CLAUDE.md).
+Padronização visual completa do "paciente registrado" em todas as 8 views de anotação — mesmo card, mesmo gap, mesmos chips sem quebra de linha. Correção de header theming no BanhoView e CurativoView (usavam cores fixas em vez de variáveis de tema). Migração da store `pacientes.js` de 3 listeners `onChild*` para `onValue` único — elimina condição de corrida que gerava pacientes fantasmas no cache local após sincronizar entre dispositivos. Fix do login flash (rota `/` redireciona para dashboard quando já autenticado).
 
 ## Stack
 

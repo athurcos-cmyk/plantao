@@ -592,6 +592,7 @@ function novaAnotacao() {
   color: var(--text-dim); font-size: 0.9rem;
   cursor: pointer; font-family: inherit; transition: all 0.15s;
   display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; flex-shrink: 0;
 }
 .chip:active { opacity: 0.8; }
 .chip-on { background: var(--blue); border-color: var(--blue); color: var(--text-on-accent); }
@@ -675,8 +676,8 @@ function novaAnotacao() {
 }
 
 .banho-header {
-  border-bottom: 1px solid rgba(86, 154, 178, 0.24);
-  background: rgba(7, 18, 34, 0.82);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
   backdrop-filter: blur(16px);
 }
 
@@ -700,7 +701,7 @@ function novaAnotacao() {
   border-radius: 18px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  box-shadow: 0 14px 28px rgba(3, 10, 22, 0.16);
+  box-shadow: var(--shadow-md);
 }
 
 .paciente-atalho label {
@@ -718,6 +719,7 @@ function novaAnotacao() {
   gap: 8px;
   overflow-x: auto;
   padding-bottom: 2px;
+  scrollbar-width: none;
 }
 
 .module-hero {
