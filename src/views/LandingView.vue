@@ -122,11 +122,11 @@
       </div>
     </section>
 
-    <!-- ── COMO FUNCIONA ── -->
+    <!-- ── COMO FUNCIONA + O QUE TEM ── -->
     <section class="section section-alt">
       <div class="section-inner">
         <div class="section-eyebrow">Como funciona</div>
-        <h2 class="section-title">Instala em 10 segundos.<br>Usa no plantão inteiro.</h2>
+        <h2 class="section-title">Instala em 10 segundos.<br>Usa o plantão inteiro.</h2>
         <div class="steps">
           <div class="step" v-for="(s, i) in steps" :key="i">
             <div class="step-num">{{ i + 1 }}</div>
@@ -137,15 +137,7 @@
             <div v-if="i < steps.length - 1" class="step-arrow">→</div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ── DESTAQUES ── -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-eyebrow">Tudo que você precisa</div>
-        <h2 class="section-title">O essencial pro seu plantão, num lugar só</h2>
-        <div class="cards-grid">
+        <div class="cards-grid" style="margin-top: 60px;">
           <div class="feat-card" v-for="f in feats" :key="f.title">
             <div class="feat-icon">{{ f.icon }}</div>
             <h3>{{ f.title }}</h3>
@@ -156,7 +148,7 @@
     </section>
 
     <!-- ── DEPOIMENTOS ── -->
-    <section class="section section-alt">
+    <section class="section">
       <div class="section-inner">
         <div class="section-eyebrow">Quem já usa</div>
         <h2 class="section-title">Criado por quem vive o plantão,<br>para quem vive o plantão</h2>
@@ -170,24 +162,6 @@
                 <div class="author-role">{{ t.role }}</div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── LISTA DE FUNCIONALIDADES ── -->
-    <section class="section">
-      <div class="section-inner two-col">
-        <div class="two-col-text">
-          <div class="section-eyebrow">Completo</div>
-          <h2 class="section-title no-margin-bottom">Tudo que você usa no plantão, em um lugar só</h2>
-          <p class="two-col-sub">8 tipos de anotação com texto pronto pra copiar, lembretes por paciente, calculadora de medicação e IA pra dúvidas clínicas.</p>
-          <a class="btn-outline" href="#" @click.prevent="acessarNoPc">Explorar o app →</a>
-        </div>
-        <div class="features-list">
-          <div class="feature-item" v-for="f in features" :key="f">
-            <span class="feature-check">✓</span>
-            <span>{{ f }}</span>
           </div>
         </div>
       </div>
@@ -264,9 +238,7 @@ const feats = [
   { icon: '⚡', title: 'Texto pronto em segundos', desc: '8 tipos de anotação. Preenche os campos, copia e cola no sistema do hospital. Menos tempo perdido com papel, mais tempo pro paciente.' },
   { icon: '🧮', title: 'Calculadora de dose', desc: 'Gotejamento, diluição, dosagem — a conta que você precisa na hora. Abre em qualquer tela do app sem perder o que estava fazendo.' },
   { icon: '🗂️', title: 'Organizador de pacientes', desc: 'Cadastra os pacientes do plantão, anota as pendências de cada um, vê o resumo do dia. Tudo em dois toques.' },
-  { icon: '🤖', title: 'Clara, sua assistente', desc: 'IA especialista em enfermagem. Tira dúvidas clínicas, ajuda a redigir anotações, calcula doses. Como ter uma colega experiente no bolso.' },
   { icon: '📡', title: 'Funciona offline', desc: 'Subsolo do PS, área sem sinal, modo avião — o app funciona. Sincroniza automaticamente quando a internet voltar.' },
-  { icon: '📲', title: 'Instala como app', desc: 'Abre o link, toca "Instalar", pronto. Fica na tela inicial igual app nativo. Sem loja, sem ocupar espaço.' },
   { icon: '✏️', title: 'Cria seu modelo', desc: 'Não gostou do formato das anotações? Em Notas Livres você escreve do seu jeito, salva e reutiliza em todo plantão.' },
 ]
 
@@ -274,18 +246,6 @@ const steps = [
   { title: 'Abre e instala', desc: 'Acessa plantao.net no celular. Toca "Adicionar à tela inicial" — o app fica na tela igual app nativo. Leva 10 segundos.' },
   { title: 'Cadastra os pacientes', desc: 'Coloca nome, leito e as pendências de cada paciente do plantão. O app salva tudo e sincroniza sozinho.' },
   { title: 'Usa o plantão inteiro', desc: 'Anota, copia o texto pro sistema do hospital, configura lembretes. No fim do plantão, é só colar e pronto.' },
-]
-
-const features = [
-  'Avaliação inicial de enfermagem',
-  'Sinais vitais com escala de dor 0–10',
-  'Administração de medicamentos com dupla checagem e local anatômico',
-  'Banho (aspersão e leito)',
-  'Curativo com avaliação COREN (lesão, exsudato, perilesão, bordas)',
-  'Encaminhamento (IDA/RETORNO)',
-  'Passagem de plantão',
-  'Intercorrência / Anotação livre',
-  'Calculadora de medicação (dosagem, gotejamento, diluição)',
 ]
 
 const faq = [
@@ -670,8 +630,6 @@ const testimonials = [
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
-.no-margin-bottom { margin-bottom: 16px; }
-
 /* ── FEATURE CARDS ── */
 .cards-grid {
   display: grid;
@@ -755,68 +713,6 @@ const testimonials = [
   margin-top: 10px;
   align-self: flex-start;
   padding-top: 12px;
-}
-
-/* ── TWO COL ── */
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
-.two-col-text {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.two-col-sub {
-  color: var(--text-dim);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin: 0;
-}
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  color: var(--blue);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--blue) 40%, transparent);
-  border-radius: var(--radius-full);
-  padding: 10px 20px;
-  width: fit-content;
-  transition: background 0.2s, border-color 0.2s;
-  margin-top: 8px;
-}
-.btn-outline:hover {
-  background: var(--blue-muted);
-  border-color: color-mix(in srgb, var(--blue) 60%, transparent);
-}
-
-/* ── FEATURES LIST ── */
-.features-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 0.88rem;
-  color: var(--text-dim);
-  background: var(--bg);
-  transition: border-color 0.2s;
-}
-.feature-item:hover { border-color: color-mix(in srgb, var(--blue) 35%, transparent); }
-.feature-check {
-  color: var(--success);
-  font-weight: 700;
-  flex-shrink: 0;
 }
 
 /* ── TESTIMONIALS ── */
@@ -979,11 +875,6 @@ const testimonials = [
   .cards-grid { grid-template-columns: 1fr; }
   .testimonials { grid-template-columns: 1fr; }
 
-  .two-col {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-
   .steps {
     flex-direction: column;
     gap: 24px;
@@ -999,10 +890,9 @@ const testimonials = [
   .cta-section { padding: 64px 20px; }
   .cta-title br { display: none; }
   .footer { padding: 40px 20px; }
+}
 
-  }
-
-  /* ── FAQ ── */
+/* ── FAQ ── */
 .faq-list {
   display: flex;
   flex-direction: column;
