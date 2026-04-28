@@ -254,6 +254,8 @@ watch(
   (logado) => {
     if (logado) {
       anotacoes.iniciar()
+      pacientes.iniciar()
+      organizador.iniciar()
       if (isOnline.value) sincronizarTudo(false)
       configurarPushSobDemanda(auth.syncCode).catch(() => {})
     } else {
