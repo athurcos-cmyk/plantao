@@ -304,10 +304,7 @@ const temAtualizacao = ref(false)
 function recarregarApp() { window.location.reload() }
 const updateSW = registerSW({
   immediate: true,
-  onNeedRefresh() {
-    // Auto-aplica a atualização e recarrega sem depender do clique do usuário
-    updateSW().then(() => window.location.reload())
-  },
+  onNeedRefresh() { temAtualizacao.value = true },
   onRegisteredSW(swUrl, registration) {
     if (registration) {
       // Check ao voltar à aba
