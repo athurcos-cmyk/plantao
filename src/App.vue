@@ -304,6 +304,18 @@ watch(mostrarBottomNav, (visivel) => {
 import { registerSW } from 'virtual:pwa-register'
 const temAtualizacao = ref(false)
 function recarregarApp() { window.location.reload() }
+
+// Recarrega quando o SW trocar de versão (autoUpdate + clientsClaim)
+// Sem isso, o código velho fica rodando com o SW novo — app trava
+let swRefreshing = false
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (swRefreshing) return
+    swRefreshing = true
+    window.location.reload()
+  })
+}
+
 const updateSW = registerSW({
   immediate: true,
   onNeedRefresh() { temAtualizacao.value = true },
