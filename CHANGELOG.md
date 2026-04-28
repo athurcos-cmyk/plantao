@@ -26,11 +26,12 @@
 
 - `twilio` instalado (preparado para uso futuro de SMS)
 
-### PWA: auto-update agressivo
+### PWA: check periódico de atualização + correção de inicialização
 
-- `onNeedRefresh()` agora chama `updateSW().then(() => location.reload())` em vez de só mostrar banner — atualização aplicada automaticamente sem clique
 - Adicionado `setInterval` 30min no `onRegisteredSW` para verificar atualizações durante plantões longos (browser só checa em navegação, insuficiente em SPA)
-- **Problema resolvido:** usuários com versão antiga instalada há meses agora recebem atualização automaticamente ao abrir o app
+- `onNeedRefresh()` mantém banner (sem auto-reload, que causava instabilidade)
+- **Fix crítico:** `pacientes.iniciar()` e `organizador.iniciar()` não eram chamados no login — só `anotacoes.iniciar()`. Isso fazia o badge de pendências não aparecer ao dar refresh no Dashboard, porque os pacientes nunca carregavam (o Dashboard não tinha onMounted com iniciar). Adicionado no mesmo watch de `auth.isLoggedIn` no App.vue.
+- Commits: `30f51a9`, `ab6cf32`, `464a8ab`
 
 ### Validacao
 

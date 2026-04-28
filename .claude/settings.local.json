@@ -32,7 +32,8 @@
       "Skill(office-hours)",
       "WebSearch",
       "WebFetch(domain:www.notion.so)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(node *)"
     ]
   }
 }
