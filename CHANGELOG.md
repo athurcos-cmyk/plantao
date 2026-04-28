@@ -8,7 +8,52 @@
 
 ---
 
-## Sessao 2026-04-28
+## Sessao 2026-04-28 (parte 3)
+
+### Landing page — refinamentos finais
+
+- **Hero-badge removido:** redundante com a barra de acesso antecipado no topo
+- **Palavra "redigitando" removida** em dois lugares (feat card + step desc) — trocada por "perdido com papel" e "e so colar e pronto"
+- **"no plano gratuito" removido** do CTA final — agora so "X vagas disponiveis" (evita sugerir que existe plano pago)
+- **Stat "0" → "Zero"**: "0 Pendencias esquecidas" mudou para "Zero Pendencia esquecida" (visualmente mais limpo)
+- **Stat "Menos redigitacao" → "Menos papel"**: mesma familia da palavra rejeitada
+- **CSS morto removido:** ~200 linhas de `.install-section`, `.login-options`, `.hero-badge` e variacoes mobile sem template correspondente
+- **LandingView CSS reduziu de 19.41 kB → 13.67 kB** no bundle
+
+### Analise critica da landing
+
+- Estrutura validada contra o strategy doc `.gstack/landing-strategy.md` — todas as secoes estao na ordem correta
+- Navegacao, hero (agora com mockup do dashboard real), stats, como funciona, cards de destaque, depoimentos, lista de funcionalidades, FAQ, CTA final e footer — coerentes e sem redundancia
+
+### Validacao
+
+- `npm run build` passou
+
+---
+
+## Sessao 2026-04-28 (parte 2)
+
+### Landing page reformulada com posicionamento de dor/credibilidade
+
+- **Posicionamento:** Hero trocado de "Organize seu plantao" para "Nunca mais perde uma pendencia no plantao" — copia centrada na dor do enfermeiro, nao em features
+- **Barra de urgencia removida:** substituida por barra de "Acesso antecipado" com tom calmo (pill azul), mantendo a escassez real de 100 vagas do Firebase Spark sem parecer golpe de marketing
+- **CTA unificado:** "Usar de graca →" em vez de "Comecar agora — gratis" / "Garantir minha vaga" (condicional que mudava conforme vagas)
+- **Stats atualizados:** "Ferramentas no app" → "Tipos de anotacao", "100% Offline" → "+ Menos redigitacao, mais cuidado" (sem numero fixo)
+- **Seccoes removidas:** Instalar, Formas de Entrar — informacao duplicada ou detalhe demais pra landing
+- **Reordenação:** Como funciona → Destaques → Depoimentos (subiram) → Lista de funcionalidades → FAQ → CTA final
+- **CTA final:** "Seu plantao nao pode esperar" em vez de "Entra no seu proximo plantao com tudo organizado"
+- **Copias dos 8 cards de funcionalidades reescritas:** foco em alivio de dor ("Chega de esquecer", "Texto pronto em segundos") em vez de descricao de features
+- **Mockup do celular atualizado:** reflete o design atual do app (badge de pendencias, card de paciente, barra de anotacao rapida)
+- **Script limpo:** `displayUrl`, `urlCopiada` e `copiarUrl` removidos (eram da seccao Instalar que foi removida)
+- **CSS:** barra de urgencia substituida por `.early-bar` + `.early-pill`
+
+### Guia de implementacao de pagamento
+
+- `PAYMENT_GUIDE.md` criado na raiz com modelo Free vs Pro (R$14,99/mes), arquitetura Stripe, estrutura Firebase, ordem de implementacao em 9 passos e riscos
+
+### Validacao
+
+- `npm run build` passou
 
 ### Design system: DESIGN.md e SESSAO.md atualizados para 12 temas
 

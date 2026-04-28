@@ -12,11 +12,11 @@
       </div>
     </nav>
 
-    <!-- ── URGÊNCIA ── -->
-    <div class="urgencia-bar" v-if="vagasRestantes <= 20">
-      <span class="urgencia-dot"></span>
-      <span v-if="vagasRestantes > 0">Restam apenas <strong>{{ vagasRestantes }} vagas</strong> no lançamento — após isso, lista de espera.</span>
-      <span v-else>🔒 Vagas esgotadas — entre na lista de espera: <a href="mailto:contato@plantao.net" class="urgencia-link">contato@plantao.net</a></span>
+    <!-- ── ACESSO ANTECIPADO ── -->
+    <div class="early-bar">
+      <span class="early-pill">Acesso antecipado</span>
+      <span v-if="vagasRestantes > 0"><strong>{{ vagasRestantes }} vagas</strong> disponíveis</span>
+      <span v-else>🔒 Vagas esgotadas — <a href="mailto:contato@plantao.net" style="color:var(--blue);font-weight:600;">contato@plantao.net</a></span>
     </div>
 
     <!-- ── HERO ── -->
@@ -25,31 +25,23 @@
       <div class="hero-glow"></div>
       <div class="hero-inner">
         <div class="hero-text">
-          <div class="hero-badge">
-            <span class="badge-dot"></span>
-            Lançamento beta · {{ vagasRestantes > 0 ? vagasRestantes + ' vagas restantes' : 'Vagas esgotadas' }}
-          </div>
           <h1 class="hero-title">
-            Organize seu plantão.<br>
-            Não esqueça nada.<br>
-            <span class="hero-accent">100% offline.</span>
+            Menos tempo<br>
+            com papel.<br>
+            <span class="hero-accent">Mais tempo pro paciente.</span>
           </h1>
           <p class="hero-sub">
-            Anotações, lembretes de medicação, calculadora de dose, organização de pacientes — tudo no celular, funciona offline.
+            Anotações com texto pronto pra copiar, lembretes que não deixam você esquecer, calculadora de dose no bolso. Tudo offline, no celular.
           </p>
           <p class="hero-disclaimer">
             ⚠️ Ferramenta pessoal de apoio — não substitui o sistema oficial do hospital.
           </p>
           <div class="hero-actions">
-            <a v-if="vagasRestantes > 0" class="btn-hero" href="#" @click.prevent="acessarNoPc">
-              Começar agora — grátis
-            </a>
-            <a v-else class="btn-hero btn-hero-esgotado" href="mailto:contato@plantao.net">
-              Entrar na lista de espera →
+            <a class="btn-hero" href="#" @click.prevent="acessarNoPc">
+              Usar de graça →
             </a>
             <p class="hero-hint">
-              <span v-if="vagasRestantes > 0">Cria a conta em 10 segundos com Google ou email. Sem cartão.</span>
-              <span v-else>Vagas esgotadas. Me manda um email e te aviso quando abrir novas vagas.</span>
+              Cria a conta em 10 segundos. Google, email ou código de acesso. Sem cartão.
             </p>
           </div>
           <div class="hero-trust">
@@ -68,48 +60,38 @@
           </div>
         </div>
 
-        <div class="phone-wrap">
-          <div class="phone-glow"></div>
-          <div class="phone">
-            <div class="phone-notch"></div>
-            <div class="phone-screen">
-              <div class="sim-header">
-                <div class="sim-brand">
-                  <img src="/icons/icon-512.png" width="14" height="14" alt="Plantão" style="border-radius:3px;display:block" />
-                  <span class="sim-title">Plantão</span>
-                </div>
-                <span class="sim-badge">● online</span>
-              </div>
-              <div class="sim-label">ANOTAÇÕES</div>
-              <div class="sim-grid">
-                <div class="sim-card">
-                  <span class="sim-icon">📋</span>
-                  <span>Avaliação<br>inicial</span>
-                </div>
-                <div class="sim-card">
-                  <span class="sim-icon">❤️</span>
-                  <span>Sinais<br>vitais</span>
-                </div>
-                <div class="sim-card">
-                  <span class="sim-icon">💊</span>
-                  <span>Medica-<br>ção</span>
-                </div>
-                <div class="sim-card sim-card-active">
-                  <span class="sim-icon">🩹</span>
-                  <span>Curativo</span>
-                </div>
-              </div>
-              <div class="sim-output">
-                <div class="sim-output-header">
-                  <span class="sim-output-label">TEXTO GERADO</span>
-                  <span class="sim-output-time">14h30</span>
-                </div>
-                <div class="sim-output-text">14h30 – Avaliação de enfermagem realizada. Paciente em decúbito dorsal, grades elevadas, colaborativo...</div>
-                <button class="sim-copy-btn">
-                  <span>✓</span> Copiado!
-                </button>
-              </div>
+        <div class="hero-ui">
+          <div class="hero-ui-header">
+            <div class="hero-ui-brand">
+              <img src="/icons/icon-512.png" width="16" height="16" alt="" style="border-radius:4px;display:block" />
+              <span class="hero-ui-title">Plantão</span>
             </div>
+            <div class="hero-ui-pend">🔴 2</div>
+          </div>
+          <div class="hero-ui-label">ANOTAÇÕES</div>
+          <div class="hero-ui-grid">
+            <div class="hero-ui-card">
+              <span class="hero-ui-icon">📋</span>
+              <span>Avaliação</span>
+            </div>
+            <div class="hero-ui-card">
+              <span class="hero-ui-icon">❤️</span>
+              <span>Sinais</span>
+            </div>
+            <div class="hero-ui-card hero-ui-card-on">
+              <span class="hero-ui-icon">💊</span>
+              <span>Medicação</span>
+            </div>
+            <div class="hero-ui-card">
+              <span class="hero-ui-icon">🩹</span>
+              <span>Curativo</span>
+            </div>
+          </div>
+          <div class="hero-ui-footer">
+            <span class="hero-ui-tab hero-ui-tab-on">Início</span>
+            <span class="hero-ui-tab">Pacientes</span>
+            <span class="hero-ui-tab">Anotações</span>
+            <span class="hero-ui-tab">Perfil</span>
           </div>
         </div>
       </div>
@@ -119,18 +101,18 @@
     <section class="stats-section">
       <div class="stats-inner">
         <div class="stat-item">
-          <span class="stat-num">0</span>
-          <span class="stat-label">Pendências esquecidas</span>
+          <span class="stat-num">Zero</span>
+          <span class="stat-label">Pendência esquecida</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
           <span class="stat-num">8+</span>
-          <span class="stat-label">Ferramentas no app</span>
+          <span class="stat-label">Tipos de anotação</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
-          <span class="stat-num">100%</span>
-          <span class="stat-label">Offline</span>
+          <span class="stat-num">+</span>
+          <span class="stat-label">Menos papel, mais cuidado</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
@@ -140,113 +122,11 @@
       </div>
     </section>
 
-    <!-- ── INSTALAR ── -->
-    <section class="install-section">
-      <div class="install-inner">
-        <div class="install-text">
-          <div class="install-eyebrow">
-            <span class="install-eyebrow-dot"></span>
-            Celular ou computador
-          </div>
-          <h2 class="install-title">Suas anotações<br>em qualquer dispositivo</h2>
-          <p class="install-sub">
-            Durante o plantão, use no <strong>celular</strong> — rápido, com uma mão, onde estiver.
-            Em casa ou no posto, acesse pelo <strong>computador</strong> e veja tudo sincronizado.
-          </p>
-          <div class="install-devices">
-            <div class="install-device">
-              <div class="device-icon">📱</div>
-              <div class="device-body">
-                <strong>Celular</strong>
-                <span>Instala na tela inicial. Funciona offline. Ideal para o plantão.</span>
-              </div>
-            </div>
-            <div class="device-sync">⇄</div>
-            <div class="install-device">
-              <div class="device-icon">💻</div>
-              <div class="device-body">
-                <strong>Computador</strong>
-                <span>Acesse pelo navegador. Mesmos dados, sincronizados.</span>
-              </div>
-            </div>
-          </div>
-          <p class="install-sync-note">
-            Faça login com o mesmo <strong>email</strong> ou <strong>código de acesso</strong> em qualquer dispositivo para ter suas anotações sincronizadas.
-          </p>
-        </div>
-
-        <div class="install-card">
-          <div class="install-card-header">
-            <span class="install-card-icon">🔗</span>
-            <span class="install-card-label">Acesse agora</span>
-          </div>
-          <div class="install-url-box">
-            <span class="install-url-text">{{ displayUrl }}</span>
-            <button class="install-url-copy" @click="copiarUrl" :class="{ copied: urlCopiada }">
-              {{ urlCopiada ? '✓ Copiado' : 'Copiar' }}
-            </button>
-          </div>
-          <p class="install-card-hint">
-            No celular: abra esse link no navegador e toque em <strong>"Adicionar à tela inicial"</strong> para instalar.
-          </p>
-          <div class="install-card-divider"></div>
-          <p class="install-pc-label">No computador?</p>
-          <p class="install-pc-hint">Funciona direto no navegador, sem instalar nada. Faça login e use normalmente.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── DESTAQUES ── -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-eyebrow">Por que usar</div>
-        <h2 class="section-title">Mais que anotações — é o plantão inteiro organizado</h2>
-        <div class="cards-grid">
-          <div class="feat-card" v-for="f in feats" :key="f.title">
-            <div class="feat-icon">{{ f.icon }}</div>
-            <h3>{{ f.title }}</h3>
-            <p>{{ f.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── FORMAS DE ENTRAR ── -->
+    <!-- ── COMO FUNCIONA ── -->
     <section class="section section-alt">
       <div class="section-inner">
-        <div class="section-eyebrow">Acesso</div>
-        <h2 class="section-title">Três formas de entrar</h2>
-        <div class="login-options">
-          <div class="login-opt">
-            <div class="login-opt-icon">🔵</div>
-            <div class="login-opt-body">
-              <h3 class="login-opt-title">Google</h3>
-              <p class="login-opt-desc">Um toque e pronto. Usa a conta Google que você já tem. Mais rápido para o dia a dia.</p>
-            </div>
-          </div>
-          <div class="login-opt">
-            <div class="login-opt-icon">✉️</div>
-            <div class="login-opt-body">
-              <h3 class="login-opt-title">Email e senha</h3>
-              <p class="login-opt-desc">Cria uma conta com seu email. Bom para quem prefere manter separado do Google.</p>
-            </div>
-          </div>
-          <div class="login-opt">
-            <div class="login-opt-icon">🔑</div>
-            <div class="login-opt-body">
-              <h3 class="login-opt-title">Código de acesso</h3>
-              <p class="login-opt-desc">Cada conta tem um código único de 6 letras. Ideal para entrar rápido no computador do posto, sem digitar o email.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── COMO FUNCIONA ── -->
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-eyebrow">Simples assim</div>
-        <h2 class="section-title">Começa a usar em 3 passos</h2>
+        <div class="section-eyebrow">Como funciona</div>
+        <h2 class="section-title">Instala em 10 segundos.<br>Usa no plantão inteiro.</h2>
         <div class="steps">
           <div class="step" v-for="(s, i) in steps" :key="i">
             <div class="step-num">{{ i + 1 }}</div>
@@ -260,19 +140,16 @@
       </div>
     </section>
 
-    <!-- ── LISTA DE FUNCIONALIDADES ── -->
+    <!-- ── DESTAQUES ── -->
     <section class="section">
-      <div class="section-inner two-col">
-        <div class="two-col-text">
-          <div class="section-eyebrow">Completo</div>
-          <h2 class="section-title no-margin-bottom">Tudo que você usa no plantão, em um lugar só</h2>
-          <p class="two-col-sub">Anotações com texto pronto, lembretes por paciente, calculadora de medicação, IA para dúvidas clínicas e organizador de plantão.</p>
-          <a class="btn-outline" href="#" @click.prevent="acessarNoPc">Explorar o app →</a>
-        </div>
-        <div class="features-list">
-          <div class="feature-item" v-for="f in features" :key="f">
-            <span class="feature-check">✓</span>
-            <span>{{ f }}</span>
+      <div class="section-inner">
+        <div class="section-eyebrow">Tudo que você precisa</div>
+        <h2 class="section-title">O essencial pro seu plantão, num lugar só</h2>
+        <div class="cards-grid">
+          <div class="feat-card" v-for="f in feats" :key="f.title">
+            <div class="feat-icon">{{ f.icon }}</div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.desc }}</p>
           </div>
         </div>
       </div>
@@ -282,7 +159,7 @@
     <section class="section section-alt">
       <div class="section-inner">
         <div class="section-eyebrow">Quem já usa</div>
-        <h2 class="section-title">Criado por quem vive o plantão, para quem vive o plantão</h2>
+        <h2 class="section-title">Criado por quem vive o plantão,<br>para quem vive o plantão</h2>
         <div class="testimonials">
           <div class="testimonial" v-for="t in testimonials" :key="t.name">
             <p class="testimonial-text">"{{ t.text }}"</p>
@@ -298,8 +175,26 @@
       </div>
     </section>
 
-    <!-- ── FAQ / OBJEÇÕES ── -->
+    <!-- ── LISTA DE FUNCIONALIDADES ── -->
     <section class="section">
+      <div class="section-inner two-col">
+        <div class="two-col-text">
+          <div class="section-eyebrow">Completo</div>
+          <h2 class="section-title no-margin-bottom">Tudo que você usa no plantão, em um lugar só</h2>
+          <p class="two-col-sub">8 tipos de anotação com texto pronto pra copiar, lembretes por paciente, calculadora de medicação e IA pra dúvidas clínicas.</p>
+          <a class="btn-outline" href="#" @click.prevent="acessarNoPc">Explorar o app →</a>
+        </div>
+        <div class="features-list">
+          <div class="feature-item" v-for="f in features" :key="f">
+            <span class="feature-check">✓</span>
+            <span>{{ f }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="section section-alt">
       <div class="section-inner">
         <div class="section-eyebrow">Dúvidas comuns</div>
         <h2 class="section-title">Perguntas frequentes</h2>
@@ -316,16 +211,12 @@
     <section class="cta-section">
       <div class="cta-glow"></div>
       <div class="section-inner cta-inner">
-        <div class="section-eyebrow eyebrow-light">Comece agora</div>
-        <h2 class="cta-title">Entra no seu próximo plantão com tudo organizado</h2>
-        <p class="cta-sub" v-if="vagasRestantes > 0">
-          Ainda restam <strong>{{ vagasRestantes }} vagas</strong> no lançamento. Lembretes, calculadora, anotações prontas. Grátis.
+        <div class="section-eyebrow eyebrow-light">Teste agora</div>
+        <h2 class="cta-title">Seu plantão não pode esperar</h2>
+        <p class="cta-sub">
+          Ainda restam <strong>{{ vagasRestantes }} vagas</strong> disponíveis. Cria sua conta em 10 segundos — sem cartão, sem compromisso.
         </p>
-        <p class="cta-sub" v-else>
-          Vagas esgotadas. Entre na lista de espera e te aviso quando abrir novas vagas.
-        </p>
-        <a v-if="vagasRestantes > 0" class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Garantir minha vaga →</a>
-        <a v-else class="btn-hero btn-hero-lg" href="mailto:contato@plantao.net">Entrar na lista de espera →</a>
+        <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Usar de graça →</a>
         <p class="cta-hint">Android e iPhone. Funciona offline.</p>
       </div>
     </section>
@@ -351,7 +242,6 @@ import { db } from '../firebase.js'
 import { ref as dbRef, get } from 'firebase/database'
 
 const appUrl = window.location.origin + '/'
-const displayUrl = window.location.origin
 
 const vagasRestantes = ref(100)
 
@@ -365,39 +255,25 @@ onMounted(async () => {
   }
 })
 
-const urlCopiada = ref(false)
-function copiarUrl() {
-  navigator.clipboard.writeText(appUrl).catch(() => {
-    const el = document.createElement('textarea')
-    el.value = appUrl
-    document.body.appendChild(el)
-    el.select()
-    document.execCommand('copy')
-    document.body.removeChild(el)
-  })
-  urlCopiada.value = true
-  setTimeout(() => { urlCopiada.value = false }, 2000)
-}
-
 function acessarNoPc() {
   window.location.href = appUrl
 }
 
 const feats = [
-  { icon: '🔔', title: 'Nunca mais esquece nada', desc: 'Coloca lembrete por paciente. Chega notificação no horário certo — mesmo com o celular na bolsa e tela bloqueada.' },
-  { icon: '🧮', title: 'Calculadora de medicação', desc: 'Gotejamento, diluição, dosagem — tudo na palma da mão. Botão flutuante em qualquer tela, sem sair do que você tava fazendo.' },
-  { icon: '🗂️', title: 'Organize o plantão inteiro', desc: 'Cadastra os pacientes, anota as pendências, organiza o template do plantão. Tudo no lugar, tudo acessível em segundos.' },
-  { icon: '⚡', title: 'Texto pronto para copiar', desc: '8 tipos de anotação. Preenche, copia e cola no sistema do hospital. Sem redigitar, sem erro de formato.' },
-  { icon: '🤖', title: 'IA especialista em enfermagem', desc: 'Clara tira dúvidas clínicas, calcula doses e ajuda a redigir anotações. Como ter uma colega experiente no bolso.' },
-  { icon: '📡', title: 'Funciona sem internet', desc: 'Offline completo. Subsolo, área sem sinal, onde for — o app funciona. Sincroniza quando a rede voltar.' },
-  { icon: '📲', title: 'Instala como app nativo', desc: 'Sem loja de apps. Abre o link, toca "Instalar", fica na tela inicial. Igual a um app da loja, sem baixar nada.' },
-  { icon: '✏️', title: 'Crie seu próprio modelo', desc: 'Não gostou de nenhuma anotação? Em Notas Livres você escreve do jeito que usa no dia a dia — salva o modelo e reutiliza em todo plantão.' },
+  { icon: '🔔', title: 'Chega de esquecer', desc: 'Coloca lembrete por paciente com horário exato. A notificação chega no celular mesmo com tela bloqueada — nunca mais perde uma medicação.' },
+  { icon: '⚡', title: 'Texto pronto em segundos', desc: '8 tipos de anotação. Preenche os campos, copia e cola no sistema do hospital. Menos tempo perdido com papel, mais tempo pro paciente.' },
+  { icon: '🧮', title: 'Calculadora de dose', desc: 'Gotejamento, diluição, dosagem — a conta que você precisa na hora. Abre em qualquer tela do app sem perder o que estava fazendo.' },
+  { icon: '🗂️', title: 'Organizador de pacientes', desc: 'Cadastra os pacientes do plantão, anota as pendências de cada um, vê o resumo do dia. Tudo em dois toques.' },
+  { icon: '🤖', title: 'Clara, sua assistente', desc: 'IA especialista em enfermagem. Tira dúvidas clínicas, ajuda a redigir anotações, calcula doses. Como ter uma colega experiente no bolso.' },
+  { icon: '📡', title: 'Funciona offline', desc: 'Subsolo do PS, área sem sinal, modo avião — o app funciona. Sincroniza automaticamente quando a internet voltar.' },
+  { icon: '📲', title: 'Instala como app', desc: 'Abre o link, toca "Instalar", pronto. Fica na tela inicial igual app nativo. Sem loja, sem ocupar espaço.' },
+  { icon: '✏️', title: 'Cria seu modelo', desc: 'Não gostou do formato das anotações? Em Notas Livres você escreve do seu jeito, salva e reutiliza em todo plantão.' },
 ]
 
 const steps = [
-  { title: 'Instala em 10 segundos', desc: 'Abre o link no celular, toca "Adicionar à tela inicial". Fica na tela inicial igual app nativo.' },
-  { title: 'Cadastra seus pacientes', desc: 'Coloca o nome, leito e as pendências de cada paciente. O app lembra tudo por você.' },
-  { title: 'Usa durante o plantão', desc: 'Anota, configura lembretes, calcula dose. No fim, o texto tá pronto para copiar no sistema.' },
+  { title: 'Abre e instala', desc: 'Acessa plantao.net no celular. Toca "Adicionar à tela inicial" — o app fica na tela igual app nativo. Leva 10 segundos.' },
+  { title: 'Cadastra os pacientes', desc: 'Coloca nome, leito e as pendências de cada paciente do plantão. O app salva tudo e sincroniza sozinho.' },
+  { title: 'Usa o plantão inteiro', desc: 'Anota, copia o texto pro sistema do hospital, configura lembretes. No fim do plantão, é só colar e pronto.' },
 ]
 
 const features = [
@@ -453,40 +329,33 @@ const testimonials = [
   overflow-x: hidden;
 }
 
-/* ── BARRA DE URGÊNCIA ── */
-.urgencia-bar {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 44%, var(--bg-card) 56%), color-mix(in srgb, var(--blue) 22%, transparent));
-  border-bottom: 1px solid color-mix(in srgb, var(--blue) 28%, transparent);
+/* ── BARRA DE ACESSO ANTECIPADO ── */
+.early-bar {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
   text-align: center;
-  padding: 9px 16px;
-  font-size: 0.85rem;
-  color: var(--text);
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
-.urgencia-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--danger);
-  animation: pulsar 1.4s ease-in-out infinite;
-  flex-shrink: 0;
-}
-@keyframes pulsar {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
-}
-.urgencia-link {
+.early-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--blue-muted);
   color: var(--blue);
+  font-size: 0.68rem;
   font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
 }
-.btn-hero-esgotado {
-  background: var(--text-muted) !important;
-  cursor: default;
-  opacity: 0.75;
-}
+.early-bar strong { color: var(--text); font-weight: 600; }
 
 /* ── NAV ── */
 .nav {
@@ -571,32 +440,6 @@ const testimonials = [
   flex-direction: column;
   gap: 20px;
 }
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--blue-muted);
-  color: var(--blue);
-  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
-  border-radius: var(--radius-full);
-  padding: 5px 14px 5px 10px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  width: fit-content;
-}
-.badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--blue);
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
 .hero-title {
   font-size: clamp(2rem, 4.5vw, 3.2rem);
   font-weight: 700;
@@ -675,149 +518,85 @@ const testimonials = [
   font-size: 0.8rem;
 }
 
-/* ── PHONE MOCKUP ── */
-.phone-wrap {
+/* ── HERO UI (dashboard mockup) ── */
+.hero-ui {
   flex-shrink: 0;
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-.phone-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 320px;
-  height: 400px;
-  background: radial-gradient(ellipse, color-mix(in srgb, var(--blue) 18%, transparent) 0%, transparent 65%);
-  pointer-events: none;
-  z-index: 0;
-}
-.phone {
-  width: 258px;
-  background: color-mix(in srgb, var(--bg-card) 84%, var(--bg) 16%);
-  border: 2px solid var(--border);
-  border-radius: 44px;
-  padding: 14px 12px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
   box-shadow: var(--shadow-modal);
-  position: relative;
-  z-index: 1;
-}
-.phone-notch {
-  width: 80px;
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  margin: 0 auto 12px;
-}
-.phone-screen {
-  background: var(--bg);
-  border-radius: 32px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 16px 14px;
-  min-height: 460px;
+  gap: 12px;
 }
-.sim-header {
+.hero-ui-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2px;
 }
-.sim-brand {
+.hero-ui-brand {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
-.sim-title {
-  font-size: 0.95rem;
+.hero-ui-title {
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
 }
-.sim-badge {
+.hero-ui-pend {
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.hero-ui-label {
   font-size: 0.6rem;
-  color: var(--success);
-  font-weight: 600;
-}
-.sim-label {
-  font-size: 0.58rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--text-muted);
   text-transform: uppercase;
-  margin-bottom: -4px;
 }
-.sim-grid {
+.hero-ui-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
-.sim-card {
-  background: var(--bg-card);
+.hero-ui-card {
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 12px 10px;
-  font-size: 0.65rem;
-  color: var(--text-dim);
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 6px;
+  font-size: 0.68rem;
+  color: var(--text-dim);
   font-weight: 500;
-  line-height: 1.3;
-  transition: border-color 0.2s;
+  text-align: center;
 }
-.sim-card-active {
+.hero-ui-card-on {
   background: var(--blue-muted);
   border-color: color-mix(in srgb, var(--blue) 40%, transparent);
   color: var(--text);
 }
-.sim-icon { font-size: 1rem; }
-.sim-output {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 2px;
-}
-.sim-output-header {
+.hero-ui-icon { font-size: 1.2rem; }
+.hero-ui-footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  justify-content: space-around;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
 }
-.sim-output-label {
-  font-size: 0.55rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-.sim-output-time {
+.hero-ui-tab {
   font-size: 0.6rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.hero-ui-tab-on {
   color: var(--blue);
   font-weight: 600;
-}
-.sim-output-text {
-  font-size: 0.62rem;
-  color: var(--text-dim);
-  line-height: 1.55;
-  margin-bottom: 10px;
-}
-.sim-copy-btn {
-  background: var(--success);
-  color: var(--text-on-accent);
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 7px 12px;
-  border-radius: 8px;
-  text-align: center;
-  width: 100%;
-  border: none;
-  cursor: default;
-  letter-spacing: 0.02em;
 }
 
 /* ── STATS ── */
@@ -1175,220 +954,6 @@ const testimonials = [
   color: var(--blue);
 }
 
-/* ── INSTALL SECTION ── */
-.install-section {
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 80px 32px;
-  position: relative;
-  overflow: hidden;
-}
-.install-section::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--blue) 7%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
-  pointer-events: none;
-}
-.install-inner {
-  max-width: 1040px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-.install-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 14px;
-}
-.install-eyebrow-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--blue);
-  box-shadow: var(--shadow-sm);
-  animation: pulse 2s ease-in-out infinite;
-}
-.install-title {
-  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  margin: 0 0 16px;
-}
-.install-sub {
-  color: var(--text-dim);
-  font-size: 0.95rem;
-  line-height: 1.65;
-  margin: 0 0 28px;
-  max-width: 400px;
-}
-.install-sub strong { color: var(--text); }
-
-.install-devices {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-}
-.install-device {
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-.device-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
-.device-body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.device-body strong {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-}
-.device-body span {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-.device-sync {
-  color: var(--blue);
-  font-size: 1.1rem;
-  font-weight: 700;
-  flex-shrink: 0;
-  padding: 0 4px;
-}
-.install-sync-note {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin: 0;
-  line-height: 1.5;
-  padding: 10px 14px;
-  background: var(--blue-muted);
-  border: 1px solid color-mix(in srgb, var(--blue) 20%, transparent);
-  border-radius: var(--radius);
-}
-.install-sync-note strong { color: var(--blue); }
-
-/* card direito */
-.install-card {
-  background: var(--bg);
-  border: 1px solid color-mix(in srgb, var(--blue) 25%, transparent);
-  border-radius: 20px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: var(--shadow-modal);
-}
-.install-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.install-card-icon { font-size: 1.3rem; }
-.install-card-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-.install-url-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-}
-.install-url-text {
-  flex: 1;
-  font-size: 0.82rem;
-  color: var(--blue);
-  font-weight: 500;
-  word-break: break-all;
-  font-family: monospace;
-}
-.install-url-copy {
-  background: var(--blue-muted);
-  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
-  color: var(--blue);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: inherit;
-  transition: background 0.2s, color 0.2s;
-  flex-shrink: 0;
-}
-.install-url-copy.copied {
-  background: var(--success-muted);
-  border-color: color-mix(in srgb, var(--success) 40%, transparent);
-  color: var(--success);
-}
-.install-card-hint {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin: 0;
-  line-height: 1.5;
-}
-.install-card-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
-}
-.install-pc-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  margin: 0;
-}
-.btn-pc {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-size: 0.88rem;
-  font-weight: 600;
-  font-family: inherit;
-  padding: 12px 18px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-  text-align: left;
-}
-.btn-pc:hover {
-  border-color: color-mix(in srgb, var(--blue) 45%, transparent);
-  color: var(--text);
-  background: var(--blue-muted);
-}
-.install-pc-hint {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin: 0;
-  line-height: 1.4;
-}
-
 /* ── MOBILE RESPONSIVE ── */
 @media (max-width: 780px) {
   .hero { padding: 48px 20px 56px; }
@@ -1397,13 +962,11 @@ const testimonials = [
     gap: 48px;
     text-align: center;
   }
-  .hero-badge, .btn-hero { align-self: center; }
+  .btn-hero { align-self: center; }
   .hero-sub { max-width: 100%; }
   .hero-hint { text-align: center; }
   .hero-trust { justify-content: center; }
-  .phone-wrap { order: -1; }
-  .phone { width: 220px; }
-  .phone-screen { min-height: 380px; }
+  .hero-ui { width: 100%; order: -1; }
 
   .stats-inner { gap: 0; flex-wrap: wrap; }
   .stat-item { min-width: 45%; padding: 12px 0; }
@@ -1437,52 +1000,9 @@ const testimonials = [
   .cta-title br { display: none; }
   .footer { padding: 40px 20px; }
 
-  .install-section { padding: 56px 20px; }
-  .install-inner {
-    grid-template-columns: 1fr;
-    gap: 40px;
   }
-  .install-sub { max-width: 100%; }
-}
 
-/* ── FORMAS DE ENTRAR ── */
-.login-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 560px;
-  margin: 0 auto;
-}
-.login-opt {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 18px;
-}
-.login-opt-icon {
-  font-size: 1.4rem;
-  flex-shrink: 0;
-  width: 36px;
-  text-align: center;
-  margin-top: 2px;
-}
-.login-opt-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text);
-  margin: 0 0 4px;
-}
-.login-opt-desc {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* ── FAQ ── */
+  /* ── FAQ ── */
 .faq-list {
   display: flex;
   flex-direction: column;

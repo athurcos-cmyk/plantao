@@ -2,11 +2,11 @@
 
 ## Estado atual (2026-04-28)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas (6 dark + 6 light) via variáveis CSS — cores nunca hardcoded. Padrão visual do "paciente registrado" unificado nas 8 views de anotação. Sync de pacientes migrado para `onValue` único (fim de pacientes fantasmas). Header do app adaptado a temas em BanhoView e CurativoView. Foco atual: backlog funcional, refinamentos clínicos.
+App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada (hero "Menos tempo com papel. Mais tempo pro paciente.", mockup do dashboard real, CTA "Usar de graça", barra de acesso antecipado, depoimentos em destaque). Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Foco atual: refinamentos clínicos, validação com usuários.
 
-## Última sessão (2026-04-28)
+## Última sessão (2026-04-28 noite)
 
-Padronização visual do "paciente registrado" nas 8 views de anotação (card, chips, gap). Correção de header theming em BanhoView e CurativoView (hardcoded → variáveis de tema). Migração pacientes store de 3 listeners onChild\* para onValue único — fim de pacientes fantasmas. Fix login flash (rota `/` redireciona para dashboard). Font-size de chips de paciente padronizado em 0.9rem. Novo modal de exclusão de conta com SVG. Dashboard: botão de pendências no cabeçalho + modal com lista completa (novo composable `usePendenciasDashboard.js`). TourDashboard e helpItens atualizados (pendências, login-by-code, localização da ajuda).
+Landing page refinada: hero-badge redundante removido, "redigitando"/"redigitação" substituídos (feedback do usuário), "no plano gratuito" → "disponíveis" no CTA (evita sugerir plano pago), stat "0" → "Zero", CSS morto de seções removidas (~200 linhas de `.install-section`, `.login-options` eliminadas). LandingView CSS reduziu de 19.41 kB → 13.67 kB no bundle. Hero agora usa mockup do dashboard real (hero-ui) no lugar do celular antigo. Estrutura validada contra `.gstack/landing-strategy.md`. Build validado.
 
 ## Stack
 

@@ -140,7 +140,6 @@ Sistema de notificações com 3 camadas de confiabilidade:
 @.claude/skills/refactor-cleaner.md
 @.claude/skills/pwa-plantao.md
 @.claude/skills/criar-skill.md
-@.claude/skills/modularizacao.md
 @.claude/skills/frontend-vue.md
 @.claude/skills/backend-firebase.md
 

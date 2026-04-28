@@ -126,7 +126,7 @@ defineExpose({ abrirTour })
 }
 
 .tour-card {
-  background: var(--surface);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 32px 24px 24px;

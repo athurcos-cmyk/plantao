@@ -28,7 +28,10 @@
       "Bash(\"C:/Users/Thurcos/Desktop/plantao/CHANGELOG.md\":*)",
       "Bash(/c/Users/Thurcos/AppData/Local/Programs/Python/Python314/python -c ' *)",
       "Bash(/c/Users/Thurcos/AppData/Local/Programs/Python/Python314/python *)",
-      "Bash(/context *)"
+      "Bash(/context *)",
+      "Skill(office-hours)",
+      "WebSearch",
+      "WebFetch(domain:www.notion.so)"
     ]
   }
 }
