@@ -2,11 +2,11 @@
 
 ## Estado atual (2026-04-28)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada (hero "Menos tempo com papel. Mais tempo pro paciente.", mockup do dashboard real, CTA "Usar de graça", barra de acesso antecipado, depoimentos em destaque). Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Foco atual: refinamentos clínicos, validação com usuários.
+App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada. Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Foco atual: refinamentos clínicos, validação com usuários.
 
-## Última sessão (2026-04-28 noite)
+## Última sessão (2026-04-28 noite — parte 4)
 
-Landing page refinada: hero-badge redundante removido, "redigitando"/"redigitação" substituídos (feedback do usuário), "no plano gratuito" → "disponíveis" no CTA (evita sugerir plano pago), stat "0" → "Zero", CSS morto de seções removidas (~200 linhas de `.install-section`, `.login-options` eliminadas). LandingView CSS reduziu de 19.41 kB → 13.67 kB no bundle. Hero agora usa mockup do dashboard real (hero-ui) no lugar do celular antigo. Estrutura validada contra `.gstack/landing-strategy.md`. Build validado.
+AdminView repaginada: auto-refresh 20s, métricas avançadas (retenção, crescimento, anotações por tipo), push notification individual via FCM, modal de detalhe do usuário, filtros rápidos (hoje/7d/inativos), barra compacta de métricas. api/admin.js enriquecido com novos endpoints de comunicação. Build validado. Commit/push: próximo.
 
 ## Stack
 

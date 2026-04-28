@@ -31,7 +31,8 @@
       "Bash(/context *)",
       "Skill(office-hours)",
       "WebSearch",
-      "WebFetch(domain:www.notion.so)"
+      "WebFetch(domain:www.notion.so)",
+      "Bash(npm install *)"
     ]
   }
 }

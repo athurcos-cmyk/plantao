@@ -8,6 +8,30 @@
 
 ---
 
+## Sessao 2026-04-28 (parte 4)
+
+### Admin repaginada — tempo real, métricas, push individual
+
+- **Auto-refresh:** admin agora atualiza sozinha a cada 20s com toggle ON/OFF, indicador "há Xs" e botão de recarregar manual
+- **Métricas enriquecidas:** ativos hoje, retenção (%), crescimento vs semana anterior, novos esta semana / semana passada, anotações por tipo, total de pacientes, usuários com FCM
+- **Push notification individual:** modal de contato agora permite enviar email, notificação push ou ambos para cada usuário
+- **Detalhe do usuário:** modal ao clicar no card mostra email, syncCode, UID, cadastro, último acesso, anotações, dispositivos FCM, status, emails enviados
+- **Filtros rápidos:** chips "Todos", "Hoje", "7 dias", "Inativos" para filtrar a lista de usuários
+- **Barra compacta de métricas** no topo com total usuários, ativos hoje, crescimento, total anotações
+- **Cards de tendência (crescimento):** comparação visual novos esta semana vs passada com indicador verde/vermelho
+- **Backend:** GET /api/admin enriquecido com métricas avançadas e leitura de anotações/pacientes; POST agora aceita `canal: 'email' | 'push' | 'ambos'` para comunicação individual via FCM
+- **AdminView CSS:** 15.71 kB, **JS:** 25.01 kB
+
+### Dependência adicionada
+
+- `twilio` instalado (preparado para uso futuro de SMS)
+
+### Validacao
+
+- `npm run build` passou
+
+---
+
 ## Sessao 2026-04-28 (parte 3)
 
 ### Landing page — refinamentos finais
@@ -19,6 +43,15 @@
 - **Stat "Menos redigitacao" → "Menos papel"**: mesma familia da palavra rejeitada
 - **CSS morto removido:** ~200 linhas de `.install-section`, `.login-options`, `.hero-badge` e variacoes mobile sem template correspondente
 - **LandingView CSS reduziu de 19.41 kB → 13.67 kB** no bundle
+
+### Enxugamento estrutural da landing
+
+- **LISTA DE FUNCIONALIDADES removida:** redundante com os 8 feat cards — eliminada junto com o array `features` e CSS associado (`.two-col`, `.features-list`, `.feature-item`, `.btn-outline`)
+- **COMO FUNCIONA + DESTAQUES mesclados** em uma seção única com steps seguidos de feat cards (`style="margin-top: 60px"`)
+- **Feats reduzidos de 8 → 6:** Clara (assistente IA) e Instala como app removidos — mantidos os cards mais focados em alívio de dor
+- **DEPOIMENTOS mudou de `section-alt` para `section`** (removeu fundo alternado, ficou sobre fundo principal)
+- **LandingView CSS:** 13.67 kB → **12.34 kB**
+- **LandingView JS:** 12.99 kB → **11.78 kB**
 
 ### Analise critica da landing
 
