@@ -142,7 +142,7 @@
   <Transition name="update-bar">
     <div v-if="temAtualizacao && auth.isLoggedIn" class="update-bar">
       <span>🆕 Nova versão disponível</span>
-      <button class="update-btn" @click="recarregarApp">Atualizar</button>
+      <button class="update-btn" @click="updateSW">Atualizar</button>
     </div>
   </Transition>
 </template>
@@ -299,13 +299,12 @@ watch(mostrarBottomNav, (visivel) => {
   if (!visivel && chatAberto.value) toggleChat()
 })
 
-// ─── PWA auto-update ───
-// registerSW retorna função updateSW() que força check + ativação do novo SW
+// ─── PWA update banner ───
+// registerSW retorna função updateSW() que ativa skipWaiting + recarrega
 import { registerSW } from 'virtual:pwa-register'
 const temAtualizacao = ref(false)
-function recarregarApp() { window.location.reload() }
 
-// Recarrega quando o SW trocar de versão (autoUpdate + clientsClaim)
+// Recarrega quando o novo SW assumir o controle (via updateSW)
 // Sem isso, o código velho fica rodando com o SW novo — app trava
 let swRefreshing = false
 if ('serviceWorker' in navigator) {
