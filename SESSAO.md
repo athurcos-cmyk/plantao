@@ -4,12 +4,14 @@
 
 App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada com foco em problemas reais (PC ocupado, internet cai). Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Auth auditada: 21 cenários verificados, 4 bugs corrigidos, store estável. Foco atual: refinamentos clínicos, validação com usuários.
 
-## Última sessão (2026-04-29 — parte 6/continuação)
+## Última sessão (2026-04-29 — parte 2 / hardening auth)
 
-- **Auditoria de autenticação:** 21 cenários analisados (10 do TODOS + 11 edge cases), 4 bugs corrigidos em auth.js + 1 bug reintroduzido por mim e corrigido
-- **Bugs corrigidos:** handleRedirectResult sem store update, syncCode sem unicidade, writes não atômicos em register() e _vincularGoogleSeNovo()
-- **Landing page reescrita:** hero e feature cards focados em problemas reais (PC ocupado, internet caiu, pendências, papelada) em vez de features
-- **Build validado**
+- **Bug em produção:** `register()` criava Auth user antes de escrever no RTDB. Se RTDB falhasse, conta órfã (usuário existe no Auth, sem dados). Fix: rollback com `usr.delete()` no catch do `update()`.
+- **Login() e loginComCustomToken()** não verificavam se `uid_map` existia — autenticavam no Firebase mas app ficava inconsistente. Fix: detecta uid_map ausente, deleta Auth user, mostra erro.
+- **initAuthListener()** mantinha estado meio-logado se uid_map não existir. Fix: limpa sessão.
+- **TWA preparado:** manifest com scope, lang pt-BR, id, categories, icons maskable, assetlinks.json no .well-known.
+- **AdminView:** proteção extra na view (3 camadas: rota, view, API).
+- **APK gerado pelo PWABuilder** — instalável no celular hoje, pronto pra Play Store quando quiser.
 
 ## Stack
 

@@ -74,6 +74,9 @@ async function _gerarSyncCodeUnico() {
   throw Object.assign(new Error('limite-atingido'), { code: 'limite-atingido' })
 }
 
+// Flag para evitar que onAuthStateChanged trate registro em andamento como conta órfã
+let _registrando = false
+
 export const useAuthStore = defineStore('auth', () => {
   const cachedSession = _lerSessaoCacheSegura()
 
@@ -141,6 +144,14 @@ export const useAuthStore = defineStore('auth', () => {
               uid: uid.value,
             })
             finalizar()
+            return
+          }
+
+          if (_registrando) {
+            // Registro em andamento — uid_map ainda não foi escrito.
+            // Ignorar para não tratar como conta órfã e deslogar.
+            finalizar()
+            return
           }
 
           try {
@@ -215,6 +226,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function register(email, senha, nome) {
     authError.value = ''
+    _registrando = true
     try {
       const temVaga = await _verificarVagas()
       if (!temVaga) {
@@ -275,6 +287,8 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('[Auth] register error:', e.code || e.message, e.message)
       authError.value = _traduzirErro(e.code)
       return false
+    } finally {
+      _registrando = false
     }
   }
 
@@ -352,6 +366,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function loginGoogle() {
     authError.value = ''
+    _registrando = true
     let result
 
     try {
@@ -414,10 +429,13 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('[Auth] Google vinculação error:', e.code || '', e.message)
       authError.value = 'Conta Google autenticada, mas houve erro ao criar perfil. Tente novamente.'
       return false
+    } finally {
+      _registrando = false
     }
   }
 
   async function handleRedirectResult() {
+    _registrando = true
     try {
       const result = await getRedirectResult(firebaseAuth)
       if (!result?.user) return
@@ -443,6 +461,8 @@ export const useAuthStore = defineStore('auth', () => {
       console.warn('[Auth] Redirect result error:', e.code, e.message)
       authError.value = _traduzirErro(e.code)
       signOut(firebaseAuth).catch(() => {})
+    } finally {
+      _registrando = false
     }
   }
 
@@ -512,6 +532,7 @@ export const useAuthStore = defineStore('auth', () => {
       'auth/account-exists-with-different-credential': 'Este email já está cadastrado com outro método de login (senha ou Google). Faça login com o método que você usou ao criar a conta.',
       'auth/orphan-account': 'Houve um erro ao criar sua conta. Tente novamente.',
       'auth/limite-usuarios': 'Limite de cadastros atingido no momento. Tente novamente mais tarde.',
+      'limite-atingido': 'Limite de cadastros atingido no momento. Tente novamente mais tarde.',
     }
     return erros[code] || 'Erro ao autenticar. Tente novamente.'
   }

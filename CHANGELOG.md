@@ -8,6 +8,35 @@
 
 ---
 
+## Sessao 2026-04-29 (parte 2)
+
+### Auth: detecção de conta órfã + rollback automático
+
+**Problema:** Usuário tentou criar conta durante deploy do Vercel. `createUserWithEmailAndPassword` criou o usuário no Firebase Auth, mas a escrita no RTDB falhou (instabilidade de rede). Resultado: **conta órfã** — existe no Auth, mas sem syncCode/dados. Usuário não conseguia completar login.
+
+**Causa raiz:** `register()` criava o Auth user antes de escrever no RTDB. Se o RTDB falhasse, não havia rollback. `login()` também não verificava se `uid_map` existia — autenticava no Firebase mas o app ficava num estado inconsistente.
+
+**Correções em `src/stores/auth.js`:**
+1. **`register()`** — `try/catch` no `update()` do RTDB com `usr.delete()` no catch (rollback)
+2. **`login()`** — verifica `uid_map.exists()` após autenticar; se não existir, deleta o Auth user e mostra erro "Houve um erro ao criar sua conta. Tente novamente."
+3. **`loginComCustomToken()`** — mesma verificação do `login()`
+4. **`initAuthListener()`** — se `uid_map` não existe para usuário autenticado, limpa sessão em vez de manter estado meio-logado
+
+### TWA / Play Store
+
+- `scope: '/'` adicionado ao manifest (requisito TWA)
+- `lang: pt-BR`, `id`, `categories` no manifest
+- Ícones maskable adicionados
+- `assetlinks.json` criado em `.well-known/` com fingerprint do PWABuilder
+- `signing/` no `.gitignore` (guarda keystore localmente)
+- Roteiro Play Store documentado no TODOS.md
+
+### Admin: segurança
+
+- `AdminView.vue` agora redireciona se `userEmail !== 'a.thurcos@gmail.com'` (defesa em 3 camadas: rota, view, API)
+
+---
+
 ## Sessao 2026-04-29
 
 ### Fix crítico: PWA não atualizava em dispositivos com versão antiga

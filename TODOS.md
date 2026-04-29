@@ -2,6 +2,22 @@
 
 ## Pendentes
 
+### [ ] Play Store — itens visuais pra lançamento público (P2)
+**O quê:** Coisas que o Google pede na submissão, mas não precisa reescrever nada do app (TWA já pronto).
+
+- **Screenshots** — print do app em celular (2+ imagens). Ferramenta: ir no site, printar, recortar. Nada de código.
+- **Ícone adaptativo** — gerar ícone com padding (safe zone). PWABuilder tem ferramenta pra isso na página do package.
+- **Descrição da loja** — texto de 1-2 parágrafos em português explicando o app.
+- **Política de privacidade** — já tem em `privacidade.html`, só colocar o link na ficha do app.
+- **Categoria** — "Medical" ou "Health & Fitness" na Play Console.
+- **Classificação etária** — responder questionário do Google (IARC), geralmente "Todos" ou "12+".
+
+**Por que é P2:** O TWA já está funcional e instalável via APK avulso. Play Store é relevante quando houver usuários pedindo ou quando a descoberta orgânica for prioridade.
+
+**Lembrar:** não precisa re-submeter na Play Store pra atualizar o app — git push → Vercel já resolve.
+
+---
+
 ### [ ] PWA: validar que usuários com versão antiga agora atualizam
 **O quê:** Após deploy da correção (vercel.json + focus event), verificar no tablet da namorada do Arthur se o app atualiza para a versão mais recente. Abrir o app, ver se o banner de atualização aparece ou se o SW atualiza automaticamente.
 **Como testar:** Após deploy, abrir o PWA instalado no tablet → verificar se o conteúdo atualizou. Se não atualizar automaticamente, fechar e abrir novamente.
@@ -10,11 +26,18 @@
 ---
 
 ### [x] Auditoria de autenticação completa (2026-04-29)
-**21 cenários analisados** (10 do checklist + 11 edge cases). 4 bugs corrigidos em auth.js:
+
+**Primeira rodada (21 cenários):**
 1. `handleRedirectResult` sem store update (Google redirect)
 2. `_gerarSyncCodeUnico` sem unicidade no RTDB
 3. `register()` com writes não atômicos
 4. `_vincularGoogleSeNovo()` com writes não atômicos
+
+**Segunda rodada (descoberto em uso — 2026-04-29):**
+5. **`register()` sem rollback no Auth se RTDB falhar** — conta órfã (criada no Auth, sem dados no RTDB). Fix: `try/catch` no `update()` com `usr.delete()` no catch.
+6. **`login()` não detecta `uid_map` ausente** — Auth autentica, mas usuário volta pra tela de login sem erro. Fix: verificar `uid_map.exists()`, se não existir deleta o Auth user e mostra erro.
+7. **`loginComCustomToken()`** — mesmo problema do login().
+8. **`initAuthListener()` mantém estado meio-logado** — se `uid_map` não existe, limpa sessão em vez de manter syncCode vazio.
 
 +1 bug reintroduzido por ferramenta e corrigido (register sem `createUserWithEmailAndPassword` após sed).
 
