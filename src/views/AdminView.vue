@@ -415,9 +415,13 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { getAuth } from 'firebase/auth'
 import { db } from '../firebase.js'
 import { ref as dbRef, get } from 'firebase/database'
+import { useAuthStore } from '../stores/auth.js'
+
+const router = useRouter()
 
 // ── Estado ──
 const totalUsuarios = ref(null)
@@ -598,6 +602,13 @@ const resultado = ref(null)
 
 // ── Lifecycle ──
 onMounted(async () => {
+  // Dupla verificação: router já barra, mas aqui é segurança extra
+  const auth = useAuthStore()
+  if (auth.userEmail !== 'a.thurcos@gmail.com') {
+    router.replace({ name: 'dashboard' })
+    return
+  }
+
   try {
     const snap = await get(dbRef(db, 'config/total_usuarios'))
     totalUsuarios.value = snap.exists() ? snap.val() : 0
