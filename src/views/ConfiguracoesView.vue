@@ -309,8 +309,11 @@ onMounted(async () => {
       emailGoogle.value = g?.email || ''
     }
   } else {
-    temSenha.value = true
-    temGoogle.value = false
+    // Conta não existe mais no Firebase Auth (deletada) mas o cache
+    // local ainda tinha sessão. O auth.js já tratou o deslogueio.
+    // Redireciona para a landing/login.
+    window.location.replace('/')
+    return
   }
   providersReady.value = true
 })
