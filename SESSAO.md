@@ -4,9 +4,9 @@
 
 App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada. Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Foco atual: refinamentos clínicos, validação com usuários.
 
-## Última sessão (2026-04-28 noite — parte 4)
+## Última sessão (2026-04-29)
 
-AdminView repaginada: auto-refresh 20s, métricas avançadas (retenção, crescimento, anotações por tipo), push notification individual via FCM, modal de detalhe do usuário, filtros rápidos (hoje/7d/inativos), barra compacta de métricas. api/admin.js enriquecido com novos endpoints de comunicação. PWA: check periódico 30min de atualização. **Fix:** `pacientes.iniciar()` e `organizador.iniciar()` adicionados no watch de login do App.vue — badge de pendências não aparecia ao dar refresh no Dashboard. Build validado. Commits: `32a49c3`, `464a8ab`.
+Fix crítico de PWA: usuários com versão antiga não atualizavam por causa do Vercel CDN cacheando `sw.js`. Solução: `vercel.json` com `Cache-Control: no-cache` para SW + `App.vue` com `focus` event para update check mais confiável.
 
 ## Stack
 

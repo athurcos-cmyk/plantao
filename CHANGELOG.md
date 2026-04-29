@@ -8,6 +8,65 @@
 
 ---
 
+## Sessao 2026-04-29
+
+### Fix crítico: PWA não atualizava em dispositivos com versão antiga
+
+**Problema:** Usuários com versão antiga do app instalada (ex: tablet da namorada do Arthur, preso desde 26/04 quando os temas foram lançados) ficavam travados na versão antiga mesmo recarregando a página. O service worker nunca detectava atualizações.
+
+**Causa raiz:** Vercel CDN cacheava `sw.js` (o service worker). O navegador comparava bytes do SW e sempre recebia o mesmo arquivo do CDN → achava que estava atualizado → nunca baixava o novo SW. Círculo vicioso: browser não atualiza porque o SW não muda, e o SW "não muda" porque o CDN cacheia.
+
+**Solução:**
+
+1. **`vercel.json`** — Regras de `Cache-Control: no-cache, no-store, must-revalidate` + `Surrogate-Control: no-store` para `sw.js`, `workbox-*.js` e `firebase-messaging-sw.js`. Impede CDN de cachear os arquivos de service worker.
+
+2. **`App.vue`** — Adicionado `window.addEventListener('focus', () => registration.update())` no `onRegisteredSW`. O evento `focus` é mais confiável que `visibilitychange` em PWAs standalone (especialmente em alguns dispositivos), garantindo que o app cheque por atualizações sempre que o usuário retornar ao app.
+
+**Como a correção chega em usuários já travados:**
+- Com o `vercel.json` corrigido, o CDN não cacheia mais `sw.js`
+- Quando o usuário abre o app (navegação), o browser compara o SW atual com o novo
+- A versão antiga usava `registerType: 'autoUpdate'` com `skipWaiting: true` — o novo SW ativa automaticamente sem precisar de interação
+- Na primeira navegação após o deploy, o browser detecta o novo SW e atualiza
+
+**Validacao**
+- `npm run build` passou
+
+### Métodos de login unificado nas Configurações
+
+- **Antes:** duas seções separadas ("Criar senha" e "Vincular Google") que apareciam conforme o método de login — confuso pra entender por que cada uma aparecia
+- **Agora:** seção única "Métodos de login" que lista os métodos ativos (email+senha e/ou Google) com status "Ativo" e botões pra adicionar o que falta
+- Criar senha fica num expand inline (só aparece os campos ao clicar em "+ Criar senha")
+- Google extraído corretamente do `providerData` com email mostrado
+- `user.reload()` + fallback seguro pra `providerData` vazio (assume que tem senha)
+- Código do auth.js: tratado `auth/account-exists-with-different-credential` com mensagem clara, não genérica
+
+### Validacao
+
+- `npm run build` passou
+- Commits: `0a8afc8`, `bff9280`
+
+---
+
+## Sessao 2026-04-28 (parte 5)
+
+### Hardcoded color fix no header do Notas Livres
+
+- **`IntercorrenciaView.vue`**: `.livre-header` com `rgba(8, 18, 36, 0.82)` e `rgba(60, 86, 131, 0.34)` substituídos por `color-mix(in srgb, var(--bg-card) 85%, transparent)` e `color-mix(in srgb, var(--border) 60%, transparent)` — header agora respeita todos os temas claro/escuro
+
+### TODOS.md — limpeza de pendências
+
+- **Resend em produção**: verificado que `RESEND_API_KEY` já está configurada no Vercel (endpoint retorna 401 = passou na checagem da chave)
+- **Métricas de anotações**: `total_anotacoes` já é incrementado por usuário + somado no backend; `ativos7d` calculado de `ultimo_acesso`
+- **Broadcast no admin**: 📢 já está no header (linha 18), sempre visível
+- **Firebase domain**: configurado no Firebase Console por Arthur
+
+### Validacao
+
+- `npm run build` passou
+- Commit: `95146f4`
+
+---
+
 ## Sessao 2026-04-28 (parte 4)
 
 ### Admin repaginada — tempo real, métricas, push individual

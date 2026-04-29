@@ -2,6 +2,35 @@
 
 ## Pendentes
 
+### [ ] PWA: validar que usuários com versão antiga agora atualizam
+**O quê:** Após deploy da correção (vercel.json + focus event), verificar no tablet da namorada do Arthur se o app atualiza para a versão mais recente. Abrir o app, ver se o banner de atualização aparece ou se o SW atualiza automaticamente.
+**Como testar:** Após deploy, abrir o PWA instalado no tablet → verificar se o conteúdo atualizou. Se não atualizar automaticamente, fechar e abrir novamente.
+**Prioridade:** CRÍTICA
+
+---
+
+### [ ] Testar todos os cenários de autenticação (parte 6)
+**Testar amanhã para garantir que mudanças na ConfiguracoesView e auth.js não quebraram nada.**
+
+| # | Cenário | Fluxo | Resultado esperado |
+|---|---------|-------|--------------------|
+| 1 | **Registro email+senha → Configurações** | Criar conta nova, ir em Perfil > Configurações | Ver "Email e senha" como método ativo, Google como "Não vinculado" |
+| 2 | **Registro email+senha → Vincular Google** | Criar conta, ir em Configurações, clicar "+ Adicionar login com Google" | Google aparece como método ativo ao lado de Email e senha |
+| 3 | **Google → Configurações** | Login com Google, ir em Configurações | Ver "Google" como método ativo, sem opção de senha |
+| 4 | **Google → Criar senha** | Login com Google, ir em Configurações, clicar "+ Criar senha", preencher email+senha | Email e senha aparece como ativo ao lado do Google |
+| 5 | **Google com email já cadastrado (senha)** | 1) Criar conta email+senha com X@email.com. 2) Logout. 3) Tentar login Google com X@email.com | Erro: "X@email.com já possui cadastro com senha. Faça login com email e senha, depois vincule o Google nas Configurações." |
+| 6 | **Google com email DIFERENTE do email da conta** | 1) Criar conta email+senha com A@email.com. 2) Configurações > Vincular Google com B@email.com. 3) Ambos métodos ativos. 4) Logout. 5) Login Google com B@email.com | Login normal com Google (B), mesma conta syncCode, ambos provedores ativos |
+| 7 | **PWA update banner** | Estando no app, publicar nova versão (build+deploy), voltar ao app | Banner "Nova versão disponível" aparece (não recarrega sozinho). Clicar "Atualizar" executa `updateSW()`. |
+| 8 | **Notas Livres — tema claro** | Mudar tema para claro, abrir Notas Livres | Header do Notas Livres acompanha o tema (fundo e borda não ficam com cor fixa escura) |
+| 9 | **providerData vazio (edge case)** | Simular usuário sem providerData (ex: migração antiga), acessar Configurações | Fallback seguro: assume email+senha como método padrão, não quebra |
+| 10 | **Delete conta + recadastro Google** | Deletar conta, tentar recadastrar com mesmo Google | Cria nova conta normalmente (sem conflito de uid_map deletado) |
+
+**Prioridade:** Alta — testar antes de qualquer outro trabalho.
+**Commit da mudança:** `bff9280`
+**Risco:** Baixo (só UI + error handling, sem alteração de dados ou rotas)
+
+---
+
 ### [ ] Terminologia clínica: limpeza asséptica vs antisséptica (P2)
 **O quê:** Enfermeira amiga do Arthur validou que o módulo de curativo precisa de distinção clara entre limpeza asséptica (SF 0,9%) e antisséptica (PHMB, hipoclorito). Texto gerado deveria refletir isso automaticamente conforme a solução escolhida.
 **Prioridade:** P2

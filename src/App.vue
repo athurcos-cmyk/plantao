@@ -324,6 +324,9 @@ const updateSW = registerSW({
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) registration.update()
       })
+      // Check ao retornar ao app standalone (focus é mais confiável que
+      // visibilitychange em alguns dispositivos, especialmente iOS)
+      window.addEventListener('focus', () => registration.update())
       // Check periódico a cada 30 min — essencial para plantões longos
       // onde o usuário mantém o app aberto sem navegar
       setInterval(() => registration.update(), 30 * 60 * 1000)
