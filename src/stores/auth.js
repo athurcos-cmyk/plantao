@@ -224,7 +224,15 @@ export const useAuthStore = defineStore('auth', () => {
 
       const cred = await createUserWithEmailAndPassword(firebaseAuth, email, senha)
       const usr = cred.user
-      const code = await _gerarSyncCodeUnico()
+      let code
+
+      try {
+        code = await _gerarSyncCodeUnico()
+      } catch (e) {
+        // SyncCode falhou (RTDB offline, colisão extrema) — rollback
+        try { await usr.delete() } catch {}
+        throw e
+      }
 
       // RTDB writes atômicas — evita dados órfãos
       const regUpdates = {}
@@ -234,8 +242,6 @@ export const useAuthStore = defineStore('auth', () => {
       try {
         await update(dbRef(db), regUpdates)
       } catch (e) {
-        // Rollback: se falhou escrever no RTDB, remove o usuário do Auth
-        // para não criar conta órfã (existe no Auth mas sem dados).
         try { await usr.delete() } catch {}
         throw e
       }
@@ -266,6 +272,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       return true
     } catch (e) {
+      console.error('[Auth] register error:', e.code || e.message, e.message)
       authError.value = _traduzirErro(e.code)
       return false
     }
