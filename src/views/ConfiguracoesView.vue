@@ -242,6 +242,7 @@ import {
   EmailAuthProvider,
   linkWithCredential,
   linkWithPopup,
+  onAuthStateChanged,
 } from 'firebase/auth'
 import { googleProvider } from '../firebase.js'
 import { useCopia } from '../composables/useCopia.js'
@@ -283,7 +284,19 @@ onMounted(async () => {
 
   // Aguarda auth estar pronto antes de ler providers
   await auth.initAuthListener()
-  const user = firebaseAuth.currentUser
+
+  // initAuthListener pode ter resolvido do cache enquanto Firebase Auth
+  // ainda restaura a sessão do IndexedDB. Nesse caso currentUser é null —
+  // espera o onAuthStateChanged de verdade.
+  const user = await new Promise(resolve => {
+    const u = firebaseAuth.currentUser
+    if (u) { resolve(u); return }
+    const unsub = onAuthStateChanged(firebaseAuth, (user) => {
+      unsub()
+      resolve(user)
+    })
+  })
+
   if (user) {
     await user.reload()
     const providers = firebaseAuth.currentUser?.providerData || []
