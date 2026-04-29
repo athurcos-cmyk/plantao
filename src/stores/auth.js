@@ -223,7 +223,14 @@ export const useAuthStore = defineStore('auth', () => {
       regUpdates[`owners/${code}/${usr.uid}`] = true
       regUpdates[`uid_map/${usr.uid}`] = code
       regUpdates[`usuarios/${code}`] = { nome: nome || '', email, criadoEm: Date.now() }
-      await update(dbRef(db), regUpdates)
+      try {
+        await update(dbRef(db), regUpdates)
+      } catch (e) {
+        // Rollback: se falhou escrever no RTDB, remove o usuário do Auth
+        // para não criar conta órfã (existe no Auth mas sem dados).
+        try { await usr.delete() } catch {}
+        throw e
+      }
 
       // DisplayName no Firebase Auth (best-effort, independente do RTDB)
       if (nome) {
