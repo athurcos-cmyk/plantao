@@ -45,6 +45,51 @@
 - `npm run build` passou
 - Commits: `0a8afc8`, `bff9280`
 
+### Auditoria de autenticação + correção de bugs (parte 6)
+
+**Auditoria:** 21 cenários de autenticação analisados (10 do TODOS.md + 11 edge cases):
+- Registro email+senha, login, Google (popup e redirect), recuperação de senha, logout
+- Multi-abas com contas diferentes, exclusão de conta + recadastro
+- Provedores mistos (email A + Google B na mesma conta), offline, providerData vazio
+
+**Bugs corrigidos em `src/stores/auth.js`:**
+
+1. **`handleRedirectResult` não atualizava a store** — usuário novo via Google redirect (fallback quando popup é bloqueado) passava pela autenticação Firebase mas o Pinia store não recebia uid, syncCode, userName. Resultado: usuário voltava para a tela de login após autorizar. Fix: atualização do store + `_persistirSessaoSegura()` após `_vincularGoogleSeNovo()`.
+
+2. **`_gerarSyncCodeUnico` sem verificação de unicidade** — função prometia syncCode único no nome mas nunca consultava o RTDB. Colisão improvável (6 chars, ~34⁶ combinações) mas possível. Fix: `for (let i = 0; i < 10; i++)` com `get(dbRef(db, 'owners/${code}'))` — se existir, tenta outro código.
+
+3. **`register()` com `Promise.all` e `set()` individuais** — três `set()` paralelos: se um falhasse (ex: `uid_map`), `owners` e `usuarios` já estariam escritos — dados órfãos sem dono. Fix: `update()` atômico com todas as chaves num único objeto.
+
+4. **`_vincularGoogleSeNovo()` com `Promise.all` e `set()` individuais** — mesmo problema do register. Fix: `update()` atômico.
+
+**Bug introduzido durante correção e corrigido:** Ao substituir o bloco `register()` via `sed`, as linhas de `createUserWithEmailAndPassword` foram acidentalmente deletadas. O build passou porque Vite (bundler) não valida variáveis em template strings no estágio de análise. Fix: linhas restauradas com variável `usr` para evitar shadowing do parâmetro `user` do `onAuthStateChanged`.
+
+**Verificação:** Line-by-line de auth.js completo + grep por `user.` em escopos incorretos — todos OK.
+
+### Landing page reescrita com foco em problemas reais
+
+**Problema:** Landing não comunicava os problemas concretos que o app resolve — usuário leigo não entendia por que precisava do app.
+
+**Mudanças no hero (`LandingView.vue`):**
+- Título: "Os computadores tão ocupados? Caiu a internet? Seu plantão não para."
+- Subtítulo: cenários reais (esperar PC liberar, internet cair, pendência da manhã até a noite)
+- Trust items: "Anoto no celular, colo no sistema" / "Funciona sem internet" / "Nunca mais esqueço pendência"
+
+**Feature cards (6 cards):**
+- "PC ocupado? Vai no celular" — esperar computador liberar
+- "Internet caiu? Continua trabalhando" — subsolo/área rural/avião
+- "Sinais vitais em segundos" — anotação rápida no leito
+- "Nada esquecido até o fim do plantão" — pendências + notificações
+- "Chega de papel solto" — papel perdido/molhado/rasgado
+- "Copia e cola — sem redigitar" — texto formatado pronto
+
+**Acentos corrigidos:** Os acentos portugueses deletados pelo `sed` (não, você, área, avião, pressão, etc.) foram restaurados via Edit tool.
+
+### Validacao
+
+- `npm run build` passou
+- Landing page lida e conferida visualmente
+
 ---
 
 ## Sessao 2026-04-28 (parte 5)

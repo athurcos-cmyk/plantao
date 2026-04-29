@@ -26,12 +26,12 @@
       <div class="hero-inner">
         <div class="hero-text">
           <h1 class="hero-title">
-            Menos tempo<br>
-            com papel.<br>
-            <span class="hero-accent">Mais tempo pro paciente.</span>
+            Os computadores tão ocupados?<br>
+            Caiu a internet?<br>
+            <span class="hero-accent">Seu plantão não para.</span>
           </h1>
           <p class="hero-sub">
-            Anotações com texto pronto pra copiar, lembretes que não deixam você esquecer, calculadora de dose no bolso. Tudo offline, no celular.
+            Enquanto espera o PC liberar, já vai anotando no celular. Quando a internet volta, o texto tá pronto pra colar no sistema. Pendência organizada de manhã, nada esquecido à noite. Adeus papelada.
           </p>
           <p class="hero-disclaimer">
             ⚠️ Ferramenta pessoal de apoio — não substitui o sistema oficial do hospital.
@@ -47,15 +47,15 @@
           <div class="hero-trust">
             <div class="trust-item">
               <span class="trust-icon">✓</span>
-              <span>Notificações de pendências</span>
+              <span>Anoto no celular, colo no sistema</span>
             </div>
             <div class="trust-item">
               <span class="trust-icon">✓</span>
-              <span>Calculadora de medicação</span>
+              <span>Funciona sem internet</span>
             </div>
             <div class="trust-item">
               <span class="trust-icon">✓</span>
-              <span>100% offline</span>
+              <span>Nunca mais esqueço pendência</span>
             </div>
           </div>
         </div>
@@ -234,14 +234,13 @@ function acessarNoPc() {
 }
 
 const feats = [
-  { icon: '🔔', title: 'Chega de esquecer', desc: 'Coloca lembrete por paciente com horário exato. A notificação chega no celular mesmo com tela bloqueada — nunca mais perde uma medicação.' },
-  { icon: '⚡', title: 'Texto pronto em segundos', desc: '8 tipos de anotação. Preenche os campos, copia e cola no sistema do hospital. Menos tempo perdido com papel, mais tempo pro paciente.' },
-  { icon: '🧮', title: 'Calculadora de dose', desc: 'Gotejamento, diluição, dosagem — a conta que você precisa na hora. Abre em qualquer tela do app sem perder o que estava fazendo.' },
-  { icon: '🗂️', title: 'Organizador de pacientes', desc: 'Cadastra os pacientes do plantão, anota as pendências de cada um, vê o resumo do dia. Tudo em dois toques.' },
-  { icon: '📡', title: 'Funciona offline', desc: 'Subsolo do PS, área sem sinal, modo avião — o app funciona. Sincroniza automaticamente quando a internet voltar.' },
-  { icon: '✏️', title: 'Cria seu modelo', desc: 'Não gostou do formato das anotações? Em Notas Livres você escreve do seu jeito, salva e reutiliza em todo plantão.' },
+  { icon: "🖥", title: "PC ocupado? Vai no celular", desc: "Não precisa esperar o computador liberar. Enquanto o colega termina, você já vai adiantando as anotações no celular. Quando o PC ficar livre, é só copiar e colar." },
+  { icon: "📡", title: "Internet caiu? Continua trabalhando", desc: "Subsolo, área rural, modo avião — o app não trava. Anota tudo offline. Quando a internet voltar, sincroniza sozinho. O texto já tá pronto para lançar no sistema." },
+  { icon: "⚡", title: "Sinais vitais em segundos", desc: "Passou no leito, já anota. Pressão, frequência, saturação — preenche os campos, copia o texto formatado, cola no sistema. Tudo em menos de um minuto." },
+  { icon: "🔔", title: "Nada esquecido até o fim do plantão", desc: "De manhã você organiza as pendências do dia. Cada paciente com seus lembretes. A notificação chega na hora certa — não precisa ficar olhando relógio." },
+  { icon: "🗂", title: "Chega de papel solto", desc: "Não perde mais anotação porque o papel caiu do bolso, molhou ou foi pro lixo sem querer. Tudo salvo no celular, separado por paciente e por tipo." },
+  { icon: "✏", title: "Copia e cola — sem redigitar", desc: "O texto sai pronto: \"14h00 – PA 120x80, FC 72, SatO2 98%, sem intercorrências.\" Não digita duas vezes a mesma coisa. Só preenche, copia e cola no sistema do hospital." },
 ]
-
 const steps = [
   { title: 'Abre e instala', desc: 'Acessa plantao.net no celular. Toca "Adicionar à tela inicial" — o app fica na tela igual app nativo. Leva 10 segundos.' },
   { title: 'Cadastra os pacientes', desc: 'Coloca nome, leito e as pendências de cada paciente do plantão. O app salva tudo e sincroniza sozinho.' },

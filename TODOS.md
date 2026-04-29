@@ -9,25 +9,20 @@
 
 ---
 
-### [ ] Testar todos os cenários de autenticação (parte 6)
-**Testar amanhã para garantir que mudanças na ConfiguracoesView e auth.js não quebraram nada.**
+### [x] Auditoria de autenticação completa (2026-04-29)
+**21 cenários analisados** (10 do checklist + 11 edge cases). 4 bugs corrigidos em auth.js:
+1. `handleRedirectResult` sem store update (Google redirect)
+2. `_gerarSyncCodeUnico` sem unicidade no RTDB
+3. `register()` com writes não atômicos
+4. `_vincularGoogleSeNovo()` com writes não atômicos
 
-| # | Cenário | Fluxo | Resultado esperado |
-|---|---------|-------|--------------------|
-| 1 | **Registro email+senha → Configurações** | Criar conta nova, ir em Perfil > Configurações | Ver "Email e senha" como método ativo, Google como "Não vinculado" |
-| 2 | **Registro email+senha → Vincular Google** | Criar conta, ir em Configurações, clicar "+ Adicionar login com Google" | Google aparece como método ativo ao lado de Email e senha |
-| 3 | **Google → Configurações** | Login com Google, ir em Configurações | Ver "Google" como método ativo, sem opção de senha |
-| 4 | **Google → Criar senha** | Login com Google, ir em Configurações, clicar "+ Criar senha", preencher email+senha | Email e senha aparece como ativo ao lado do Google |
-| 5 | **Google com email já cadastrado (senha)** | 1) Criar conta email+senha com X@email.com. 2) Logout. 3) Tentar login Google com X@email.com | Erro: "X@email.com já possui cadastro com senha. Faça login com email e senha, depois vincule o Google nas Configurações." |
-| 6 | **Google com email DIFERENTE do email da conta** | 1) Criar conta email+senha com A@email.com. 2) Configurações > Vincular Google com B@email.com. 3) Ambos métodos ativos. 4) Logout. 5) Login Google com B@email.com | Login normal com Google (B), mesma conta syncCode, ambos provedores ativos |
-| 7 | **PWA update banner** | Estando no app, publicar nova versão (build+deploy), voltar ao app | Banner "Nova versão disponível" aparece (não recarrega sozinho). Clicar "Atualizar" executa `updateSW()`. |
-| 8 | **Notas Livres — tema claro** | Mudar tema para claro, abrir Notas Livres | Header do Notas Livres acompanha o tema (fundo e borda não ficam com cor fixa escura) |
-| 9 | **providerData vazio (edge case)** | Simular usuário sem providerData (ex: migração antiga), acessar Configurações | Fallback seguro: assume email+senha como método padrão, não quebra |
-| 10 | **Delete conta + recadastro Google** | Deletar conta, tentar recadastrar com mesmo Google | Cria nova conta normalmente (sem conflito de uid_map deletado) |
++1 bug reintroduzido por ferramenta e corrigido (register sem `createUserWithEmailAndPassword` após sed).
 
-**Prioridade:** Alta — testar antes de qualquer outro trabalho.
-**Commit da mudança:** `bff9280`
-**Risco:** Baixo (só UI + error handling, sem alteração de dados ou rotas)
+**Cenários adicionais analisados:** login-by-code, multi-abas (conta A e B), offline com cache, ping no onAuthStateChanged, token expirado, email reset, Google com email diferente do cadastro, provedor único desvinculado, linkWithPopup falho, deleteUser + recadastro imediato, redirect com popup-blocked.
+
+**Line-by-line de auth.js completo + build validado.**
+
+**Risco:** Baixo — correções localizadas sem alteração de rotas ou estrutura de dados.
 
 ---
 

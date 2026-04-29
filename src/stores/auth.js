@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { db, auth as firebaseAuth, googleProvider } from '../firebase.js'
-import { ref as dbRef, get, set } from 'firebase/database'
+import { ref as dbRef, get, set, update } from 'firebase/database'
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
@@ -65,8 +65,13 @@ function _gerarSyncCode() {
   return code
 }
 
-function _gerarSyncCodeUnico() {
-  return _gerarSyncCode()
+async function _gerarSyncCodeUnico() {
+  for (let i = 0; i < 10; i++) {
+    const code = _gerarSyncCode()
+    const snap = await get(dbRef(db, `owners/${code}`))
+    if (!snap.exists()) return code
+  }
+  throw Object.assign(new Error('limite-atingido'), { code: 'limite-atingido' })
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -210,21 +215,22 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       const cred = await createUserWithEmailAndPassword(firebaseAuth, email, senha)
-      const user = cred.user
-      const code = _gerarSyncCodeUnico()
+      const usr = cred.user
+      const code = await _gerarSyncCodeUnico()
 
-      await Promise.all([
-        nome ? updateProfile(user, { displayName: nome }) : Promise.resolve(),
-        set(dbRef(db, `owners/${code}/${user.uid}`), true),
-        set(dbRef(db, `uid_map/${user.uid}`), code),
-        set(dbRef(db, `usuarios/${code}`), {
-          nome: nome || '',
-          email,
-          criadoEm: Date.now(),
-        }),
-      ])
+      // RTDB writes atômicas — evita dados órfãos
+      const regUpdates = {}
+      regUpdates[`owners/${code}/${usr.uid}`] = true
+      regUpdates[`uid_map/${usr.uid}`] = code
+      regUpdates[`usuarios/${code}`] = { nome: nome || '', email, criadoEm: Date.now() }
+      await update(dbRef(db), regUpdates)
 
-      uid.value = user.uid
+      // DisplayName no Firebase Auth (best-effort, independente do RTDB)
+      if (nome) {
+        try { await updateProfile(usr, { displayName: nome }) } catch {}
+      }
+
+      uid.value = usr.uid
       userEmail.value = email
       userName.value = nome || ''
       syncCode.value = code
@@ -232,10 +238,10 @@ export const useAuthStore = defineStore('auth', () => {
         syncCode: code,
         userName: nome || '',
         userEmail: email,
-        uid: user.uid,
+        uid: usr.uid,
       })
 
-      user.getIdToken().then((token) =>
+      usr.getIdToken().then((token) =>
         fetch('/api/welcome', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -380,7 +386,19 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const result = await getRedirectResult(firebaseAuth)
       if (result?.user) {
-        await _vincularGoogleSeNovo(result.user)
+        const code = await _vincularGoogleSeNovo(result.user)
+        if (code) {
+          uid.value = result.user.uid
+          userEmail.value = result.user.email || ''
+          userName.value = result.user.displayName || ''
+          syncCode.value = code
+          _persistirSessaoSegura({
+            syncCode: code,
+            userName: userName.value,
+            userEmail: userEmail.value,
+            uid: result.user.uid,
+          })
+        }
       }
     } catch (e) {
       console.warn('[Auth] Redirect result error:', e.code, e.message)
@@ -400,16 +418,12 @@ export const useAuthStore = defineStore('auth', () => {
     const temVaga = await _verificarVagas()
     if (!temVaga) throw { code: 'limite-atingido' }
 
-    const code = _gerarSyncCodeUnico()
-    await Promise.all([
-      set(dbRef(db, `owners/${code}/${user.uid}`), true),
-      set(dbRef(db, `uid_map/${user.uid}`), code),
-      set(dbRef(db, `usuarios/${code}`), {
-        nome: user.displayName || '',
-        email: user.email || '',
-        criadoEm: Date.now(),
-      }),
-    ])
+    const code = await _gerarSyncCodeUnico()
+    const vincUpdates = {}
+    vincUpdates[`owners/${code}/${user.uid}`] = true
+    vincUpdates[`uid_map/${user.uid}`] = code
+    vincUpdates[`usuarios/${code}`] = { nome: user.displayName || '', email: user.email || '', criadoEm: Date.now() }
+    await update(dbRef(db), vincUpdates)
 
     user.getIdToken().then((token) =>
       fetch('/api/welcome', {

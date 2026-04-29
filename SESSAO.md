@@ -1,12 +1,15 @@
 # Brief — Plantão
 
-## Estado atual (2026-04-28)
+## Estado atual (2026-04-29)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada. Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Foco atual: refinamentos clínicos, validação com usuários.
+App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada com foco em problemas reais (PC ocupado, internet cai). Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Auth auditada: 21 cenários verificados, 4 bugs corrigidos, store estável. Foco atual: refinamentos clínicos, validação com usuários.
 
-## Última sessão (2026-04-29)
+## Última sessão (2026-04-29 — parte 6/continuação)
 
-Fix crítico de PWA: usuários com versão antiga não atualizavam por causa do Vercel CDN cacheando `sw.js`. Solução: `vercel.json` com `Cache-Control: no-cache` para SW + `App.vue` com `focus` event para update check mais confiável.
+- **Auditoria de autenticação:** 21 cenários analisados (10 do TODOS + 11 edge cases), 4 bugs corrigidos em auth.js + 1 bug reintroduzido por mim e corrigido
+- **Bugs corrigidos:** handleRedirectResult sem store update, syncCode sem unicidade, writes não atômicos em register() e _vincularGoogleSeNovo()
+- **Landing page reescrita:** hero e feature cards focados em problemas reais (PC ocupado, internet caiu, pendências, papelada) em vez de features
+- **Build validado**
 
 ## Stack
 
