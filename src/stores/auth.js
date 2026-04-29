@@ -162,6 +162,11 @@ export const useAuthStore = defineStore('auth', () => {
               })
 
               set(dbRef(db, `usuarios/${code}/ultimo_acesso`), Date.now()).catch(() => {})
+            } else {
+              // uid_map não existe → conta órfã (existe no Auth mas sem dados).
+              // Desloga para evitar estado "meio-logado".
+              console.warn('[Auth] uid_map ausente para user autenticado — limpando sessão')
+              _limparSessaoSegura()
             }
           } catch (e) {
             console.warn('[Auth] uid_map lookup failed:', e.message)
@@ -277,7 +282,13 @@ export const useAuthStore = defineStore('auth', () => {
         syncCode.value = localSession.syncCode
       } else {
         const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
-        if (mapSnap.exists()) syncCode.value = mapSnap.val()
+        if (!mapSnap.exists()) {
+          // Conta órfã: existe no Auth mas sem RTDB (ex: register() falhou na escrita).
+          // Remove o Auth user e mostra erro em vez de deixar o usuário preso.
+          try { await user.delete() } catch {}
+          throw { code: 'auth/orphan-account' }
+        }
+        syncCode.value = mapSnap.val()
       }
 
       _persistirSessaoSegura({
@@ -308,7 +319,11 @@ export const useAuthStore = defineStore('auth', () => {
         syncCode.value = localSession.syncCode
       } else {
         const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
-        if (mapSnap.exists()) syncCode.value = mapSnap.val()
+        if (!mapSnap.exists()) {
+          try { await user.delete() } catch {}
+          throw { code: 'auth/orphan-account' }
+        }
+        syncCode.value = mapSnap.val()
       }
 
       _persistirSessaoSegura({
@@ -476,6 +491,7 @@ export const useAuthStore = defineStore('auth', () => {
       'auth/popup-blocked': 'Popup bloqueado - tente novamente.',
       'auth/popup-closed-by-user': 'Login cancelado.',
       'auth/account-exists-with-different-credential': 'Este email já está cadastrado com outro método de login (senha ou Google). Faça login com o método que você usou ao criar a conta.',
+      'auth/orphan-account': 'Houve um erro ao criar sua conta. Tente novamente.',
     }
     return erros[code] || 'Erro ao autenticar. Tente novamente.'
   }
