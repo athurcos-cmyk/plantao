@@ -257,22 +257,30 @@ export const useAuthStore = defineStore('auth', () => {
       const usr = cred.user
       let code
 
-      try {
-        code = await _gerarSyncCodeUnico()
-      } catch (e) {
-        // SyncCode falhou (RTDB offline, colisão extrema) — rollback
-        try { await usr.delete() } catch {}
-        throw e
-      }
+      code = await _gerarSyncCodeUnico()
 
-      // RTDB writes atômicas — evita dados órfãos
-      const regUpdates = {}
-      regUpdates[`owners/${code}/${usr.uid}`] = true
-      regUpdates[`uid_map/${usr.uid}`] = code
-      regUpdates[`usuarios/${code}`] = { nome: nome || '', email, criadoEm: Date.now() }
+      // Escrita em 2 passos porque a regra de segurança do Firebase
+      // avalia cada caminho contra o estado ATUAL (não o final simulado).
+      // usuarios/$code/.write checa owners/$code/$uid — que não existe até
+      // o passo 1 ser commitado.
+      //
+      // Passo 1: owners + uid_map (auth.uid === $uid → passa direto)
+      await update(dbRef(db), {
+        [`owners/${code}/${usr.uid}`]: true,
+        [`uid_map/${usr.uid}`]: code,
+      })
+
+      // Passo 2: usuarios (owners/$code/$uid existe agora → regra passa)
       try {
-        await update(dbRef(db), regUpdates)
+        await set(dbRef(db, `usuarios/${code}`), {
+          nome: nome || '', email, criadoEm: Date.now(),
+        })
       } catch (e) {
+        // Passo 2 falhou → rollback do passo 1 + deletar Auth user
+        const rollback = {}
+        rollback[`owners/${code}/${usr.uid}`] = null
+        rollback[`uid_map/${usr.uid}`] = null
+        await update(dbRef(db, rollback)).catch(() => {})
         try { await usr.delete() } catch {}
         throw e
       }
@@ -498,11 +506,26 @@ export const useAuthStore = defineStore('auth', () => {
     if (!temVaga) throw { code: 'limite-atingido' }
 
     const code = await _gerarSyncCodeUnico()
-    const vincUpdates = {}
-    vincUpdates[`owners/${code}/${user.uid}`] = true
-    vincUpdates[`uid_map/${user.uid}`] = code
-    vincUpdates[`usuarios/${code}`] = { nome: user.displayName || '', email: user.email || '', criadoEm: Date.now() }
-    await update(dbRef(db), vincUpdates)
+
+    // Passo 1: owners + uid_map (auth.uid === $uid → passa)
+    await update(dbRef(db), {
+      [`owners/${code}/${user.uid}`]: true,
+      [`uid_map/${user.uid}`]: code,
+    })
+
+    // Passo 2: usuarios (owners/$code/$uid existe agora → regra passa)
+    try {
+      await set(dbRef(db, `usuarios/${code}`), {
+        nome: user.displayName || '', email: user.email || '', criadoEm: Date.now(),
+      })
+    } catch (e) {
+      // Rollback do passo 1
+      const rollback = {}
+      rollback[`owners/${code}/${user.uid}`] = null
+      rollback[`uid_map/${user.uid}`] = null
+      await update(dbRef(db, rollback)).catch(() => {})
+      throw e
+    }
 
     user.getIdToken().then((token) =>
       fetch('/api/welcome', {
