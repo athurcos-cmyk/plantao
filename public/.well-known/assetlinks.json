@@ -1,12 +1,8 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "net.plantao.twa",
-      "sha256_cert_fingerprints": [
-        "SUBSTITUA_PELO_FINGERPRINT_GERADO_NO_PWABUILDER"
-      ]
-    }
-  }
-]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "net.plantao.twa",
+        "sha256_cert_fingerprints": ["FF:E9:06:2E:6E:B1:A7:A1:0E:73:74:B5:71:6C:13:B5:75:AE:47:B7:AB:A8:28:1B:D5:2A:E6:5E:24:3C:56:49"]
+      }
+    }]
