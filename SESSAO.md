@@ -4,14 +4,14 @@
 
 App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada com foco em problemas reais (PC ocupado, internet cai). Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Auth auditada: 21 cenários verificados, 4 bugs corrigidos, store estável. Foco atual: refinamentos clínicos, validação com usuários.
 
-## Última sessão (2026-04-29 — parte 2 / hardening auth)
+## Última sessão (2026-04-29 — parte 3 / race condition auth)
 
-- **Bug em produção:** `register()` criava Auth user antes de escrever no RTDB. Se RTDB falhasse, conta órfã (usuário existe no Auth, sem dados). Fix: rollback com `usr.delete()` no catch do `update()`.
-- **Login() e loginComCustomToken()** não verificavam se `uid_map` existia — autenticavam no Firebase mas app ficava inconsistente. Fix: detecta uid_map ausente, deleta Auth user, mostra erro.
-- **initAuthListener()** mantinha estado meio-logado se uid_map não existir. Fix: limpa sessão.
-- **TWA preparado:** manifest com scope, lang pt-BR, id, categories, icons maskable, assetlinks.json no .well-known.
-- **AdminView:** proteção extra na view (3 camadas: rota, view, API).
-- **APK gerado pelo PWABuilder** — instalável no celular hoje, pronto pra Play Store quando quiser.
+- **Bug crítico descoberto:** Race condition entre `onAuthStateChanged` e `register()`. O listener disparava antes do RTDB ser escrito, via `uid_map` ausente, e deslogava o usuário no meio do registro. Causava "Erro ao autenticar" genérico + conta órfã no Auth.
+- **Fix:** Flag `_registrando` no módulo, ativada durante register/loginGoogle/handleRedirectResult. `onAuthStateChanged` pula checagem de uid_map quando a flag está ativa.
+- **Também:** `return` após restore de cache de sessão (evita uid_map lookup desnecessário), `'limite-atingido'` (sem prefixo) no `_traduzirErro`.
+- **Parte 2 (hardening auth):** rollback no register(), detecção de uid_map ausente em login/loginComCustomToken, limpeza de sessão em initAuthListener.
+- **TWA preparado:** manifest, assetlinks.json, APK gerado.
+- **Admin:** proteção extra na view (3 camadas).
 
 ## Stack
 

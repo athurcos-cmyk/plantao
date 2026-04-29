@@ -8,19 +8,32 @@
 
 ---
 
-## Sessao 2026-04-29 (parte 2)
+## Sessao 2026-04-29 (parte 3)
 
-### Auth: detecção de conta órfã + rollback automático
+### Auth: race condition no onAuthStateChanged durante registro
 
-**Problema:** Usuário tentou criar conta durante deploy do Vercel. `createUserWithEmailAndPassword` criou o usuário no Firebase Auth, mas a escrita no RTDB falhou (instabilidade de rede). Resultado: **conta órfã** — existe no Auth, mas sem syncCode/dados. Usuário não conseguia completar login.
+**Problema:** Usuário via "Erro ao autenticar. Tente novamente." ao criar conta, mas o usuário era criado no Firebase Auth (conta órfã). O erro acontecia porque `onAuthStateChanged` disparava imediatamente após `createUserWithEmailAndPassword` e, ao não encontrar `uid_map` no RTDB (ainda não escrito), tratava como conta órfã e chamava `signOut()`.
 
-**Causa raiz:** `register()` criava o Auth user antes de escrever no RTDB. Se o RTDB falhasse, não havia rollback. `login()` também não verificava se `uid_map` existia — autenticava no Firebase mas o app ficava num estado inconsistente.
+**Causa raiz:** Race condition no `initAuthListener()`. O listener do Firebase Auth rodava antes do `register()` terminar de escrever no RTDB, deslogando o usuário no meio do registro.
 
-**Correções em `src/stores/auth.js`:**
+**Correção em `src/stores/auth.js`:**
+- Flag `_registrando` no escopo do módulo, ativada durante `register()`, `loginGoogle()` e `handleRedirectResult()`
+- `onAuthStateChanged()` verifica a flag e pula a checagem de `uid_map` quando verdadeira
+- `finally` blocks garantem limpeza da flag em todos os caminhos (sucesso, erro, exceção)
+- `return` adicionado após restore de cache de sessão (evita uid_map lookup desnecessário)
+- `'limite-atingido'` (sem prefixo `auth/`) adicionado ao `_traduzirErro` como fallback
+
+### Auth: detecção de conta órfã + rollback automático (parte 2)
+
+**Problema:** Usuário tentou criar conta durante deploy do Vercel. `createUserWithEmailAndPassword` criou o usuário no Firebase Auth, mas a escrita no RTDB falhou (instabilidade de rede). Resultado: **conta órfã** — existe no Auth, mas sem syncCode/dados.
+
+**Causa raiz:** `register()` criava o Auth user antes de escrever no RTDB. Se o RTDB falhasse, não havia rollback. `login()` também não verificava se `uid_map` existia.
+
+**Correções em `src/stores/auth.js` (parte 2):**
 1. **`register()`** — `try/catch` no `update()` do RTDB com `usr.delete()` no catch (rollback)
-2. **`login()`** — verifica `uid_map.exists()` após autenticar; se não existir, deleta o Auth user e mostra erro "Houve um erro ao criar sua conta. Tente novamente."
+2. **`login()`** — verifica `uid_map.exists()` após autenticar; se não existir, deleta o Auth user e mostra erro
 3. **`loginComCustomToken()`** — mesma verificação do `login()`
-4. **`initAuthListener()`** — se `uid_map` não existe para usuário autenticado, limpa sessão em vez de manter estado meio-logado
+4. **`initAuthListener()`** — se `uid_map` não existe para usuário autenticado, limpa sessão
 
 ### TWA / Play Store
 
@@ -28,12 +41,12 @@
 - `lang: pt-BR`, `id`, `categories` no manifest
 - Ícones maskable adicionados
 - `assetlinks.json` criado em `.well-known/` com fingerprint do PWABuilder
-- `signing/` no `.gitignore` (guarda keystore localmente)
+- `signing/` no `.gitignore`
 - Roteiro Play Store documentado no TODOS.md
 
 ### Admin: segurança
 
-- `AdminView.vue` agora redireciona se `userEmail !== 'a.thurcos@gmail.com'` (defesa em 3 camadas: rota, view, API)
+- `AdminView.vue` redireciona se `userEmail !== 'a.thurcos@gmail.com'` (3 camadas: rota, view, API)
 
 ---
 

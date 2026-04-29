@@ -130,18 +130,19 @@ export const useAuthStore = defineStore('auth', () => {
         clearTimeout(initTimeout)
 
         if (user) {
-          uid.value = user.uid
-          userEmail.value = user.email || ''
-          userName.value = user.displayName || (_lsOk ? localStorage.getItem('user_name') || '' : '')
-
           const localSession = _lerSessaoCacheSegura()
+
+          // Cache de sessão local bate com o usuário do Firebase → restaura
           if (localSession.uid === user.uid && localSession.syncCode) {
+            uid.value = localSession.uid
+            userEmail.value = localSession.userEmail
+            userName.value = localSession.userName
             syncCode.value = localSession.syncCode
             _persistirSessaoSegura({
               syncCode: localSession.syncCode,
-              userName: userName.value,
-              userEmail: userEmail.value,
-              uid: uid.value,
+              userName: localSession.userName,
+              userEmail: localSession.userEmail,
+              uid: localSession.uid,
             })
             finalizar()
             return
@@ -149,10 +150,16 @@ export const useAuthStore = defineStore('auth', () => {
 
           if (_registrando) {
             // Registro em andamento — uid_map ainda não foi escrito.
-            // Ignorar para não tratar como conta órfã e deslogar.
+            // Não setar uid.value aqui: se o Firebase reverter o auth
+            // (ex: erro de rede), onAuthStateChanged(null) veria uid
+            // truthy e redirecionaria, matando o registro.
             finalizar()
             return
           }
+
+          uid.value = user.uid
+          userEmail.value = user.email || ''
+          userName.value = user.displayName || (_lsOk ? localStorage.getItem('user_name') || '' : '')
 
           try {
             const mapSnap = await get(dbRef(db, `uid_map/${user.uid}`))
