@@ -400,7 +400,7 @@ export const useAuthStore = defineStore('auth', () => {
       return true
     } catch (e) {
       if (e.code === 'limite-atingido') {
-        authError.value = _traduzirErro('auth/limite-atingido')
+        authError.value = _traduzirErro('auth/limite-usuarios')
         return false
       }
 
@@ -417,7 +417,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       const code = await _vincularGoogleSeNovo(result.user)
       if (!code) {
-        // limite-atingido ou erro — desloga para não deixar órfão
+        // Limite de usuários ou erro no RTDB — desloga para não deixar órfão
         await signOut(firebaseAuth).catch(() => {})
         return
       }
@@ -504,7 +504,7 @@ export const useAuthStore = defineStore('auth', () => {
       'auth/popup-closed-by-user': 'Login cancelado.',
       'auth/account-exists-with-different-credential': 'Este email já está cadastrado com outro método de login (senha ou Google). Faça login com o método que você usou ao criar a conta.',
       'auth/orphan-account': 'Houve um erro ao criar sua conta. Tente novamente.',
-      'auth/limite-atingido': 'Limite de usuários atingido. Tente novamente mais tarde.',
+      'auth/limite-usuarios': 'Limite de cadastros atingido no momento. Tente novamente mais tarde.',
     }
     return erros[code] || 'Erro ao autenticar. Tente novamente.'
   }
