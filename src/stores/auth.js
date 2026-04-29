@@ -167,6 +167,9 @@ export const useAuthStore = defineStore('auth', () => {
               // Desloga para evitar estado "meio-logado".
               console.warn('[Auth] uid_map ausente para user autenticado — limpando sessão')
               _limparSessaoSegura()
+              // Fire-and-forget: signOut sem await para não causar recursão
+              // no onAuthStateChanged. O handler com null cuida do redirect.
+              signOut(firebaseAuth).catch(() => {})
             }
           } catch (e) {
             console.warn('[Auth] uid_map lookup failed:', e.message)
@@ -375,26 +378,29 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     try {
-      if (result?.user) {
-        const code = await _vincularGoogleSeNovo(result.user)
-        if (!code) return false
-
-        uid.value = result.user.uid
-        userEmail.value = result.user.email || ''
-        userName.value = result.user.displayName || ''
-        syncCode.value = code
-        _persistirSessaoSegura({
-          syncCode: code,
-          userName: userName.value,
-          userEmail: userEmail.value,
-          uid: result.user.uid,
-        })
+      if (!result?.user) {
+        authError.value = 'Erro ao autenticar com Google. Tente novamente.'
+        return false
       }
+
+      const code = await _vincularGoogleSeNovo(result.user)
+      if (!code) return false
+
+      uid.value = result.user.uid
+      userEmail.value = result.user.email || ''
+      userName.value = result.user.displayName || ''
+      syncCode.value = code
+      _persistirSessaoSegura({
+        syncCode: code,
+        userName: userName.value,
+        userEmail: userEmail.value,
+        uid: result.user.uid,
+      })
 
       return true
     } catch (e) {
       if (e.code === 'limite-atingido') {
-        authError.value = 'limite-atingido'
+        authError.value = _traduzirErro('auth/limite-atingido')
         return false
       }
 
@@ -407,24 +413,29 @@ export const useAuthStore = defineStore('auth', () => {
   async function handleRedirectResult() {
     try {
       const result = await getRedirectResult(firebaseAuth)
-      if (result?.user) {
-        const code = await _vincularGoogleSeNovo(result.user)
-        if (code) {
-          uid.value = result.user.uid
-          userEmail.value = result.user.email || ''
-          userName.value = result.user.displayName || ''
-          syncCode.value = code
-          _persistirSessaoSegura({
-            syncCode: code,
-            userName: userName.value,
-            userEmail: userEmail.value,
-            uid: result.user.uid,
-          })
-        }
+      if (!result?.user) return
+
+      const code = await _vincularGoogleSeNovo(result.user)
+      if (!code) {
+        // limite-atingido ou erro — desloga para não deixar órfão
+        await signOut(firebaseAuth).catch(() => {})
+        return
       }
+
+      uid.value = result.user.uid
+      userEmail.value = result.user.email || ''
+      userName.value = result.user.displayName || ''
+      syncCode.value = code
+      _persistirSessaoSegura({
+        syncCode: code,
+        userName: userName.value,
+        userEmail: userEmail.value,
+        uid: result.user.uid,
+      })
     } catch (e) {
       console.warn('[Auth] Redirect result error:', e.code, e.message)
       authError.value = _traduzirErro(e.code)
+      signOut(firebaseAuth).catch(() => {})
     }
   }
 
@@ -470,12 +481,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
+    // signOut primeiro (pode falhar), só limpa store depois
+    try { await signOut(firebaseAuth) } catch {}
     syncCode.value = ''
     userName.value = ''
     userEmail.value = ''
     uid.value = ''
     _limparSessaoSegura()
-    await signOut(firebaseAuth)
   }
 
   function _traduzirErro(code) {
@@ -492,6 +504,7 @@ export const useAuthStore = defineStore('auth', () => {
       'auth/popup-closed-by-user': 'Login cancelado.',
       'auth/account-exists-with-different-credential': 'Este email já está cadastrado com outro método de login (senha ou Google). Faça login com o método que você usou ao criar a conta.',
       'auth/orphan-account': 'Houve um erro ao criar sua conta. Tente novamente.',
+      'auth/limite-atingido': 'Limite de usuários atingido. Tente novamente mais tarde.',
     }
     return erros[code] || 'Erro ao autenticar. Tente novamente.'
   }
