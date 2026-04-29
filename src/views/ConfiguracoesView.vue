@@ -117,39 +117,62 @@
       </section>
 
 
-      <!-- Senha (para quem logou com Google) -->
-      <section v-if="providersReady && !temSenha" class="config-section">
-        <h2 class="config-section-titulo">Criar senha</h2>
-        <p class="config-sub">Você entrou com Google. Nos computadores do hospital o login com Google pode não funcionar — com uma senha cadastrada você entra com seu e-mail e senha em qualquer lugar.</p>
+      <!-- Métodos de login -->
+      <section v-if="providersReady" class="config-section">
+        <h2 class="config-section-titulo">Métodos de login</h2>
 
-        <div class="campo">
-          <input v-model="novaSenha" type="password" placeholder="Nova senha (mín. 8 caracteres)" autocomplete="new-password" />
+        <div class="metodo-item">
+          <div class="metodo-info">
+            <span class="metodo-nome">✉ Email e senha</span>
+            <span class="metodo-email">{{ auth.userEmail }}</span>
+          </div>
+          <span class="metodo-status ativo">Ativo</span>
         </div>
-        <div class="campo">
-          <input v-model="novaSenhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="new-password" />
+
+        <div v-if="temGoogle" class="metodo-item">
+          <div class="metodo-info">
+            <span class="metodo-nome">G Google</span>
+            <span class="metodo-email">{{ emailGoogle || auth.userEmail }}</span>
+          </div>
+          <span class="metodo-status ativo">Ativo</span>
         </div>
 
         <button
-          class="btn btn-primary btn-block"
-          :disabled="novaSenha.length < 8 || novaSenha !== novaSenhaConfirm || salvandoSenha"
-          @click="criarSenha"
-        >
-          {{ salvandoSenha ? 'Salvando...' : 'Criar senha' }}
-        </button>
-      </section>
-
-      <!-- Vincular Google (para quem criou com email) -->
-      <section v-if="providersReady && !temGoogle" class="config-section">
-        <h2 class="config-section-titulo">Vincular conta Google</h2>
-        <p class="config-sub">Vincule sua conta Google para poder entrar com um toque, sem digitar email e senha.</p>
-        <button
+          v-if="!temGoogle"
           class="btn btn-secondary btn-block"
+          style="margin-top:12px"
           :disabled="vinculandoGoogle"
           @click="vincularGoogle"
         >
           <span v-if="vinculandoGoogle">Vinculando...</span>
-          <span v-else>🔗 Vincular com Google</span>
+          <span v-else>+ Adicionar login com Google</span>
         </button>
+
+        <template v-if="!temSenha">
+          <button
+            class="btn btn-secondary btn-block"
+            style="margin-top:8px"
+            @click="mostrarCriarSenha = !mostrarCriarSenha"
+          >
+            {{ mostrarCriarSenha ? 'Cancelar' : '+ Criar senha' }}
+          </button>
+          <div v-if="mostrarCriarSenha" style="margin-top:12px">
+            <p class="config-sub">Crie uma senha para entrar em computadores do hospital onde o Google pode não funcionar.</p>
+            <div class="campo">
+              <input v-model="novaSenha" type="password" placeholder="Nova senha (mín. 8 caracteres)" autocomplete="new-password" />
+            </div>
+            <div class="campo">
+              <input v-model="novaSenhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="new-password" />
+            </div>
+            <button
+              class="btn btn-primary btn-block"
+              :disabled="novaSenha.length < 8 || novaSenha !== novaSenhaConfirm || salvandoSenha"
+              @click="criarSenha"
+            >
+              {{ salvandoSenha ? 'Salvando...' : 'Criar senha' }}
+            </button>
+          </div>
+        </template>
       </section>
 
       <!-- Alterar nome -->
@@ -239,7 +262,9 @@ const sucesso = ref('')
 const providersReady = ref(false)
 const temSenha = ref(false)
 const temGoogle = ref(false)
+const emailGoogle = ref('')
 const vinculandoGoogle = ref(false)
+const mostrarCriarSenha = ref(false)
 
 // Senha para Google users
 const novaSenha = ref('')
@@ -260,9 +285,19 @@ onMounted(async () => {
   await auth.initAuthListener()
   const user = firebaseAuth.currentUser
   if (user) {
-    const providers = user.providerData.map(p => p.providerId)
-    temSenha.value = providers.includes('password')
-    temGoogle.value = providers.includes('google.com')
+    await user.reload()
+    const providers = firebaseAuth.currentUser?.providerData || []
+    const ids = providers.map(p => p.providerId)
+    // Se providerData vazio, assume que tem senha (método padrão de cadastro)
+    temSenha.value = ids.length === 0 || ids.includes('password')
+    temGoogle.value = ids.includes('google.com')
+    if (temGoogle.value) {
+      const g = providers.find(p => p.providerId === 'google.com')
+      emailGoogle.value = g?.email || ''
+    }
+  } else {
+    temSenha.value = true
+    temGoogle.value = false
   }
   providersReady.value = true
 })
@@ -542,6 +577,20 @@ async function confirmarDeleteSegundoPasso() {
   margin-bottom: 12px;
   line-height: 1.4;
 }
+
+.metodo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.metodo-item:last-of-type { border-bottom: none; }
+.metodo-info { display: flex; flex-direction: column; gap: 2px; }
+.metodo-nome { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.metodo-email { font-size: 0.78rem; color: var(--text-muted); }
+.metodo-status { font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+.metodo-status.ativo { background: var(--success-muted); color: var(--success); }
 
 .campo {
   margin-bottom: 10px;
