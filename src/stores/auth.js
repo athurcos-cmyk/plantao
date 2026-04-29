@@ -66,12 +66,16 @@ function _gerarSyncCode() {
 }
 
 async function _gerarSyncCodeUnico() {
-  for (let i = 0; i < 10; i++) {
-    const code = _gerarSyncCode()
-    const snap = await get(dbRef(db, `owners/${code}`))
-    if (!snap.exists()) return code
-  }
-  throw Object.assign(new Error('limite-atingido'), { code: 'limite-atingido' })
+  // NOTA: A regra de segurança do Firebase (owners/$code/.read) exige que o
+  // uid do usuário já exista sob o código para permitir a leitura. Durante o
+  // registro o uid ainda não foi associado a nenhum código, então não podemos
+  // ler owners/$code para verificar disponibilidade.
+  //
+  // Como o espaço de códigos é grande (30^6 ≈ 729M combinações) e o número
+  // de usuários é pequeno (< 100), a probabilidade de colisão é ~0.0007%.
+  // Geramos o código aleatoriamente sem verificar — se por um milagre
+  // colidir, o update() atômico abaixo falha e o registro é tratado como erro.
+  return _gerarSyncCode()
 }
 
 // Flag para evitar que onAuthStateChanged trate registro em andamento como conta órfã
@@ -196,6 +200,14 @@ export const useAuthStore = defineStore('auth', () => {
           // Sessão inexistente no Firebase Auth.
           // Pode ser: conta deletada, token revogado, ou offline (Firebase não
           // conseguiu restaurar do IndexedDB).
+
+          if (_registrando) {
+            // Registro em andamento — não deslogar nem redirecionar mesmo
+            // que o Firebase tenha revertido o auth temporariamente.
+            finalizar()
+            return
+          }
+
           const localSession = _lerSessaoCacheSegura()
           const temCache = localSession.hasSession
 
@@ -540,6 +552,11 @@ export const useAuthStore = defineStore('auth', () => {
       'auth/orphan-account': 'Houve um erro ao criar sua conta. Tente novamente.',
       'auth/limite-usuarios': 'Limite de cadastros atingido no momento. Tente novamente mais tarde.',
       'limite-atingido': 'Limite de cadastros atingido no momento. Tente novamente mais tarde.',
+      'auth/operation-not-allowed': 'Cadastro por email/senha desabilitado. Contate o suporte.',
+      'auth/unauthorized-domain': 'Domínio não autorizado para login. Contate o suporte.',
+      'auth/quota-exceeded': 'Limite de criação de contas excedido. Tente novamente mais tarde.',
+      'auth/user-disabled': 'Esta conta foi desabilitada. Contate o suporte.',
+      'auth/credential-already-in-use': 'Esta credencial já está vinculada a outra conta.',
     }
     return erros[code] || 'Erro ao autenticar. Tente novamente.'
   }
