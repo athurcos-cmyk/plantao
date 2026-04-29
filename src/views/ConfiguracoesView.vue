@@ -434,7 +434,8 @@ async function confirmarDeleteSegundoPasso() {
 
   try {
     const user = firebaseAuth.currentUser
-    const idToken = await user.getIdToken()
+    // Força renovação do token — evita token expirado no servidor
+    const idToken = await user.getIdToken(true)
 
     // 0. Email de despedida (timeout 5s — nunca bloqueia o delete)
     try {
@@ -468,7 +469,11 @@ async function confirmarDeleteSegundoPasso() {
     if (e.code === 'auth/requires-recent-login') {
       erro.value = 'Faça login novamente antes de deletar a conta.'
     } else {
-      erro.value = 'Erro ao deletar conta. Tente novamente.'
+      // Mostra o erro real do servidor, não mensagem genérica
+      const motivo = e.message || 'Erro ao deletar conta. Tente novamente.'
+      erro.value = motivo.startsWith('delete-account falhou')
+        ? `Servidor retornou erro (${e.message.split(': ')[1] || 'desconhecido'}). Tente novamente ou contate o suporte.`
+        : motivo
       console.error('[CONFIG] delete error:', e)
     }
     deletando.value = false
