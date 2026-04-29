@@ -331,6 +331,13 @@ export const useAuthStore = defineStore('auth', () => {
         }
       }
 
+      if (e.code === 'auth/account-exists-with-different-credential') {
+        const email = e.customData?.email || 'Este email'
+        console.warn('[Auth] Google email já tem senha:', email)
+        authError.value = `"${email}" já possui cadastro com senha. Faça login com email e senha, depois vincule o Google nas Configurações.`
+        return false
+      }
+
       console.error('[Auth] Google popup error:', e.code, e.message)
       authError.value = _traduzirErro(e.code)
       return false
@@ -444,6 +451,7 @@ export const useAuthStore = defineStore('auth', () => {
       'auth/network-request-failed': 'Sem conexão com a internet.',
       'auth/popup-blocked': 'Popup bloqueado - tente novamente.',
       'auth/popup-closed-by-user': 'Login cancelado.',
+      'auth/account-exists-with-different-credential': 'Este email já está cadastrado com outro método de login (senha ou Google). Faça login com o método que você usou ao criar a conta.',
     }
     return erros[code] || 'Erro ao autenticar. Tente novamente.'
   }
