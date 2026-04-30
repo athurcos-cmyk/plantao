@@ -8,7 +8,7 @@
       <p class="doc-updated">Última atualização: março de 2026</p>
 
       <h2>1. Sobre o Plantão</h2>
-      <p>O Plantão é um aplicativo web progressivo (PWA) criado para auxiliar profissionais de enfermagem a registrar anotações durante o plantão hospitalar. Desenvolvido e operado por Arthur Olímpio Lima, com sede no Brasil.</p>
+      <p>O Plantão é um aplicativo web progressivo (PWA) criado para auxiliar profissionais de enfermagem a registrar anotações durante o plantão hospitalar. Desenvolvido e operado por Arthur Olímpio Lima, com sede no Brasil. Arthur Olímpio Lima é o controlador dos seus dados pessoais, conforme definido pela Lei Geral de Proteção de Dados (LGPD).</p>
       <p>Contato: <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
 
       <h2>2. Dados coletados</h2>
@@ -21,6 +21,7 @@
         <li><strong>Dados de uso básico</strong> — data de cadastro, último acesso</li>
       </ul>
       <p>Não coletamos prontuários, CPF, dados financeiros ou qualquer informação sensível além do que você digita voluntariamente.</p>
+      <p><strong>Base legal:</strong> O tratamento dos seus dados é realizado com base no seu <strong>consentimento</strong> (art. 7º, I da LGPD). Ao criar uma conta, você consente com esta política. Você pode revogá-lo a qualquer momento excluindo sua conta.</p>
 
       <h2>3. Como os dados são usados</h2>
       <ul>
@@ -32,7 +33,7 @@
       <p>Não vendemos, compartilhamos nem monetizamos seus dados com terceiros.</p>
 
       <h2>4. Armazenamento</h2>
-      <p>Seus dados são armazenados no <strong>Firebase Realtime Database</strong> (Google), com servidores nos Estados Unidos. O acesso é protegido por autenticação Firebase Auth e regras de segurança que isolam os dados de cada usuário.</p>
+      <p>Seus dados são armazenados no <strong>Firebase Realtime Database</strong> (Google), com servidores nos Estados Unidos. A transferência internacional segue as Cláusulas Contratuais Padrão (SCCs) adotadas pelo Google, em conformidade com a LGPD. O acesso é protegido por autenticação Firebase Auth e regras de segurança que isolam os dados de cada usuário.</p>
 
       <h2>5. Dados de pacientes</h2>
       <p>O Plantão é uma ferramenta de apoio ao profissional — não é um sistema hospitalar. Os dados de pacientes (nome, leito, anotações) são inseridos por você e ficam restritos à sua conta. Não temos acesso ao conteúdo das suas anotações. Você é responsável por seguir as normas do seu hospital quanto ao registro de informações clínicas.</p>
@@ -43,6 +44,7 @@
         <li><strong>Exclusão:</strong> em Configurações → Excluir conta, todos os seus dados são removidos permanentemente</li>
         <li><strong>Portabilidade:</strong> entre em contato em <a href="mailto:contato@plantao.net">contato@plantao.net</a> para exportar seus dados</li>
       </ul>
+      <p><strong>Retenção:</strong> seus dados são mantidos enquanto sua conta estiver ativa. Ao excluir a conta, todos os dados são removidos permanentemente em até 30 dias.</p>
 
       <h2>7. Cookies e armazenamento local</h2>
       <p>O app usa <strong>localStorage</strong> para cache de sessão e funcionamento offline. Não usamos cookies de rastreamento ou publicidade.</p>
@@ -50,7 +52,10 @@
       <h2>8. Menores de idade</h2>
       <p>O Plantão é destinado a profissionais de saúde maiores de 18 anos. Não coletamos dados de menores de idade.</p>
 
-      <h2>9. Alterações</h2>
+      <h2>9. Contato e encarregado (DPO)</h2>
+      <p>Para questões relacionadas à privacidade e proteção de dados: <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
+
+      <h2>10. Alterações</h2>
       <p>Atualizações nesta política serão comunicadas por e-mail. O uso continuado do app após a notificação implica aceite das mudanças.</p>
     </div>
   </div>

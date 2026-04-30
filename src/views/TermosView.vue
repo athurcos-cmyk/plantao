@@ -17,7 +17,6 @@
       <ul>
         <li>Profissionais de saúde maiores de 18 anos</li>
         <li>Uso pessoal — uma conta por profissional</li>
-        <li>Atualmente limitado a 100 vagas gratuitas no lançamento</li>
       </ul>
 
       <h2>4. Responsabilidades do usuário</h2>
@@ -40,7 +39,7 @@
       <p>O profissional de saúde é sempre o responsável pela conferência e validade das informações registradas.</p>
 
       <h2>6. Plano gratuito e futuro pagamento</h2>
-      <p>O acesso atual é gratuito durante o período de lançamento. No futuro, poderá ser introduzido um plano pago. Usuários do lançamento receberão aviso por e-mail com antecedência.</p>
+      <p>O acesso atual é gratuito. No futuro, poderá ser introduzido um plano pago com funcionalidades adicionais. Usuários cadastrados receberão aviso por e-mail com antecedência.</p>
 
       <h2>7. Cancelamento</h2>
       <p>Você pode excluir sua conta a qualquer momento em Configurações → Excluir conta. Todos os seus dados são removidos permanentemente. Para encerrar antes disso, basta parar de usar o app.</p>
@@ -53,6 +52,9 @@
 
       <h2>10. Contato</h2>
       <p>Dúvidas ou solicitações: <a href="mailto:contato@plantao.net">contato@plantao.net</a></p>
+
+      <h2>11. Legislação aplicável</h2>
+      <p>Estes termos são regidos pelas leis brasileiras. Fica eleito o foro da comarca do desenvolvedor para dirimir controvérsias relacionadas a este instrumento.</p>
     </div>
   </div>
 </template>
