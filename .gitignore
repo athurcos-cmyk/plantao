@@ -8,3 +8,4 @@ dist
 .vercel
 .aider*
 signing/
+.claude/settings.local.json

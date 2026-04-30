@@ -8,6 +8,30 @@
 
 ---
 
+## Sessao 2026-04-30 (parte 7 — +50 novos prompts de marketing)
+
+### Admin — 50 novos prompts (total 100)
+
+- **9 novas categorias** adicionadas ao `marketingPrompts`: Especialidades (51-57), Dicas e Funcionalidades (58-64), Comunidade (65-70), Produtividade (71-77), Carrossel (78-82), Stories (83-87), Conversao e CTA (88-94), Fechamento (95-100)
+- **50 prompts criados** seguindo as regras do MARKETING.md: foto realista de campanha, paleta azul escura, logo com tamanho exato (60px/40px 1:1, 50px/35px stories), sem emoji na imagem, sem mostrar app funcionando
+- **Todas as categorias cobertas**: especialidades (UTI, pediatria, CC, PS, PSF, home care, enfermaria), dicas educativas, comunidade/prova social, produtividade avancada, carrossel tematico, stories diretos, CTAs de conversao
+- Build validado (vite build ok)
+
+---
+
+## Sessao 2026-04-30 (parte 6 — admin marketing busca/filtro)
+
+### Admin — busca e filtros na aba Marketing
+
+- **Campo de busca** — filtra por titulo, prompt e legenda em tempo real
+- **Filtros por canal com contagem** — chips para cada canal (feed, facebook, whatsapp, story, carrossel) mostrando quantos prompts usam aquele canal
+- **Result count** — "X de Y prompts" com link "limpar filtros" quando filtrando, ou "50 prompts · 5 canais" sem filtro
+- **Estado vazio** — "Nenhum prompt encontrado." quando busca/filtro nao encontra nada
+- **Visual** — cards sem margens laterais fixas, alinhados ao fluxo do admin-body
+- Build validado
+
+---
+
 ## Sessao 2026-04-30 (parte 5 — marketing)
 
 ### MARKETING.md: 50 prompts de imagem para divulgacao

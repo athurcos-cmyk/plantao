@@ -4,13 +4,12 @@
 
 App PWA de anotações de enfermagem, em produção em plantao.net. Auth completamente revisada e corrigida. Admin com Marketing tab com 50 prompts de imagem com toggle done/not done (localStorage). Próximo foco: gerar imagens no ChatGPT e publicar.
 
-## Última sessão (2026-04-30 — marketing)
+## Última sessão (2026-04-30 — admin marketing +50 prompts, total 100)
 
-- **MARKETING.md expandido** de 15 para 50 prompts completos, organizados em 7 categorias: DOR DIRETA, BENEFÍCIO DIRETO, VIBE/EMOCIONAL, PROVA SOCIAL, HUMOR/ENGAJAMENTO, CARROSSEL, STORIES.
-- **Admin — aba Marketing:** cards expansíveis com prompt e legenda, chips coloridos por canal, botões copiar.
-- **Toggle done/not done** por prompt via localStorage (`mkt_prontos`), sem Firebase.
-- **34 novos prompts criados** + 16 originais mantidos e ajustados.
-- **Build passou.**
+- **Admin — aba Marketing:** 50 novos prompts (IDs 51-100) em 9 categorias: Especialidades, Dicas/Funcionalidades, Comunidade, Produtividade, Carrossel, Stories, Conversao/CTA, Fechamento
+- **MARKETING.md seguido estritamente:** foto realista, paleta azul escura, logo com tamanho exato, sem emoji na imagem, sem app funcionando
+- **Build validado** — AdminView chunk 113.89 kB
+- **Commit e push feitos** com gitignore e settings.local.json
 
 ## Stack
 
