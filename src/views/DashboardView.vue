@@ -475,6 +475,7 @@ async function sincronizarAgora() {
 
 onMounted(() => {
   orgStore.iniciar()
+  pacientesStore.iniciar()
   atualizarPainelSync()
   pararSyncEvents = subscribeSyncState((event) => {
     if (event?.code && event.code !== auth.syncCode) return
