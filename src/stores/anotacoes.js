@@ -91,26 +91,6 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     }
   }
 
-  function _reconstruirComRemoto(code) {
-    const pendLocais = anotacoes.value.filter(a =>
-      a?._pending && a?._key && !remotoMap.has(a._key)
-    )
-    const remoto = Array.from(remotoMap.values()).map(item => ({ ...item, _pending: false }))
-    anotacoes.value = [...pendLocais, ...remoto]
-    _agendarSalvarCache(code)
-  }
-
-  async function _sincronizarRemotoCompleto(code) {
-    const basePath = dbRef(db, `anotacoes/${code}`)
-    const q = query(basePath, orderByChild('timestamp'))
-    const snap = await get(q)
-    remotoMap.clear()
-    snap.forEach(child => {
-      remotoMap.set(child.key, { ...child.val(), _key: child.key })
-    })
-    _reconstruirComRemoto(code)
-  }
-
   async function iniciar() {
     const auth = useAuthStore()
     if (!auth.syncCode) return
@@ -127,14 +107,6 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     _hidratarPendentesLocais(code)
 
     const q = query(dbRef(db, `anotacoes/${code}`), orderByChild('timestamp'))
-
-    try {
-      await _sincronizarRemotoCompleto(code)
-    } catch (_) {
-      // Sem conexao no inicio: segue com cache local.
-      _agendarSalvarCache(code)
-    }
-
     _limparListeners()
 
     stopAdded = onChildAdded(q, (snap) => {
@@ -219,10 +191,7 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     if (!code || !navigator.onLine) return 0
 
     const fila = _lerPendentes(code)
-    if (!fila.length) {
-      try { await _sincronizarRemotoCompleto(code) } catch {}
-      return 0
-    }
+    if (!fila.length) return 0
 
     const restantes = []
     let enviados = 0
@@ -244,7 +213,6 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     _salvarPendentes(code, restantes)
     pendentes.value = restantes.length
     _agendarSalvarCache(code)
-    try { await _sincronizarRemotoCompleto(code) } catch {}
     return enviados
   }
 

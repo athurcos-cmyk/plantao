@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { db } from '../firebase.js'
-import { ref as dbRef, push, onValue, remove, update } from 'firebase/database'
+import { ref as dbRef, push, onChildAdded, onChildChanged, onChildRemoved, remove, update, query, orderByKey } from 'firebase/database'
 import { useAuthStore } from './auth.js'
 
 const _cacheKey = code => `cache_pacientes_${code}`
@@ -39,7 +39,9 @@ export const usePacientesStore = defineStore('pacientes', () => {
   const pacientes      = ref([])
   const pendentesCount = ref(0)
   const _pacMap        = new Map()
-  let _stopValue = null
+  let _stopAdded = null
+  let _stopChanged = null
+  let _stopRemoved = null
 
   function _ordenar(lista) {
     return lista.sort((a, b) => (a.leito || '').localeCompare(b.leito || '', undefined, { numeric: true }))
@@ -52,11 +54,13 @@ export const usePacientesStore = defineStore('pacientes', () => {
   }
 
   function _limparListeners() {
-    if (_stopValue) { _stopValue(); _stopValue = null }
+    if (_stopAdded) { _stopAdded(); _stopAdded = null }
+    if (_stopChanged) { _stopChanged(); _stopChanged = null }
+    if (_stopRemoved) { _stopRemoved(); _stopRemoved = null }
   }
 
   function iniciar() {
-    if (_stopValue) return
+    if (_stopAdded) return
     const auth = useAuthStore()
     if (!auth.syncCode) return
     const code = auth.syncCode
@@ -69,30 +73,22 @@ export const usePacientesStore = defineStore('pacientes', () => {
     }
     pendentesCount.value = _lerQueue(code).length
 
-    const path = dbRef(db, `pacientes/${code}`)
+    const path = query(dbRef(db, `pacientes/${code}`), orderByKey())
 
-    // onValue SEMPRE devolve o estado completo do Firebase
-    // — sem condição de corrida, sem dedup, sem pacientes fantasmas
-    _stopValue = onValue(path, (snapshot) => {
-      const queue = _lerQueue(code)
-      const pendingAddKeys = new Set(queue.filter(i => i.op === 'add').map(i => i.key))
+    // onChildAdded/Changed/Removed baixam SÓ o nó que mudou, não a lista inteira
+    // — economia drástica de download vs onValue
+    _stopAdded = onChildAdded(path, (snap) => {
+      _pacMap.set(snap.key, _parsePaciente(snap))
+      _reconstruir(code)
+    })
 
-      // Reconstrói o map a partir do Firebase
-      const novoMap = new Map()
-      snapshot.forEach((child) => {
-        novoMap.set(child.key, _parsePaciente(child))
-      })
+    _stopChanged = onChildChanged(path, (snap) => {
+      _pacMap.set(snap.key, _parsePaciente(snap))
+      _reconstruir(code)
+    })
 
-      // Preserva pacientes offline (tempKeys) que ainda estão na fila
-      // para não sumirem da UI até sincronizar
-      _pacMap.forEach((v, k) => {
-        if (pendingAddKeys.has(k)) {
-          novoMap.set(k, v)
-        }
-      })
-
-      _pacMap.clear()
-      novoMap.forEach((v, k) => _pacMap.set(k, v))
+    _stopRemoved = onChildRemoved(path, (snap) => {
+      _pacMap.delete(snap.key)
       _reconstruir(code)
     })
   }
@@ -282,6 +278,12 @@ export const usePacientesStore = defineStore('pacientes', () => {
         console.warn('[pacientes sync] erro na op', item.op, e)
       }
     }
+
+    // Remove tempKeys do map local — onChildAdded já adicionou as keys reais
+    for (const tempKey of Object.keys(keyMap)) {
+      _pacMap.delete(tempKey)
+    }
+    _reconstruir(code)
 
     _salvarQueue(code, [])
     pendentesCount.value = 0
