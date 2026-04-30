@@ -130,28 +130,47 @@ export default async function handler(req, res) {
           destinatarios.push({ email, nome: (u.nome || '').split(' ')[0] || 'enfermeiro(a)' })
         })
 
-        // Envio sequencial com 500ms entre cada — evita HTTP 429 do Resend
-        for (const { email, nome } of destinatarios) {
-          try {
-            const r = await fetch('https://api.resend.com/emails', {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${RESEND_KEY}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                from: 'Arthur do Plantão <contato@plantao.net>',
-                to: [email],
-                subject: tituloPush,
-                html: _htmlBroadcast(nome, tituloPush, mensagem),
-              }),
-            })
-            if (r.ok) { emailsEnviados++ }
-            else { erros.push({ tipo: 'email', email, error: `HTTP ${r.status}` }) }
-          } catch (e) {
-            erros.push({ tipo: 'email', email, error: e.message })
+        // Batch Resend — até 100 emails por request. Fallback sequencial se rate limit.
+        const batchPayload = destinatarios.map(({ email, nome }) => ({
+          from: 'Arthur do Plantão <contato@plantao.net>',
+          to: [email],
+          subject: tituloPush,
+          html: _htmlBroadcast(nome, tituloPush, mensagem),
+        }))
+
+        const r = await fetch('https://api.resend.com/emails/batch', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${RESEND_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(batchPayload),
+        })
+
+        if (r.ok) {
+          const data = await r.json()
+          emailsEnviados = Array.isArray(data) ? data.filter(e => e?.id).length : destinatarios.length
+        } else if (r.status === 429) {
+          console.warn('[BROADCAST] batch rate limited, fallback sequencial')
+          for (const p of batchPayload) {
+            try {
+              const r2 = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${RESEND_KEY}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(p),
+              })
+              if (r2.ok) emailsEnviados++
+              else erros.push({ tipo: 'email', email: p.to[0], error: `HTTP ${r2.status}` })
+            } catch (e) {
+              erros.push({ tipo: 'email', email: p.to[0], error: e.message })
+            }
+            await new Promise(r => setTimeout(r, 500))
           }
-          await new Promise(r => setTimeout(r, 500))
+        } else {
+          erros.push({ tipo: 'email', error: `batch HTTP ${r.status}: ${await r.text().catch(() => '')}` })
         }
       }
     } catch (e) {
