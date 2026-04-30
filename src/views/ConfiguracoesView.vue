@@ -121,7 +121,7 @@
       <section v-if="providersReady" class="config-section">
         <h2 class="config-section-titulo">Métodos de login</h2>
 
-        <div class="metodo-item">
+        <div v-if="temSenha" class="metodo-item">
           <div class="metodo-info">
             <span class="metodo-nome">✉ Email e senha</span>
             <span class="metodo-email">{{ auth.userEmail }}</span>
@@ -302,7 +302,7 @@ onMounted(async () => {
     const providers = firebaseAuth.currentUser?.providerData || []
     const ids = providers.map(p => p.providerId)
     // Se providerData vazio, assume que tem senha (método padrão de cadastro)
-    temSenha.value = ids.length === 0 || ids.includes('password')
+    temSenha.value = ids.includes('password')
     temGoogle.value = ids.includes('google.com')
     if (temGoogle.value) {
       const g = providers.find(p => p.providerId === 'google.com')
@@ -341,7 +341,7 @@ async function criarSenha() {
     temSenha.value = true
     novaSenha.value = ''
     novaSenhaConfirm.value = ''
-    sucesso.value = 'Senha criada! Agora você pode entrar com código + senha.'
+    sucesso.value = 'Senha criada! Agora você pode entrar com email ou código + senha.'
   } catch (e) {
     if (e.code === 'auth/requires-recent-login') {
       erro.value = 'Faça login novamente antes de criar a senha.'

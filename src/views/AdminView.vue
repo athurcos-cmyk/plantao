@@ -647,6 +647,23 @@ async function getIdToken() {
   return user.getIdToken()
 }
 
+// Helper para recalcular vagas do console (remover depois de usar)
+window.recalcularVagas = async () => {
+  try {
+    const token = await getIdToken()
+    const res = await fetch('/api/init-counter', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token }
+    })
+    const data = await res.json()
+    console.log('[VAGAS]', data)
+    alert('Contador atualizado: ' + data.total + ' usuários')
+  } catch (e) {
+    console.error('[VAGAS] erro:', e)
+    alert('Erro: ' + e.message)
+  }
+}
+
 async function carregarDadosAdmin(forcar = false) {
   if (carregando.value && !forcar) return
   carregando.value = true

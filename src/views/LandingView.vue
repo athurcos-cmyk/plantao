@@ -26,7 +26,7 @@
       <div class="hero-inner">
         <div class="hero-text">
           <h1 class="hero-title">
-            Os computadores tão ocupados?<br>
+            Os computadores estão ocupados?<br>
             Caiu a internet?<br>
             <span class="hero-accent">Seu plantão não para.</span>
           </h1>
@@ -111,8 +111,8 @@
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
-          <span class="stat-num">+</span>
-          <span class="stat-label">Menos papel, mais cuidado</span>
+          <span class="stat-num">Mais</span>
+          <span class="stat-label">cuidado, menos papel</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">

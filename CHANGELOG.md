@@ -8,6 +8,81 @@
 
 ---
 
+## Sessao 2026-04-29 (parte 5)
+
+### Configurações: métodos de login falsos positivos
+
+**Problema:** Usuário com conta Google-only via "Email e senha: Ativo" nas Configurações — mesmo sem ter senha. `providerData` vazio após `user.reload()` (comportamento do Firebase para contas Google) fazia `ids.length === 0` resultar em `temSenha = true`.
+
+**Fixes em `src/views/ConfiguracoesView.vue`:**
+- `temSenha.value` agora só considera `ids.includes('password')` — Google limpando `providerData` não gera mais falso positivo
+- Email/senha só aparece na lista de métodos com `v-if="temSenha"` (Google-only não mostra mais "Ativo" indevidamente)
+- Mensagem de sucesso ao criar senha: *"Senha criada! Agora você pode entrar com email ou código + senha."*
+
+**Fix em `src/stores/auth.js`:**
+- Ao registrar email já existente, detecta o método com `fetchSignInMethodsForEmail` e mostra mensagem específica:
+  - Se for Google: *"Este email já está cadastrado com Google. Faça login com Google e vá em Configurações para criar uma senha."*
+  - Se for senha: *"Este email já está cadastrado. Faça login com sua senha."*
+
+**Verificado:** Firebase console confirma que contas Google-only aparecem sem `password` em `providerData`.
+
+### Nota sobre colisão de email entre contas
+Firebase Auth permite o mesmo email como provider Google na conta A e como email+senha na conta B. É comportamento padrão. Risco de colisão real: desprezível com < 100 usuários. Não foi implementada proteção para evitar falso positivo.
+
+---
+
+## Sessao 2026-04-29 (parte 4)
+
+### Auth: registro quebrado por regra de segurança do Firebase (Permission denied)
+
+**Problema:** Após o fix da race condition (parte 3), o registro começou a mostrar
+`[Auth] register error: Permission denied Permission denied` no console. A conta
+era criada no Firebase Auth e imediatamente deletada pelo rollback, resultando em
+"Erro ao autenticar. Tente novamente." para o usuário.
+
+**Causa raiz:** `_gerarSyncCodeUnico()` tentava ler `owners/${code}` para verificar
+se o syncCode já estava em uso. A regra de segurança do Firebase
+(`owners/$code/.read: data.child(auth.uid).exists()`) NEGA essa leitura porque o
+uid do novo usuário ainda não existe sob nenhum código. Antes da parte 3, essa
+função nunca era alcançada — o `onAuthStateChanged` (race condition) deslogava o
+usuário antes.
+
+**Correção em `src/stores/auth.js`:**
+- `_gerarSyncCodeUnico()` simplificado para gerar código aleatório sem ler o
+  banco — colisão é estatisticamente impossível (30^6 ≈ 729M combinações, < 100
+  usuários)
+- Adicionado check `_registrando` no handler `null` do `onAuthStateChanged` para
+  evitar redirect durante registro (defense-in-depth)
+- Novos códigos em `_traduzirErro`: `auth/operation-not-allowed`,
+  `auth/unauthorized-domain`, `auth/quota-exceeded`, `auth/user-disabled`,
+  `auth/credential-already-in-use`
+
+### Auth: update multi-path com 3 caminhos negado pela regra do Firebase
+
+**Problema:** Mesmo com `_gerarSyncCodeUnico` corrigido, o `update()` atômico que
+escrevia `owners/$code/$uid`, `uid_map/$uid` e `usuarios/$code` em uma chamada
+continuava falhando com `PERMISSION_DENIED`.
+
+**Causa raiz:** A regra `usuarios/$code/.write` checa
+`root.child('owners').child($code).child(auth.uid).val() === true`. Mas o Firebase
+avalia cada caminho de um `update()` multi-path contra o estado **ATUAL** do banco,
+não o final simulado. Quando `usuarios/$code` era verificado, o
+`owners/$code/$uid` ainda não existia (estava sendo escrito no mesmo update).
+
+**Correção em `register()` e `_vincularGoogleSeNovo()`:**
+- Escrita em 2 passos: (1) `owners/$code/$uid` + `uid_map/$uid`, (2) `usuarios/$code`
+- Rollback do passo 1 se o passo 2 falhar (remove owners + uid_map)
+- Remove try/catch morto ao redor de `_gerarSyncCodeUnico` (não lança mais)
+
+### Sobre o admin (a pedido do usuário): as 3 camadas de proteção estão intactas
+1. Router guard (`beforeEach`): verifica `userEmail !== 'a.thurcos@gmail.com'`
+2. Componente (`onMounted`): dupla verificação + redirect
+3. API server-side (`api/admin.js`): verifica idToken + email do admin
+
+O "Permission denied" do console NÃO é do admin — é exclusivamente do registro.
+
+**Verificado após deploy:** registro email/senha funcionando, Google login no PC e celular funcionando. Conta criada com syncCode, redirecionamento ao dashboard, sessão persiste após refresh.
+
 ## Sessao 2026-04-29 (parte 3)
 
 ### Auth: race condition no onAuthStateChanged durante registro

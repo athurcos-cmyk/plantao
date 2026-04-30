@@ -2,16 +2,15 @@
 
 ## Estado atual (2026-04-29)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Design system com 12 temas via variáveis CSS. Landing page reformulada com foco em problemas reais (PC ocupado, internet cai). Admin repaginada com tempo real, métricas enriquecidas e push individual. Guia de implementação Stripe documentado em PAYMENT_GUIDE.md. Auth auditada: 21 cenários verificados, 4 bugs corrigidos, store estável. Foco atual: refinamentos clínicos, validação com usuários.
+App PWA de anotações de enfermagem, em produção em plantao.net. Auth completamente revisada e corrigida — 4 sessões de hardening (partes 2, 3, 4, 5). Bugs resolvidos: rollback ausente, race condition onAuthStateChanged vs register, uid setado antes do _registrando, _gerarSyncCodeUnico bloqueado por regra do Firebase, update multi-path com 3 caminhos negado, Configurações mostrava "Email e senha: Ativo" falso para Google-only. Registro email/senha e Google verificados e funcionando. Admin com 3 camadas de proteção. Próximo foco: validação com usuários reais e refinamentos clínicos.
 
-## Última sessão (2026-04-29 — parte 3 / race condition auth)
+## Última sessão (2026-04-29 — parte 5 / Configurações falsos positivos)
 
-- **Bug crítico descoberto:** Race condition entre `onAuthStateChanged` e `register()`. O listener disparava antes do RTDB ser escrito, via `uid_map` ausente, e deslogava o usuário no meio do registro. Causava "Erro ao autenticar" genérico + conta órfã no Auth.
-- **Fix:** Flag `_registrando` no módulo, ativada durante register/loginGoogle/handleRedirectResult. `onAuthStateChanged` pula checagem de uid_map quando a flag está ativa.
-- **Também:** `return` após restore de cache de sessão (evita uid_map lookup desnecessário), `'limite-atingido'` (sem prefixo) no `_traduzirErro`.
-- **Parte 2 (hardening auth):** rollback no register(), detecção de uid_map ausente em login/loginComCustomToken, limpeza de sessão em initAuthListener.
-- **TWA preparado:** manifest, assetlinks.json, APK gerado.
-- **Admin:** proteção extra na view (3 camadas).
+- **Bug 1:** `temSenha` true para Google-only — `providerData` vazio após `reload()` fazia `ids.length === 0` resultar em `true`. Fix: `ids.includes('password')` apenas, não `ids.length === 0`.
+- **Bug 2:** Template sempre renderizava "Email e senha: Ativo" sem `v-if`. Fix: `v-if="temSenha"` no método de email.
+- **Bug 3:** Mensagem de sucesso não mencionava email. Fix: "entrar com email ou código + senha".
+- **Bug 4:** Erro "Este email já está cadastrado" genérico. Fix: `fetchSignInMethodsForEmail` detecta se é Google e dá mensagem específica direcionando para Configurações.
+- **Nota:** Firebase Auth permite mesmo email como provider Google na conta A e email+senha na conta B. Risco desprezível (< 100 usuários). Não implementado.
 
 ## Stack
 
@@ -30,7 +29,7 @@ Vue 3 (script setup), Vite, Pinia, Firebase Auth + Realtime DB, vite-plugin-pwa,
 
 ## Firebase
 
-- `owners/{syncCode}/{uid}` — ownership
+- `owners/{syncCode}/{uid}` — ownership, regra de leitura: `data.child(auth.uid).exists()`
 - `uid_map/{uid}` — syncCode do usuário
 - `usuarios/{syncCode}/` — perfil
 - `anotacoes/{syncCode}/`, `pacientes/{syncCode}/`, `organizador/{syncCode}/`
@@ -52,3 +51,4 @@ Vue 3 (script setup), Vite, Pinia, Firebase Auth + Realtime DB, vite-plugin-pwa,
 | `DESIGN.md` | Tarefas de UI/UX |
 | Design doc gstack | Decisões de produto/arquitetura |
 | Skills (.claude/skills/) | Conforme o assunto da tarefa |
+| `database.rules.json` | Regras de segurança do Firebase RTDB |

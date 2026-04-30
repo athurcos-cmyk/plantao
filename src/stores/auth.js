@@ -13,6 +13,7 @@ import {
   sendPasswordResetEmail,
   updateProfile,
   signInWithCustomToken,
+  fetchSignInMethodsForEmail,
 } from 'firebase/auth'
 import { lerSessaoCache, persistirSessaoCache, limparSessaoCache } from '../utils/authSessionCache.js'
 
@@ -312,7 +313,20 @@ export const useAuthStore = defineStore('auth', () => {
       return true
     } catch (e) {
       console.error('[Auth] register error:', e.code || e.message, e.message)
-      authError.value = _traduzirErro(e.code)
+      if (e.code === 'auth/email-already-in-use') {
+        try {
+          const methods = await fetchSignInMethodsForEmail(firebaseAuth, email)
+          if (methods.includes('google.com')) {
+            authError.value = 'Este email já está cadastrado com Google. Faça login com Google e vá em Configurações para criar uma senha.'
+          } else {
+            authError.value = 'Este email já está cadastrado. Faça login com sua senha.'
+          }
+        } catch {
+          authError.value = 'Este email já está cadastrado.'
+        }
+      } else {
+        authError.value = _traduzirErro(e.code)
+      }
       return false
     } finally {
       _registrando = false
