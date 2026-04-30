@@ -8,6 +8,35 @@
 
 ---
 
+## Sessao 2026-04-30 (parte 5 — marketing)
+
+### MARKETING.md: 50 prompts de imagem para divulgacao
+
+**MARKETING.md expandido** de 15 para 50 prompts completos, organizados em 7 categorias com identificacao visual consistente (identidade do perfil).
+
+**Categorias:**
+- **DOR DIRETA (1-12):** PC ocupado, internet caiu, pendencia esquecida, papel molhou, letra ilegivel, passagem de plantao, evolucao sumiu, rasura, sistema lento, bolso do jaleco, papel perdido, caneta acabou
+- **BENEFICIO DIRETO (13-24):** Anota no celular cola no sistema, 3 coisas, plantao no controle, texto pronto, modelos, sinais vitais, pendencias, notificacao, offline, copia e cola, WhatsApp app gratuito e equipe
+- **VIBE/EMOCIONAL (25-33):** Voce cuida o Plantao anota, enfermagem nao e burocracia, maos que cuidam, cuidar de quem cuida, tecnologia + cuidado, foco, plantao mais leve, organizacao e cuidado, bolso descanso
+- **PROVA SOCIAL (34-38):** +100 enfermeiros, enfermeira recomenda, ja pensou em testar, papel ficando de lado, todo mundo merece
+- **HUMOR/ENGAJAMENTO (39-43):** PC ocupado humor, quem nunca perdeu, terceiro turno, multitarefa, salva post
+- **CARROSSEL (44-47):** 3 passos, 5 motivos, papel vs app, tour rapido
+- **STORIES (48-50):** Direto ao ponto, marca alguem, testei e aprovei
+
+### AdminView — aba Marketing
+
+- Nova tab "Marketing" no painel Admin com cards expansiveis para cada prompt
+- Canais com chips coloridos: feed (azul), facebook (#1877F2), whatsapp (#25D366), story (#833AB4), carrossel (#E1306C)
+- Botoes "Copiar prompt" e "Copiar legenda" com clipboard API + fallback
+- Toggle done/not done por prompt via localStorage (`mkt_prontos`) — independe de Firebase
+- CSS adicionado: `.mkt-card`, `.mkt-aberto`, `.mkt-topo`, `.mkt-chips`, `.mkt-chip`, `.mkt-feed/facebook/whatsapp/story/carrossel`, `.mkt-corpo`, `.mkt-texto`, `.mkt-copiar`, `.mkt-done`
+
+### Outros
+- `window.recalcularVagas` restaurado no Admin (helper para recalcular contador)
+- Build validado
+
+---
+
 ## Sessao 2026-04-30 (continuacao parte 5)
 
 ### Revisao de seguranca: duplicacao offline→online em pacientes.js

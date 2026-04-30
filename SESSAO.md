@@ -1,13 +1,15 @@
 # Brief — Plantão
 
-## Estado atual (2026-04-29)
+## Estado atual (2026-04-30)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Auth completamente revisada e corrigida — 4 sessões de hardening (partes 2, 3, 4, 5). Bugs resolvidos: rollback ausente, race condition onAuthStateChanged vs register, uid setado antes do _registrando, _gerarSyncCodeUnico bloqueado por regra do Firebase, update multi-path com 3 caminhos negado, Configurações mostrava "Email e senha: Ativo" falso para Google-only. Registro email/senha e Google verificados e funcionando. Admin com 3 camadas de proteção. Próximo foco: validação com usuários reais e refinamentos clínicos.
+App PWA de anotações de enfermagem, em produção em plantao.net. Auth completamente revisada e corrigida. Admin com Marketing tab com 50 prompts de imagem com toggle done/not done (localStorage). Próximo foco: gerar imagens no ChatGPT e publicar.
 
-## Última sessão (2026-04-30 — continuação parte 5 / revisão sync)
+## Última sessão (2026-04-30 — marketing)
 
-- **Revisão de risco de duplicação offline→online:** Código de pacientes.js com child listeners + tempKey cleanup foi revisado. `onChildAdded` dispara como microtask entre os `await push()`, e a limpeza de tempKeys roda depois do loop. Vue só renderiza após todos microtasks — usuário nunca vê estado duplicado. Confirmado seguro.
-- **window.recalcularVagas mantido** no AdminView (útil se excluir contas pelo Firebase Console de novo).
+- **MARKETING.md expandido** de 15 para 50 prompts completos, organizados em 7 categorias: DOR DIRETA, BENEFÍCIO DIRETO, VIBE/EMOCIONAL, PROVA SOCIAL, HUMOR/ENGAJAMENTO, CARROSSEL, STORIES.
+- **Admin — aba Marketing:** cards expansíveis com prompt e legenda, chips coloridos por canal, botões copiar.
+- **Toggle done/not done** por prompt via localStorage (`mkt_prontos`), sem Firebase.
+- **34 novos prompts criados** + 16 originais mantidos e ajustados.
 - **Build passou.**
 
 ## Stack
