@@ -4,13 +4,11 @@
 
 App PWA de anotações de enfermagem, em produção em plantao.net. Auth completamente revisada e corrigida — 4 sessões de hardening (partes 2, 3, 4, 5). Bugs resolvidos: rollback ausente, race condition onAuthStateChanged vs register, uid setado antes do _registrando, _gerarSyncCodeUnico bloqueado por regra do Firebase, update multi-path com 3 caminhos negado, Configurações mostrava "Email e senha: Ativo" falso para Google-only. Registro email/senha e Google verificados e funcionando. Admin com 3 camadas de proteção. Próximo foco: validação com usuários reais e refinamentos clínicos.
 
-## Última sessão (2026-04-29 — parte 5 / Configurações falsos positivos)
+## Última sessão (2026-04-30 — continuação parte 5 / revisão sync)
 
-- **Bug 1:** `temSenha` true para Google-only — `providerData` vazio após `reload()` fazia `ids.length === 0` resultar em `true`. Fix: `ids.includes('password')` apenas, não `ids.length === 0`.
-- **Bug 2:** Template sempre renderizava "Email e senha: Ativo" sem `v-if`. Fix: `v-if="temSenha"` no método de email.
-- **Bug 3:** Mensagem de sucesso não mencionava email. Fix: "entrar com email ou código + senha".
-- **Bug 4:** Erro "Este email já está cadastrado" genérico. Fix: `fetchSignInMethodsForEmail` detecta se é Google e dá mensagem específica direcionando para Configurações.
-- **Nota:** Firebase Auth permite mesmo email como provider Google na conta A e email+senha na conta B. Risco desprezível (< 100 usuários). Não implementado.
+- **Revisão de risco de duplicação offline→online:** Código de pacientes.js com child listeners + tempKey cleanup foi revisado. `onChildAdded` dispara como microtask entre os `await push()`, e a limpeza de tempKeys roda depois do loop. Vue só renderiza após todos microtasks — usuário nunca vê estado duplicado. Confirmado seguro.
+- **window.recalcularVagas mantido** no AdminView (útil se excluir contas pelo Firebase Console de novo).
+- **Build passou.**
 
 ## Stack
 

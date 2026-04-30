@@ -8,6 +8,25 @@
 
 ---
 
+## Sessao 2026-04-30 (continuacao parte 5)
+
+### Revisao de seguranca: duplicacao offline→online em pacientes.js
+
+**Contexto:** Após migrar `onValue` → `onChildAdded/Changed/Removed` em pacientes.js para reduzir downloads do Firebase, o usuario questionou se isso poderia reintroduzir o bug antigo de paciente duplicado ao criar offline e voltar online.
+
+**Analise do `sincronizarPendentes()`:**
+1. Paciente criado offline → `_pacMap` guarda com `tempKey`
+2. Ao voltar online, `push()` no Firebase → `onChildAdded` dispara (microtask) e adiciona com `realKey`
+3. `_pacMap` fica momentaneamente com ambas as entries
+4. Fim do loop: `_pacMap.delete(tempKey)` remove a temporaria
+5. `_reconstruir(code)` gera array final sem duplicata
+
+**Por que é seguro:** `onChildAdded` dispara como microtask entre os `await push()`. A limpeza de tempKeys roda depois de todas as iteracoes. Vue renderiza apenas o estado final (apos todos microtasks) — o usuario nunca ve o estado duplicado intermediario.
+
+### Outros
+- `window.recalcularVagas` mantido no AdminView com comentario atualizado (helper para recalcular contador apos exclusao pelo Firebase Console)
+- Build validado
+
 ## Sessao 2026-04-29 (parte 5)
 
 ### Configurações: métodos de login falsos positivos

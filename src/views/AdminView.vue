@@ -647,7 +647,7 @@ async function getIdToken() {
   return user.getIdToken()
 }
 
-// Helper para recalcular vagas do console (remover depois de usar)
+// Helper para recalcular vagas (usar se excluir contas direto pelo Firebase Console)
 window.recalcularVagas = async () => {
   try {
     const token = await getIdToken()
