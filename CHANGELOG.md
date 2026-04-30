@@ -8,7 +8,32 @@
 
 ---
 
-## Sessão 2026-04-30 (parte 8 — landing sem escassez + CTAs /landing)
+## Sessão 2026-04-30 (parte 8 — landing sem escassez + CTAs /landing + LGPD)
+
+### Landing — discurso de escassez removido
+- Barra "Acesso antecipado" com contagem de vagas removida
+- CTA final e FAQ atualizados (sem "100 vagas" ou "lista de espera")
+- Firebase query de total_usuarios removida (não precisa mais consultar)
+
+### Marketing — CTAs apontam para /landing
+- Todos os 100 prompts e legendas: `plantao.net` → `plantao.net/landing`
+- Step de instalação na landing ajustado: "Acessa o site" em vez de "Acessa plantao.net"
+- Landing page enxuta: sem imports de Firebase e Vue API desnecessários
+
+### Termos de Serviço — adequação LGPD
+- §3: removido limite de "100 vagas gratuitas no lançamento"
+- §6: plano pago atualizado (remove "período de lançamento")
+- §11: adicionado foro e legislação aplicável (leis brasileiras)
+
+### Política de Privacidade — adequação LGPD
+- §1: Arthur explicitado como controlador dos dados
+- §2: base legal adicionada (consentimento — art. 7º, I da LGPD)
+- §4: garantias de transferência internacional (SCCs do Google)
+- §6: período de retenção adicionado (enquanto a conta estiver ativa)
+- §9: contato do encarregado/DPO adicionado
+
+### Build
+- Build validado (vite build ok)
 
 ### Landing — discurso de escassez removido
 - Barra "Acesso antecipado" com contagem de vagas removida
