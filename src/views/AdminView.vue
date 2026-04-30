@@ -271,8 +271,33 @@
       <!-- ══ TAB: MARKETING ══ -->
       <template v-if="tabAtiva === 'marketing'">
         <div class="secao-titulo">Imagens de divulgação</div>
-        <p class="marketing-hint">Toque no card para ver o prompt completo. O botão Copiar copia o prompt da imagem (envie o ícone junto no ChatGPT).</p>
-        <div v-for="p in marketingPrompts" :key="p.id" class="mkt-card" :class="{ 'mkt-aberto': mktAberto === p.id }" @click="mktAberto = mktAberto === p.id ? null : p.id">
+        <!-- Busca -->
+        <input v-model="mktBusca" class="search-input" placeholder="🔍 Buscar por título, prompt ou legenda…" />
+
+        <!-- Filtros por canal com contagem -->
+        <div class="filter-row">
+          <button class="chip-filter" :class="{ 'chip-filter-on': !mktFiltroCanal }" @click="mktFiltroCanal = null">
+            Todos ({{ marketingPrompts.length }})
+          </button>
+          <button v-for="c in mktCanais" :key="c.canal" class="chip-filter" :class="{ 'chip-filter-on': mktFiltroCanal === c.canal }" @click="mktFiltroCanal = mktFiltroCanal === c.canal ? null : c.canal">
+            {{ c.label }} ({{ c.count }})
+          </button>
+        </div>
+
+        <!-- Status dos resultados -->
+        <div class="mkt-result-count" :class="{ 'mkt-result-dim': marketingFiltrados.length < marketingPrompts.length }">
+          <template v-if="marketingFiltrados.length < marketingPrompts.length">
+            {{ marketingFiltrados.length }} de {{ marketingPrompts.length }} prompts
+            <button class="mkt-limpar-filtro" @click="mktBusca = ''; mktFiltroCanal = null">limpar filtros</button>
+          </template>
+          <template v-else>
+            {{ marketingPrompts.length }} prompts · {{ mktCanais.length }} canais
+          </template>
+        </div>
+
+        <!-- Vazio -->
+        <div v-if="marketingFiltrados.length === 0" class="hint-vazio">Nenhum prompt encontrado.</div>
+        <div v-for="p in marketingFiltrados" :key="p.id" class="mkt-card" :class="{ 'mkt-aberto': mktAberto === p.id }" @click="mktAberto = mktAberto === p.id ? null : p.id">
           <div class="mkt-topo">
             <span class="mkt-titulo">{{ p.titulo }}</span>
             <div class="mkt-chips">
@@ -476,6 +501,8 @@ const feedbacksVisiveisCount = ref(20)
 const broadcastsVisiveisCount = ref(15)
 const mktAberto = ref(null)
 const mktSalvos = ref(JSON.parse(localStorage.getItem('mkt_prontos') || '{}'))
+const mktBusca = ref('')
+const mktFiltroCanal = ref(null)
 
 function copiarMkt(texto) {
   navigator.clipboard.writeText(texto).catch(() => {
@@ -935,6 +962,35 @@ const usuariosVisiveis = computed(() => usuariosFiltrados.value.slice(0, usuario
 const feedbacksVisiveis = computed(() => dadosAdmin.value ? dadosAdmin.value.feedbacks.slice(0, feedbacksVisiveisCount.value) : [])
 const broadcastsVisiveis = computed(() => dadosAdmin.value ? dadosAdmin.value.broadcasts.slice(0, broadcastsVisiveisCount.value) : [])
 
+// ── Marketing — filtros e busca ──
+const mktCanais = computed(() => {
+  const counts = {}
+  for (const p of marketingPrompts) {
+    for (const ch of p.canais) {
+      counts[ch] = (counts[ch] || 0) + 1
+    }
+  }
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([canal, count]) => ({ canal, count, label: canal.charAt(0).toUpperCase() + canal.slice(1) }))
+})
+
+const marketingFiltrados = computed(() => {
+  let list = marketingPrompts
+  const q = mktBusca.value.toLowerCase().trim()
+  if (q) {
+    list = list.filter(p =>
+      p.titulo.toLowerCase().includes(q) ||
+      p.prompt.toLowerCase().includes(q) ||
+      (p.legenda && p.legenda.toLowerCase().includes(q))
+    )
+  }
+  if (mktFiltroCanal.value) {
+    list = list.filter(p => p.canais.includes(mktFiltroCanal.value))
+  }
+  return list
+})
+
 // ── Cron ──
 const cronAtrasado = computed(() => {
   const cs = dadosAdmin.value?.cronStatus
@@ -1390,8 +1446,12 @@ function barraLargura(count, lista) {
 .erro-msg { color: var(--text-dim); }
 
 /* ══ MARKETING ══ */
-.marketing-hint { font-size: 0.82rem; color: var(--text-dim); margin: 8px 16px; line-height: 1.4; }
-.mkt-card { background: var(--bg-card); border-radius: 10px; margin: 8px 16px; padding: 14px 16px; cursor: pointer; border: 1px solid var(--border); transition: border-color 0.2s; }
+.mkt-result-count { font-size: 0.75rem; color: var(--text-dim); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.mkt-result-dim { color: var(--blue); font-weight: 600; }
+.mkt-limpar-filtro { background: none; border: none; color: var(--text-muted); font-size: 0.7rem; font-family: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
+.mkt-limpar-filtro:hover { color: var(--text-dim); }
+.mkt-card { background: var(--bg-card); border-radius: 10px; padding: 14px 16px; cursor: pointer; border: 1px solid var(--border); transition: border-color 0.2s; }
+.mkt-card:active { border-color: var(--blue); }
 .mkt-card:active { border-color: var(--blue); }
 .mkt-aberto { border-color: var(--blue); }
 .mkt-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
