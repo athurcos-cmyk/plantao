@@ -2,14 +2,13 @@
 
 ## Estado atual (2026-04-30)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Admin com aba Marketing com 100 prompts de imagem com toggle done/not done (localStorage). Broadcast usando Resend Batch API. Próximo foco: gerar imagens no ChatGPT e publicar.
+App PWA de anotações de enfermagem, em produção em plantao.net. Admin com aba Marketing com 100 prompts de imagem com toggle done/not done (localStorage). Broadcast usando Resend Batch API. Landing page sem discurso de escassez. CTAs de marketing apontam para plantao.net/landing. Próximo foco: gerar imagens no ChatGPT e publicar.
 
-## Última sessão (2026-04-30 — admin marketing +50 prompts, total 100)
+## Última sessão (2026-04-30 — landing sem escassez + CTAs /landing)
 
-- **Admin — aba Marketing:** 50 novos prompts (IDs 51-100) em 9 categorias: Especialidades, Dicas/Funcionalidades, Comunidade, Produtividade, Carrossel, Stories, Conversao/CTA, Fechamento
-- **MARKETING.md seguido estritamente:** foto realista, paleta azul escura, logo com tamanho exato, sem emoji na imagem, sem app funcionando
-- **Build validado** — AdminView chunk 113.89 kB
-- **Commit e push feitos** com gitignore e settings.local.json
+- **LandingView:** barra de vagas restantes removida, CTA final e FAQ sem escassez ("100 vagas", "lista de espera"). Importações não usadas (firebase, vue) removidas.
+- **MARKETING.md:** todos os 100 prompts e legendas com `plantao.net` substituído por `plantao.net/landing`
+- **Build validado** e commit/push feitos
 
 ## Stack
 

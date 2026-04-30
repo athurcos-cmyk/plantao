@@ -8,6 +8,23 @@
 
 ---
 
+## Sessão 2026-04-30 (parte 8 — landing sem escassez + CTAs /landing)
+
+### Landing — discurso de escassez removido
+- Barra "Acesso antecipado" com contagem de vagas removida
+- CTA final e FAQ atualizados (sem "100 vagas" ou "lista de espera")
+- Firebase query de total_usuarios removida (não precisa mais consultar)
+
+### Marketing — CTAs apontam para /landing
+- Todos os 100 prompts e legendas: `plantao.net` → `plantao.net/landing`
+- Step de instalação na landing ajustado: "Acessa o site" em vez de "Acessa plantao.net"
+- Landing page enxuta: sem imports de Firebase e Vue API desnecessários
+
+### Build
+- Build validado (vite build ok, 92 precaches, 1712 KiB)
+
+---
+
 ## Sessao 2026-04-30 (parte 7 — +50 prompts + broadcast batch + permissoes)
 
 ### Admin — 50 novos prompts (total 100)
