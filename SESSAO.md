@@ -2,7 +2,7 @@
 
 ## Estado atual (2026-04-30)
 
-App PWA de anotações de enfermagem, em produção em plantao.net. Auth completamente revisada e corrigida. Admin com Marketing tab com 50 prompts de imagem com toggle done/not done (localStorage). Próximo foco: gerar imagens no ChatGPT e publicar.
+App PWA de anotações de enfermagem, em produção em plantao.net. Admin com aba Marketing com 100 prompts de imagem com toggle done/not done (localStorage). Broadcast usando Resend Batch API. Próximo foco: gerar imagens no ChatGPT e publicar.
 
 ## Última sessão (2026-04-30 — admin marketing +50 prompts, total 100)
 

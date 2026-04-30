@@ -8,7 +8,7 @@
 
 ---
 
-## Sessao 2026-04-30 (parte 7 — +50 novos prompts de marketing)
+## Sessao 2026-04-30 (parte 7 — +50 prompts + broadcast batch + permissoes)
 
 ### Admin — 50 novos prompts (total 100)
 
@@ -16,6 +16,18 @@
 - **50 prompts criados** seguindo as regras do MARKETING.md: foto realista de campanha, paleta azul escura, logo com tamanho exato (60px/40px 1:1, 50px/35px stories), sem emoji na imagem, sem mostrar app funcionando
 - **Todas as categorias cobertas**: especialidades (UTI, pediatria, CC, PS, PSF, home care, enfermaria), dicas educativas, comunidade/prova social, produtividade avancada, carrossel tematico, stories diretos, CTAs de conversao
 - Build validado (vite build ok)
+
+### Broadcast — Resend Batch API
+
+- `api/broadcast.js` substitui envio sequencial de emails por `POST /emails/batch` da Resend (1 request para todos)
+- Fallback sequencial com 500ms se rate limit (429)
+- Tokens FCM invalidos continuam sendo removidos automaticamente
+
+### Logo sizing — consistencia
+
+- Todos os 50 prompts existentes atualizados com tamanho exato do logo: 60px/40px (1:1), 50px/35px (stories)
+- removido `.claude/settings.local.json` do tracking git + adicionado ao `.gitignore`
+- Permissoes migradas para `defaultMode: bypassPermissions`
 
 ---
 
