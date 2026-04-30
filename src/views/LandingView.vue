@@ -12,13 +12,6 @@
       </div>
     </nav>
 
-    <!-- ── ACESSO ANTECIPADO ── -->
-    <div class="early-bar">
-      <span class="early-pill">Acesso antecipado</span>
-      <span v-if="vagasRestantes > 0"><strong>{{ vagasRestantes }} vagas</strong> disponíveis</span>
-      <span v-else>🔒 Vagas esgotadas — <a href="mailto:contato@plantao.net" style="color:var(--blue);font-weight:600;">contato@plantao.net</a></span>
-    </div>
-
     <!-- ── HERO ── -->
     <section class="hero">
       <div class="hero-dots"></div>
@@ -188,7 +181,7 @@
         <div class="section-eyebrow eyebrow-light">Teste agora</div>
         <h2 class="cta-title">Seu plantão não pode esperar</h2>
         <p class="cta-sub">
-          Ainda restam <strong>{{ vagasRestantes }} vagas</strong> disponíveis. Cria sua conta em 10 segundos — sem cartão, sem compromisso.
+          Cria sua conta em 10 segundos — sem cartão, sem compromisso.
         </p>
         <a class="btn-hero btn-hero-lg" href="#" @click.prevent="acessarNoPc">Usar de graça →</a>
         <p class="cta-hint">Android e iPhone. Funciona offline.</p>
@@ -211,23 +204,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { db } from '../firebase.js'
-import { ref as dbRef, get } from 'firebase/database'
-
 const appUrl = window.location.origin + '/'
-
-const vagasRestantes = ref(100)
-
-onMounted(async () => {
-  try {
-    const snap = await get(dbRef(db, 'config/total_usuarios'))
-    const total = snap.exists() ? snap.val() : 0
-    vagasRestantes.value = Math.max(0, 100 - total)
-  } catch {
-    // se falhar, mantém 100 (não bloqueia a landing)
-  }
-})
 
 function acessarNoPc() {
   window.location.href = appUrl
@@ -242,7 +219,7 @@ const feats = [
   { icon: "✏", title: "Copia e cola — sem redigitar", desc: "O texto sai pronto: \"14h00 – PA 120x80, FC 72, SatO2 98%, sem intercorrências.\" Não digita duas vezes a mesma coisa. Só preenche, copia e cola no sistema do hospital." },
 ]
 const steps = [
-  { title: 'Abre e instala', desc: 'Acessa plantao.net no celular. Toca "Adicionar à tela inicial" — o app fica na tela igual app nativo. Leva 10 segundos.' },
+  { title: 'Abre e instala', desc: 'Acessa o site no celular. Toca "Adicionar à tela inicial" — o app fica na tela igual app nativo. Leva 10 segundos.' },
   { title: 'Cadastra os pacientes', desc: 'Coloca nome, leito e as pendências de cada paciente do plantão. O app salva tudo e sincroniza sozinho.' },
   { title: 'Usa o plantão inteiro', desc: 'Anota, copia o texto pro sistema do hospital, configura lembretes. No fim do plantão, é só colar e pronto.' },
 ]
@@ -251,7 +228,7 @@ const faq = [
   { q: 'Isso substitui o sistema do hospital?', a: 'Não. O Plantão é uma ferramenta pessoal — você anota no celular e o app gera o texto formatado pronto. Depois é só copiar e colar no sistema oficial do seu hospital. O registro no prontuário continua sendo feito pelo sistema do hospital, normalmente.' },
   { q: 'Precisa de internet para funcionar?', a: 'Não. O app funciona 100% offline. Você anota durante o plantão e quando tiver internet, sincroniza automaticamente.' },
   { q: 'Funciona no meu celular?', a: 'Sim. Funciona em qualquer celular Android ou iPhone com navegador. Não precisa baixar na loja de apps.' },
-  { q: 'É realmente gratuito?', a: 'Sim, 100% grátis. O lançamento é limitado a 100 vagas — sem cartão, sem funcionalidade bloqueada. Se as vagas esgotarem, entre em contato em contato@plantao.net para entrar na lista de espera.' },
+  { q: 'É realmente gratuito?', a: 'Sim, 100% grátis. Sem cartão, sem funcionalidade bloqueada. Use à vontade.' },
   { q: 'Meus dados ficam seguros?', a: 'Sim. Login com Google ou email, dados criptografados e isolados por usuário. Ninguém mais tem acesso às suas anotações.' },
   { q: 'Consigo usar no computador do hospital também?', a: 'Sim. Faça login com a mesma conta em qualquer dispositivo. Suas anotações ficam sincronizadas.' },
 ]
@@ -287,34 +264,6 @@ const testimonials = [
   min-height: 100dvh;
   overflow-x: hidden;
 }
-
-/* ── BARRA DE ACESSO ANTECIPADO ── */
-.early-bar {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  text-align: center;
-  padding: 10px 16px;
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.early-pill {
-  display: inline-flex;
-  align-items: center;
-  background: var(--blue-muted);
-  color: var(--blue);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
-  white-space: nowrap;
-}
-.early-bar strong { color: var(--text); font-weight: 600; }
 
 /* ── NAV ── */
 .nav {

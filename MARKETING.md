@@ -42,7 +42,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 4. **Tom** — profissional, não genérico, não infantil, não pastel
 5. **Ao colar o prompt**, enviar junto o ícone do caderno como anexo. Se o ChatGPT ignorar, reforçar: "Use o ícone que anexei, não invente um."
 6. **Revisar sempre** antes de publicar — o ChatGPT ainda pode errar texto ou deturpar o ícone
-7. **Tela do celular:** nunca pedir pra mostrar o app funcionando — o ChatGPT inventa uma tela genérica que não é o Plantão. Em vez disso, pedir para mostrar **o logo do Plantão e plantao.net** na tela.
+7. **Tela do celular:** nunca pedir pra mostrar o app funcionando — o ChatGPT inventa uma tela genérica que não é o Plantão. Em vez disso, pedir para mostrar **o logo do Plantão e plantao.net/landing** na tela.
 
 ---
 
@@ -73,7 +73,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > • Pendências com notificação pra não esquecer nada
 > • Zero papel perdido ou molhado
 >
-> 📲 Baixe grátis: plantao.net
+> 📲 Baixe grátis: plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #AnotacoesDeEnfermagem #EnfermeirosDoBrasil
 
@@ -92,7 +92,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Você anota tudo no celular, e quando a internet volta, sincroniza automaticamente. Não perde nenhuma informação.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #InternetCaiu #PlantaoHospitalar #AppOffline #TecnicoDeEnfermagem
 
@@ -102,7 +102,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira no meio do plantão, expressão de "algo está errado" — uma mão na testa, lembrando de algo que esqueceu. Ao fundo, um relógio de parede marcando horário avançado e outro profissional saindo do plantão. O clima é de cansaço e sobrecarga. Mas na outra mão dela, um celular com o logo do Plantão e plantao.net na tela. Texto grande no topo: "Aquela pendência das 6h que você lembrou às 18h." em letras brancas. Texto menor: "O Plantão notifica. Você não esquece mais." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista, iluminação fria hospitalar.
+> Crie uma imagem realista de uma enfermeira no meio do plantão, expressão de "algo está errado" — uma mão na testa, lembrando de algo que esqueceu. Ao fundo, um relógio de parede marcando horário avançado e outro profissional saindo do plantão. O clima é de cansaço e sobrecarga. Mas na outra mão dela, um celular com o logo do Plantão e plantao.net/landing na tela. Texto grande no topo: "Aquela pendência das 6h que você lembrou às 18h." em letras brancas. Texto menor: "O Plantão notifica. Você não esquece mais." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista, iluminação fria hospitalar.
 
 **Legenda (Instagram):**
 > Aquela pendência das 6h que você lembrou às 18h. 😰
@@ -111,7 +111,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Com o Plantão você cria pendências com notificação programada. Na hora certa, seu celular avisa. Não depende da sua memória.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #PendenciasDePlantao #TecnicoDeEnfermagem #AppDeEnfermagem #PlantaoHospitalar
 
@@ -121,7 +121,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de close-up de um bloco de papel de enfermagem molhado, manchado, com a tinta borrada e ilegível. Ao lado, um celular seco e limpo com o logo do Plantão e plantao.net na tela. Fundo escuro com iluminação fria. Texto grande no topo: "Papel molhou de novo?" em branco. Abaixo: "Suas anotações no celular. Secas, legíveis, organizadas." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista dramática.
+> Crie uma imagem realista de close-up de um bloco de papel de enfermagem molhado, manchado, com a tinta borrada e ilegível. Ao lado, um celular seco e limpo com o logo do Plantão e plantao.net/landing na tela. Fundo escuro com iluminação fria. Texto grande no topo: "Papel molhou de novo?" em branco. Abaixo: "Suas anotações no celular. Secas, legíveis, organizadas." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista dramática.
 
 **Legenda:**
 > Papel molhou de novo? 🌊📄
@@ -130,7 +130,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Com o Plantão suas anotações ficam no celular. Secas, legíveis, organizadas e sincronizadas.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #Organizacao
 
@@ -140,14 +140,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de close-up de um papel de anotação hospitalar com letra difícil de ler, rasuras, rabiscos. Ao lado, um celular com o logo do Plantão e plantao.net mostrando um texto limpo e formatado. Contraste claro entre o papel confuso e o celular organizado. Iluminação fria, fundo escuro. Texto na imagem: "Letra de enfermeiro ninguém merece. O Plantão formata pra você." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de close-up de um papel de anotação hospitalar com letra difícil de ler, rasuras, rabiscos. Ao lado, um celular com o logo do Plantão e plantao.net/landing mostrando um texto limpo e formatado. Contraste claro entre o papel confuso e o celular organizado. Iluminação fria, fundo escuro. Texto na imagem: "Letra de enfermeiro ninguém merece. O Plantão formata pra você." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Letra de enfermeiro ninguém merece — nem você, nem o sistema. 🖊️❌
 >
 > Com o Plantão você digita e o texto já sai formatado. Copia e cola direto no sistema do hospital. Sem rasura, sem releitura, sem estresse.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #AnotacoesDeEnfermagem #AppDeEnfermagem #Plantao
 
@@ -157,7 +157,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook / WhatsApp
 
 **Imagem:**
-> Crie uma imagem realista de um grupo de enfermeiros na passagem de plantão, em volta de uma mesa ou balcão, com papéis espalhados. Um deles está segurando um celular com o logo do Plantão e plantao.net na tela, como se estivesse lendo as anotações do dia. Ambiente noturno, iluminação fria de hospital. Texto no topo: "Passagem de plantão corrida? Suas anotações organizadas no celular." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de cena hospitalar.
+> Crie uma imagem realista de um grupo de enfermeiros na passagem de plantão, em volta de uma mesa ou balcão, com papéis espalhados. Um deles está segurando um celular com o logo do Plantão e plantao.net/landing na tela, como se estivesse lendo as anotações do dia. Ambiente noturno, iluminação fria de hospital. Texto no topo: "Passagem de plantão corrida? Suas anotações organizadas no celular." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de cena hospitalar.
 
 **Legenda:**
 > Passagem de plantão corrida? 😰
@@ -166,7 +166,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Com o Plantão suas anotações estão organizadas no celular. Na passagem de plantão, você tem tudo na mão, legível e completo.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #PassagemDePlantao #TecnicoDeEnfermagem #Organizacao #AppDeEnfermagem
 
@@ -176,14 +176,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de uma mão segurando várias folhas de evolução amassadas e soltas, algumas caindo. Na outra mão, um celular com o logo do Plantão e plantao.net na tela. Fundo de posto de enfermagem desfocado. Texto na imagem: "Três folhas de evolução e uma sumiu. No celular nenhuma se perde." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de uma mão segurando várias folhas de evolução amassadas e soltas, algumas caindo. Na outra mão, um celular com o logo do Plantão e plantao.net/landing na tela. Fundo de posto de enfermagem desfocado. Texto na imagem: "Três folhas de evolução e uma sumiu. No celular nenhuma se perde." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Três folhas de evolução e uma sumiu. 📄🔍
 >
 > No celular, nenhuma se perde. Todas organizadas, sincronizadas, disponíveis.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #Evolucao #AppDeEnfermagem
 
@@ -193,14 +193,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem de close-up de um papel de enfermagem cheio de rasuras, corretivo, palavras riscadas. Parece uma folha de evolução que foi corrigida várias vezes. Ao lado, um celular com o logo do Plantão e plantao.net mostrando texto limpo e arrumado. Iluminação fria. Texto: "Escreveu errado? Rasurou? No Plantão você apaga e escreve de novo. Sem rasura." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de close-up de um papel de enfermagem cheio de rasuras, corretivo, palavras riscadas. Parece uma folha de evolução que foi corrigida várias vezes. Ao lado, um celular com o logo do Plantão e plantao.net/landing mostrando texto limpo e arrumado. Iluminação fria. Texto: "Escreveu errado? Rasurou? No Plantão você apaga e escreve de novo. Sem rasura." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Escreveu errado? Rasurou? 🖊️❌
 >
 > No celular não tem rasura. Você apaga, corrige, e o texto sai perfeito.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #AnotacoesDeEnfermagem #Plantao
 
@@ -210,14 +210,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira ao lado de um computador de hospital com uma ampulheta ou círculo de carregamento na tela — o sistema claramente travado. Ela está de pé, segurando o celular com o logo do Plantão e plantao.net na tela, com expressão de quem não está preocupada. Fundo de corredor hospitalar. Texto grande: "Sistema do hospital lento? Anota no celular enquanto espera." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem realista de uma enfermeira ao lado de um computador de hospital com uma ampulheta ou círculo de carregamento na tela — o sistema claramente travado. Ela está de pé, segurando o celular com o logo do Plantão e plantao.net/landing na tela, com expressão de quem não está preocupada. Fundo de corredor hospitalar. Texto grande: "Sistema do hospital lento? Anota no celular enquanto espera." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Sistema do hospital lento? 💻🐌
 >
 > Em vez de esperar o PC liberar, anota no celular. Quando o sistema voltar, é só copiar e colar.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem #SistemaLento
 
@@ -227,7 +227,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista e bem iluminada de um jaleco de enfermagem pendurado. Do bolso do jaleco, vários papéis amassados e dobrados estão saindo, quase caindo. Ao lado, uma mão segura um celular com o logo do Plantão e plantao.net na tela. O contraste é claro: papéis bagunçados vs. celular organizado. Iluminação fria hospitalar, fundo neutro. Texto grande no topo: "O bolso do jaleco não é arquivo." em letras brancas. Abaixo: "Seus registros no celular. Sem papel amassado." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem realista e bem iluminada de um jaleco de enfermagem pendurado. Do bolso do jaleco, vários papéis amassados e dobrados estão saindo, quase caindo. Ao lado, uma mão segura um celular com o logo do Plantão e plantao.net/landing na tela. O contraste é claro: papéis bagunçados vs. celular organizado. Iluminação fria hospitalar, fundo neutro. Texto grande no topo: "O bolso do jaleco não é arquivo." em letras brancas. Abaixo: "Seus registros no celular. Sem papel amassado." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > O bolso do jaleco não é arquivo. 👚📄
@@ -236,7 +236,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Com o Plantão, suas anotações ficam no celular, organizadas e sincronizadas na nuvem.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #MenosPapel #Organizacao
 
@@ -246,7 +246,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem realista de close-up de uma mão de enfermeiro segurando um papel amassado e manchado (simulando água ou suor), com aspecto de "não serve mais". O papel está ilegível. A outra mão segura um celular com o logo do Plantão e plantao.net na tela. Iluminação dramática: fundo escuro, luz destacando as mãos. Texto na imagem: "Cada enfermeiro já perdeu um papel no plantão." em letras brancas. Abaixo: "O Plantão resolve." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista, tons frios.
+> Crie uma imagem realista de close-up de uma mão de enfermeiro segurando um papel amassado e manchado (simulando água ou suor), com aspecto de "não serve mais". O papel está ilegível. A outra mão segura um celular com o logo do Plantão e plantao.net/landing na tela. Iluminação dramática: fundo escuro, luz destacando as mãos. Texto na imagem: "Cada enfermeiro já perdeu um papel no plantão." em letras brancas. Abaixo: "O Plantão resolve." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista, tons frios.
 
 **Legenda (Instagram):**
 > Cada enfermeiro já perdeu um papel no plantão. 📄❌
@@ -257,7 +257,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Já aconteceu com você? Comenta aí 👇
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #MemóriasDoPlantao
 
@@ -267,14 +267,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story
 
 **Imagem:**
-> Crie uma imagem de uma mão segurando uma caneta BIC transparente vazia (sem tinta), tentando escrever em um papel — mas não sai nada. Ao lado, um celular com o logo do Plantão e plantao.net na tela. Iluminação fria, fundo de plantão noturno. Texto na imagem: "Acabou a caneta? Azar o seu. O Plantão não acaba." em branco com tom bem-humorado. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de uma mão segurando uma caneta BIC transparente vazia (sem tinta), tentando escrever em um papel — mas não sai nada. Ao lado, um celular com o logo do Plantão e plantao.net/landing na tela. Iluminação fria, fundo de plantão noturno. Texto na imagem: "Acabou a caneta? Azar o seu. O Plantão não acaba." em branco com tom bem-humorado. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Acabou a caneta? Azar o seu. 🖊️😅
 >
 > O Plantão não acaba, não falha, não molha, não rasga.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #HumorEnfermagem
 
@@ -290,7 +290,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira em ambiente hospitalar. Ela está ao lado de um computador de hospital (estilo suporte de parede ou carrinho). Com uma mão segura o celular mostrando o logo do Plantão e plantao.net na tela, e com a outra mão está usando o mouse do computador — como se estivesse copiando a anotação do celular para o sistema. O foco está nas mãos e no fluxo celular para computador. Iluminação fria, profissional, hospitalar. No topo, em letras limpas e grandes: "Anota no celular. Cola no sistema." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de alta qualidade.
+> Crie uma imagem realista de uma enfermeira em ambiente hospitalar. Ela está ao lado de um computador de hospital (estilo suporte de parede ou carrinho). Com uma mão segura o celular mostrando o logo do Plantão e plantao.net/landing na tela, e com a outra mão está usando o mouse do computador — como se estivesse copiando a anotação do celular para o sistema. O foco está nas mãos e no fluxo celular para computador. Iluminação fria, profissional, hospitalar. No topo, em letras limpas e grandes: "Anota no celular. Cola no sistema." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de alta qualidade.
 
 **Legenda (Instagram):**
 > Anota no celular. Cola no sistema. 🔄
@@ -299,7 +299,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Sem redigitar. Sem papel. Sem perder tempo.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #AnotacoesDeEnfermagem #AppDeEnfermagem #CopiarEColar
 
@@ -309,7 +309,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Carrossel
 
 **Imagem:**
-> Crie uma imagem limpa e conceitual para post no Instagram (formato quadrado 1:1). Uma mesa de hospital com três objetos: (1) um bloco de papel amassado, (2) uma caneta quebrada, (3) um computador com tela azul de erro. Todos com aspecto de "não servem mais". Ao lado, um celular moderno brilhando com o logo do Plantão e plantao.net na tela. Iluminação fria, fundo escuro. Texto grande na imagem: "3 coisas que você não precisa mais no plantão." e abaixo: "Papel • Caneta • PC ocupado". Estilo foto realista editorial. Use o ícone que vou enviar como anexo no canto inferior direito.
+> Crie uma imagem limpa e conceitual para post no Instagram (formato quadrado 1:1). Uma mesa de hospital com três objetos: (1) um bloco de papel amassado, (2) uma caneta quebrada, (3) um computador com tela azul de erro. Todos com aspecto de "não servem mais". Ao lado, um celular moderno brilhando com o logo do Plantão e plantao.net/landing na tela. Iluminação fria, fundo escuro. Texto grande na imagem: "3 coisas que você não precisa mais no plantão." e abaixo: "Papel • Caneta • PC ocupado". Estilo foto realista editorial. Use o ícone que vou enviar como anexo no canto inferior direito.
 
 **Legenda:**
 > 3 coisas que você não precisa mais no plantão:
@@ -320,7 +320,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Só precisa do celular e do Plantão.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Plantao #AppDeEnfermagem #MenosPapel #TecnicoDeEnfermagem
 
@@ -330,7 +330,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira durante o plantão hospitalar. Ela está em um corredor de hospital, segurando um celular com uma mão. Na tela do celular aparece o logo do Plantão e o texto plantao.net. O ambiente ao fundo mostra movimento de plantão — outros profissionais, macas — mas ela está calma, no controle. Iluminação com contraste entre o azul escuro do ambiente e a luz suave do celular. No canto superior direito, em letras brancas limpas: "Seu plantão no controle." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de campanha publicitária profissional.
+> Crie uma imagem realista de uma enfermeira durante o plantão hospitalar. Ela está em um corredor de hospital, segurando um celular com uma mão. Na tela do celular aparece o logo do Plantão e o texto plantao.net/landing. O ambiente ao fundo mostra movimento de plantão — outros profissionais, macas — mas ela está calma, no controle. Iluminação com contraste entre o azul escuro do ambiente e a luz suave do celular. No canto superior direito, em letras brancas limpas: "Seu plantão no controle." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de campanha publicitária profissional.
 
 **Legenda (Instagram):**
 > Seu plantão no controle. 📱
@@ -342,7 +342,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > • Tudo offline
 > • Copia direto pro sistema
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #Organizacao #AppDeEnfermagem
 
@@ -359,7 +359,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Texto pronto, organizado e bonito em segundos. Copia direto pro sistema.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #AnotacoesDeEnfermagem #Plantao #Praticidade
 
@@ -369,14 +369,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de close-up de um celular com a tela mostrando o logo do Plantão e plantao.net. Ao redor, pequenos ícones flutuando: checkboxes, modelos de texto, curativos, medicamentos. Fundo azul escuro hospitalar. Texto na imagem: "Modelos prontos pra cada tipo de anotação. Você só preenche o essencial." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial.
+> Crie uma imagem de close-up de um celular com a tela mostrando o logo do Plantão e plantao.net/landing. Ao redor, pequenos ícones flutuando: checkboxes, modelos de texto, curativos, medicamentos. Fundo azul escuro hospitalar. Texto na imagem: "Modelos prontos pra cada tipo de anotação. Você só preenche o essencial." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial.
 
 **Legenda:**
 > Modelos prontos pra cada tipo de anotação. 📋
 >
 > Curativos, medicamentos, evolução, passagem de plantão — você só preenche o que muda. O resto o app formata.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #AnotacoesDeEnfermagem #AppDeEnfermagem #Plantao
 
@@ -386,14 +386,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira com um aparelho de sinais vitais (medidor de pressão, oxímetro) em um paciente. Na outra mão, o celular com o logo do Plantão e plantao.net na tela — como se estivesse registrando os sinais na hora. Fundo de leito hospitalar, iluminação fria. Texto na imagem: "Sinais vitais na hora certa, do jeito certo." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem realista de uma enfermeira com um aparelho de sinais vitais (medidor de pressão, oxímetro) em um paciente. Na outra mão, o celular com o logo do Plantão e plantao.net/landing na tela — como se estivesse registrando os sinais na hora. Fundo de leito hospitalar, iluminação fria. Texto na imagem: "Sinais vitais na hora certa, do jeito certo." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Sinais vitais organizados, do seu jeito. ❤️
 >
 > Registre PA, pulso, temperatura, saturação e tudo mais direto no celular. Na hora de copiar pro sistema, já está tudo certinho.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #SinaisVitais #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -403,14 +403,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de um celular com uma notificação na tela, mostrando o logo do Plantão e plantao.net. Ao fundo, uma enfermeira olhando para o relógio com expressão de "lembrei!" — como se a notificação tivesse acabado de salvar o dia. Ambiente hospitalar noturno, iluminação fria. Texto na imagem: "Pendência na hora certa. Nem antes, nem depois." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de um celular com uma notificação na tela, mostrando o logo do Plantão e plantao.net/landing. Ao fundo, uma enfermeira olhando para o relógio com expressão de "lembrei!" — como se a notificação tivesse acabado de salvar o dia. Ambiente hospitalar noturno, iluminação fria. Texto na imagem: "Pendência na hora certa. Nem antes, nem depois." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Pendências que não escapam. ⏰
 >
 > Você programa a notificação e o celular avisa na hora certa. Sem depender da memória, sem esquecer o que fazer.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Pendencias #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem
 
@@ -420,12 +420,12 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story
 
 **Imagem:**
-> Crie uma imagem vertical 9:16 de uma mão segurando um celular com uma notificação visível na tela. O logo do Plantão e plantao.net aparecem na tela. Fundo escuro com luz suave vindo do celular. Texto na imagem: "LEMBRETE: São 14h — verificar sinais. O Plantão não esquece." em branco. Estilo foto realista noturno.
+> Crie uma imagem vertical 9:16 de uma mão segurando um celular com uma notificação visível na tela. O logo do Plantão e plantao.net/landing aparecem na tela. Fundo escuro com luz suave vindo do celular. Texto na imagem: "LEMBRETE: São 14h — verificar sinais. O Plantão não esquece." em branco. Estilo foto realista noturno.
 
 **Na hora de publicar (Story):**
 > Seu celular avisando na hora certa. Sem stress, sem esquecimento.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #Lembrete #AppDeEnfermagem
 
@@ -435,14 +435,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / WhatsApp
 
 **Imagem:**
-> Crie uma imagem de uma técnica de enfermagem no corredor de um hospital, segurando o celular com o logo do Plantão e plantao.net na tela. Um aviso de "Sem sinal" aparece no topo do celular — mas ela continua usando o app tranquilamente. Fundo de hospital com iluminação fria. Texto na imagem: "Sem sinal? Sem problema. O Plantão funciona offline." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de uma técnica de enfermagem no corredor de um hospital, segurando o celular com o logo do Plantão e plantao.net/landing na tela. Um aviso de "Sem sinal" aparece no topo do celular — mas ela continua usando o app tranquilamente. Fundo de hospital com iluminação fria. Texto na imagem: "Sem sinal? Sem problema. O Plantão funciona offline." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Sem sinal? Sem problema. 📶🚫
 >
 > O Plantão funciona offline. Anota tudo no celular durante o plantão, e quando a internet volta, sincroniza automaticamente.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Offline #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -452,14 +452,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem de close-up de duas mãos: uma segurando um celular com o logo do Plantão e plantao.net na tela, e a outra mão usando o mouse de um computador. Uma seta sutil conectando os dois: "copiar → colar". Fundo hospitalar desfocado. Texto na imagem: "Copia. Cola. Pronto." em letras grandes e brancas. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
+> Crie uma imagem de close-up de duas mãos: uma segurando um celular com o logo do Plantão e plantao.net/landing na tela, e a outra mão usando o mouse de um computador. Uma seta sutil conectando os dois: "copiar → colar". Fundo hospitalar desfocado. Texto na imagem: "Copia. Cola. Pronto." em letras grandes e brancas. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
 
 **Legenda:**
 > Copia. Cola. Pronto. ✅
 >
 > O texto já sai formatado do celular. É só copiar e colar no sistema do hospital.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #Plantao #CopiarEColar #AppDeEnfermagem
 
@@ -469,14 +469,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** WhatsApp
 
 **Imagem:**
-> Crie uma imagem quadrada 1:1 limpa e informativa. Um celular com a tela mostrando o logo do Plantão e o texto plantao.net. Ao redor do celular, pequenos ícones sutis: Wi-Fi com risco (offline), checkmark (pronto), relógio (pendências). Fundo azul escuro hospitalar. Texto grande: "APP GRATUITO PARA ENFERMAGEM" em branco. Abaixo: "Anotações • Pendências • Offline • Copia e cola". Bottom: "plantao.net". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
+> Crie uma imagem quadrada 1:1 limpa e informativa. Um celular com a tela mostrando o logo do Plantão e o texto plantao.net/landing. Ao redor do celular, pequenos ícones sutis: Wi-Fi com risco (offline), checkmark (pronto), relógio (pendências). Fundo azul escuro hospitalar. Texto grande: "APP GRATUITO PARA ENFERMAGEM" em branco. Abaixo: "Anotações • Pendências • Offline • Copia e cola". Bottom: "plantao.net/landing". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
 
 **Mensagem pra copiar e enviar no WhatsApp junto com a imagem:**
 > Galera, descobri um app que salvou meu plantão: Plantão! 🚑
 >
 > Vocês anotam tudo no celular (funciona sem internet), o texto já sai formatado, e na hora que o PC libera é só copiar e colar no sistema. Pendências com notificação também.
 >
-> É grátis: plantao.net
+> É grátis: plantao.net/landing
 >
 > Compartilha com a equipe! 💙
 
@@ -486,7 +486,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** WhatsApp
 
 **Imagem:**
-> Crie uma imagem quadrada 1:1 com uma composição mostrando vários celulares (3 ou 4) em diferentes mãos de enfermeiros, todos com o logo do Plantão e plantao.net na tela. Ideia de "a equipe toda usando". Fundo hospitalar desfocado, iluminação fria. Texto grande no topo: "SUA EQUIPE MERECE ORGANIZAÇÃO" em branco. Abaixo: "App gratuito de anotações de enfermagem. Cada um no seu celular, tudo sincronizado." Bottom: "plantao.net". Use o ícone que vou enviar como anexo. Estilo foto realista.
+> Crie uma imagem quadrada 1:1 com uma composição mostrando vários celulares (3 ou 4) em diferentes mãos de enfermeiros, todos com o logo do Plantão e plantao.net/landing na tela. Ideia de "a equipe toda usando". Fundo hospitalar desfocado, iluminação fria. Texto grande no topo: "SUA EQUIPE MERECE ORGANIZAÇÃO" em branco. Abaixo: "App gratuito de anotações de enfermagem. Cada um no seu celular, tudo sincronizado." Bottom: "plantao.net/landing". Use o ícone que vou enviar como anexo. Estilo foto realista.
 
 **Mensagem pra copiar e enviar no WhatsApp junto com a imagem:**
 > Pessoal, apresentando o app que a gente tava precisando: Plantão!
@@ -497,7 +497,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > ✅ Copia direto pro sistema do hospital
 > ✅ Grátis
 >
-> Basta entrar em plantao.net e criar conta. Bora testar? 💪
+> Basta entrar em plantao.net/landing e criar conta. Bora testar? 💪
 
 ---
 
@@ -511,7 +511,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem emocional e profissional de uma enfermeira em um leito hospitalar, ajustando o acesso ou o soro de um paciente idoso. Ela está com uma mão no paciente e a outra segurando um celular com o logo do Plantão e plantao.net na tela — como se tivesse acabado de anotar algo e agora está cuidando. O paciente está calmo, olhando para ela com confiança. Iluminação profissional, fundo de enfermaria com luz suave. Texto na imagem, canto superior esquerdo: "Você cuida. O Plantão anota." em letras elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional.
+> Crie uma imagem emocional e profissional de uma enfermeira em um leito hospitalar, ajustando o acesso ou o soro de um paciente idoso. Ela está com uma mão no paciente e a outra segurando um celular com o logo do Plantão e plantao.net/landing na tela — como se tivesse acabado de anotar algo e agora está cuidando. O paciente está calmo, olhando para ela com confiança. Iluminação profissional, fundo de enfermaria com luz suave. Texto na imagem, canto superior esquerdo: "Você cuida. O Plantão anota." em letras elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional.
 
 **Legenda (Instagram):**
 > Você cuida. O Plantão anota. 💙
@@ -520,7 +520,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Mas quando o registro é rápido, sobra mais tempo pro que realmente importa.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #TecnicoDeEnfermagem #Paciente #Enfermeiros #Humanização
 
@@ -530,7 +530,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem com estilo conceitual e editorial. Close-up de um jaleco ou uniforme de enfermagem com um crachá. Na mão da enfermeira, um celular com o logo do Plantão e plantao.net visíveis na tela. Ao fundo, muito desfocado (bokeh), luzes de hospital e movimento suave. Iluminação dramática — contraste entre luz no celular e fundo frio. Texto na imagem em letras elegantes: "Enfermagem não é burocracia." em branco. Abaixo, menor: "As anotações são só o registro. O cuidado é o que importa." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial.
+> Crie uma imagem com estilo conceitual e editorial. Close-up de um jaleco ou uniforme de enfermagem com um crachá. Na mão da enfermeira, um celular com o logo do Plantão e plantao.net/landing visíveis na tela. Ao fundo, muito desfocado (bokeh), luzes de hospital e movimento suave. Iluminação dramática — contraste entre luz no celular e fundo frio. Texto na imagem em letras elegantes: "Enfermagem não é burocracia." em branco. Abaixo, menor: "As anotações são só o registro. O cuidado é o que importa." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial.
 
 **Legenda (Instagram):**
 > Enfermagem não é burocracia. 💙
@@ -539,7 +539,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > O Plantão existe pra fazer a parte chata voar, pra sobrar mais tempo pro que realmente importa: o paciente.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #TecnicoDeEnfermagem #Valorização #AppDeEnfermagem
 
@@ -549,14 +549,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem emocional em close-up de duas mãos de enfermagem: uma mão segurando a mão de um paciente idoso e a outra mão segurando um celular com o logo do Plantão e plantao.net na tela. Fundo suave, iluminação quente (contrastando com o frio hospitalar). Texto elegante no canto: "Mãos que cuidam. Apps que ajudam." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional.
+> Crie uma imagem emocional em close-up de duas mãos de enfermagem: uma mão segurando a mão de um paciente idoso e a outra mão segurando um celular com o logo do Plantão e plantao.net/landing na tela. Fundo suave, iluminação quente (contrastando com o frio hospitalar). Texto elegante no canto: "Mãos que cuidam. Apps que ajudam." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional.
 
 **Legenda:**
 > Mãos que cuidam. Apps que ajudam. 🤲💙
 >
 > A tecnologia não substitui o cuidado humano — ela dá tempo pra ele acontecer.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #Humanização #TecnicoDeEnfermagem #Plantao
 
@@ -566,14 +566,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de uma enfermeira sentada na sala de descanso do hospital, segurando uma xícara de café em uma mão e o celular com o logo do Plantão e plantao.net na outra. Ela está cansada mas sorrindo, com expressão de "finalmente terminei as anotações". Ambiente de descanso, luz suave. Texto na imagem: "Cuidar de quem cuida também é deixar o plantão mais leve." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de uma enfermeira sentada na sala de descanso do hospital, segurando uma xícara de café em uma mão e o celular com o logo do Plantão e plantao.net/landing na outra. Ela está cansada mas sorrindo, com expressão de "finalmente terminei as anotações". Ambiente de descanso, luz suave. Texto na imagem: "Cuidar de quem cuida também é deixar o plantão mais leve." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Cuidar de quem cuida também é oferecer ferramentas que facilitam o dia. 💙
 >
 > Com o Plantão, suas anotações ficam prontas em segundos. Menos tempo no papel, mais tempo pra você.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #SaudeMental #Plantao #TecnicoDeEnfermagem
 
@@ -583,14 +583,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem conceitual: de um lado, uma mão segurando um celular com o logo do Plantão e plantao.net na tela; do outro lado, uma mão segurando a mão de um paciente. As duas mãos estão conectadas visualmente por uma linha de luz sutil. Fundo escuro com iluminação dramática. Texto: "Tecnologia a serviço do cuidado." em letras elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista conceitual.
+> Crie uma imagem conceitual: de um lado, uma mão segurando um celular com o logo do Plantão e plantao.net/landing na tela; do outro lado, uma mão segurando a mão de um paciente. As duas mãos estão conectadas visualmente por uma linha de luz sutil. Fundo escuro com iluminação dramática. Texto: "Tecnologia a serviço do cuidado." em letras elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista conceitual.
 
 **Legenda:**
 > Tecnologia a serviço do cuidado. 🌐💙
 >
 > O Plantão não substitui o enfermeiro — ele dá mais tempo pro que realmente importa.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #Tecnologia #Humanização #Plantao
 
@@ -600,14 +600,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de uma enfermeira olhando diretamente para a câmera, com um sorriso profissional. Ela segura um celular com o logo do Plantão e plantao.net na tela junto ao peito. Fundo hospitalar desfocado com bokeh de luzes. Texto na imagem: "Foco no que importa: o paciente." em letras limpas e elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista profissional.
+> Crie uma imagem de uma enfermeira olhando diretamente para a câmera, com um sorriso profissional. Ela segura um celular com o logo do Plantão e plantao.net/landing na tela junto ao peito. Fundo hospitalar desfocado com bokeh de luzes. Texto na imagem: "Foco no que importa: o paciente." em letras limpas e elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista profissional.
 
 **Legenda:**
 > Foco no que importa: o paciente. 🎯💙
 >
 > O Plantão cuida das anotações pra você cuidar do que realmente importa.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #Foco #TecnicoDeEnfermagem #Plantao
 
@@ -617,14 +617,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de uma enfermeira andando pelo corredor do hospital com passos leves e confiantes, segurando um celular com o logo do Plantão e plantao.net na tela. Ao fundo, outros profissionais correndo com papéis na mão — ela é a única calma. Iluminação fria, porém com um tom mais claro e otimista. Texto: "Plantão mais leve. Anotação mais rápida." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de uma enfermeira andando pelo corredor do hospital com passos leves e confiantes, segurando um celular com o logo do Plantão e plantao.net/landing na tela. Ao fundo, outros profissionais correndo com papéis na mão — ela é a única calma. Iluminação fria, porém com um tom mais claro e otimista. Texto: "Plantão mais leve. Anotação mais rápida." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Plantão mais leve. Anotação mais rápida. 🚶‍♀️💨
 >
 > Enquanto todo mundo corre atrás de papel, você já terminou.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #Organizacao
 
@@ -634,14 +634,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de close-up de um celular com o logo do Plantão e plantao.net na tela, apoiado sobre um balcão de posto de enfermagem limpo e organizado. Ao fundo, um ambiente hospitalar arrumado, com pastas e materiais nos lugares. Iluminação fria profissional. Texto: "Organização não é burocracia. Organização é cuidado." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial.
+> Crie uma imagem de close-up de um celular com o logo do Plantão e plantao.net/landing na tela, apoiado sobre um balcão de posto de enfermagem limpo e organizado. Ao fundo, um ambiente hospitalar arrumado, com pastas e materiais nos lugares. Iluminação fria profissional. Texto: "Organização não é burocracia. Organização é cuidado." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial.
 
 **Legenda:**
 > Organização não é burocracia. Organização é cuidado. 📱✨
 >
 > Quando as anotações estão em ordem, sobra espaço mental pro que realmente importa.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Organizacao #Cuidado #TecnicoDeEnfermagem #Plantao
 
@@ -651,14 +651,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de close-up de um jaleco de enfermagem pendurado, com o bolso vazio e limpo — sem papéis saindo. Ao lado, um celular com o logo do Plantão e plantao.net na tela. O contraste com as imagens de bolso cheio de papel é proposital. Texto: "Seu bolso merecia um descanso. Todo o plantão no celular." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
+> Crie uma imagem de close-up de um jaleco de enfermagem pendurado, com o bolso vazio e limpo — sem papéis saindo. Ao lado, um celular com o logo do Plantão e plantao.net/landing na tela. O contraste com as imagens de bolso cheio de papel é proposital. Texto: "Seu bolso merecia um descanso. Todo o plantão no celular." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
 
 **Legenda:**
 > Seu bolso merecia um descanso. 👚✨
 >
 > Nada de papel amassado, molhado ou perdido. Todo o plantão no celular.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem #Organizacao
 
@@ -674,14 +674,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem de um grupo de profissionais de enfermagem (diversos) em um corredor de hospital, cada um segurando um celular com o logo do Plantão e plantao.net na tela. Eles estão conversando e sorrindo. Ambiente de união e equipe. Texto grande: "Já são mais de 100 enfermeiros usando o Plantão." em branco. Abaixo: "E você, ainda usa papel?" Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de grupo.
+> Crie uma imagem de um grupo de profissionais de enfermagem (diversos) em um corredor de hospital, cada um segurando um celular com o logo do Plantão e plantao.net/landing na tela. Eles estão conversando e sorrindo. Ambiente de união e equipe. Texto grande: "Já são mais de 100 enfermeiros usando o Plantão." em branco. Abaixo: "E você, ainda usa papel?" Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de grupo.
 
 **Legenda:**
 > Já são mais de 100 enfermeiros usando o Plantão. 🎉
 >
 > Aos poucos, o papel vai ficando de lado. Vem com a gente?
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Comunidade #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -691,14 +691,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story
 
 **Imagem:**
-> Crie uma imagem de uma enfermeira segurando um celular com o logo do Plantão e plantao.net na tela, fazendo joinha com a mão livre. Fundo hospitalar desfocado. Texto grande: "ENFERMEIRA RECOMENDA" em branco. Abaixo: "App gratuito de anotações • plantao.net" em letras menores. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista com tom de depoimento.
+> Crie uma imagem de uma enfermeira segurando um celular com o logo do Plantão e plantao.net/landing na tela, fazendo joinha com a mão livre. Fundo hospitalar desfocado. Texto grande: "ENFERMEIRA RECOMENDA" em branco. Abaixo: "App gratuito de anotações • plantao.net/landing" em letras menores. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista com tom de depoimento.
 
 **Legenda:**
 > Enfermeira recomenda ✅
 >
 > De profissional pra profissional: o Plantão salva tempo, papel e paciência.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Recomendo #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -708,14 +708,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem de close-up de uma mão de enfermeira apontando para a tela de um celular que mostra o logo do Plantão e plantao.net. A outra mão está segurando o celular. Fundo de plantão noturno. Texto na imagem: "Já pensou em testar o Plantão? É grátis." em letras brancas com tom curioso. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem de close-up de uma mão de enfermeira apontando para a tela de um celular que mostra o logo do Plantão e plantao.net/landing. A outra mão está segurando o celular. Fundo de plantão noturno. Texto na imagem: "Já pensou em testar o Plantão? É grátis." em letras brancas com tom curioso. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Já pensou em testar o Plantão? 🤔
 >
 > É grátis, funciona sem internet, e você vai se perguntar como não usou antes.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TesteiEAprovei #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -725,14 +725,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de uma mesa de posto de enfermagem. De um lado, uma pilha de papéis usados, amassados. Do outro, um celular com o logo do Plantão e plantao.net brilhando. No centro, uma seta sutil indicando a transição: do papel para o celular. Iluminação fria. Texto: "Aos poucos, o papel vai ficando de lado." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista conceitual.
+> Crie uma imagem de uma mesa de posto de enfermagem. De um lado, uma pilha de papéis usados, amassados. Do outro, um celular com o logo do Plantão e plantao.net/landing brilhando. No centro, uma seta sutil indicando a transição: do papel para o celular. Iluminação fria. Texto: "Aos poucos, o papel vai ficando de lado." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista conceitual.
 
 **Legenda:**
 > Aos poucos, o papel vai ficando de lado. 📄➡️📱
 >
 > Não é sobre abandonar tudo de uma vez. É sobre descobrir que existe um jeito mais fácil.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TransicaoDigital #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -742,14 +742,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / WhatsApp
 
 **Imagem:**
-> Crie uma imagem de várias mãos de enfermeiros (diferentes tons de pele) segurando cada uma um celular com o logo do Plantão e plantao.net na tela. Mãos sobrepostas em composição de união e diversidade. Fundo escuro com iluminação destacando as mãos. Texto: "Todo profissional de enfermagem merece um app assim." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional e inclusivo.
+> Crie uma imagem de várias mãos de enfermeiros (diferentes tons de pele) segurando cada uma um celular com o logo do Plantão e plantao.net/landing na tela. Mãos sobrepostas em composição de união e diversidade. Fundo escuro com iluminação destacando as mãos. Texto: "Todo profissional de enfermagem merece um app assim." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional e inclusivo.
 
 **Legenda:**
 > Todo profissional de enfermagem merece ferramentas que facilitam o dia. 💙
 >
 > O Plantão é gratuito e feito pra você.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Diversidade #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -765,14 +765,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story
 
 **Imagem:**
-> Crie uma imagem bem-humorada de um computador de hospital com a tela congelada e um bilhete grudado no monitor escrito "VOLTO EM 10 MIN" — mas já é noite e o bilhete está amarelado de velho. Ao lado, uma enfermeira no celular com o logo do Plantão e plantao.net na tela, dando um sorriso irônico. Iluminação fria hospitalar. Texto: "PC ocupado é parente do 'já volto' que nunca volta." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista com tom de humor.
+> Crie uma imagem bem-humorada de um computador de hospital com a tela congelada e um bilhete grudado no monitor escrito "VOLTO EM 10 MIN" — mas já é noite e o bilhete está amarelado de velho. Ao lado, uma enfermeira no celular com o logo do Plantão e plantao.net/landing na tela, dando um sorriso irônico. Iluminação fria hospitalar. Texto: "PC ocupado é parente do 'já volto' que nunca volta." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista com tom de humor.
 
 **Legenda:**
 > PC ocupado é parente do "já volto" que nunca volta. 😂💻
 >
 > Enquanto o PC não libera, anota no celular. Quando liberar, é só copiar.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Humor #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -782,14 +782,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story
 
 **Imagem:**
-> Crie uma imagem de uma enfermeira com uma mão no bolso do jaleco, expressão de "cadê?", procurando algo. No bolso oposto, um celular com o logo do Plantão e plantao.net aparece. Fundo hospitalar. Texto: "Quem nunca perdeu um papel no plantão? Atire a primeira caneta." em branco com tom bem-humorado. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista engraçado.
+> Crie uma imagem de uma enfermeira com uma mão no bolso do jaleco, expressão de "cadê?", procurando algo. No bolso oposto, um celular com o logo do Plantão e plantao.net/landing aparece. Fundo hospitalar. Texto: "Quem nunca perdeu um papel no plantão? Atire a primeira caneta." em branco com tom bem-humorado. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista engraçado.
 
 **Legenda:**
 > Quem nunca perdeu um papel no plantão? Atire a primeira caneta. 🖊️😅
 >
 > Com o Plantão, suas anotações não se perdem mais.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Humor #TecnicoDeEnfermagem #MemoriasDoPlantao #Plantao
 
@@ -799,14 +799,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem de uma enfermeira no período noturno, visivelmente cansada mas ainda de pé, segurando um celular com o logo do Plantão e plantao.net na tela. O celular ilumina o rosto dela na penumbra do plantão noturno. Relógio na parede marcando 3h ou 4h da manhã. Texto com tom empático: "O terceiro turno é o mais difícil. O Plantão não cansa." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista noturno.
+> Crie uma imagem de uma enfermeira no período noturno, visivelmente cansada mas ainda de pé, segurando um celular com o logo do Plantão e plantao.net/landing na tela. O celular ilumina o rosto dela na penumbra do plantão noturno. Relógio na parede marcando 3h ou 4h da manhã. Texto com tom empático: "O terceiro turno é o mais difícil. O Plantão não cansa." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista noturno.
 
 **Legenda:**
 > O terceiro turno é o mais difícil. 😴⏰
 >
 > Quando o cansaço bate, o Plantão mantém suas anotações organizadas. Você só precisa copiar.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #PlantaoNoturno #TecnicoDeEnfermagem #Cansaco #Plantao
 
@@ -816,14 +816,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira fazendo várias coisas ao mesmo tempo: segurando uma pasta, olhando para um paciente, e com o celular no bolso com o logo do Plantão e plantao.net aparecendo. Uma imagem que transmite a energia multitarefa da enfermagem. Fundo de corredor movimentado. Texto bem-humorado: "Enfermagem: multitarefa nível hard. O Plantão ajuda em uma delas." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem realista de uma enfermeira fazendo várias coisas ao mesmo tempo: segurando uma pasta, olhando para um paciente, e com o celular no bolso com o logo do Plantão e plantao.net/landing aparecendo. Uma imagem que transmite a energia multitarefa da enfermagem. Fundo de corredor movimentado. Texto bem-humorado: "Enfermagem: multitarefa nível hard. O Plantão ajuda em uma delas." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Legenda:**
 > Enfermagem: multitarefa nível hard. 🏃‍♀️💨
 >
 > Pelo menos as anotações a gente resolve — o resto é com você.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Multitarefa #TecnicoDeEnfermagem #Humor #Plantao
 
@@ -833,14 +833,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Story
 
 **Imagem:**
-> Crie uma imagem de um celular sendo segurado por mão de enfermeira, com o logo do Plantão e plantao.net na tela. Ao redor do celular, ícones sutis de salvar, favoritar, compartilhar. Fundo azul escuro. Texto: "Salva esse post pra não esquecer. Baixa o app quando der tempo." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista com tom de CTA.
+> Crie uma imagem de um celular sendo segurado por mão de enfermeira, com o logo do Plantão e plantao.net/landing na tela. Ao redor do celular, ícones sutis de salvar, favoritar, compartilhar. Fundo azul escuro. Texto: "Salva esse post pra não esquecer. Baixa o app quando der tempo." em branco. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista com tom de CTA.
 
 **Legenda:**
 > Salva esse post pra não esquecer. 📌
 >
 > Depois que baixar, me conta o que achou!
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem
 
@@ -864,7 +864,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > Crie uma imagem quadrada 1:1 com fundo azul escuro com 3 etapas visuais: (1) ícone de celular + "Anota durante o plantão", (2) ícone de nuvem + "Sincroniza automático", (3) ícone de computador + "Copia pro sistema". Use o ícone anexado.
 
 **Slide 3 (CTA):**
-> Crie uma imagem quadrada 1:1 com fundo azul escuro, texto "PRONTO. AGORA É SÓ COPIAR." em branco. Abaixo: "Baixe grátis • plantao.net • Sem cadastro complicado". Use o ícone anexado.
+> Crie uma imagem quadrada 1:1 com fundo azul escuro, texto "PRONTO. AGORA É SÓ COPIAR." em branco. Abaixo: "Baixe grátis • plantao.net/landing • Sem cadastro complicado". Use o ícone anexado.
 
 **Legenda do carrossel:**
 > Como funciona o Plantão em 3 passos 🚀
@@ -873,7 +873,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > 2️⃣ O app sincroniza automaticamente (funciona offline!)
 > 3️⃣ No computador, é só copiar e colar no sistema
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Tutorial #Plantao #AppDeEnfermagem
 
@@ -905,7 +905,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > 4️⃣ Rasga
 > 5️⃣ Ocupa espaço
 >
-> O Plantão resolve todos. 📲 plantao.net
+> O Plantão resolve todos. 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #Plantao #AppDeEnfermagem #MenosPapel
 
@@ -920,17 +920,17 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > Crie uma imagem quadrada 1:1 com fundo azul escuro, dividido ao meio: lado esquerdo "PAPEL" com fundo avermelhado, lado direito "PLANTÃO" com fundo azul. Texto: "QUAL VOCÊ ESCOLHE?" em branco. Use o ícone anexado.
 
 **Slide 2 (Comparação):**
-> Crie uma imagem quadrada 1:1. Metade esquerda: papel manchado, texto "Molha, rasga, perde, ocupa espaço". Metade direita: celular com logo do Plantão e plantao.net, texto "Seguro, organizado, sempre disponível".
+> Crie uma imagem quadrada 1:1. Metade esquerda: papel manchado, texto "Molha, rasga, perde, ocupa espaço". Metade direita: celular com logo do Plantão e plantao.net/landing, texto "Seguro, organizado, sempre disponível".
 
 **Slide 3 (CTA):**
-> Crie uma imagem quadrada 1:1 com fundo azul escuro, texto "A ESCOLHA É FÁCIL" em branco. Abaixo: "Baixe grátis: plantao.net". Use o ícone anexado.
+> Crie uma imagem quadrada 1:1 com fundo azul escuro, texto "A ESCOLHA É FÁCIL" em branco. Abaixo: "Baixe grátis: plantao.net/landing". Use o ícone anexado.
 
 **Legenda do carrossel:**
 > Papel vs Plantão — qual você escolhe? 📄🤔📱
 >
 > De um lado, papel que molha, rasga e perde. Do outro, o Plantão: seguro, organizado, sempre no celular.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Comparacao #Plantao #AppDeEnfermagem #TecnicoDeEnfermagem
 
@@ -951,7 +951,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > Crie uma imagem quadrada 1:1 com fundo azul escuro. Ícone de sino + "Pendências com notificação. O celular avisa na hora certa."
 
 **Slide 4:**
-> Crie uma imagem quadrada 1:1 com fundo azul escuro. Ícone de Wi-Fi cortado + "Funciona offline. Anota sem internet, sincroniza depois." CTA: "plantao.net". Use o ícone anexado.
+> Crie uma imagem quadrada 1:1 com fundo azul escuro. Ícone de Wi-Fi cortado + "Funciona offline. Anota sem internet, sincroniza depois." CTA: "plantao.net/landing". Use o ícone anexado.
 
 **Legenda do carrossel:**
 > Tour rápido pelo Plantão 🚀
@@ -961,7 +961,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > 📶 Funciona offline
 > 🔄 Copia pro sistema
 >
-> Tudo gratuito em plantao.net
+> Tudo gratuito em plantao.net/landing
 >
 > #Enfermagem #Tour #Plantao #AppDeEnfermagem #TecnicoDeEnfermagem
 
@@ -977,7 +977,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** Instagram Story (9:16)
 
 **Imagem:**
-> Crie uma imagem no formato vertical 9:16 (story Instagram) de uma técnica de enfermagem segurando um celular próximo ao rosto, sorrindo, com um fundo hospitalar desfocado com luzes noturnas. A iluminação do celular ilumina suavemente o rosto dela. Na imagem, inclua o texto: topo "VOCÊ AINDA USA PAPEL?" em letras grandes e grossas; meio "O Plantão é grátis. Funciona sem internet. Texto pronto pra copiar."; bottom "plantao.net". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem no formato vertical 9:16 (story Instagram) de uma técnica de enfermagem segurando um celular próximo ao rosto, sorrindo, com um fundo hospitalar desfocado com luzes noturnas. A iluminação do celular ilumina suavemente o rosto dela. Na imagem, inclua o texto: topo "VOCÊ AINDA USA PAPEL?" em letras grandes e grossas; meio "O Plantão é grátis. Funciona sem internet. Texto pronto pra copiar."; bottom "plantao.net/landing". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Na hora de publicar:**
 > App que toda enfermeira precisa conhecer 📱
@@ -988,7 +988,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** Instagram Story (9:16)
 
 **Imagem:**
-> Crie uma imagem vertical 9:16 mostrando duas mãos de enfermagem: uma segurando um papel amassado e outra segurando um celular com o logo do Plantão e plantao.net na tela. Fundo escuro com textura sutil de luz azul hospitalar. Texto grande: "MARQUE AQUELA ENFERMEIRA QUE AINDA USA PAPEL" em letras brancas. Abaixo: "Apresenta o Plantão pra ela plantao.net" em letras menores. Use o ícone que vou enviar como anexo no canto superior direito. Estilo foto realista.
+> Crie uma imagem vertical 9:16 mostrando duas mãos de enfermagem: uma segurando um papel amassado e outra segurando um celular com o logo do Plantão e plantao.net/landing na tela. Fundo escuro com textura sutil de luz azul hospitalar. Texto grande: "MARQUE AQUELA ENFERMEIRA QUE AINDA USA PAPEL" em letras brancas. Abaixo: "Apresenta o Plantão pra ela plantao.net/landing" em letras menores. Use o ícone que vou enviar como anexo no canto superior direito. Estilo foto realista.
 
 **Na hora de publicar:**
 > Marque aquela amiga que ainda perde papel no plantão 😂👇
@@ -999,10 +999,10 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** Instagram Story (9:16)
 
 **Imagem:**
-> Crie uma imagem vertical 9:16 de uma tela de celular mostrando o logo do Plantão e plantao.net na tela, segurada por uma mão com unhas curtas e limpas (mão de profissional de saúde). Fundo suave azul escuro. Texto grande no topo: "TESTEI E APROVEI" em branco. Abaixo: "App gratuito de anotações de enfermagem. Funciona offline. Copia e cola no sistema do hospital." no meio. Bottom: "plantao.net". Use o ícone que vou enviar como anexo no topo direito. Estilo foto realista.
+> Crie uma imagem vertical 9:16 de uma tela de celular mostrando o logo do Plantão e plantao.net/landing na tela, segurada por uma mão com unhas curtas e limpas (mão de profissional de saúde). Fundo suave azul escuro. Texto grande no topo: "TESTEI E APROVEI" em branco. Abaixo: "App gratuito de anotações de enfermagem. Funciona offline. Copia e cola no sistema do hospital." no meio. Bottom: "plantao.net/landing". Use o ícone que vou enviar como anexo no topo direito. Estilo foto realista.
 
 **Na hora de publicar:**
-> Testa e me conta depois! https://plantao.net
+> Testa e me conta depois! https://plantao.net/landing
 
 ---
 
@@ -1039,7 +1039,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > • Pendências com notificação pra não esquecer nada
 > • Zero papel perdido ou molhado
 >
-> 📲 Baixe grátis: plantao.net
+> 📲 Baixe grátis: plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #AnotacoesDeEnfermagem #EnfermeirosDoBrasil
 
@@ -1058,7 +1058,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Você anota tudo no celular, e quando a internet volta, sincroniza automaticamente com o Firebase. Não perde nenhuma informação.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #InternetCaiu #PlantaoHospitalar #AppOffline #TecnicoDeEnfermagem
 
@@ -1068,7 +1068,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira no meio do plantão, expressão de "algo está errado" — uma mão na testa, lembrando de algo que esqueceu. Ao fundo, um relógio de parede marcando horário avançado e outro profissional saindo do plantão. O clima é de cansaço e sobrecarga. Mas na outra mão dela, um celular com a tela ligada mostrando o logo do Plantão e plantao.net na tela. Texto grande no topo: "Aquela pendência das 6h que você lembrou às 18h." em letras brancas. Texto menor: "O Plantão notifica. Você não esquece mais." Use o ícone que vou enviar como anexo no canto inferior direito sem alterar suas cores ou formato. Estilo foto realista, iluminação fria hospitalar.
+> Crie uma imagem realista de uma enfermeira no meio do plantão, expressão de "algo está errado" — uma mão na testa, lembrando de algo que esqueceu. Ao fundo, um relógio de parede marcando horário avançado e outro profissional saindo do plantão. O clima é de cansaço e sobrecarga. Mas na outra mão dela, um celular com a tela ligada mostrando o logo do Plantão e plantao.net/landing na tela. Texto grande no topo: "Aquela pendência das 6h que você lembrou às 18h." em letras brancas. Texto menor: "O Plantão notifica. Você não esquece mais." Use o ícone que vou enviar como anexo no canto inferior direito sem alterar suas cores ou formato. Estilo foto realista, iluminação fria hospitalar.
 
 **Legenda (Instagram):**
 > Aquela pendência das 6h que você lembrou às 18h. 😰
@@ -1077,7 +1077,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Com o Plantão você cria pendências com notificação programada. Na hora certa, seu celular avisa. Não depende da sua memória.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #PendenciasDePlantao #TecnicoDeEnfermagem #AppDeEnfermagem #PlantaoHospitalar
 
@@ -1100,7 +1100,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Texto formatado, pendências com notificação, funciona offline, copia e cola no sistema.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Plantao #AppDeEnfermagem #MenosPapel #TecnicoDeEnfermagem
 
@@ -1110,7 +1110,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed (vibe)
 
 **Imagem:**
-> Crie uma imagem emocional e profissional de uma enfermeira em um leito hospitalar, ajustando o acesso ou o soro de um paciente idoso. Ela está com uma mão no paciente e a outra segurando um celular com o logo do Plantão e plantao.net na tela — como se tivesse acabado de anotar algo e agora está cuidando. O paciente está calmo, olhando para ela com confiança. Iluminação mais quente que os outros posts, mas ainda profissional. Fundo de enfermaria com luz suave. Texto na imagem, canto superior esquerdo: "Você cuida. O Plantão anota." em letras elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional, campanha institucional.
+> Crie uma imagem emocional e profissional de uma enfermeira em um leito hospitalar, ajustando o acesso ou o soro de um paciente idoso. Ela está com uma mão no paciente e a outra segurando um celular com o logo do Plantão e plantao.net/landing na tela — como se tivesse acabado de anotar algo e agora está cuidando. O paciente está calmo, olhando para ela com confiança. Iluminação mais quente que os outros posts, mas ainda profissional. Fundo de enfermaria com luz suave. Texto na imagem, canto superior esquerdo: "Você cuida. O Plantão anota." em letras elegantes. Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista emocional, campanha institucional.
 
 **Legenda (Instagram):**
 > Você cuida. O Plantão anota. 💙
@@ -1119,7 +1119,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Mas quando o registro é rápido, sobra mais tempo pro que realmente importa.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #TecnicoDeEnfermagem #Paciente #Enfermeiros #Humanização
 
@@ -1129,7 +1129,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira durante o plantão hospitalar. Ela está em um corredor de hospital, segurando um celular com uma mão. Na tela do celular aparece o logo do Plantão e o texto plantao.net. O ambiente ao fundo mostra movimento de plantão — outros profissionais, macas — mas ela está calma, no controle. Iluminação com contraste entre o azul escuro do ambiente e a luz suave do celular. Estilo foto realista de campanha publicitária profissional. No canto superior direito, em letras brancas limpas: "Seu plantão no controle." Use o ícone que vou enviar como anexo no canto inferior direito.
+> Crie uma imagem realista de uma enfermeira durante o plantão hospitalar. Ela está em um corredor de hospital, segurando um celular com uma mão. Na tela do celular aparece o logo do Plantão e o texto plantao.net/landing. O ambiente ao fundo mostra movimento de plantão — outros profissionais, macas — mas ela está calma, no controle. Iluminação com contraste entre o azul escuro do ambiente e a luz suave do celular. Estilo foto realista de campanha publicitária profissional. No canto superior direito, em letras brancas limpas: "Seu plantão no controle." Use o ícone que vou enviar como anexo no canto inferior direito.
 
 **Legenda (Instagram):**
 > Seu plantão no controle. 📱
@@ -1143,7 +1143,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Isso é ter o controle na mão.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #Organizacao #AppDeEnfermagem
 
@@ -1153,7 +1153,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed / Facebook
 
 **Imagem:**
-> Crie uma imagem realista de uma enfermeira em ambiente hospitalar. Ela está ao lado de um computador de hospital (estilo suporte de parede ou carrinho). Com uma mão segura o celular mostrando o logo do Plantão e plantao.net na tela, e com a outra mão está usando o mouse do computador — como se estivesse copiando a anotação do celular para o sistema. O foco está nas mãos e no fluxo celular → computador. Iluminação fria, profissional, hospitalar. No topo, em letras limpas e grandes: "Anota no celular. Cola no sistema." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de alta qualidade.
+> Crie uma imagem realista de uma enfermeira em ambiente hospitalar. Ela está ao lado de um computador de hospital (estilo suporte de parede ou carrinho). Com uma mão segura o celular mostrando o logo do Plantão e plantao.net/landing na tela, e com a outra mão está usando o mouse do computador — como se estivesse copiando a anotação do celular para o sistema. O foco está nas mãos e no fluxo celular → computador. Iluminação fria, profissional, hospitalar. No topo, em letras limpas e grandes: "Anota no celular. Cola no sistema." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista de alta qualidade.
 
 **Legenda (Instagram):**
 > Anota no celular. Cola no sistema. 🔄
@@ -1162,7 +1162,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Sem redigitar. Sem papel. Sem perder tempo.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #TecnicoDeEnfermagem #AnotacoesDeEnfermagem #AppDeEnfermagem #CopiarEColar
 
@@ -1172,7 +1172,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canais:** Instagram feed
 
 **Imagem:**
-> Crie uma imagem com estilo mais conceitual e editorial. Close-up de um jaleco ou uniforme de enfermagem com um crachá. Na mão da enfermeira, um celular com o logo do Plantão e plantao.net visíveis na tela. Ao fundo, muito desfocado (bokeh), luzes de hospital e movimento suave. A iluminação é dramática — contraste entre luz quente no celular e fundo frio. Texto na imagem em letras elegantes: "Enfermagem não é burocracia." em branco. Abaixo, menor: "As anotações são só o registro. O cuidado é o que importa." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial de alta qualidade.
+> Crie uma imagem com estilo mais conceitual e editorial. Close-up de um jaleco ou uniforme de enfermagem com um crachá. Na mão da enfermeira, um celular com o logo do Plantão e plantao.net/landing visíveis na tela. Ao fundo, muito desfocado (bokeh), luzes de hospital e movimento suave. A iluminação é dramática — contraste entre luz quente no celular e fundo frio. Texto na imagem em letras elegantes: "Enfermagem não é burocracia." em branco. Abaixo, menor: "As anotações são só o registro. O cuidado é o que importa." Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista editorial de alta qualidade.
 
 **Legenda (Instagram):**
 > Enfermagem não é burocracia. 💙
@@ -1181,7 +1181,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > O Plantão existe pra fazer a parte chata voar, pra sobrar mais tempo pro que realmente importa: o paciente.
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Cuidado #TecnicoDeEnfermagem #Valorização #AppDeEnfermagem
 
@@ -1200,7 +1200,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Com o Plantão, suas anotações ficam no celular, organizadas, e sincronizadas na nuvem. Sem depender de papel.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #MenosPapel #Organizacao
 
@@ -1221,7 +1221,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Já aconteceu com você? Comenta aí 👇
 >
-> 📲 plantao.net
+> 📲 plantao.net/landing
 >
 > #Enfermagem #Plantao #TecnicoDeEnfermagem #AppDeEnfermagem #MemóriasDoPlantao
 
@@ -1235,7 +1235,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** Instagram Story (formato 9:16)
 
 **Imagem:**
-> Crie uma imagem no formato vertical 9:16 (story Instagram) de uma técnica de enfermagem segurando um celular próximo ao rosto, sorrindo, com um fundo hospitalar desfocado com luzes noturnas. A iluminação do celular ilumina suavemente o rosto dela. Estilo foto realista. Na imagem, inclua o texto: topo "VOCÊ AINDA USA PAPEL?" em letras grandes e grossas; meio "O Plantão é grátis. Funciona sem internet. Texto pronto pra copiar."; bottom "📲 plantao.net". Use o ícone que vou enviar como anexo no canto inferior direito.
+> Crie uma imagem no formato vertical 9:16 (story Instagram) de uma técnica de enfermagem segurando um celular próximo ao rosto, sorrindo, com um fundo hospitalar desfocado com luzes noturnas. A iluminação do celular ilumina suavemente o rosto dela. Estilo foto realista. Na imagem, inclua o texto: topo "VOCÊ AINDA USA PAPEL?" em letras grandes e grossas; meio "O Plantão é grátis. Funciona sem internet. Texto pronto pra copiar."; bottom "📲 plantao.net/landing". Use o ícone que vou enviar como anexo no canto inferior direito.
 
 **Legenda (não tem legenda em story — é só uma linha na hora de publicar):**
 > App que toda enfermeira precisa conhecer 📱 #plantao #enfermagem
@@ -1246,7 +1246,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** Instagram Story (formato 9:16)
 
 **Imagem:**
-> Crie uma imagem vertical 9:16 mostrando duas mãos de enfermagem: uma segurando um papel amassado e outra segurando um celular brilhante. Fundo escuro com textura sutil de luz azul hospitalar. Texto grande: "MARQUE AQUELA ENFERMEIRA QUE AINDA USA PAPEL" em letras brancas. Abaixo: "Apresenta o Plantão pra ela 📲 plantao.net" em letras menores. Use o ícone que vou enviar como anexo no canto superior direito. Estilo foto realista.
+> Crie uma imagem vertical 9:16 mostrando duas mãos de enfermagem: uma segurando um papel amassado e outra segurando um celular brilhante. Fundo escuro com textura sutil de luz azul hospitalar. Texto grande: "MARQUE AQUELA ENFERMEIRA QUE AINDA USA PAPEL" em letras brancas. Abaixo: "Apresenta o Plantão pra ela 📲 plantao.net/landing" em letras menores. Use o ícone que vou enviar como anexo no canto superior direito. Estilo foto realista.
 
 **Na hora de publicar:**
 > Marque aquela amiga que ainda perde papel no plantão 😂👇
@@ -1257,10 +1257,10 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** Instagram Story (9:16)
 
 **Imagem:**
-> Crie uma imagem vertical 9:16 de uma tela de celular mostrando o logo do Plantão e plantao.net na tela, segurada por uma mão com unhas curtas e limpas (mão de profissional de saúde). Fundo suave azul escuro. Texto grande no topo: "TESTEI E APROVEI ✅" em branco. Abaixo: "App gratuito de anotações de enfermagem. Funciona offline. Copia e cola no sistema do hospital." no meio. Bottom: "plantao.net" Use o ícone que vou enviar como anexo no topo direito. Estilo foto realista.
+> Crie uma imagem vertical 9:16 de uma tela de celular mostrando o logo do Plantão e plantao.net/landing na tela, segurada por uma mão com unhas curtas e limpas (mão de profissional de saúde). Fundo suave azul escuro. Texto grande no topo: "TESTEI E APROVEI ✅" em branco. Abaixo: "App gratuito de anotações de enfermagem. Funciona offline. Copia e cola no sistema do hospital." no meio. Bottom: "plantao.net/landing" Use o ícone que vou enviar como anexo no topo direito. Estilo foto realista.
 
 **Na hora de publicar:**
-> Testa e me conta depois! https://plantao.net
+> Testa e me conta depois! https://plantao.net/landing
 
 ---
 
@@ -1272,14 +1272,14 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** WhatsApp (imagem compartilhável)
 
 **Imagem:**
-> Crie uma imagem quadrada 1:1 limpa e informativa. Uma ilustração foto realista de um celular com a tela mostrando o logo do Plantão e o texto plantao.net. Ao redor do celular, pequenos ícones sutis: Wi-Fi com risco (offline), checkmark (pronto), relógio (pendências). Fundo azul escuro hospitalar (#0A1628). Texto grande: "APP GRATUITO PARA ENFERMAGEM" em branco. Abaixo: "Anotações • Pendências • Offline • Copia e cola" em letras menores. No bottom: "📲 plantao.net". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
+> Crie uma imagem quadrada 1:1 limpa e informativa. Uma ilustração foto realista de um celular com a tela mostrando o logo do Plantão e o texto plantao.net/landing. Ao redor do celular, pequenos ícones sutis: Wi-Fi com risco (offline), checkmark (pronto), relógio (pendências). Fundo azul escuro hospitalar (#0A1628). Texto grande: "APP GRATUITO PARA ENFERMAGEM" em branco. Abaixo: "Anotações • Pendências • Offline • Copia e cola" em letras menores. No bottom: "📲 plantao.net/landing". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista limpo.
 
 **Mensagem pra copiar e enviar no WhatsApp junto com a imagem:**
 > Galera, descobri um app que salvou meu plantão: Plantão! 🚑
 >
 > Vocês anotam tudo no celular (funciona sem internet), o texto já sai formatado, e na hora que o PC libera é só copiar e colar no sistema. Pendências com notificação também.
 >
-> É grátis: plantao.net
+> É grátis: plantao.net/landing
 >
 > Compartilha com a equipe! 💙
 
@@ -1289,7 +1289,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 **Canal:** WhatsApp (imagem compartilhável)
 
 **Imagem:**
-> Crie uma imagem quadrada 1:1 com uma composição mostrando vários celulares (3 ou 4) em diferentes mãos de enfermeiros, todos com o logo do Plantão e plantao.net na tela. Ideia de "a equipe toda usando". Fundo hospitalar desfocado, iluminação fria. Texto grande no topo: "SUA EQUIPE MERECE ORGANIZAÇÃO" em branco. Abaixo: "App gratuito de anotações de enfermagem. Cada um no seu celular, tudo sincronizado." no meio. Bottom: "📲 plantao.net". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
+> Crie uma imagem quadrada 1:1 com uma composição mostrando vários celulares (3 ou 4) em diferentes mãos de enfermeiros, todos com o logo do Plantão e plantao.net/landing na tela. Ideia de "a equipe toda usando". Fundo hospitalar desfocado, iluminação fria. Texto grande no topo: "SUA EQUIPE MERECE ORGANIZAÇÃO" em branco. Abaixo: "App gratuito de anotações de enfermagem. Cada um no seu celular, tudo sincronizado." no meio. Bottom: "📲 plantao.net/landing". Use o ícone que vou enviar como anexo no canto inferior direito. Estilo foto realista.
 
 **Mensagem pra copiar e enviar no WhatsApp junto com a imagem:**
 > Pessoal, apresentando o app que a gente tava precisando: Plantão!
@@ -1300,7 +1300,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > ✅ Copia direto pro sistema do hospital
 > ✅ Grátis
 >
-> Basta entrar em plantao.net e criar conta. Bora testar? 💪
+> Basta entrar em plantao.net/landing e criar conta. Bora testar? 💪
 
 ---
 
@@ -1322,7 +1322,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 > Estilo infográfico limpo, moderno, azul escuro com detalhes em azul. Use o ícone que vou enviar como anexo no canto inferior direito.
 
 **Slide 3 (CTA):**
-> Crie uma imagem quadrada 1:1 com fundo azul escuro #0A1628. Texto grande "PRONTO. AGORA É SÓ COPIAR." em branco. Abaixo: "Baixe grátis • plantao.net • Sem cadastro complicado" em letras menores. Elegante, limpo. Use o ícone que vou enviar como anexo no canto inferior direito.
+> Crie uma imagem quadrada 1:1 com fundo azul escuro #0A1628. Texto grande "PRONTO. AGORA É SÓ COPIAR." em branco. Abaixo: "Baixe grátis • plantao.net/landing • Sem cadastro complicado" em letras menores. Elegante, limpo. Use o ícone que vou enviar como anexo no canto inferior direito.
 
 **Legenda do carrossel:**
 > Como funciona o Plantão em 3 passos 🚀
@@ -1333,7 +1333,7 @@ Todas as imagens devem seguir o mesmo DNA visual. O feed precisa parecer de uma 
 >
 > Parece mágica mas é só tecnologia a serviço da enfermagem.
 >
-> 📲 plantao.net — gratuito
+> 📲 plantao.net/landing — gratuito
 >
 > #Enfermagem #Tutorial #Plantao #AppDeEnfermagem
 
