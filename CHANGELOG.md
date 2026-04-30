@@ -35,6 +35,11 @@
 ### Build
 - Build validado (vite build ok)
 
+### Bugfix — pendências do dashboard
+- **Ícone aparecia só depois de recarregar:** PacientesView limpava os dados ao sair (`parar()`) e Dashboard não chamava `iniciar()` ao montar. O ícone de pendências só renderizava depois de um reload completo.
+- **Offline quebrado:** Sem os dados em memória, o toggle de pendências (`_pacMap.get(pacKey)`) retornava `undefined` e a atualização local falhava.
+- **Fix:** `pacientesStore.iniciar()` adicionado ao `onMounted` do DashboardView — carrega do cache do localStorage imediatamente e restaura os listeners do Firebase.
+
 ### Landing — discurso de escassez removido
 - Barra "Acesso antecipado" com contagem de vagas removida
 - CTA final e FAQ atualizados (sem "100 vagas" ou "lista de espera")
